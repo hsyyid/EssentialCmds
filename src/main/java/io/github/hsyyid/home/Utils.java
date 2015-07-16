@@ -7,6 +7,7 @@ import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 
+import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.world.Location;
 
 public class Utils
@@ -18,14 +19,21 @@ public class Utils
 		Main.config.getNode("home", "users", playerName, homeName, "Y").setValue(playerLocation.getY());
 		Main.config.getNode("home", "users", playerName, homeName, "Z").setValue(playerLocation.getZ());
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("home.users." + playerName + "." + "homes").split("\\."));
-		String items = valueNode.getString();
-		if(items.contains(homeName + ","));
+		if(valueNode.getString() != null)
+		{
+			String items = valueNode.getString();
+			if(items.contains(homeName + ","));
+			else
+			{
+				String formattedItem = (homeName + ",");
+				valueNode.setValue(items + formattedItem);
+			}
+		}
 		else
 		{
-			String formattedItem = (homeName + ",");
-			valueNode.setValue(items + formattedItem);
+			valueNode.setValue(homeName + ",");
 		}
-		
+
 		try {
 			configManager.save(Main.config);
 			configManager.load();
@@ -33,7 +41,37 @@ public class Utils
 			System.out.println("[Home]: Failed to add " + playerName + "'s home!");
 		}
 	}
-	
+
+	public static void addLastDeathLocation(String playerName, Location playerLocation)
+	{
+		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
+		Main.config.getNode("back", "users", playerName, "lastDeath", "X").setValue(playerLocation.getX());
+		Main.config.getNode("back", "users", playerName, "lastDeath", "").setValue(playerLocation.getY());
+		Main.config.getNode("back", "users", playerName, "lastDeath", "Z").setValue(playerLocation.getZ());
+		try
+		{
+			configManager.save(Main.config);
+			configManager.load();
+		} catch(IOException e)
+		{
+			System.out.println("[Back]: Failed to add " + playerName + "'s last death location!");
+		}
+	}
+
+	public static Location lastDeath(Player player)
+	{
+		String playerName = player.getName();
+		ConfigurationNode xNode =  Main.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.X").split("\\."));
+		double x = xNode.getDouble();
+		ConfigurationNode yNode =  Main.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Y").split("\\."));
+		double y = yNode.getDouble();
+		ConfigurationNode zNode =  Main.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Z").split("\\."));
+		double z = zNode.getDouble();
+
+		Location location = new Location(player.getWorld(), x, y, z);
+		return location;
+	}
+
 	public static ArrayList<String> getHomes(String playerName)
 	{
 		ConfigurationNode valueNode =  Main.config.getNode((Object[]) ("home.users." + playerName + "." + "homes").split("\\."));
@@ -97,6 +135,20 @@ public class Utils
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("home.users." + userName + "." + homeName + ".X").split("\\."));
 		Object inConfig = valueNode.getValue();
 		if(inConfig != null){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
+	public static boolean isLastDeathInConfig(Player player)
+	{
+		String userName = player.getName();
+		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("back.users." + userName + ".lastDeath.X").split("\\."));
+		Object inConfig = valueNode.getValue();
+		if(inConfig != null)
+		{
 			return true;
 		}
 		else{

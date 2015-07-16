@@ -9,7 +9,11 @@ import ninja.leaping.configurate.loader.ConfigurationLoader;
 
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.entity.living.Human;
+import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.Subscribe;
+import org.spongepowered.api.event.entity.living.human.HumanDeathEvent;
+import org.spongepowered.api.event.entity.player.PlayerDeathEvent;
 import org.spongepowered.api.event.state.ServerStartedEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.config.DefaultConfig;
@@ -19,7 +23,7 @@ import org.spongepowered.api.util.command.spec.CommandSpec;
 
 import com.google.inject.Inject;
 
-@Plugin(id = "Home", name = "Home", version = "0.4")
+@Plugin(id = "Home", name = "Home", version = "0.5")
 public class Main 
 {
 	static Game game = null;
@@ -42,13 +46,11 @@ public class Main
 	@Inject
 	@DefaultConfig(sharedRoot = true)
 	private ConfigurationLoader<CommentedConfigurationNode> confManager;
-
+	
 	@Subscribe
 	public void onServerStart(ServerStartedEvent event)
 	{
 		game = event.getGame();
-		getLogger().info("Home Plugin loading...");
-
 		//Config File
 		try {
 			if (!dConfig.exists()) {
@@ -84,6 +86,15 @@ public class Main
 				.build();
 
 		game.getCommandDispatcher().register(this, listHomeCommandSpec, "homes");
+		
+		
+		CommandSpec backCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Back Command"))
+				.permission("back.use")
+				.executor(new BackExecutor())
+				.build();
+
+		game.getCommandDispatcher().register(this, backCommandSpec, "back");
 
 		CommandSpec setHomeCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Set Home Command"))
@@ -110,7 +121,14 @@ public class Main
         getLogger().info("-----------------------------");
 		getLogger().info("Home Plugin loaded!");
 	}
-
+	
+	@Subscribe
+	public void onPlayerDeath(PlayerDeathEvent event)
+	{
+		Player died = event.getEntity();
+		Utils.addLastDeathLocation(died.getName(), died.getLocation());
+	}
+	
 	public static ConfigurationLoader<CommentedConfigurationNode> getConfigManager()
 	{
 		return configurationManager;
