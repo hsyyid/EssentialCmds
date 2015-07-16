@@ -87,6 +87,13 @@ public class Main
 
 		game.getCommandDispatcher().register(this, listHomeCommandSpec, "homes");
 		
+		CommandSpec healCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Heal Command"))
+				.permission("heal.use")
+				.executor(new HealExecutor())
+				.build();
+
+		game.getCommandDispatcher().register(this, healCommandSpec, "heal");
 		
 		CommandSpec backCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Back Command"))
