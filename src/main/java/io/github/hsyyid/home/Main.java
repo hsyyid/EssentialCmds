@@ -18,7 +18,7 @@ import org.spongepowered.api.util.command.spec.CommandSpec;
 
 import com.google.inject.Inject;
 
-@Plugin(id = "Home", name = "Home", version = "0.1")
+@Plugin(id = "Home", name = "Home", version = "0.2")
 public class Main 
 {
 	static Game game = null;

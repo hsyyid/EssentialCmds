@@ -11,6 +11,7 @@ import org.spongepowered.api.util.command.args.CommandContext;
 import org.spongepowered.api.util.command.source.CommandBlockSource;
 import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
+import org.spongepowered.api.world.Location;
 
 public class HomeExecutor implements CommandExecutor
 {
@@ -23,7 +24,8 @@ public class HomeExecutor implements CommandExecutor
 			Player player = (Player) src;
 			if(Utils.inConfig(player.getName()))
 			{
-				game.getCommandDispatcher().process(game.getServer().getConsole(), "minecraft:tp" + " " + player.getName() + " " + Utils.getX(player.getName()) + " " + Utils.getY(player.getName()) + " " + Utils.getZ(player.getName()));
+				Location home = new Location(player.getWorld(), Utils.getX(player.getName()), Utils.getY(player.getName()), Utils.getZ(player.getName()));
+				player.setLocation(home);
 				src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.YELLOW, "Teleported Home."));
 			}
 			else
