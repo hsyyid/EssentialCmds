@@ -23,7 +23,7 @@ import org.spongepowered.api.util.command.spec.CommandSpec;
 
 import com.google.inject.Inject;
 
-@Plugin(id = "Home", name = "Home", version = "0.6")
+@Plugin(id = "Home", name = "Home", version = "0.7")
 public class Main 
 {
 	static Game game = null;
@@ -120,6 +120,14 @@ public class Main
 				.build();
 
 		game.getCommandDispatcher().register(this, deleteHomeCommandSpec, "deletehome", "delhome");
+		
+		CommandSpec feedCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Feed Command"))
+				.permission("feed.use")
+				.executor(new FeedExecutor())
+				.build();
+
+		game.getCommandDispatcher().register(this, feedCommandSpec, "feed");
 
 		getLogger().info("-----------------------------");
         getLogger().info("Home was made by HassanS6000!");
