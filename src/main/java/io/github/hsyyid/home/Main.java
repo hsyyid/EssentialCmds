@@ -19,7 +19,7 @@ import org.spongepowered.api.util.command.spec.CommandSpec;
 
 import com.google.inject.Inject;
 
-@Plugin(id = "Home", name = "Home", version = "0.3")
+@Plugin(id = "Home", name = "Home", version = "0.4")
 public class Main 
 {
 	static Game game = null;
@@ -93,6 +93,15 @@ public class Main
 				.build();
 
 		game.getCommandDispatcher().register(this, setHomeCommandSpec, "sethome");
+		
+		CommandSpec deleteHomeCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Delete Home Command"))
+				.permission("home.delete")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name"))))
+				.executor(new DeleteHomeExecutor())
+				.build();
+
+		game.getCommandDispatcher().register(this, deleteHomeCommandSpec, "deletehome", "delhome");
 
 		getLogger().info("-----------------------------");
         getLogger().info("Home was made by HassanS6000!");

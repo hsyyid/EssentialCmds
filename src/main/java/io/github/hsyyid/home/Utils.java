@@ -33,7 +33,7 @@ public class Utils
 			System.out.println("[Home]: Failed to add " + playerName + "'s home!");
 		}
 	}
-
+	
 	public static ArrayList<String> getHomes(String playerName)
 	{
 		ConfigurationNode valueNode =  Main.config.getNode((Object[]) ("home.users." + playerName + "." + "homes").split("\\."));
