@@ -16,10 +16,11 @@ public class SetHomeExecutor implements CommandExecutor
 
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
+		String homeName = ctx.<String>getOne("home name").get();
 		if(src instanceof Player)
 		{
 			Player player = (Player) src;
-			Utils.setHome(player.getName(), player.getLocation());
+			Utils.setHome(player.getName(), player.getLocation(), homeName);
 			src.sendMessage(Texts.of(TextColors.GREEN,"Success: ", TextColors.YELLOW, "Home set."));
 		}
 		else if(src instanceof ConsoleSource) {

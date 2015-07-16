@@ -14,11 +14,12 @@ import org.spongepowered.api.event.state.ServerStartedEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.config.DefaultConfig;
 import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.util.command.args.GenericArguments;
 import org.spongepowered.api.util.command.spec.CommandSpec;
 
 import com.google.inject.Inject;
 
-@Plugin(id = "Home", name = "Home", version = "0.2")
+@Plugin(id = "Home", name = "Home", version = "0.3")
 public class Main 
 {
 	static Game game = null;
@@ -56,6 +57,7 @@ public class Main
 				config.getNode("home", "users", "HassanS6000", "home", "X").setValue(0);
 				config.getNode("home", "users", "HassanS6000", "home", "Y").setValue(0);
 				config.getNode("home", "users", "HassanS6000", "home", "Z").setValue(0);
+				config.getNode("home", "users", "HassanS6000", "homes").setValue("home,");
 				confManager.save(config); 
 			}
 			configurationManager = confManager;
@@ -68,14 +70,25 @@ public class Main
 		CommandSpec homeCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Home Command"))
 				.permission("home.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name"))))
 				.executor(new HomeExecutor())
 				.build();
 
 		game.getCommandDispatcher().register(this, homeCommandSpec, "home");
+		
+		CommandSpec listHomeCommandSpec = CommandSpec.builder()
+				.description(Texts.of("List Home Command"))
+				.permission("home.list")
+				.arguments(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("page no"))))
+				.executor(new ListHomeExecutor())
+				.build();
+
+		game.getCommandDispatcher().register(this, listHomeCommandSpec, "homes");
 
 		CommandSpec setHomeCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Set Home Command"))
 				.permission("home.set")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name"))))
 				.executor(new SetHomeExecutor())
 				.build();
 

@@ -1,6 +1,5 @@
 package io.github.hsyyid.home;
 
-import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
@@ -18,15 +17,15 @@ public class HomeExecutor implements CommandExecutor
 
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Game game = Main.game;
+		String homeName = ctx.<String>getOne("home name").get();
 		if(src instanceof Player)
 		{
 			Player player = (Player) src;
-			if(Utils.inConfig(player.getName()))
+			if(Utils.inConfig(player.getName(), homeName))
 			{
-				Location home = new Location(player.getWorld(), Utils.getX(player.getName()), Utils.getY(player.getName()), Utils.getZ(player.getName()));
+				Location home = new Location(player.getWorld(), Utils.getX(player.getName(), homeName), Utils.getY(player.getName(), homeName), Utils.getZ(player.getName(), homeName));
 				player.setLocation(home);
-				src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.YELLOW, "Teleported Home."));
+				src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.YELLOW, "Teleported to Home " + homeName));
 			}
 			else
 			{
