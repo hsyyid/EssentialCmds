@@ -1,4 +1,4 @@
-package io.github.hsyyid.home;
+package io.github.hsyyid.spongeessentialcmds;
 
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.text.Texts;
@@ -10,8 +10,9 @@ import org.spongepowered.api.util.command.args.CommandContext;
 import org.spongepowered.api.util.command.source.CommandBlockSource;
 import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
+import org.spongepowered.api.world.Location;
 
-public class SetHomeExecutor implements CommandExecutor
+public class HomeExecutor implements CommandExecutor
 {
 
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
@@ -20,16 +21,23 @@ public class SetHomeExecutor implements CommandExecutor
 		if(src instanceof Player)
 		{
 			Player player = (Player) src;
-			Utils.setHome(player.getName(), player.getLocation(), homeName);
-			src.sendMessage(Texts.of(TextColors.GREEN,"Success: ", TextColors.YELLOW, "Home set."));
+			if(Utils.inConfig(player.getName(), homeName))
+			{
+				Location home = new Location(player.getWorld(), Utils.getX(player.getName(), homeName), Utils.getY(player.getName(), homeName), Utils.getZ(player.getName(), homeName));
+				player.setLocation(home);
+				src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.YELLOW, "Teleported to Home " + homeName));
+			}
+			else
+			{
+				src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "You must first set your home!"));
+			}
 		}
 		else if(src instanceof ConsoleSource) {
-			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /sethome!"));
+			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /home!"));
 		}
 		else if(src instanceof CommandBlockSource) {
-			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /sethome!"));
+			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /home!"));
 		}
-
 		return CommandResult.success();
 	}
 }

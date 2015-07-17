@@ -1,4 +1,4 @@
-package io.github.hsyyid.home;
+package io.github.hsyyid.spongeessentialcmds;
 
 import org.spongepowered.api.data.manipulator.entity.FoodData;
 import org.spongepowered.api.entity.player.Player;

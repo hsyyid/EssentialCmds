@@ -1,4 +1,4 @@
-package io.github.hsyyid.home;
+package io.github.hsyyid.spongeessentialcmds;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +20,7 @@ import org.spongepowered.api.service.config.DefaultConfig;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.util.command.args.GenericArguments;
 import org.spongepowered.api.util.command.spec.CommandSpec;
+import org.spongepowered.api.world.TeleportHelper;
 
 import com.google.inject.Inject;
 
@@ -29,6 +30,7 @@ public class Main
 	static Game game = null;
 	static ConfigurationNode config = null;
 	static ConfigurationLoader<CommentedConfigurationNode> configurationManager;
+	static TeleportHelper helper;
 
 	@Inject
 	private Logger logger;
@@ -51,6 +53,7 @@ public class Main
 	public void onServerStart(ServerStartedEvent event)
 	{
 		game = event.getGame();
+		helper = game.getTeleportHelper();
 		//Config File
 		try {
 			if (!dConfig.exists()) {
@@ -102,6 +105,14 @@ public class Main
 				.build();
 
 		game.getCommandDispatcher().register(this, backCommandSpec, "back");
+		
+		CommandSpec flyCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Fly Command"))
+				.permission("fly.use")
+				.executor(new FlyExecutor())
+				.build();
+
+		game.getCommandDispatcher().register(this, flyCommandSpec, "fly");
 
 		CommandSpec setHomeCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Set Home Command"))
@@ -128,6 +139,14 @@ public class Main
 				.build();
 
 		game.getCommandDispatcher().register(this, feedCommandSpec, "feed");
+		
+		CommandSpec jumpCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Jump Command"))
+				.permission("jump.use")
+				.executor(new JumpExecutor())
+				.build();
+
+		game.getCommandDispatcher().register(this, jumpCommandSpec, "jump");
 
 		getLogger().info("-----------------------------");
         getLogger().info("Home was made by HassanS6000!");

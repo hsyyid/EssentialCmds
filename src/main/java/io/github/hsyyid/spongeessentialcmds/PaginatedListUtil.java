@@ -1,4 +1,4 @@
-package io.github.hsyyid.home;
+package io.github.hsyyid.spongeessentialcmds;
 
 public class PaginatedListUtil {
 
