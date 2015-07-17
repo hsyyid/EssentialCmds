@@ -22,7 +22,7 @@ import org.spongepowered.api.world.TeleportHelper;
 
 import com.google.inject.Inject;
 
-@Plugin(id = "Home", name = "Home", version = "0.7")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "0.8")
 public class Main 
 {
 	static Game game = null;
