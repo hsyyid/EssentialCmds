@@ -9,10 +9,8 @@ import ninja.leaping.configurate.loader.ConfigurationLoader;
 
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
-import org.spongepowered.api.entity.living.Human;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.Subscribe;
-import org.spongepowered.api.event.entity.living.human.HumanDeathEvent;
 import org.spongepowered.api.event.entity.player.PlayerDeathEvent;
 import org.spongepowered.api.event.state.ServerStartedEvent;
 import org.spongepowered.api.plugin.Plugin;
@@ -80,6 +78,22 @@ public class Main
 				.build();
 
 		game.getCommandDispatcher().register(this, homeCommandSpec, "home");
+		
+		CommandSpec spawnCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Spawn Command"))
+				.permission("spawn.use")
+				.executor(new SpawnExecutor())
+				.build();
+
+		game.getCommandDispatcher().register(this, spawnCommandSpec, "spawn");
+		
+		CommandSpec setSpawnCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Spawn Command"))
+				.permission("spawn.set")
+				.executor(new SetSpawnExecutor())
+				.build();
+
+		game.getCommandDispatcher().register(this, setSpawnCommandSpec, "setspawn");
 		
 		CommandSpec listHomeCommandSpec = CommandSpec.builder()
 				.description(Texts.of("List Home Command"))
@@ -149,11 +163,11 @@ public class Main
 		game.getCommandDispatcher().register(this, jumpCommandSpec, "jump");
 
 		getLogger().info("-----------------------------");
-        getLogger().info("Home was made by HassanS6000!");
+        getLogger().info("SpongeEssentialCmds was made by HassanS6000!");
         getLogger().info("Please post all errors with Home on the Sponge Thread or on GitHub!");
         getLogger().info("Have fun, and enjoy! :D");
         getLogger().info("-----------------------------");
-		getLogger().info("Home Plugin loaded!");
+		getLogger().info("SpongeEssentialCmds loaded!");
 	}
 	
 	@Subscribe

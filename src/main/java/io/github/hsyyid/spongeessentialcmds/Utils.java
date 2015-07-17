@@ -38,7 +38,24 @@ public class Utils
 			configManager.save(Main.config);
 			configManager.load();
 		} catch(IOException e) {
-			System.out.println("[Home]: Failed to add " + playerName + "'s home!");
+			System.out.println("[SpongeEssentialCmds]: Failed to add " + playerName + "'s home!");
+		}
+	}
+
+	public static void setSpawn(Location playerLocation)
+	{
+		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
+		Main.config.getNode("spawn", "X").setValue(playerLocation.getX());
+		Main.config.getNode("spawn", "Y").setValue(playerLocation.getY());
+		Main.config.getNode("spawn", "Z").setValue(playerLocation.getZ());
+		try
+		{
+			configManager.save(Main.config);
+			configManager.load();
+		}
+		catch(IOException e)
+		{
+			System.out.println("[SpongeEssentialCmds]: Failed to set spawn");
 		}
 	}
 
@@ -46,7 +63,7 @@ public class Utils
 	{
 		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
 		Main.config.getNode("back", "users", playerName, "lastDeath", "X").setValue(playerLocation.getX());
-		Main.config.getNode("back", "users", playerName, "lastDeath", "").setValue(playerLocation.getY());
+		Main.config.getNode("back", "users", playerName, "lastDeath", "Y").setValue(playerLocation.getY());
 		Main.config.getNode("back", "users", playerName, "lastDeath", "Z").setValue(playerLocation.getZ());
 		try
 		{
@@ -140,6 +157,33 @@ public class Utils
 		else{
 			return false;
 		}
+	}
+	
+	public static boolean isSpawnInConfig()
+	{
+		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("spawn.X").split("\\."));
+		Object inConfig = valueNode.getValue();
+		if(inConfig != null){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	
+	public static Location getSpawn(Player player)
+	{
+		ConfigurationNode xNode = Main.config.getNode((Object[]) ("spawn.X").split("\\."));
+		double x = xNode.getDouble();
+		
+		ConfigurationNode yNode = Main.config.getNode((Object[]) ("spawn.Y").split("\\."));
+		double y = yNode.getDouble();
+		
+		ConfigurationNode zNode = Main.config.getNode((Object[]) ("spawn.Z").split("\\."));
+		double z = zNode.getDouble();
+		
+		Location spawn = new Location(player.getWorld(), x, y, z);
+		return spawn;
 	}
 
 	public static boolean isLastDeathInConfig(Player player)
