@@ -22,7 +22,7 @@ import org.spongepowered.api.world.TeleportHelper;
 
 import com.google.inject.Inject;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "0.8")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "0.9")
 public class Main 
 {
 	static Game game = null;
@@ -164,7 +164,7 @@ public class Main
 
 		getLogger().info("-----------------------------");
         getLogger().info("SpongeEssentialCmds was made by HassanS6000!");
-        getLogger().info("Please post all errors with Home on the Sponge Thread or on GitHub!");
+        getLogger().info("Please post all errors on the Sponge Thread or on GitHub!");
         getLogger().info("Have fun, and enjoy! :D");
         getLogger().info("-----------------------------");
 		getLogger().info("SpongeEssentialCmds loaded!");
