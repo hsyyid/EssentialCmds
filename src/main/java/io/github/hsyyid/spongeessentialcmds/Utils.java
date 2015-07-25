@@ -2,6 +2,7 @@ package io.github.hsyyid.spongeessentialcmds;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -12,8 +13,9 @@ import org.spongepowered.api.world.Location;
 
 public class Utils
 {
-	public static void setHome(String playerName, Location playerLocation, String homeName)
+	public static void setHome(UUID userName, Location playerLocation, String homeName)
 	{
+		String playerName = userName.toString();
 		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
 		Main.config.getNode("home", "users", playerName, homeName, "X").setValue(playerLocation.getX());
 		Main.config.getNode("home", "users", playerName, homeName, "Y").setValue(playerLocation.getY());
@@ -59,8 +61,9 @@ public class Utils
 		}
 	}
 
-	public static void addLastDeathLocation(String playerName, Location playerLocation)
+	public static void addLastDeathLocation(UUID userName, Location playerLocation)
 	{
+		String playerName = userName.toString();
 		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
 		Main.config.getNode("back", "users", playerName, "lastDeath", "X").setValue(playerLocation.getX());
 		Main.config.getNode("back", "users", playerName, "lastDeath", "Y").setValue(playerLocation.getY());
@@ -77,7 +80,7 @@ public class Utils
 
 	public static Location lastDeath(Player player)
 	{
-		String playerName = player.getName();
+		String playerName = player.getUniqueId().toString();
 		ConfigurationNode xNode =  Main.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.X").split("\\."));
 		double x = xNode.getDouble();
 		ConfigurationNode yNode =  Main.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Y").split("\\."));
@@ -89,8 +92,9 @@ public class Utils
 		return location;
 	}
 
-	public static ArrayList<String> getHomes(String playerName)
+	public static ArrayList<String> getHomes(UUID userName)
 	{
+		String playerName = userName.toString();
 		ConfigurationNode valueNode =  Main.config.getNode((Object[]) ("home.users." + playerName + "." + "homes").split("\\."));
 		String list = valueNode.getString();
 
@@ -128,27 +132,31 @@ public class Utils
 	}
 
 
-	public static double getX(String userName, String homeName)
+	public static double getX(UUID playerName, String homeName)
 	{
+		String userName = playerName.toString();
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("home.users." + userName + "." + homeName + ".X").split("\\."));
 		return valueNode.getDouble();
 	}
 
-	public static double getY(String userName, String homeName)
+	public static double getY(UUID playerName, String homeName)
 	{
+		String userName = playerName.toString();
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("home.users." + userName + "." + homeName + ".Y").split("\\."));
 		return valueNode.getDouble();
 	}
 
-	public static double getZ(String userName, String homeName)
+	public static double getZ(UUID playerName, String homeName)
 	{
+		String userName = playerName.toString();
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("home.users." + userName + "." + homeName + ".Z").split("\\."));
 		return valueNode.getDouble();
 	}
 
 	//Check if Player is In Config
-	public static boolean inConfig(String userName, String homeName)
+	public static boolean inConfig(UUID playerName, String homeName)
 	{
+		String userName = playerName.toString();
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("home.users." + userName + "." + homeName + ".X").split("\\."));
 		Object inConfig = valueNode.getValue();
 		if(inConfig != null){
@@ -188,14 +196,15 @@ public class Utils
 
 	public static boolean isLastDeathInConfig(Player player)
 	{
-		String userName = player.getName();
+		String userName = player.getUniqueId().toString();
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("back.users." + userName + ".lastDeath.X").split("\\."));
 		Object inConfig = valueNode.getValue();
 		if(inConfig != null)
 		{
 			return true;
 		}
-		else{
+		else
+		{
 			return false;
 		}
 	}

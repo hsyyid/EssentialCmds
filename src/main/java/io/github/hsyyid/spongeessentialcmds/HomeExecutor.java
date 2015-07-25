@@ -21,9 +21,9 @@ public class HomeExecutor implements CommandExecutor
 		if(src instanceof Player)
 		{
 			Player player = (Player) src;
-			if(Utils.inConfig(player.getName(), homeName))
+			if(Utils.inConfig(player.getUniqueId(), homeName))
 			{
-				Location home = new Location(player.getWorld(), Utils.getX(player.getName(), homeName), Utils.getY(player.getName(), homeName), Utils.getZ(player.getName(), homeName));
+				Location home = new Location(player.getWorld(), Utils.getX(player.getUniqueId(), homeName), Utils.getY(player.getUniqueId(), homeName), Utils.getZ(player.getUniqueId(), homeName));
 				player.setLocation(home);
 				src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.YELLOW, "Teleported to Home " + homeName));
 			}

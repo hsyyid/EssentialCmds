@@ -42,7 +42,6 @@ public class Main
 	@DefaultConfig(sharedRoot = true)
 	private File dConfig;
 
-
 	@Inject
 	@DefaultConfig(sharedRoot = true)
 	private ConfigurationLoader<CommentedConfigurationNode> confManager;
@@ -174,7 +173,7 @@ public class Main
 	public void onPlayerDeath(PlayerDeathEvent event)
 	{
 		Player died = event.getEntity();
-		Utils.addLastDeathLocation(died.getName(), died.getLocation());
+		Utils.addLastDeathLocation(died.getUniqueId(), died.getLocation());
 	}
 	
 	public static ConfigurationLoader<CommentedConfigurationNode> getConfigManager()

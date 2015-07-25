@@ -24,7 +24,7 @@ public class ListHomeExecutor implements CommandExecutor
 		if(src instanceof Player)
 		{
 			Player player = (Player) src;
-			ArrayList<String> homes = Utils.getHomes(player.getName());
+			ArrayList<String> homes = Utils.getHomes(player.getUniqueId());
 			Integer arguments = ctx.<Integer>getOne("page no").get();
 			
 			int pgNo = 1;

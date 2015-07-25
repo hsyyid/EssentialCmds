@@ -20,7 +20,7 @@ public class SetHomeExecutor implements CommandExecutor
 		if(src instanceof Player)
 		{
 			Player player = (Player) src;
-			Utils.setHome(player.getName(), player.getLocation(), homeName);
+			Utils.setHome(player.getUniqueId(), player.getLocation(), homeName);
 			src.sendMessage(Texts.of(TextColors.GREEN,"Success: ", TextColors.YELLOW, "Home set."));
 		}
 		else if(src instanceof ConsoleSource) {
