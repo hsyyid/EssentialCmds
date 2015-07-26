@@ -22,7 +22,7 @@ import org.spongepowered.api.world.TeleportHelper;
 
 import com.google.inject.Inject;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "0.9")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "1.0")
 public class Main 
 {
 	static Game game = null;
@@ -97,7 +97,7 @@ public class Main
 		CommandSpec listHomeCommandSpec = CommandSpec.builder()
 				.description(Texts.of("List Home Command"))
 				.permission("home.list")
-				.arguments(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("page no"))))
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("page no")))))
 				.executor(new ListHomeExecutor())
 				.build();
 

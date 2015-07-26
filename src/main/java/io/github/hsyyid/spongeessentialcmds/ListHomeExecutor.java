@@ -17,6 +17,8 @@ import org.spongepowered.api.util.command.source.CommandBlockSource;
 import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
+import com.google.common.base.Optional;
+
 public class ListHomeExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
@@ -25,41 +27,47 @@ public class ListHomeExecutor implements CommandExecutor
 		{
 			Player player = (Player) src;
 			ArrayList<String> homes = Utils.getHomes(player.getUniqueId());
-			Integer arguments = ctx.<Integer>getOne("page no").get();
-			
+			Optional<Integer> arguments = ctx.<Integer>getOne("page no");
+
 			int pgNo = 1;
-			if(arguments != null)
+			if(arguments != Optional.<Integer>absent())
 			{
-				pgNo = arguments;
+				pgNo = arguments.get();
 			}
 			else
 			{
 				pgNo = 1;
 			}
-			
-			//Add List
-			PaginatedList pList = new PaginatedList("/homes");
-			for (String name: homes) {
-			     Text item = Texts.builder(name)
-			        .onClick(TextActions.runCommand("/home " + name))
-			        .onHover(TextActions.showText(Texts.of(TextColors.WHITE, "Teleport to home ", TextColors.GOLD, name)))
-			        .color(TextColors.DARK_AQUA)
-			        .style(TextStyles.UNDERLINE)
-			        .build();
 
-			    pList.add(item);
+			if(homes.size() > 0)
+			{
+				//Add List
+				PaginatedList pList = new PaginatedList("/homes");
+				for (String name: homes) {
+					Text item = Texts.builder(name)
+							.onClick(TextActions.runCommand("/home " + name))
+							.onHover(TextActions.showText(Texts.of(TextColors.WHITE, "Teleport to home ", TextColors.GOLD, name)))
+							.color(TextColors.DARK_AQUA)
+							.style(TextStyles.UNDERLINE)
+							.build();
+
+					pList.add(item);
+				}
+				pList.setItemsPerPage(10);
+				//Header
+				TextBuilder header = Texts.builder();
+				header.append(Texts.of(TextColors.GREEN, "------------"));
+				header.append(Texts.of(TextColors.GREEN, " Showing Homes page " + pgNo + " of " + pList.getTotalPages() + " "));
+				header.append(Texts.of(TextColors.GREEN, "------------"));
+
+				pList.setHeader(header.build());
+				//Send List
+				src.sendMessage(pList.getPage(pgNo));	
 			}
-			pList.setItemsPerPage(10);
-			//Header
-			TextBuilder header = Texts.builder();
-			header.append(Texts.of(TextColors.GREEN, "------------"));
-			header.append(Texts.of(TextColors.GREEN, " Showing Homes page " + pgNo + " of " + pList.getTotalPages() + " "));
-			header.append(Texts.of(TextColors.GREEN, "------------"));
-
-			pList.setHeader(header.build());
-			//Send List
-			src.sendMessage(pList.getPage(pgNo));	
-			
+			else
+			{
+				src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "You must first set a home to list your homes!"));
+			}
 		}
 		else if(src instanceof ConsoleSource)
 		{
