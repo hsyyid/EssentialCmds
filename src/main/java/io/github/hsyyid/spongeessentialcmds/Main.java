@@ -36,7 +36,7 @@ public class Main
 	static ConfigurationLoader<CommentedConfigurationNode> configurationManager;
 	static TeleportHelper helper;
 	public static ArrayList<PendingInvitation> pendingInvites = new ArrayList<PendingInvitation>();
-	
+
 	@Inject
 	private Logger logger;
 
@@ -110,7 +110,16 @@ public class Main
 				.build();
 
 		game.getCommandDispatcher().register(this, tpaCommandSpec, "tpa");
-		
+
+		CommandSpec tpaHereCommandSpec = CommandSpec.builder()
+				.description(Texts.of("TPA Here Command"))
+				.permission("tpahere.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))
+				.executor(new TPAHereExecutor())
+				.build();
+
+		game.getCommandDispatcher().register(this, tpaHereCommandSpec, "tpahere");
+
 		CommandSpec tpaAcceptCommandSpec = CommandSpec.builder()
 				.description(Texts.of("TPA Accept Command"))
 				.permission("tpa.accept")
@@ -118,7 +127,7 @@ public class Main
 				.build();
 
 		game.getCommandDispatcher().register(this, tpaAcceptCommandSpec, "tpaccept");
-		
+
 		CommandSpec listHomeCommandSpec = CommandSpec.builder()
 				.description(Texts.of("List Home Command"))
 				.permission("home.list")
@@ -204,18 +213,18 @@ public class Main
 	@Subscribe
 	public void tpaEventHandler(TPAEvent event)
 	{
-	    String senderName = event.getSender().getName();
-	    event.getRecipient().sendMessage(Texts.of(TextColors.BLUE, "TPA Request From: ", TextColors.GOLD, senderName + ".", TextColors.RED, " You have 10 seconds to do /tpaccept to accept the request"));
-	    
-	    //Adds Invite to List
-	    final PendingInvitation invite = new PendingInvitation(event.getSender(), event.getRecipient());
-	    pendingInvites.add(invite);
-	    
-	    //Removes Invite after 10 Seconds
-	    SchedulerService scheduler = game.getScheduler();
-	    TaskBuilder taskBuilder = scheduler.getTaskBuilder();
-	    
-	    Task task = taskBuilder.execute(new Runnable() {
+		String senderName = event.getSender().getName();
+		event.getRecipient().sendMessage(Texts.of(TextColors.BLUE, "TPA Request From: ", TextColors.GOLD, senderName + ".", TextColors.RED, " You have 10 seconds to do /tpaccept to accept the request"));
+
+		//Adds Invite to List
+		final PendingInvitation invite = new PendingInvitation(event.getSender(), event.getRecipient());
+		pendingInvites.add(invite);
+
+		//Removes Invite after 10 Seconds
+		SchedulerService scheduler = game.getScheduler();
+		TaskBuilder taskBuilder = scheduler.getTaskBuilder();
+
+		Task task = taskBuilder.execute(new Runnable() {
 			public void run()
 			{
 				if(pendingInvites.contains(invite))
@@ -225,15 +234,49 @@ public class Main
 			}
 		}).delay(10, TimeUnit.SECONDS).name("SpongeEssentialCmds - Remove Pending Invite").submit(game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
 	}
-	
+
 	@Subscribe
 	public void tpaAcceptEventHandler(TPAAcceptEvent event)
 	{
 		String senderName = event.getSender().getName();
-		event.getRecipient().sendMessage(Texts.of(TextColors.GREEN, senderName, TextColors.YELLOW, " accepted your TPA Request."));
-	    event.getRecipient().setLocation(event.getSender().getLocation());
+		event.getRecipient().sendMessage(Texts.of(TextColors.GREEN, senderName, TextColors.WHITE, " accepted your TPA Request."));
+		event.getRecipient().setLocation(event.getSender().getLocation());
 	}
 	
+	@Subscribe
+	public void tpaHereAcceptEventHandler(TPAHereAcceptEvent event)
+	{
+		String recipientName = event.getRecipient().getName();
+		event.getSender().sendMessage(Texts.of(TextColors.GREEN, recipientName, TextColors.WHITE, " accepted your TPA Here Request."));
+		event.getSender().setLocation(event.getRecipient().getLocation());
+	}
+
+	@Subscribe
+	public void tpaHereEventHandler(TPAHereEvent event)
+	{
+		String senderName = event.getSender().getName();
+		event.getRecipient().sendMessage(Texts.of(TextColors.BLUE, senderName, TextColors.GOLD, " has requested for you to teleport to them.", TextColors.RED, " You have 10 seconds to do /tpaccept to accept the request"));
+
+		//Adds Invite to List
+		final PendingInvitation invite = new PendingInvitation(event.getSender(), event.getRecipient());
+		invite.isTPAHere = true;
+		pendingInvites.add(invite);
+
+		//Removes Invite after 10 Seconds
+		SchedulerService scheduler = game.getScheduler();
+		TaskBuilder taskBuilder = scheduler.getTaskBuilder();
+
+		Task task = taskBuilder.execute(new Runnable() {
+			public void run()
+			{
+				if(pendingInvites.contains(invite))
+				{
+					pendingInvites.remove(invite);
+				}
+			}
+		}).delay(10, TimeUnit.SECONDS).name("SpongeEssentialCmds - Remove Pending Invite").submit(game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
+	}
+
 	public static ConfigurationLoader<CommentedConfigurationNode> getConfigManager()
 	{
 		return configurationManager;

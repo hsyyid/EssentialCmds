@@ -22,20 +22,32 @@ public class TPAAcceptExecutor  implements CommandExecutor
 		{
 			Player player = (Player) src;
 			Player sender = null;
+			boolean tpaHere = false;
 			
 			for(PendingInvitation invitation : Main.pendingInvites)
 			{
-				if(invitation.recipient == player)
+				if(!invitation.isTPAHere && invitation.recipient == player)
 				{
+					sender = invitation.sender;
+					break;
+				}
+				else if(invitation.isTPAHere && invitation.recipient == player)
+				{
+					tpaHere = true;
 					sender = invitation.sender;
 					break;
 				}
 			}
 			
-			if(sender != null)
+			if(sender != null && !tpaHere)
 			{
 				game.getEventManager().post(new TPAAcceptEvent(player, sender));
 				src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.YELLOW, "TPA Request Accepted."));
+			}
+			else if(sender != null && tpaHere)
+			{	
+				game.getEventManager().post(new TPAHereAcceptEvent(player, sender));
+				src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.YELLOW, "TPA Here Request Accepted."));
 			}
 			else
 			{

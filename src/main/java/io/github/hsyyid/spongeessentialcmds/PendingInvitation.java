@@ -4,6 +4,7 @@ import org.spongepowered.api.entity.player.Player;
 
 public class PendingInvitation
 {
+	public boolean isTPAHere = false;
 	public Player sender;
 	public Player recipient;
 	
