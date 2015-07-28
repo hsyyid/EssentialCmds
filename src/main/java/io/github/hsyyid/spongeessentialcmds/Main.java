@@ -28,7 +28,7 @@ import org.spongepowered.api.world.TeleportHelper;
 
 import com.google.inject.Inject;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "1.1")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "1.2")
 public class Main 
 {
 	static Game game = null;
@@ -152,6 +152,14 @@ public class Main
 				.build();
 
 		game.getCommandDispatcher().register(this, backCommandSpec, "back");
+		
+		CommandSpec tpaDenyCommandSpec = CommandSpec.builder()
+				.description(Texts.of("TPA Deny Command"))
+				.permission("tpadeny.use")
+				.executor(new TPADenyExecutor())
+				.build();
+
+		game.getCommandDispatcher().register(this, tpaDenyCommandSpec, "tpadeny");
 
 		CommandSpec flyCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Fly Command"))
