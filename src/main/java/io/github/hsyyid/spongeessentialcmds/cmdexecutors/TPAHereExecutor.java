@@ -1,7 +1,7 @@
-package io.github.hsyyid.spongeessentialcmds.commandexecutors;
+package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
 import io.github.hsyyid.spongeessentialcmds.Main;
-import io.github.hsyyid.spongeessentialcmds.utils.Utils;
+import io.github.hsyyid.spongeessentialcmds.events.TPAHereEvent;
 
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.player.Player;
@@ -15,26 +15,33 @@ import org.spongepowered.api.util.command.source.CommandBlockSource;
 import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
-public class SetSpawnExecutor implements CommandExecutor
+public class TPAHereExecutor implements CommandExecutor
 {
-
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		Game game = Main.game;
+		Player recipient = ctx.<Player>getOne("player").get();
+
 		if(src instanceof Player)
 		{
 			Player player = (Player) src;
-			Utils.setSpawn(player.getLocation());
-			game.getCommandDispatcher().process(game.getServer().getConsole(), "setworldspawn" + " " + player.getLocation().getX() + " " + player.getLocation().getY() + " " + player.getLocation().getZ());
-			src.sendMessage(Texts.of(TextColors.GREEN,"Success: ", TextColors.YELLOW, "Spawn set."));
+			if(recipient == player)
+			{
+				src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "You cannot teleport to yourself!"));
+			}
+			else
+			{
+				game.getEventManager().post(new TPAHereEvent(player, recipient));
+			}
 		}
-		else if(src instanceof ConsoleSource) {
-			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /setspawn!"));
+		else if(src instanceof ConsoleSource)
+		{
+			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /tpahere!"));
 		}
-		else if(src instanceof CommandBlockSource) {
-			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /setspawn!"));
+		else if(src instanceof CommandBlockSource)
+		{
+			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /tpahere!"));
 		}
-
 		return CommandResult.success();
 	}
 }

@@ -1,4 +1,4 @@
-package io.github.hsyyid.spongeessentialcmds.commandexecutors;
+package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
 
@@ -14,31 +14,30 @@ import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 import org.spongepowered.api.world.Location;
 
-public class HomeExecutor implements CommandExecutor
+public class SpawnExecutor implements CommandExecutor
 {
 
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		String homeName = ctx.<String>getOne("home name").get();
 		if(src instanceof Player)
 		{
 			Player player = (Player) src;
-			if(Utils.inConfig(player.getUniqueId(), homeName))
+			if(Utils.isSpawnInConfig())
 			{
-				Location home = new Location(player.getWorld(), Utils.getX(player.getUniqueId(), homeName), Utils.getY(player.getUniqueId(), homeName), Utils.getZ(player.getUniqueId(), homeName));
-				player.setLocation(home);
-				src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.YELLOW, "Teleported to Home " + homeName));
+				Location spawn = Utils.getSpawn(player);
+				player.setLocation(spawn);
+				src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.YELLOW, "Teleported to Spawn"));
 			}
 			else
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "You must first set your home!"));
+				src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Spawn has not been set yet!"));
 			}
 		}
 		else if(src instanceof ConsoleSource) {
-			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /home!"));
+			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /spawn!"));
 		}
 		else if(src instanceof CommandBlockSource) {
-			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /home!"));
+			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /spawn!"));
 		}
 		return CommandResult.success();
 	}

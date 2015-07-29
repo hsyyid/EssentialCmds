@@ -1,4 +1,4 @@
-package io.github.hsyyid.spongeessentialcmds.commandexecutors;
+package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
 import io.github.hsyyid.spongeessentialcmds.Main;
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
