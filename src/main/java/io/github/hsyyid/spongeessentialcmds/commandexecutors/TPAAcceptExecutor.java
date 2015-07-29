@@ -1,4 +1,9 @@
-package io.github.hsyyid.spongeessentialcmds;
+package io.github.hsyyid.spongeessentialcmds.commandexecutors;
+
+import io.github.hsyyid.spongeessentialcmds.Main;
+import io.github.hsyyid.spongeessentialcmds.events.TPAAcceptEvent;
+import io.github.hsyyid.spongeessentialcmds.events.TPAHereAcceptEvent;
+import io.github.hsyyid.spongeessentialcmds.utils.PendingInvitation;
 
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.player.Player;

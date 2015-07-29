@@ -1,4 +1,4 @@
-package io.github.hsyyid.spongeessentialcmds;
+package io.github.hsyyid.spongeessentialcmds.utils;
 
 import org.spongepowered.api.entity.player.Player;
 

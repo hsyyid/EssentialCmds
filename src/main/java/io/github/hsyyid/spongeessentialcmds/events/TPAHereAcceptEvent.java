@@ -1,16 +1,16 @@
-package io.github.hsyyid.spongeessentialcmds;
+package io.github.hsyyid.spongeessentialcmds.events;
 
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.AbstractEvent;
 import org.spongepowered.api.event.Cancellable;
 
-public class TPAHereEvent extends AbstractEvent implements Cancellable
+public class TPAHereAcceptEvent extends AbstractEvent implements Cancellable
 {
    private boolean cancelled = false;
 
    private Player sender;
    private Player recipient;
-
+   
    public Player getSender()
    {
       return sender;
@@ -20,7 +20,7 @@ public class TPAHereEvent extends AbstractEvent implements Cancellable
    {
       return recipient;
    }
-
+   
    public boolean isCancelled()
    {
       return cancelled;
@@ -31,9 +31,9 @@ public class TPAHereEvent extends AbstractEvent implements Cancellable
       cancelled = cancel;
    }
 
-   public TPAHereEvent(Player sender, Player recipient)
+   public TPAHereAcceptEvent(Player sender, Player recipient)
    {
-      this.sender = sender;
-      this.recipient = recipient;
+	   this.sender = sender;
+	   this.recipient = recipient;
    }
 }

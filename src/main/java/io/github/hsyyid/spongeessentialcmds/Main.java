@@ -1,5 +1,27 @@
 package io.github.hsyyid.spongeessentialcmds;
 
+import io.github.hsyyid.spongeessentialcmds.commandexecutors.BackExecutor;
+import io.github.hsyyid.spongeessentialcmds.commandexecutors.DeleteHomeExecutor;
+import io.github.hsyyid.spongeessentialcmds.commandexecutors.FeedExecutor;
+import io.github.hsyyid.spongeessentialcmds.commandexecutors.FlyExecutor;
+import io.github.hsyyid.spongeessentialcmds.commandexecutors.HealExecutor;
+import io.github.hsyyid.spongeessentialcmds.commandexecutors.HomeExecutor;
+import io.github.hsyyid.spongeessentialcmds.commandexecutors.JumpExecutor;
+import io.github.hsyyid.spongeessentialcmds.commandexecutors.ListHomeExecutor;
+import io.github.hsyyid.spongeessentialcmds.commandexecutors.SetHomeExecutor;
+import io.github.hsyyid.spongeessentialcmds.commandexecutors.SetSpawnExecutor;
+import io.github.hsyyid.spongeessentialcmds.commandexecutors.SpawnExecutor;
+import io.github.hsyyid.spongeessentialcmds.commandexecutors.TPAAcceptExecutor;
+import io.github.hsyyid.spongeessentialcmds.commandexecutors.TPADenyExecutor;
+import io.github.hsyyid.spongeessentialcmds.commandexecutors.TPAExecutor;
+import io.github.hsyyid.spongeessentialcmds.commandexecutors.TPAHereExecutor;
+import io.github.hsyyid.spongeessentialcmds.events.TPAAcceptEvent;
+import io.github.hsyyid.spongeessentialcmds.events.TPAEvent;
+import io.github.hsyyid.spongeessentialcmds.events.TPAHereAcceptEvent;
+import io.github.hsyyid.spongeessentialcmds.events.TPAHereEvent;
+import io.github.hsyyid.spongeessentialcmds.utils.PendingInvitation;
+import io.github.hsyyid.spongeessentialcmds.utils.Utils;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,10 +53,10 @@ import com.google.inject.Inject;
 @Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "1.2")
 public class Main 
 {
-	static Game game = null;
-	static ConfigurationNode config = null;
-	static ConfigurationLoader<CommentedConfigurationNode> configurationManager;
-	static TeleportHelper helper;
+	public static Game game = null;
+	public static ConfigurationNode config = null;
+	public static ConfigurationLoader<CommentedConfigurationNode> configurationManager;
+	public static TeleportHelper helper;
 	public static ArrayList<PendingInvitation> pendingInvites = new ArrayList<PendingInvitation>();
 
 	@Inject

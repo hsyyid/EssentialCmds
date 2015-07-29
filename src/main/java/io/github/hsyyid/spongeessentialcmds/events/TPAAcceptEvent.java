@@ -1,4 +1,4 @@
-package io.github.hsyyid.spongeessentialcmds;
+package io.github.hsyyid.spongeessentialcmds.events;
 
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.AbstractEvent;

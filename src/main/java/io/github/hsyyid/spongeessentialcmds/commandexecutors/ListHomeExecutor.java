@@ -1,4 +1,7 @@
-package io.github.hsyyid.spongeessentialcmds;
+package io.github.hsyyid.spongeessentialcmds.commandexecutors;
+
+import io.github.hsyyid.spongeessentialcmds.utils.PaginatedList;
+import io.github.hsyyid.spongeessentialcmds.utils.Utils;
 
 import java.util.ArrayList;
 

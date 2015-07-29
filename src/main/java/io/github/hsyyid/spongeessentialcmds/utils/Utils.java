@@ -1,4 +1,6 @@
-package io.github.hsyyid.spongeessentialcmds;
+package io.github.hsyyid.spongeessentialcmds.utils;
+
+import io.github.hsyyid.spongeessentialcmds.Main;
 
 import java.io.IOException;
 import java.util.ArrayList;

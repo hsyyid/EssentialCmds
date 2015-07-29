@@ -1,4 +1,6 @@
-package io.github.hsyyid.spongeessentialcmds;
+package io.github.hsyyid.spongeessentialcmds.commandexecutors;
+
+import io.github.hsyyid.spongeessentialcmds.Main;
 
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.text.Texts;
