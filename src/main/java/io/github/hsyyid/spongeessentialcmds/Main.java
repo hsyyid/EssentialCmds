@@ -16,6 +16,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAAcceptExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPADenyExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAHereExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPHereExecutor;
 import io.github.hsyyid.spongeessentialcmds.events.TPAAcceptEvent;
 import io.github.hsyyid.spongeessentialcmds.events.TPAEvent;
 import io.github.hsyyid.spongeessentialcmds.events.TPAHereAcceptEvent;
@@ -155,6 +156,15 @@ public class Main
 			.build();
 
 		game.getCommandDispatcher().register(this, tpaHereCommandSpec, "tpahere");
+		
+		CommandSpec tpHereCommandSpec = CommandSpec.builder()
+			.description(Texts.of("TP Here Command"))
+			.permission("tphere.use")
+			.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))
+			.executor(new TPHereExecutor())
+			.build();
+
+		game.getCommandDispatcher().register(this, tpHereCommandSpec, "tphere");
 
 		CommandSpec tpaAcceptCommandSpec = CommandSpec.builder()
 			.description(Texts.of("TPA Accept Command"))
