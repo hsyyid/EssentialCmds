@@ -35,12 +35,17 @@ import ninja.leaping.configurate.loader.ConfigurationLoader;
 
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.data.manipulator.tileentity.SignData;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.Subscribe;
+import org.spongepowered.api.event.block.tileentity.SignChangeEvent;
+import org.spongepowered.api.event.entity.player.PlayerChatEvent;
 import org.spongepowered.api.event.entity.player.PlayerDeathEvent;
 import org.spongepowered.api.event.state.ServerStartedEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.config.DefaultConfig;
+import org.spongepowered.api.service.permission.Subject;
+import org.spongepowered.api.service.permission.option.OptionSubject;
 import org.spongepowered.api.service.scheduler.SchedulerService;
 import org.spongepowered.api.service.scheduler.Task;
 import org.spongepowered.api.service.scheduler.TaskBuilder;
@@ -52,7 +57,7 @@ import org.spongepowered.api.world.TeleportHelper;
 
 import com.google.inject.Inject;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "1.3")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "1.4")
 public class Main
 {
 	public static Game game = null;
@@ -156,7 +161,7 @@ public class Main
 			.build();
 
 		game.getCommandDispatcher().register(this, tpaHereCommandSpec, "tpahere");
-		
+
 		CommandSpec tpHereCommandSpec = CommandSpec.builder()
 			.description(Texts.of("TP Here Command"))
 			.permission("tphere.use")
@@ -331,6 +336,30 @@ public class Main
 				}
 			}
 		}).delay(10, TimeUnit.SECONDS).name("SpongeEssentialCmds - Remove Pending Invite").submit(game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
+	}
+
+	@Subscribe
+	public void onMessage(PlayerChatEvent event)
+	{
+		String original = Texts.toPlain(event.getMessage());
+		String newMessage = original.replaceAll("&", "\u00A7");
+		event.setNewMessage(Texts.of(newMessage));
+	}
+
+	@Subscribe
+	public void onSignChange(SignChangeEvent event)
+	{
+		SignData signData = event.getNewData();
+		String line0 = Texts.toPlain(signData.getLine(0));
+		String line1 = Texts.toPlain(signData.getLine(1));
+		String line2 = Texts.toPlain(signData.getLine(2));
+		String line3 = Texts.toPlain(signData.getLine(3));
+		signData.setLine(0, Texts.of(line0.replaceAll("&", "\u00A7")));
+		signData.setLine(1, Texts.of(line1.replaceAll("&", "\u00A7")));
+		signData.setLine(2, Texts.of(line2.replaceAll("&", "\u00A7")));
+		signData.setLine(3, Texts.of(line3.replaceAll("&", "\u00A7")));
+
+		event.setNewData(signData);
 	}
 
 	public static ConfigurationLoader<CommentedConfigurationNode> getConfigManager()
