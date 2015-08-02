@@ -3,20 +3,24 @@ package io.github.hsyyid.spongeessentialcmds;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BackExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BroadcastExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteHomeExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteWarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FeedExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FlyExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HealExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.JumpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListHomeExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListWarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetSpawnExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetWarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SpawnExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAAcceptExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPADenyExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAHereExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPHereExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.WarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.events.TPAAcceptEvent;
 import io.github.hsyyid.spongeessentialcmds.events.TPAEvent;
 import io.github.hsyyid.spongeessentialcmds.events.TPAHereAcceptEvent;
@@ -57,7 +61,7 @@ import org.spongepowered.api.world.TeleportHelper;
 
 import com.google.inject.Inject;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "1.4")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "1.5")
 public class Main
 {
 	public static Game game = null;
@@ -237,6 +241,42 @@ public class Main
 			.build();
 
 		game.getCommandDispatcher().register(this, deleteHomeCommandSpec, "deletehome", "delhome");
+		
+		CommandSpec warpCommandSpec = CommandSpec.builder()
+			.description(Texts.of("Warp Command"))
+			.permission("warp.use")
+			.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name"))))
+			.executor(new WarpExecutor())
+			.build();
+
+		game.getCommandDispatcher().register(this, warpCommandSpec, "warp");
+		
+		CommandSpec listWarpCommandSpec = CommandSpec.builder()
+			.description(Texts.of("List Warps Command"))
+			.permission("warps.list")
+			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("page no")))))
+			.executor(new ListWarpExecutor())
+			.build();
+
+		game.getCommandDispatcher().register(this, listWarpCommandSpec, "warps");
+		
+		CommandSpec setWarpCommandSpec = CommandSpec.builder()
+			.description(Texts.of("Set Warp Command"))
+			.permission("warp.set")
+			.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name"))))
+			.executor(new SetWarpExecutor())
+			.build();
+
+		game.getCommandDispatcher().register(this, setWarpCommandSpec, "setwarp");
+
+		CommandSpec deleteWarpCommandSpec = CommandSpec.builder()
+			.description(Texts.of("Delete Warp Command"))
+			.permission("warp.delete")
+			.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name"))))
+			.executor(new DeleteWarpExecutor())
+			.build();
+
+		game.getCommandDispatcher().register(this, deleteWarpCommandSpec, "deletewarp", "delwarp");
 
 		CommandSpec feedCommandSpec = CommandSpec.builder()
 			.description(Texts.of("Feed Command"))
@@ -341,9 +381,12 @@ public class Main
 	@Subscribe
 	public void onMessage(PlayerChatEvent event)
 	{
-		String original = Texts.toPlain(event.getMessage());
-		String newMessage = original.replaceAll("&", "\u00A7");
-		event.setNewMessage(Texts.of(newMessage));
+		if(event.getEntity().hasPermission("color.chat.use"))
+		{
+			String original = Texts.toPlain(event.getMessage());
+			String newMessage = original.replaceAll("&", "\u00A7");
+			event.setNewMessage(Texts.of(newMessage));
+		}
 	}
 
 	@Subscribe
