@@ -39,17 +39,19 @@ import ninja.leaping.configurate.loader.ConfigurationLoader;
 
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.block.tileentity.TileEntity;
+import org.spongepowered.api.block.tileentity.TileEntityTypes;
 import org.spongepowered.api.data.manipulator.tileentity.SignData;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.Subscribe;
 import org.spongepowered.api.event.block.tileentity.SignChangeEvent;
 import org.spongepowered.api.event.entity.player.PlayerChatEvent;
 import org.spongepowered.api.event.entity.player.PlayerDeathEvent;
+import org.spongepowered.api.event.entity.player.PlayerInteractBlockEvent;
 import org.spongepowered.api.event.state.ServerStartedEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.config.DefaultConfig;
-import org.spongepowered.api.service.permission.Subject;
-import org.spongepowered.api.service.permission.option.OptionSubject;
 import org.spongepowered.api.service.scheduler.SchedulerService;
 import org.spongepowered.api.service.scheduler.Task;
 import org.spongepowered.api.service.scheduler.TaskBuilder;
@@ -57,11 +59,13 @@ import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.command.args.GenericArguments;
 import org.spongepowered.api.util.command.spec.CommandSpec;
+import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.TeleportHelper;
 
+import com.google.common.base.Optional;
 import com.google.inject.Inject;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "1.5")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "1.6")
 public class Main
 {
 	public static Game game = null;
@@ -241,7 +245,7 @@ public class Main
 			.build();
 
 		game.getCommandDispatcher().register(this, deleteHomeCommandSpec, "deletehome", "delhome");
-		
+
 		CommandSpec warpCommandSpec = CommandSpec.builder()
 			.description(Texts.of("Warp Command"))
 			.permission("warp.use")
@@ -250,7 +254,7 @@ public class Main
 			.build();
 
 		game.getCommandDispatcher().register(this, warpCommandSpec, "warp");
-		
+
 		CommandSpec listWarpCommandSpec = CommandSpec.builder()
 			.description(Texts.of("List Warps Command"))
 			.permission("warps.list")
@@ -259,7 +263,7 @@ public class Main
 			.build();
 
 		game.getCommandDispatcher().register(this, listWarpCommandSpec, "warps");
-		
+
 		CommandSpec setWarpCommandSpec = CommandSpec.builder()
 			.description(Texts.of("Set Warp Command"))
 			.permission("warp.set")
@@ -381,7 +385,7 @@ public class Main
 	@Subscribe
 	public void onMessage(PlayerChatEvent event)
 	{
-		if(event.getEntity().hasPermission("color.chat.use"))
+		if (event.getEntity().hasPermission("color.chat.use"))
 		{
 			String original = Texts.toPlain(event.getMessage());
 			String newMessage = original.replaceAll("&", "\u00A7");
@@ -397,12 +401,61 @@ public class Main
 		String line1 = Texts.toPlain(signData.getLine(1));
 		String line2 = Texts.toPlain(signData.getLine(2));
 		String line3 = Texts.toPlain(signData.getLine(3));
-		signData.setLine(0, Texts.of(line0.replaceAll("&", "\u00A7")));
+		if(line0.equals("[Warp]"))
+		{
+			if(Utils.getWarps().contains(line1))
+			{
+				signData.setLine(0, Texts.of(TextColors.DARK_BLUE, "[Warp]"));
+			}
+			else
+			{
+				signData.setLine(0, Texts.of(TextColors.DARK_RED, "[Warp]"));
+			}
+		}
+		else
+		{
+			signData.setLine(0, Texts.of(line0.replaceAll("&", "\u00A7")));
+		}
 		signData.setLine(1, Texts.of(line1.replaceAll("&", "\u00A7")));
 		signData.setLine(2, Texts.of(line2.replaceAll("&", "\u00A7")));
 		signData.setLine(3, Texts.of(line3.replaceAll("&", "\u00A7")));
 
 		event.setNewData(signData);
+	}
+
+	@Subscribe
+	public void onPlayerInteractBlock(PlayerInteractBlockEvent event)
+	{
+		Location block = event.getBlock();
+		Player player = event.getUser();
+
+		if (block.getTileEntity().isPresent())
+		{
+			TileEntity clickedEntity = block.getTileEntity().get();
+			if (clickedEntity.getType() == TileEntityTypes.SIGN)
+			{
+				Optional<SignData> data = clickedEntity.getOrCreate(SignData.class);
+				CommandService cmdService = game.getCommandDispatcher();
+				if (data.isPresent())
+				{
+					String line0 = Texts.toPlain(data.get().getLine(0));
+					String line1 = Texts.toPlain(data.get().getLine(1));
+					String command = "warp " + line1;
+
+					if (line0.equals("[Warp]"))
+					{
+						if (player.hasPermission("warps.use.sign"))
+						{
+							cmdService.process(player, command);
+						}
+						else
+						{
+							player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to use Warp Signs!"));
+						}
+					}
+				}
+			}
+		}
 	}
 
 	public static ConfigurationLoader<CommentedConfigurationNode> getConfigManager()
