@@ -22,7 +22,7 @@ public class SetWarpExecutor implements CommandExecutor
 		if(src instanceof Player)
 		{
 			Player player = (Player) src;
-			Utils.setWarp(player.getLocation(), warpName);
+			Utils.setWarp(player.getLocation(), player.getWorld().getName(), warpName);
 			src.sendMessage(Texts.of(TextColors.GREEN,"Success: ", TextColors.YELLOW, "Warp set."));
 		}
 		else if(src instanceof ConsoleSource) {

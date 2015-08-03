@@ -30,7 +30,7 @@ public class ListWarpExecutor implements CommandExecutor
 		{
 			Player player = (Player) src;
 			ArrayList<String> warps = null;
-			if(Utils.getWarps() != null)
+			if(Utils.getWarps() != null && Utils.getWarps().size() > 0)
 			{
 				warps = Utils.getWarps();
 			}

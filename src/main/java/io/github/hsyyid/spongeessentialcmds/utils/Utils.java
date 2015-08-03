@@ -50,9 +50,10 @@ public class Utils
 		}
 	}
 
-	public static void setWarp(Location playerLocation, String warpName)
+	public static void setWarp(Location playerLocation, String worldName, String warpName)
 	{
 		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
+		Main.config.getNode("warps", warpName, "world").setValue(worldName);
 		Main.config.getNode("warps", warpName, "X").setValue(playerLocation.getX());
 		Main.config.getNode("warps", warpName, "Y").setValue(playerLocation.getY());
 		Main.config.getNode("warps", warpName, "Z").setValue(playerLocation.getZ());
@@ -245,6 +246,12 @@ public class Utils
 	{
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("warps." + warpName + ".X").split("\\."));
 		return valueNode.getDouble();
+	}
+	
+	public static String getWarpWorldName(String warpName)
+	{
+		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("warps." + warpName + ".world").split("\\."));
+		return valueNode.getString();
 	}
 
 	public static double getWarpY(String warpName)

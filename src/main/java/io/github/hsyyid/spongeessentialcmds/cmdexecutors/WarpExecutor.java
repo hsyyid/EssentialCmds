@@ -14,6 +14,8 @@ import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 import org.spongepowered.api.world.Location;
 
+import com.flowpowered.math.vector.Vector3d;
+
 public class WarpExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
@@ -24,9 +26,18 @@ public class WarpExecutor implements CommandExecutor
 			Player player = (Player) src;
 			if(Utils.isWarpInConfig(warpName))
 			{
-				Location warp = new Location(player.getWorld(), Utils.getWarpX(warpName), Utils.getWarpY(warpName), Utils.getWarpZ(warpName));
-				player.setLocation(warp);
-				src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
+				if(player.getWorld().getName() != Utils.getWarpWorldName(warpName))
+				{
+					Vector3d position = new Vector3d(Utils.getWarpX(warpName), Utils.getWarpY(warpName), Utils.getWarpZ(warpName));
+					player.transferToWorld(Utils.getWarpWorldName(warpName), position);
+					src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
+					return CommandResult.success();
+				}
+				else
+				{
+					Location warp = new Location(player.getWorld(), Utils.getWarpX(warpName), Utils.getWarpY(warpName), Utils.getWarpZ(warpName));
+					player.setLocation(warp);
+				}
 			}
 			else
 			{
