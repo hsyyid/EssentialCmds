@@ -15,10 +15,11 @@ import org.spongepowered.api.world.Location;
 
 public class Utils
 {
-	public static void setHome(UUID userName, Location playerLocation, String homeName)
+	public static void setHome(UUID userName, Location playerLocation, String worldName, String homeName)
 	{
 		String playerName = userName.toString();
 		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
+		Main.config.getNode("home", "users", playerName, homeName, "world").setValue(worldName);
 		Main.config.getNode("home", "users", playerName, homeName, "X").setValue(playerLocation.getX());
 		Main.config.getNode("home", "users", playerName, homeName, "Y").setValue(playerLocation.getY());
 		Main.config.getNode("home", "users", playerName, homeName, "Z").setValue(playerLocation.getZ());
@@ -226,6 +227,13 @@ public class Utils
 		String userName = playerName.toString();
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("home.users." + userName + "." + homeName + ".X").split("\\."));
 		return valueNode.getDouble();
+	}
+	
+	public static String getHomeWorldName(UUID playerName, String homeName)
+	{
+		String userName = playerName.toString();
+		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("home.users." + userName + "." + homeName + ".world").split("\\."));
+		return valueNode.getString();
 	}
 
 	public static double getY(UUID playerName, String homeName)

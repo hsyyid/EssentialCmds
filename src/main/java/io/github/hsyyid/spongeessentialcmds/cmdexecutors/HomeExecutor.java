@@ -14,6 +14,8 @@ import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 import org.spongepowered.api.world.Location;
 
+import com.flowpowered.math.vector.Vector3d;
+
 public class HomeExecutor implements CommandExecutor
 {
 
@@ -25,9 +27,20 @@ public class HomeExecutor implements CommandExecutor
 			Player player = (Player) src;
 			if(Utils.inConfig(player.getUniqueId(), homeName))
 			{
-				Location home = new Location(player.getWorld(), Utils.getX(player.getUniqueId(), homeName), Utils.getY(player.getUniqueId(), homeName), Utils.getZ(player.getUniqueId(), homeName));
-				player.setLocation(home);
-				src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.YELLOW, "Teleported to Home " + homeName));
+				if(player.getWorld().getName() == Utils.getHomeWorldName(player.getUniqueId(), homeName))
+				{
+					Location home = new Location(player.getWorld(), Utils.getX(player.getUniqueId(), homeName), Utils.getY(player.getUniqueId(), homeName), Utils.getZ(player.getUniqueId(), homeName));
+					player.setLocation(home);
+					src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.YELLOW, "Teleported to Home " + homeName));
+					return CommandResult.success();
+				}
+				else
+				{
+					Vector3d position = new Vector3d(Utils.getX(player.getUniqueId(), homeName), Utils.getY(player.getUniqueId(), homeName), Utils.getZ(player.getUniqueId(), homeName));
+					player.transferToWorld(Utils.getHomeWorldName(player.getUniqueId(), homeName), position);
+					src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.YELLOW, "Teleported to Home " + homeName));
+					return CommandResult.success();
+				}
 			}
 			else
 			{
