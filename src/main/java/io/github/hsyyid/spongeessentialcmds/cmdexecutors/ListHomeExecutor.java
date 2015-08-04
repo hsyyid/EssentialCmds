@@ -26,14 +26,26 @@ public class ListHomeExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		if(src instanceof Player)
+		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			ArrayList<String> homes = Utils.getHomes(player.getUniqueId());
-			Optional<Integer> arguments = ctx.<Integer>getOne("page no");
+			
+			ArrayList<String> homes = null;
+			try
+			{
+				homes = Utils.getHomes(player.getUniqueId());
+			}
+			catch (NullPointerException e)
+			{
+				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must first set a home to list your homes!"));
+				return CommandResult.success();
+			}
+			
+			Optional<Integer> arguments = ctx.<Integer> getOne("page no");
 
 			int pgNo = 1;
-			if(arguments != Optional.<Integer>absent())
+			
+			if (arguments != Optional.<Integer> absent())
 			{
 				pgNo = arguments.get();
 			}
@@ -41,44 +53,39 @@ public class ListHomeExecutor implements CommandExecutor
 			{
 				pgNo = 1;
 			}
-
-			if(homes.size() > 0)
+			
+			// Add List
+			PaginatedList pList = new PaginatedList("/homes");
+			for (String name : homes)
 			{
-				//Add List
-				PaginatedList pList = new PaginatedList("/homes");
-				for (String name: homes) {
-					Text item = Texts.builder(name)
-							.onClick(TextActions.runCommand("/home " + name))
-							.onHover(TextActions.showText(Texts.of(TextColors.WHITE, "Teleport to home ", TextColors.GOLD, name)))
-							.color(TextColors.DARK_AQUA)
-							.style(TextStyles.UNDERLINE)
-							.build();
+				Text item = Texts.builder(name)
+					.onClick(TextActions.runCommand("/home " + name))
+					.onHover(TextActions.showText(Texts.of(TextColors.WHITE, "Teleport to home ", TextColors.GOLD, name)))
+					.color(TextColors.DARK_AQUA)
+					.style(TextStyles.UNDERLINE)
+					.build();
 
-					pList.add(item);
-				}
-				pList.setItemsPerPage(10);
-				//Header
-				TextBuilder header = Texts.builder();
-				header.append(Texts.of(TextColors.GREEN, "------------"));
-				header.append(Texts.of(TextColors.GREEN, " Showing Homes page " + pgNo + " of " + pList.getTotalPages() + " "));
-				header.append(Texts.of(TextColors.GREEN, "------------"));
+				pList.add(item);
+			}
+			pList.setItemsPerPage(10);
+			// Header
+			TextBuilder header = Texts.builder();
+			header.append(Texts.of(TextColors.GREEN, "------------"));
+			header.append(Texts.of(TextColors.GREEN, " Showing Homes page " + pgNo + " of " + pList.getTotalPages() + " "));
+			header.append(Texts.of(TextColors.GREEN, "------------"));
 
-				pList.setHeader(header.build());
-				//Send List
-				src.sendMessage(pList.getPage(pgNo));	
-			}
-			else
-			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "You must first set a home to list your homes!"));
-			}
+			pList.setHeader(header.build());
+			// Send List
+			src.sendMessage(pList.getPage(pgNo));
+
 		}
-		else if(src instanceof ConsoleSource)
+		else if (src instanceof ConsoleSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /homes!"));
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /homes!"));
 		}
-		else if(src instanceof CommandBlockSource)
+		else if (src instanceof CommandBlockSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /homes!"));
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /homes!"));
 		}
 
 		return CommandResult.success();

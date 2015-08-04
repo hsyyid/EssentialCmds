@@ -48,6 +48,7 @@ import org.spongepowered.api.event.block.tileentity.SignChangeEvent;
 import org.spongepowered.api.event.entity.player.PlayerChatEvent;
 import org.spongepowered.api.event.entity.player.PlayerDeathEvent;
 import org.spongepowered.api.event.entity.player.PlayerInteractBlockEvent;
+import org.spongepowered.api.event.entity.player.PlayerMoveEvent;
 import org.spongepowered.api.event.state.ServerStartedEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.command.CommandService;
@@ -458,6 +459,12 @@ public class Main
 		}
 	}
 
+	@Subscribe
+	public void onPlayerMove(PlayerMoveEvent event)
+	{
+		event.getEntity();
+	}
+	
 	public static ConfigurationLoader<CommentedConfigurationNode> getConfigManager()
 	{
 		return configurationManager;

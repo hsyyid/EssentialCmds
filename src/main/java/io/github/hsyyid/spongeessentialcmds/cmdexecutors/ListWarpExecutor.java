@@ -30,18 +30,21 @@ public class ListWarpExecutor implements CommandExecutor
 		{
 			Player player = (Player) src;
 			ArrayList<String> warps = null;
-			if(Utils.getWarps() != null && Utils.getWarps().size() > 0)
+			
+			try
 			{
 				warps = Utils.getWarps();
 			}
-			else
+			catch(NullPointerException e)
 			{
 				player.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "No warps set!"));
 				return CommandResult.success();
 			}
+			
 			Optional<Integer> arguments = ctx.<Integer>getOne("page no");
 
 			int pgNo = 1;
+			
 			if(arguments != Optional.<Integer>absent())
 			{
 				pgNo = arguments.get();
