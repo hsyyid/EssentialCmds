@@ -546,7 +546,6 @@ public class Main
 	{
 		if (recentlyJoined.contains(event.getEntity()))
 		{
-			getLogger().info("Noted player has joined - not logging him as AFK");
 			recentlyJoined.remove(event.getEntity());
 		}
 		else
