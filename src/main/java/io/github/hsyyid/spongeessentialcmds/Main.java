@@ -420,7 +420,7 @@ public class Main
 		{
 			OptionSubject optionSubject = (OptionSubject) subject;
 			String prefix = optionSubject.getOption("prefix").or("");
-			prefix.replaceAll("&", "\u00A7");
+			prefix = prefix.replaceAll("&", "\u00A7");
 			original = original.replace("<", ("<" + prefix + " " + "\u00A7f"));
 			if(!(event.getEntity().hasPermission("color.chat.use")))
 			{
