@@ -41,6 +41,7 @@ import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.block.tileentity.TileEntity;
 import org.spongepowered.api.block.tileentity.TileEntityTypes;
+import org.spongepowered.api.data.manipulator.DisplayNameData;
 import org.spongepowered.api.data.manipulator.tileentity.SignData;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.Subscribe;
@@ -48,11 +49,14 @@ import org.spongepowered.api.event.block.tileentity.SignChangeEvent;
 import org.spongepowered.api.event.entity.player.PlayerChatEvent;
 import org.spongepowered.api.event.entity.player.PlayerDeathEvent;
 import org.spongepowered.api.event.entity.player.PlayerInteractBlockEvent;
+import org.spongepowered.api.event.entity.player.PlayerJoinEvent;
 import org.spongepowered.api.event.entity.player.PlayerMoveEvent;
 import org.spongepowered.api.event.state.ServerStartedEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.config.DefaultConfig;
+import org.spongepowered.api.service.permission.Subject;
+import org.spongepowered.api.service.permission.option.OptionSubject;
 import org.spongepowered.api.service.scheduler.SchedulerService;
 import org.spongepowered.api.service.scheduler.Task;
 import org.spongepowered.api.service.scheduler.TaskBuilder;
@@ -66,7 +70,7 @@ import org.spongepowered.api.world.TeleportHelper;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "1.6")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "1.7")
 public class Main
 {
 	public static Game game = null;
@@ -315,6 +319,27 @@ public class Main
 	}
 
 	@Subscribe
+	public void onPlayerJoin(PlayerJoinEvent event)
+	{
+		Player player = event.getEntity();
+		Subject subject = player.getContainingCollection().get(player.getIdentifier());
+		if (subject instanceof OptionSubject)
+		{
+			OptionSubject optionSubject = (OptionSubject) subject;
+			String prefix = optionSubject.getOption("prefix").or("");
+			prefix.replaceAll("&", "\u00A7");
+			Optional<DisplayNameData> optionalData = player.getData(DisplayNameData.class);
+
+			if (optionalData.isPresent())
+			{
+				player.offer(optionalData.get()
+					.setDisplayName(Texts.of(prefix + " " + optionalData.get().getDisplayName().toString()))
+					.setCustomNameVisible(true));
+			}
+		}
+	}
+
+	@Subscribe
 	public void tpaEventHandler(TPAEvent event)
 	{
 		String senderName = event.getSender().getName();
@@ -386,9 +411,25 @@ public class Main
 	@Subscribe
 	public void onMessage(PlayerChatEvent event)
 	{
+		String original = Texts.toPlain(event.getMessage());
+		
+		Player player = event.getEntity();
+		Subject subject = player.getContainingCollection().get(player.getIdentifier());
+		
+		if (subject instanceof OptionSubject)
+		{
+			OptionSubject optionSubject = (OptionSubject) subject;
+			String prefix = optionSubject.getOption("prefix").or("");
+			prefix.replaceAll("&", "\u00A7");
+			original = original.replace("<", ("<" + prefix + " " + "\u00A7f"));
+			if(!(event.getEntity().hasPermission("color.chat.use")))
+			{
+				event.setNewMessage(Texts.of(original));
+			}
+		}
+		
 		if (event.getEntity().hasPermission("color.chat.use"))
 		{
-			String original = Texts.toPlain(event.getMessage());
 			String newMessage = original.replaceAll("&", "\u00A7");
 			event.setNewMessage(Texts.of(newMessage));
 		}
@@ -402,9 +443,9 @@ public class Main
 		String line1 = Texts.toPlain(signData.getLine(1));
 		String line2 = Texts.toPlain(signData.getLine(2));
 		String line3 = Texts.toPlain(signData.getLine(3));
-		if(line0.equals("[Warp]"))
+		if (line0.equals("[Warp]"))
 		{
-			if(Utils.getWarps().contains(line1))
+			if (Utils.getWarps().contains(line1))
 			{
 				signData.setLine(0, Texts.of(TextColors.DARK_BLUE, "[Warp]"));
 			}
@@ -464,7 +505,7 @@ public class Main
 	{
 		event.getEntity();
 	}
-	
+
 	public static ConfigurationLoader<CommentedConfigurationNode> getConfigManager()
 	{
 		return configurationManager;
