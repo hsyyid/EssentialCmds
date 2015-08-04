@@ -1,5 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds;
 
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.AFKExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BackExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BroadcastExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteHomeExecutor;
@@ -25,12 +26,14 @@ import io.github.hsyyid.spongeessentialcmds.events.TPAAcceptEvent;
 import io.github.hsyyid.spongeessentialcmds.events.TPAEvent;
 import io.github.hsyyid.spongeessentialcmds.events.TPAHereAcceptEvent;
 import io.github.hsyyid.spongeessentialcmds.events.TPAHereEvent;
+import io.github.hsyyid.spongeessentialcmds.utils.AFK;
 import io.github.hsyyid.spongeessentialcmds.utils.PendingInvitation;
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import ninja.leaping.configurate.ConfigurationNode;
@@ -70,7 +73,7 @@ import org.spongepowered.api.world.TeleportHelper;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "1.7")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "1.8")
 public class Main
 {
 	public static Game game = null;
@@ -78,6 +81,8 @@ public class Main
 	public static ConfigurationLoader<CommentedConfigurationNode> configurationManager;
 	public static TeleportHelper helper;
 	public static ArrayList<PendingInvitation> pendingInvites = new ArrayList<PendingInvitation>();
+	public static ArrayList<AFK> movementList = new ArrayList<AFK>();
+	public static ArrayList<Player> recentlyJoined = new ArrayList<Player>();
 
 	@Inject
 	private Logger logger;
@@ -123,6 +128,31 @@ public class Main
 			getLogger().error("The default configuration could not be loaded or created!");
 		}
 
+		SchedulerService scheduler = game.getScheduler();
+		TaskBuilder taskBuilder = scheduler.getTaskBuilder();
+
+		Task task = taskBuilder.execute(new Runnable()
+		{
+			public void run()
+			{
+				for (Player player : game.getServer().getOnlinePlayers())
+				{
+					for (AFK afk : movementList)
+					{
+						if (afk.getPlayer() == player && (System.currentTimeMillis() - afk.lastMovementTime) > 30000 && afk.getMessaged() == false)
+						{
+							for (Player p : game.getServer().getOnlinePlayers())
+							{
+								p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is now AFK."));
+								afk.setMessaged(true);
+							}
+							afk.setAFK(true);
+						}
+					}
+				}
+			}
+		}).interval(1, TimeUnit.SECONDS).name("SpongeEssentialCmds - AFK").submit(game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
+
 		CommandSpec homeCommandSpec = CommandSpec.builder()
 			.description(Texts.of("Home Command"))
 			.permission("home.use")
@@ -131,6 +161,14 @@ public class Main
 			.build();
 
 		game.getCommandDispatcher().register(this, homeCommandSpec, "home");
+
+		CommandSpec afkCommandSpec = CommandSpec.builder()
+			.description(Texts.of("AFK Command"))
+			.permission("afk.use")
+			.executor(new AFKExecutor())
+			.build();
+
+		game.getCommandDispatcher().register(this, afkCommandSpec, "afk");
 
 		CommandSpec broadcastCommandSpec = CommandSpec.builder()
 			.description(Texts.of("Broadcast Command"))
@@ -322,6 +360,9 @@ public class Main
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
 		Player player = event.getEntity();
+
+		recentlyJoined.add(event.getEntity());
+
 		Subject subject = player.getContainingCollection().get(player.getIdentifier());
 		if (subject instanceof OptionSubject)
 		{
@@ -412,22 +453,22 @@ public class Main
 	public void onMessage(PlayerChatEvent event)
 	{
 		String original = Texts.toPlain(event.getMessage());
-		
+
 		Player player = event.getEntity();
 		Subject subject = player.getContainingCollection().get(player.getIdentifier());
-		
+
 		if (subject instanceof OptionSubject)
 		{
 			OptionSubject optionSubject = (OptionSubject) subject;
 			String prefix = optionSubject.getOption("prefix").or("");
 			prefix = prefix.replaceAll("&", "\u00A7");
 			original = original.replace("<", ("<" + prefix + " " + "\u00A7f"));
-			if(!(event.getEntity().hasPermission("color.chat.use")))
+			if (!(event.getEntity().hasPermission("color.chat.use")))
 			{
 				event.setNewMessage(Texts.of(original));
 			}
 		}
-		
+
 		if (event.getEntity().hasPermission("color.chat.use"))
 		{
 			String newMessage = original.replaceAll("&", "\u00A7");
@@ -503,7 +544,46 @@ public class Main
 	@Subscribe
 	public void onPlayerMove(PlayerMoveEvent event)
 	{
-		event.getEntity();
+		if (recentlyJoined.contains(event.getEntity()))
+		{
+			getLogger().info("Noted player has joined - not logging him as AFK");
+			recentlyJoined.remove(event.getEntity());
+		}
+		else
+		{
+			AFK afk = new AFK(event.getEntity(), System.currentTimeMillis());
+			AFK removeAFK = null;
+			for (AFK a : movementList)
+			{
+				if (a.getPlayer() == a.getPlayer())
+				{
+					removeAFK = a;
+					break;
+				}
+			}
+
+			if (removeAFK != null)
+			{
+				if(removeAFK.getAFK() == true)
+				{
+
+					for (Player p : game.getServer().getOnlinePlayers())
+					{
+						p.sendMessage(Texts.of(TextColors.BLUE, event.getEntity().getName(), TextColors.GOLD, " is no longer AFK."));
+					}
+					movementList.remove(removeAFK);
+				}
+				else if(removeAFK.getAFK() == false)
+				{
+					movementList.remove(removeAFK);
+					movementList.add(afk);
+				}
+			}
+			else
+			{
+				movementList.add(afk);
+			}
+		}
 	}
 
 	public static ConfigurationLoader<CommentedConfigurationNode> getConfigManager()
