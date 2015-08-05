@@ -16,6 +16,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetSpawnExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetWarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SpawnExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SudoExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAAcceptExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPADenyExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAExecutor;
@@ -33,7 +34,6 @@ import io.github.hsyyid.spongeessentialcmds.utils.Utils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import ninja.leaping.configurate.ConfigurationNode;
@@ -73,7 +73,7 @@ import org.spongepowered.api.world.TeleportHelper;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "1.8")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "1.9")
 public class Main
 {
 	public static Game game = null;
@@ -161,6 +161,17 @@ public class Main
 			.build();
 
 		game.getCommandDispatcher().register(this, homeCommandSpec, "home");
+		
+		CommandSpec sudoCommandSpec = CommandSpec.builder()
+			.description(Texts.of("Sudo Command"))
+			.permission("sudo.use")
+			.arguments(GenericArguments.seq(
+				GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)),
+				GenericArguments.remainingJoinedStrings(Texts.of("command"))))
+			.executor(new SudoExecutor())
+			.build();
+
+		game.getCommandDispatcher().register(this, sudoCommandSpec, "sudo");
 
 		CommandSpec afkCommandSpec = CommandSpec.builder()
 			.description(Texts.of("AFK Command"))
