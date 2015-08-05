@@ -363,6 +363,10 @@ public class Main
 
 		recentlyJoined.add(event.getEntity());
 
+		if(movementList.contains(event.getEntity()))
+		{
+			movementList.remove(event.getEntity());
+		}
 		Subject subject = player.getContainingCollection().get(player.getIdentifier());
 		if (subject instanceof OptionSubject)
 		{
@@ -462,7 +466,7 @@ public class Main
 			OptionSubject optionSubject = (OptionSubject) subject;
 			String prefix = optionSubject.getOption("prefix").or("");
 			prefix = prefix.replaceAll("&", "\u00A7");
-			original = original.replace("<", ("<" + prefix + " " + "\u00A7f"));
+			original = original.replaceFirst("<", ("<" + prefix + " " + "\u00A7f"));
 			if (!(event.getEntity().hasPermission("color.chat.use")))
 			{
 				event.setNewMessage(Texts.of(original));
@@ -547,6 +551,19 @@ public class Main
 		if (recentlyJoined.contains(event.getEntity()))
 		{
 			recentlyJoined.remove(event.getEntity());
+			AFK removeAFK = null;
+			for (AFK a : movementList)
+			{
+				if (a.getPlayer() == a.getPlayer())
+				{
+					removeAFK = a;
+					break;
+				}
+			}
+			if(removeAFK != null)
+			{
+				movementList.remove(removeAFK);
+			}
 		}
 		else
 		{
