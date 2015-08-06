@@ -45,6 +45,7 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.block.tileentity.TileEntity;
 import org.spongepowered.api.block.tileentity.TileEntityTypes;
 import org.spongepowered.api.data.manipulator.DisplayNameData;
+import org.spongepowered.api.data.manipulator.entity.FoodData;
 import org.spongepowered.api.data.manipulator.tileentity.SignData;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.Subscribe;
@@ -144,9 +145,24 @@ public class Main
 							for (Player p : game.getServer().getOnlinePlayers())
 							{
 								p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is now AFK."));
+								Optional<FoodData> data = p.getData(FoodData.class);
+								FoodData food = data.get();
+								afk.setFood(food.getFoodLevel());
 								afk.setMessaged(true);
 							}
 							afk.setAFK(true);
+						}
+						
+						if(afk.getAFK())
+						{
+							Player p = afk.getPlayer();
+							Optional<FoodData> data = p.getData(FoodData.class);
+							FoodData food = data.get();
+							if(food.getFoodLevel() < afk.getFood())
+							{
+								food.setFoodLevel(afk.getFood());
+								p.offer(food);
+							}
 						}
 					}
 				}

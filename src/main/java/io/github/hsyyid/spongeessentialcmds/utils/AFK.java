@@ -8,6 +8,7 @@ public class AFK
 	public long lastMovementTime;
 	public boolean AFK = false;
 	public boolean messaged = false;
+	public double foodLevel;
 	
 	public AFK(Player player, long lastMovementTime)
 	{
@@ -18,6 +19,16 @@ public class AFK
 	public Player getPlayer()
 	{
 		return this.player;
+	}
+	
+	public double getFood()
+	{
+		return this.foodLevel;
+	}
+	
+	public void setFood(double foodLevel)
+	{
+		this.foodLevel = foodLevel;
 	}
 	
 	public boolean getAFK()
