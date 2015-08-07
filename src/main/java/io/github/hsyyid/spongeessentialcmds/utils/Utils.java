@@ -85,7 +85,13 @@ public class Utils
 			System.out.println("[SpongeEssentialCmds]: Failed to add warp!");
 		}
 	}
-
+	
+	public static double getAFK()
+	{
+		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("afk.timer").split("\\."));
+		return valueNode.getDouble();
+	}
+	
 	public static void setSpawn(Location playerLocation)
 	{
 		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();

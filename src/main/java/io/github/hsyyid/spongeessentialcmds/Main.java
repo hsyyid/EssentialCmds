@@ -114,6 +114,7 @@ public class Main
 			{
 				dConfig.createNewFile();
 				config = confManager.load();
+				config.getNode("afk", "timer").setValue(30000);
 				config.getNode("home", "users", "HassanS6000", "home", "X").setValue(0);
 				config.getNode("home", "users", "HassanS6000", "home", "Y").setValue(0);
 				config.getNode("home", "users", "HassanS6000", "home", "Z").setValue(0);
@@ -135,12 +136,12 @@ public class Main
 		Task task = taskBuilder.execute(new Runnable()
 		{
 			public void run()
-			{
+			{	
 				for (Player player : game.getServer().getOnlinePlayers())
 				{
 					for (AFK afk : movementList)
 					{
-						if (afk.getPlayer() == player && (System.currentTimeMillis() - afk.lastMovementTime) > 30000 && afk.getMessaged() == false)
+						if (afk.getPlayer() == player && ((System.currentTimeMillis() - afk.lastMovementTime) > (Utils.getAFK())) && afk.getMessaged() == false)
 						{
 							for (Player p : game.getServer().getOnlinePlayers())
 							{

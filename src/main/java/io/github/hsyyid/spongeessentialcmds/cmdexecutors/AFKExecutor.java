@@ -2,6 +2,7 @@ package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
 import io.github.hsyyid.spongeessentialcmds.Main;
 import io.github.hsyyid.spongeessentialcmds.utils.AFK;
+import io.github.hsyyid.spongeessentialcmds.utils.Utils;
 
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.text.Texts;
@@ -27,7 +28,7 @@ public class AFKExecutor implements CommandExecutor
 				{
 					if(afk.getPlayer() == player)
 					{
-						afk.lastMovementTime = 31000;
+						afk.lastMovementTime = -1000000000;
 					}
 				}
 			}
