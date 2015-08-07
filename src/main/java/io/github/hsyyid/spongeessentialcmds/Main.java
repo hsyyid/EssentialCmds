@@ -74,7 +74,7 @@ import org.spongepowered.api.world.TeleportHelper;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "1.9")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "2.0")
 public class Main
 {
 	public static Game game = null;
@@ -115,15 +115,11 @@ public class Main
 				dConfig.createNewFile();
 				config = confManager.load();
 				config.getNode("afk", "timer").setValue(30000);
-				config.getNode("home", "users", "HassanS6000", "home", "X").setValue(0);
-				config.getNode("home", "users", "HassanS6000", "home", "Y").setValue(0);
-				config.getNode("home", "users", "HassanS6000", "home", "Z").setValue(0);
-				config.getNode("home", "users", "HassanS6000", "homes").setValue("home,");
 				confManager.save(config);
 			}
+
 			configurationManager = confManager;
 			config = confManager.load();
-
 		}
 		catch (IOException exception)
 		{
@@ -136,7 +132,7 @@ public class Main
 		Task task = taskBuilder.execute(new Runnable()
 		{
 			public void run()
-			{	
+			{
 				for (Player player : game.getServer().getOnlinePlayers())
 				{
 					for (AFK afk : movementList)
@@ -153,13 +149,13 @@ public class Main
 							}
 							afk.setAFK(true);
 						}
-						
-						if(afk.getAFK())
+
+						if (afk.getAFK())
 						{
 							Player p = afk.getPlayer();
 							Optional<FoodData> data = p.getData(FoodData.class);
 							FoodData food = data.get();
-							if(food.getFoodLevel() < afk.getFood())
+							if (food.getFoodLevel() < afk.getFood())
 							{
 								food.setFoodLevel(afk.getFood());
 								p.offer(food);
@@ -178,7 +174,7 @@ public class Main
 			.build();
 
 		game.getCommandDispatcher().register(this, homeCommandSpec, "home");
-		
+
 		CommandSpec sudoCommandSpec = CommandSpec.builder()
 			.description(Texts.of("Sudo Command"))
 			.permission("sudo.use")
@@ -391,7 +387,7 @@ public class Main
 
 		recentlyJoined.add(event.getEntity());
 
-		if(movementList.contains(event.getEntity()))
+		if (movementList.contains(event.getEntity()))
 		{
 			movementList.remove(event.getEntity());
 		}
@@ -588,7 +584,7 @@ public class Main
 					break;
 				}
 			}
-			if(removeAFK != null)
+			if (removeAFK != null)
 			{
 				movementList.remove(removeAFK);
 			}
@@ -608,7 +604,7 @@ public class Main
 
 			if (removeAFK != null)
 			{
-				if(removeAFK.getAFK() == true)
+				if (removeAFK.getAFK() == true)
 				{
 
 					for (Player p : game.getServer().getOnlinePlayers())
@@ -617,7 +613,7 @@ public class Main
 					}
 					movementList.remove(removeAFK);
 				}
-				else if(removeAFK.getAFK() == false)
+				else if (removeAFK.getAFK() == false)
 				{
 					movementList.remove(removeAFK);
 					movementList.add(afk);

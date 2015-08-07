@@ -85,13 +85,22 @@ public class Utils
 			System.out.println("[SpongeEssentialCmds]: Failed to add warp!");
 		}
 	}
-	
+
 	public static double getAFK()
 	{
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("afk.timer").split("\\."));
-		return valueNode.getDouble();
+		if (valueNode.getDouble() != 0)
+		{
+			return valueNode.getDouble();
+		}
+		else
+		{
+			Utils.setAFK(30000);
+			ConfigurationNode valNode = Main.config.getNode((Object[]) ("afk.timer").split("\\."));
+			return valNode.getDouble();
+		}
 	}
-	
+
 	public static void setSpawn(Location playerLocation)
 	{
 		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
@@ -106,6 +115,21 @@ public class Utils
 		catch (IOException e)
 		{
 			System.out.println("[SpongeEssentialCmds]: Failed to set spawn");
+		}
+	}
+	
+	public static void setAFK(double length)
+	{
+		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
+		Main.config.getNode("afk", "timer").setValue(length);
+		try
+		{
+			configManager.save(Main.config);
+			configManager.load();
+		}
+		catch (IOException e)
+		{
+			System.out.println("[SpongeEssentialCmds]: Failed to add AFK to config");
 		}
 	}
 
@@ -234,7 +258,7 @@ public class Utils
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("home.users." + userName + "." + homeName + ".X").split("\\."));
 		return valueNode.getDouble();
 	}
-	
+
 	public static String getHomeWorldName(UUID playerName, String homeName)
 	{
 		String userName = playerName.toString();
@@ -261,7 +285,7 @@ public class Utils
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("warps." + warpName + ".X").split("\\."));
 		return valueNode.getDouble();
 	}
-	
+
 	public static String getWarpWorldName(String warpName)
 	{
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("warps." + warpName + ".world").split("\\."));
