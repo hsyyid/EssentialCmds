@@ -66,6 +66,11 @@ public class SetHomeExecutor implements CommandExecutor
 					}
 				}
 			}
+			else
+			{
+				Utils.setHome(player.getUniqueId(), player.getLocation(), player.getWorld().getName(), homeName);
+				src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Home set."));
+			}
 		}
 		else if (src instanceof ConsoleSource)
 		{
