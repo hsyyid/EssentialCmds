@@ -1,7 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.manipulator.mutable.entity.HealthData;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
@@ -21,10 +20,7 @@ public class HealExecutor implements CommandExecutor
 		if(src instanceof Player)
 		{
 			Player player = (Player) src;
-			HealthData data = player.getHealthData();
-			data.set(data.getValue(Keys.HEALTH).get().set(20.0));
-			player.offer(data);
-
+			player.offer(Keys.HEALTH, player.get(Keys.MAX_HEALTH).get());
 			src.sendMessage(Texts.of(TextColors.GREEN,"Success: ", TextColors.YELLOW, "You've been healed."));
 		}
 		else if(src instanceof ConsoleSource) {

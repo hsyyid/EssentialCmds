@@ -24,12 +24,15 @@ public class FeedExecutor implements CommandExecutor
 		{
 			Player player = (Player) src;
 			Optional<FoodData> data = player.get(FoodData.class);
-			FoodData food = data.get();
-			Value<Integer> foodInt = food.foodLevel().set(20);
-			food.set(foodInt);
-			player.offer(food);
-			
-			src.sendMessage(Texts.of(TextColors.GREEN,"Success: ", TextColors.YELLOW, "You've been fed."));
+			if(data.isPresent())
+			{
+				FoodData food = data.get();
+				Value<Integer> foodInt = food.foodLevel().set(20);
+				FoodData updatedFood = food.set(foodInt);
+				player.offer(updatedFood);
+
+				src.sendMessage(Texts.of(TextColors.GREEN,"Success: ", TextColors.YELLOW, "You've been fed."));
+			}
 		}
 		else if(src instanceof ConsoleSource) {
 			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /feed!"));

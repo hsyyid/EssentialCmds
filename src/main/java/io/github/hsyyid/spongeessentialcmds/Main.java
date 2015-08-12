@@ -143,10 +143,13 @@ public class Main
 							{
 								p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is now AFK."));
 								Optional<FoodData> data = p.get(FoodData.class);
-								FoodData food = data.get();
-								afk.setFood(food.foodLevel().get());
-								afk.setMessaged(true);
+								if(data.isPresent())
+								{
+									FoodData food = data.get();
+									afk.setFood(food.foodLevel().get());
+								}
 							}
+							afk.setMessaged(true);
 							afk.setAFK(true);
 						}
 
@@ -154,12 +157,15 @@ public class Main
 						{
 							Player p = afk.getPlayer();
 							Optional<FoodData> data = p.get(FoodData.class);
-							FoodData food = data.get();
-							if (food.foodLevel().get() < afk.getFood())
+							if(data.isPresent())
 							{
-								Value<Integer> foodLevel = food.foodLevel().set(afk.getFood());
-								food.set(foodLevel);
-								p.offer(food);
+								FoodData food = data.get();
+								if (food.foodLevel().get() < afk.getFood())
+								{
+									Value<Integer> foodLevel = food.foodLevel().set(afk.getFood());
+									food.set(foodLevel);
+									p.offer(food);
+								}
 							}
 						}
 					}
@@ -512,27 +518,27 @@ public class Main
 		if(signData.getValue(Keys.SIGN_LINES).isPresent())
 		{
 			String line0 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(0));
-			String line1 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(0));
-			String line2 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(0));
-			String line3 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(0));
+			String line1 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(1));
+			String line2 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(2));
+			String line3 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(3));
 			if (line0.equals("[Warp]"))
 			{
 				if (Utils.getWarps().contains(line1))
 				{	
-					signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Texts.of(TextColors.DARK_BLUE, "[Warp]")));
+					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Texts.of(TextColors.DARK_BLUE, "[Warp]")));
 				}
 				else
 				{
-					signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Texts.of(TextColors.DARK_RED, "[Warp]")));
+					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Texts.of(TextColors.DARK_RED, "[Warp]")));
 				}
 			}
 			else
 			{
-				signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Texts.of(line0.replaceAll("&", "\u00A7"))));
+				signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Texts.of(line0.replaceAll("&", "\u00A7"))));
 			}
-			signData.set(signData.getValue(Keys.SIGN_LINES).get().set(1, Texts.of(line1.replaceAll("&", "\u00A7"))));
-			signData.set(signData.getValue(Keys.SIGN_LINES).get().set(2, Texts.of(line2.replaceAll("&", "\u00A7"))));
-			signData.set(signData.getValue(Keys.SIGN_LINES).get().set(3, Texts.of(line3.replaceAll("&", "\u00A7"))));
+			signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(1, Texts.of(line1.replaceAll("&", "\u00A7"))));
+			signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(2, Texts.of(line2.replaceAll("&", "\u00A7"))));
+			signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(3, Texts.of(line3.replaceAll("&", "\u00A7"))));
 
 			event.setNewData(signData);
 		}
