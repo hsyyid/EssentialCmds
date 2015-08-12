@@ -14,6 +14,8 @@ import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 import org.spongepowered.api.world.Location;
 
+import com.flowpowered.math.vector.Vector3d;
+
 public class SpawnExecutor implements CommandExecutor
 {
 
@@ -24,8 +26,18 @@ public class SpawnExecutor implements CommandExecutor
 			Player player = (Player) src;
 			if(Utils.isSpawnInConfig())
 			{
-				Location spawn = Utils.getSpawn(player);
-				player.setLocation(spawn);
+				if(player.getWorld().getName() != Utils.getSpawnWorldName())
+				{
+					Vector3d position = new Vector3d(Utils.getSpawn(player).getX(), Utils.getSpawn(player).getY(), Utils.getSpawn(player).getZ());
+					player.transferToWorld(Utils.getSpawnWorldName(), position);
+					src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.YELLOW, "Teleported to Spawn"));
+					return CommandResult.success();
+				}
+				else
+				{
+					Location spawn = new Location(player.getWorld(), Utils.getSpawn(player).getX(), Utils.getSpawn(player).getY(), Utils.getSpawn(player).getZ());
+					player.setLocation(spawn);
+				}
 				src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.YELLOW, "Teleported to Spawn"));
 			}
 			else

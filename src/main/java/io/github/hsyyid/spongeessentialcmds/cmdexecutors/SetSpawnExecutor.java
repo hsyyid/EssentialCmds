@@ -24,7 +24,7 @@ public class SetSpawnExecutor implements CommandExecutor
 		if(src instanceof Player)
 		{
 			Player player = (Player) src;
-			Utils.setSpawn(player.getLocation());
+			Utils.setSpawn(player.getLocation(), player.getWorld().getName());
 			game.getCommandDispatcher().process(game.getServer().getConsole(), "setworldspawn" + " " + player.getLocation().getX() + " " + player.getLocation().getY() + " " + player.getLocation().getZ());
 			src.sendMessage(Texts.of(TextColors.GREEN,"Success: ", TextColors.YELLOW, "Spawn set."));
 		}

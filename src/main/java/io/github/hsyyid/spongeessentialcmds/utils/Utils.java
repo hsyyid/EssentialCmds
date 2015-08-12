@@ -101,12 +101,13 @@ public class Utils
 		}
 	}
 
-	public static void setSpawn(Location playerLocation)
+	public static void setSpawn(Location playerLocation, String worldName)
 	{
 		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
 		Main.config.getNode("spawn", "X").setValue(playerLocation.getX());
 		Main.config.getNode("spawn", "Y").setValue(playerLocation.getY());
 		Main.config.getNode("spawn", "Z").setValue(playerLocation.getZ());
+		Main.config.getNode("spawn", "world").setValue(worldName);
 		try
 		{
 			configManager.save(Main.config);
@@ -289,6 +290,12 @@ public class Utils
 	public static String getWarpWorldName(String warpName)
 	{
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("warps." + warpName + ".world").split("\\."));
+		return valueNode.getString();
+	}
+	
+	public static String getSpawnWorldName()
+	{
+		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("spawn.world").split("\\."));
 		return valueNode.getString();
 	}
 
