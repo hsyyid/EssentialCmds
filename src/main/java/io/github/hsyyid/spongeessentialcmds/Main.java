@@ -1,5 +1,45 @@
 package io.github.hsyyid.spongeessentialcmds;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.spongepowered.api.Game;
+import org.spongepowered.api.block.tileentity.TileEntity;
+import org.spongepowered.api.block.tileentity.TileEntityTypes;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.manipulator.mutable.DisplayNameData;
+import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
+import org.spongepowered.api.data.manipulator.mutable.tileentity.SignData;
+import org.spongepowered.api.data.value.mutable.Value;
+import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.event.Subscribe;
+import org.spongepowered.api.event.block.tileentity.SignChangeEvent;
+import org.spongepowered.api.event.entity.player.PlayerChatEvent;
+import org.spongepowered.api.event.entity.player.PlayerDeathEvent;
+import org.spongepowered.api.event.entity.player.PlayerInteractBlockEvent;
+import org.spongepowered.api.event.entity.player.PlayerJoinEvent;
+import org.spongepowered.api.event.entity.player.PlayerMoveEvent;
+import org.spongepowered.api.event.state.ServerStartedEvent;
+import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.service.command.CommandService;
+import org.spongepowered.api.service.config.DefaultConfig;
+import org.spongepowered.api.service.permission.Subject;
+import org.spongepowered.api.service.permission.option.OptionSubject;
+import org.spongepowered.api.service.scheduler.SchedulerService;
+import org.spongepowered.api.service.scheduler.TaskBuilder;
+import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.util.command.args.GenericArguments;
+import org.spongepowered.api.util.command.spec.CommandSpec;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.TeleportHelper;
+
+import com.google.common.base.Optional;
+import com.google.inject.Inject;
+
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.AFKExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BackExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BroadcastExecutor;
@@ -30,49 +70,9 @@ import io.github.hsyyid.spongeessentialcmds.events.TPAHereEvent;
 import io.github.hsyyid.spongeessentialcmds.utils.AFK;
 import io.github.hsyyid.spongeessentialcmds.utils.PendingInvitation;
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
-
-import org.slf4j.Logger;
-import org.spongepowered.api.Game;
-import org.spongepowered.api.block.tileentity.TileEntity;
-import org.spongepowered.api.block.tileentity.TileEntityTypes;
-import org.spongepowered.api.data.manipulator.DisplayNameData;
-import org.spongepowered.api.data.manipulator.entity.FoodData;
-import org.spongepowered.api.data.manipulator.tileentity.SignData;
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.event.Subscribe;
-import org.spongepowered.api.event.block.tileentity.SignChangeEvent;
-import org.spongepowered.api.event.entity.player.PlayerChatEvent;
-import org.spongepowered.api.event.entity.player.PlayerDeathEvent;
-import org.spongepowered.api.event.entity.player.PlayerInteractBlockEvent;
-import org.spongepowered.api.event.entity.player.PlayerJoinEvent;
-import org.spongepowered.api.event.entity.player.PlayerMoveEvent;
-import org.spongepowered.api.event.state.ServerStartedEvent;
-import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.service.command.CommandService;
-import org.spongepowered.api.service.config.DefaultConfig;
-import org.spongepowered.api.service.permission.Subject;
-import org.spongepowered.api.service.permission.option.OptionSubject;
-import org.spongepowered.api.service.scheduler.SchedulerService;
-import org.spongepowered.api.service.scheduler.Task;
-import org.spongepowered.api.service.scheduler.TaskBuilder;
-import org.spongepowered.api.text.Texts;
-import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.util.command.args.GenericArguments;
-import org.spongepowered.api.util.command.spec.CommandSpec;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.TeleportHelper;
-
-import com.google.common.base.Optional;
-import com.google.inject.Inject;
 
 @Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "2.0")
 public class Main
@@ -127,9 +127,9 @@ public class Main
 		}
 
 		SchedulerService scheduler = game.getScheduler();
-		TaskBuilder taskBuilder = scheduler.getTaskBuilder();
+		TaskBuilder taskBuilder = scheduler.createTaskBuilder();
 
-		Task task = taskBuilder.execute(new Runnable()
+		taskBuilder.execute(new Runnable()
 		{
 			public void run()
 			{
@@ -142,9 +142,9 @@ public class Main
 							for (Player p : game.getServer().getOnlinePlayers())
 							{
 								p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is now AFK."));
-								Optional<FoodData> data = p.getData(FoodData.class);
+								Optional<FoodData> data = p.get(FoodData.class);
 								FoodData food = data.get();
-								afk.setFood(food.getFoodLevel());
+								afk.setFood(food.foodLevel().get());
 								afk.setMessaged(true);
 							}
 							afk.setAFK(true);
@@ -153,11 +153,12 @@ public class Main
 						if (afk.getAFK())
 						{
 							Player p = afk.getPlayer();
-							Optional<FoodData> data = p.getData(FoodData.class);
+							Optional<FoodData> data = p.get(FoodData.class);
 							FoodData food = data.get();
-							if (food.getFoodLevel() < afk.getFood())
+							if (food.foodLevel().get() < afk.getFood())
 							{
-								food.setFoodLevel(afk.getFood());
+								Value<Integer> foodLevel = food.foodLevel().set(afk.getFood());
+								food.set(foodLevel);
 								p.offer(food);
 							}
 						}
@@ -167,201 +168,201 @@ public class Main
 		}).interval(1, TimeUnit.SECONDS).name("SpongeEssentialCmds - AFK").submit(game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
 
 		CommandSpec homeCommandSpec = CommandSpec.builder()
-			.description(Texts.of("Home Command"))
-			.permission("home.use")
-			.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name"))))
-			.executor(new HomeExecutor())
-			.build();
+				.description(Texts.of("Home Command"))
+				.permission("home.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name"))))
+				.executor(new HomeExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, homeCommandSpec, "home");
 
 		CommandSpec sudoCommandSpec = CommandSpec.builder()
-			.description(Texts.of("Sudo Command"))
-			.permission("sudo.use")
-			.arguments(GenericArguments.seq(
-				GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)),
-				GenericArguments.remainingJoinedStrings(Texts.of("command"))))
-			.executor(new SudoExecutor())
-			.build();
+				.description(Texts.of("Sudo Command"))
+				.permission("sudo.use")
+				.arguments(GenericArguments.seq(
+						GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)),
+						GenericArguments.remainingJoinedStrings(Texts.of("command"))))
+				.executor(new SudoExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, sudoCommandSpec, "sudo");
 
 		CommandSpec afkCommandSpec = CommandSpec.builder()
-			.description(Texts.of("AFK Command"))
-			.permission("afk.use")
-			.executor(new AFKExecutor())
-			.build();
+				.description(Texts.of("AFK Command"))
+				.permission("afk.use")
+				.executor(new AFKExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, afkCommandSpec, "afk");
 
 		CommandSpec broadcastCommandSpec = CommandSpec.builder()
-			.description(Texts.of("Broadcast Command"))
-			.permission("broadcast.use")
-			.arguments(GenericArguments.remainingJoinedStrings(Texts.of("message")))
-			.executor(new BroadcastExecutor())
-			.build();
+				.description(Texts.of("Broadcast Command"))
+				.permission("broadcast.use")
+				.arguments(GenericArguments.remainingJoinedStrings(Texts.of("message")))
+				.executor(new BroadcastExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, broadcastCommandSpec, "broadcast");
 
 		CommandSpec spawnCommandSpec = CommandSpec.builder()
-			.description(Texts.of("Spawn Command"))
-			.permission("spawn.use")
-			.executor(new SpawnExecutor())
-			.build();
+				.description(Texts.of("Spawn Command"))
+				.permission("spawn.use")
+				.executor(new SpawnExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, spawnCommandSpec, "spawn");
 
 		CommandSpec setSpawnCommandSpec = CommandSpec.builder()
-			.description(Texts.of("Spawn Command"))
-			.permission("spawn.set")
-			.executor(new SetSpawnExecutor())
-			.build();
+				.description(Texts.of("Spawn Command"))
+				.permission("spawn.set")
+				.executor(new SetSpawnExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, setSpawnCommandSpec, "setspawn");
 
 		CommandSpec tpaCommandSpec = CommandSpec.builder()
-			.description(Texts.of("TPA Command"))
-			.permission("tpa.use")
-			.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))
-			.executor(new TPAExecutor())
-			.build();
+				.description(Texts.of("TPA Command"))
+				.permission("tpa.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))
+				.executor(new TPAExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, tpaCommandSpec, "tpa");
 
 		CommandSpec tpaHereCommandSpec = CommandSpec.builder()
-			.description(Texts.of("TPA Here Command"))
-			.permission("tpahere.use")
-			.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))
-			.executor(new TPAHereExecutor())
-			.build();
+				.description(Texts.of("TPA Here Command"))
+				.permission("tpahere.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))
+				.executor(new TPAHereExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, tpaHereCommandSpec, "tpahere");
 
 		CommandSpec tpHereCommandSpec = CommandSpec.builder()
-			.description(Texts.of("TP Here Command"))
-			.permission("tphere.use")
-			.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))
-			.executor(new TPHereExecutor())
-			.build();
+				.description(Texts.of("TP Here Command"))
+				.permission("tphere.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))
+				.executor(new TPHereExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, tpHereCommandSpec, "tphere");
 
 		CommandSpec tpaAcceptCommandSpec = CommandSpec.builder()
-			.description(Texts.of("TPA Accept Command"))
-			.permission("tpa.accept")
-			.executor(new TPAAcceptExecutor())
-			.build();
+				.description(Texts.of("TPA Accept Command"))
+				.permission("tpa.accept")
+				.executor(new TPAAcceptExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, tpaAcceptCommandSpec, "tpaccept");
 
 		CommandSpec listHomeCommandSpec = CommandSpec.builder()
-			.description(Texts.of("List Home Command"))
-			.permission("home.list")
-			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("page no")))))
-			.executor(new ListHomeExecutor())
-			.build();
+				.description(Texts.of("List Home Command"))
+				.permission("home.list")
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("page no")))))
+				.executor(new ListHomeExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, listHomeCommandSpec, "homes");
 
 		CommandSpec healCommandSpec = CommandSpec.builder()
-			.description(Texts.of("Heal Command"))
-			.permission("heal.use")
-			.executor(new HealExecutor())
-			.build();
+				.description(Texts.of("Heal Command"))
+				.permission("heal.use")
+				.executor(new HealExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, healCommandSpec, "heal");
 
 		CommandSpec backCommandSpec = CommandSpec.builder()
-			.description(Texts.of("Back Command"))
-			.permission("back.use")
-			.executor(new BackExecutor())
-			.build();
+				.description(Texts.of("Back Command"))
+				.permission("back.use")
+				.executor(new BackExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, backCommandSpec, "back");
 
 		CommandSpec tpaDenyCommandSpec = CommandSpec.builder()
-			.description(Texts.of("TPA Deny Command"))
-			.permission("tpadeny.use")
-			.executor(new TPADenyExecutor())
-			.build();
+				.description(Texts.of("TPA Deny Command"))
+				.permission("tpadeny.use")
+				.executor(new TPADenyExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, tpaDenyCommandSpec, "tpadeny");
 
 		CommandSpec flyCommandSpec = CommandSpec.builder()
-			.description(Texts.of("Fly Command"))
-			.permission("fly.use")
-			.executor(new FlyExecutor())
-			.build();
+				.description(Texts.of("Fly Command"))
+				.permission("fly.use")
+				.executor(new FlyExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, flyCommandSpec, "fly");
 
 		CommandSpec setHomeCommandSpec = CommandSpec.builder()
-			.description(Texts.of("Set Home Command"))
-			.permission("home.set")
-			.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name"))))
-			.executor(new SetHomeExecutor())
-			.build();
+				.description(Texts.of("Set Home Command"))
+				.permission("home.set")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name"))))
+				.executor(new SetHomeExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, setHomeCommandSpec, "sethome");
 
 		CommandSpec deleteHomeCommandSpec = CommandSpec.builder()
-			.description(Texts.of("Delete Home Command"))
-			.permission("home.delete")
-			.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name"))))
-			.executor(new DeleteHomeExecutor())
-			.build();
+				.description(Texts.of("Delete Home Command"))
+				.permission("home.delete")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name"))))
+				.executor(new DeleteHomeExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, deleteHomeCommandSpec, "deletehome", "delhome");
 
 		CommandSpec warpCommandSpec = CommandSpec.builder()
-			.description(Texts.of("Warp Command"))
-			.permission("warp.use")
-			.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name"))))
-			.executor(new WarpExecutor())
-			.build();
+				.description(Texts.of("Warp Command"))
+				.permission("warp.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name"))))
+				.executor(new WarpExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, warpCommandSpec, "warp");
 
 		CommandSpec listWarpCommandSpec = CommandSpec.builder()
-			.description(Texts.of("List Warps Command"))
-			.permission("warps.list")
-			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("page no")))))
-			.executor(new ListWarpExecutor())
-			.build();
+				.description(Texts.of("List Warps Command"))
+				.permission("warps.list")
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("page no")))))
+				.executor(new ListWarpExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, listWarpCommandSpec, "warps");
 
 		CommandSpec setWarpCommandSpec = CommandSpec.builder()
-			.description(Texts.of("Set Warp Command"))
-			.permission("warp.set")
-			.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name"))))
-			.executor(new SetWarpExecutor())
-			.build();
+				.description(Texts.of("Set Warp Command"))
+				.permission("warp.set")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name"))))
+				.executor(new SetWarpExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, setWarpCommandSpec, "setwarp");
 
 		CommandSpec deleteWarpCommandSpec = CommandSpec.builder()
-			.description(Texts.of("Delete Warp Command"))
-			.permission("warp.delete")
-			.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name"))))
-			.executor(new DeleteWarpExecutor())
-			.build();
+				.description(Texts.of("Delete Warp Command"))
+				.permission("warp.delete")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name"))))
+				.executor(new DeleteWarpExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, deleteWarpCommandSpec, "deletewarp", "delwarp");
 
 		CommandSpec feedCommandSpec = CommandSpec.builder()
-			.description(Texts.of("Feed Command"))
-			.permission("feed.use")
-			.executor(new FeedExecutor())
-			.build();
+				.description(Texts.of("Feed Command"))
+				.permission("feed.use")
+				.executor(new FeedExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, feedCommandSpec, "feed");
 
 		CommandSpec jumpCommandSpec = CommandSpec.builder()
-			.description(Texts.of("Jump Command"))
-			.permission("jump.use")
-			.executor(new JumpExecutor())
-			.build();
+				.description(Texts.of("Jump Command"))
+				.permission("jump.use")
+				.executor(new JumpExecutor())
+				.build();
 
 		game.getCommandDispatcher().register(this, jumpCommandSpec, "jump");
 
@@ -397,13 +398,13 @@ public class Main
 			OptionSubject optionSubject = (OptionSubject) subject;
 			String prefix = optionSubject.getOption("prefix").or("");
 			prefix.replaceAll("&", "\u00A7");
-			Optional<DisplayNameData> optionalData = player.getData(DisplayNameData.class);
+			Optional<DisplayNameData> optionalData = player.get(DisplayNameData.class);
 
 			if (optionalData.isPresent())
 			{
-				player.offer(optionalData.get()
-					.setDisplayName(Texts.of(prefix + " " + optionalData.get().getDisplayName().toString()))
-					.setCustomNameVisible(true));
+				//				player.offer(optionalData.get()
+				//					.setDisplayName(Texts.of(prefix + " " + optionalData.get().getDisplayName().toString()))
+				//					.setCustomNameVisible(true));
 			}
 		}
 	}
@@ -420,9 +421,9 @@ public class Main
 
 		// Removes Invite after 10 Seconds
 		SchedulerService scheduler = game.getScheduler();
-		TaskBuilder taskBuilder = scheduler.getTaskBuilder();
+		TaskBuilder taskBuilder = scheduler.createTaskBuilder();
 
-		Task task = taskBuilder.execute(new Runnable()
+		taskBuilder.execute(new Runnable()
 		{
 			public void run()
 			{
@@ -463,9 +464,9 @@ public class Main
 
 		// Removes Invite after 10 Seconds
 		SchedulerService scheduler = game.getScheduler();
-		TaskBuilder taskBuilder = scheduler.getTaskBuilder();
+		TaskBuilder taskBuilder = scheduler.createTaskBuilder();
 
-		Task task = taskBuilder.execute(new Runnable()
+		taskBuilder.execute(new Runnable()
 		{
 			public void run()
 			{
@@ -508,36 +509,39 @@ public class Main
 	public void onSignChange(SignChangeEvent event)
 	{
 		SignData signData = event.getNewData();
-		String line0 = Texts.toPlain(signData.getLine(0));
-		String line1 = Texts.toPlain(signData.getLine(1));
-		String line2 = Texts.toPlain(signData.getLine(2));
-		String line3 = Texts.toPlain(signData.getLine(3));
-		if (line0.equals("[Warp]"))
+		if(signData.getValue(Keys.SIGN_LINES).isPresent())
 		{
-			if (Utils.getWarps().contains(line1))
+			String line0 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(0));
+			String line1 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(0));
+			String line2 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(0));
+			String line3 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(0));
+			if (line0.equals("[Warp]"))
 			{
-				signData.setLine(0, Texts.of(TextColors.DARK_BLUE, "[Warp]"));
+				if (Utils.getWarps().contains(line1))
+				{	
+					signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Texts.of(TextColors.DARK_BLUE, "[Warp]")));
+				}
+				else
+				{
+					signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Texts.of(TextColors.DARK_RED, "[Warp]")));
+				}
 			}
 			else
 			{
-				signData.setLine(0, Texts.of(TextColors.DARK_RED, "[Warp]"));
+				signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Texts.of(line0.replaceAll("&", "\u00A7"))));
 			}
-		}
-		else
-		{
-			signData.setLine(0, Texts.of(line0.replaceAll("&", "\u00A7")));
-		}
-		signData.setLine(1, Texts.of(line1.replaceAll("&", "\u00A7")));
-		signData.setLine(2, Texts.of(line2.replaceAll("&", "\u00A7")));
-		signData.setLine(3, Texts.of(line3.replaceAll("&", "\u00A7")));
+			signData.set(signData.getValue(Keys.SIGN_LINES).get().set(1, Texts.of(line1.replaceAll("&", "\u00A7"))));
+			signData.set(signData.getValue(Keys.SIGN_LINES).get().set(2, Texts.of(line2.replaceAll("&", "\u00A7"))));
+			signData.set(signData.getValue(Keys.SIGN_LINES).get().set(3, Texts.of(line3.replaceAll("&", "\u00A7"))));
 
-		event.setNewData(signData);
+			event.setNewData(signData);
+		}
 	}
 
 	@Subscribe
 	public void onPlayerInteractBlock(PlayerInteractBlockEvent event)
 	{
-		Location block = event.getBlock();
+		Location block = event.getLocation();
 		Player player = event.getUser();
 
 		if (block.getTileEntity().isPresent())
@@ -545,12 +549,13 @@ public class Main
 			TileEntity clickedEntity = block.getTileEntity().get();
 			if (clickedEntity.getType() == TileEntityTypes.SIGN)
 			{
-				Optional<SignData> data = clickedEntity.getOrCreate(SignData.class);
-				CommandService cmdService = game.getCommandDispatcher();
-				if (data.isPresent())
+				Optional<SignData> signData = clickedEntity.getOrCreate(SignData.class);
+				if(signData.isPresent())
 				{
-					String line0 = Texts.toPlain(data.get().getLine(0));
-					String line1 = Texts.toPlain(data.get().getLine(1));
+					SignData data = signData.get();
+					CommandService cmdService = game.getCommandDispatcher();
+					String line0 = Texts.toPlain(data.getValue(Keys.SIGN_LINES).get().get(0));
+					String line1 = Texts.toPlain(data.getValue(Keys.SIGN_LINES).get().get(0));
 					String command = "warp " + line1;
 
 					if (line0.equals("[Warp]"))
@@ -606,7 +611,6 @@ public class Main
 			{
 				if (removeAFK.getAFK() == true)
 				{
-
 					for (Player p : game.getServer().getOnlinePlayers())
 					{
 						p.sendMessage(Texts.of(TextColors.BLUE, event.getEntity().getName(), TextColors.GOLD, " is no longer AFK."));

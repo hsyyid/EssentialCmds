@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import org.spongepowered.api.data.manipulator.entity.FlyingData;
+import org.spongepowered.api.data.manipulator.mutable.entity.FlyingData;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
@@ -19,13 +19,13 @@ public class FlyExecutor  implements CommandExecutor
 		if(src instanceof Player)
 		{
 			Player player = (Player) src;
-			if(player.getData(FlyingData.class) != null)
+			if(player.get(FlyingData.class).isPresent())
 			{
-				player.remove(FlyingData.class);
+				player.getOrCreate(FlyingData.class);
 			}
 			else
 			{
-				player.getOrCreate(FlyingData.class);
+				player.remove(FlyingData.class);
 			}
 		}
 		else if(src instanceof ConsoleSource) {

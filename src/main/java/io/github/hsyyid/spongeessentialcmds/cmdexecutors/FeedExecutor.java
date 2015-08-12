@@ -1,6 +1,7 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import org.spongepowered.api.data.manipulator.entity.FoodData;
+import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
+import org.spongepowered.api.data.value.mutable.Value;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
@@ -22,9 +23,10 @@ public class FeedExecutor implements CommandExecutor
 		if(src instanceof Player)
 		{
 			Player player = (Player) src;
-			Optional<FoodData> data = player.getData(FoodData.class);
+			Optional<FoodData> data = player.get(FoodData.class);
 			FoodData food = data.get();
-			food.setFoodLevel(20);
+			Value<Integer> foodInt = food.foodLevel().set(20);
+			food.set(foodInt);
 			player.offer(food);
 			
 			src.sendMessage(Texts.of(TextColors.GREEN,"Success: ", TextColors.YELLOW, "You've been fed."));
