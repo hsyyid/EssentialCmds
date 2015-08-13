@@ -1,8 +1,0 @@
-Thumbs.db
-*
-!.gitignore
-!gradlew*
-!gradle/
-!libs/
-!src/
-!build.gradle
