@@ -1,0 +1,22 @@
+apply plugin: 'java'
+
+tasks.withType(JavaCompile) {
+	sourceCompatibility = "1.6"
+	targetCompatibility = "1.6"
+	options.encoding = 'UTF-8'
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+    maven {
+        name 'Sponge maven repo'
+        url 'http://repo.spongepowered.org/maven'
+    }
+}
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.12'
+	compile "org.spongepowered:spongeapi:2.1-SNAPSHOT"
+    testCompile 'junit:junit:4.12'
+}
