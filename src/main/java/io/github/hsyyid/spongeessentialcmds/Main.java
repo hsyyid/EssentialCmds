@@ -30,8 +30,10 @@ import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.service.permission.option.OptionSubject;
 import org.spongepowered.api.service.scheduler.SchedulerService;
 import org.spongepowered.api.service.scheduler.TaskBuilder;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.util.TextMessageException;
 import org.spongepowered.api.util.command.args.GenericArguments;
 import org.spongepowered.api.util.command.spec.CommandSpec;
 import org.spongepowered.api.world.Location;
@@ -52,6 +54,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.JumpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListWarpExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.NickExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetSpawnExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetWarpExecutor;
@@ -371,6 +374,21 @@ public class Main
 				.build();
 
 		game.getCommandDispatcher().register(this, jumpCommandSpec, "jump");
+		
+		CommandSpec nickCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Nick Command"))
+				.permission("nick.use")
+				.arguments(GenericArguments.seq(
+						GenericArguments.optional(
+								GenericArguments.onlyOne(
+										GenericArguments.player(Texts.of("player"), game)
+										)),
+						GenericArguments.onlyOne(
+								GenericArguments.remainingJoinedStrings(Texts.of("nick")))))
+				.executor(new NickExecutor())
+				.build();
+
+		game.getCommandDispatcher().register(this, nickCommandSpec, "nick");
 
 		getLogger().info("-----------------------------");
 		getLogger().info("SpongeEssentialCmds was made by HassanS6000!");
@@ -387,6 +405,7 @@ public class Main
 		Utils.addLastDeathLocation(died.getUniqueId(), died.getLocation());
 	}
 
+	@SuppressWarnings("deprecation")
 	@Subscribe
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
@@ -398,20 +417,41 @@ public class Main
 		{
 			movementList.remove(event.getEntity());
 		}
+		
 		Subject subject = player.getContainingCollection().get(player.getIdentifier());
+
 		if (subject instanceof OptionSubject)
 		{
 			OptionSubject optionSubject = (OptionSubject) subject;
 			String prefix = optionSubject.getOption("prefix").or("");
-			prefix.replaceAll("&", "\u00A7");
-			Optional<DisplayNameData> optionalData = player.get(DisplayNameData.class);
-
-			if (optionalData.isPresent())
+			Text textPrefix = null;
+			
+			try
 			{
-				//				player.offer(optionalData.get()
-				//					.setDisplayName(Texts.of(prefix + " " + optionalData.get().getDisplayName().toString()))
-				//					.setCustomNameVisible(true));
+				textPrefix = Texts.legacy('&').from(prefix + " ");
 			}
+			catch (TextMessageException e)
+			{
+				getLogger().warn("Error! A TextMessageException was caught when trying to format the prefix!");
+			}
+
+			DisplayNameData data = player.getOrCreate(DisplayNameData.class).get();
+			Optional<Text> name = data.get(Keys.DISPLAY_NAME);
+			
+			if(name.isPresent())
+			{
+				data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, name.get()));
+			}
+			else
+			{
+				data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, player.getName()));
+			}
+
+			player.offer(data);
+		}
+		else
+		{
+			getLogger().info("Player is not an instance of OptionSubject!");
 		}
 	}
 
@@ -484,30 +524,60 @@ public class Main
 		}).delay(10, TimeUnit.SECONDS).name("SpongeEssentialCmds - Remove Pending Invite").submit(game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
 	}
 
+	@SuppressWarnings("deprecation")
 	@Subscribe
 	public void onMessage(PlayerChatEvent event)
 	{
+		Player player  = event.getEntity();
 		String original = Texts.toPlain(event.getMessage());
-
-		Player player = event.getEntity();
 		Subject subject = player.getContainingCollection().get(player.getIdentifier());
 
 		if (subject instanceof OptionSubject)
 		{
 			OptionSubject optionSubject = (OptionSubject) subject;
 			String prefix = optionSubject.getOption("prefix").or("");
-			prefix = prefix.replaceAll("&", "\u00A7");
-			original = original.replaceFirst("<", ("<" + prefix + " " + "\u00A7f"));
-			if (!(event.getEntity().hasPermission("color.chat.use")))
+			
+			if(!(original.contains(prefix)))
 			{
-				event.setNewMessage(Texts.of(original));
+				Text textPrefix = null;
+				
+				try
+				{
+					textPrefix = Texts.legacy('&').from(prefix + " ");
+				}
+				catch (TextMessageException e)
+				{
+					getLogger().warn("Error! A TextMessageException was caught when trying to format the prefix!");
+				}
+
+				DisplayNameData data = player.getOrCreate(DisplayNameData.class).get();
+				Optional<Text> name = data.get(Keys.DISPLAY_NAME);
+				
+				if(name.isPresent())
+				{
+					data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, name.get()));
+				}
+				else
+				{
+					data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, player.getName()));
+				}
+
+				player.offer(data);
 			}
 		}
 
 		if (event.getEntity().hasPermission("color.chat.use"))
 		{
-			String newMessage = original.replaceAll("&", "\u00A7");
-			event.setNewMessage(Texts.of(newMessage));
+			Text newMessage = null;
+			try
+			{
+				newMessage = Texts.legacy('&').from(original);
+			}
+			catch (TextMessageException e)
+			{
+				;
+			}
+			event.setNewMessage(newMessage);
 		}
 	}
 
@@ -561,7 +631,7 @@ public class Main
 					SignData data = signData.get();
 					CommandService cmdService = game.getCommandDispatcher();
 					String line0 = Texts.toPlain(data.getValue(Keys.SIGN_LINES).get().get(0));
-					String line1 = Texts.toPlain(data.getValue(Keys.SIGN_LINES).get().get(0));
+					String line1 = Texts.toPlain(data.getValue(Keys.SIGN_LINES).get().get(1));
 					String command = "warp " + line1;
 
 					if (line0.equals("[Warp]"))

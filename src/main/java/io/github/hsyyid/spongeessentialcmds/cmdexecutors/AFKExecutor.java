@@ -1,9 +1,5 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.Main;
-import io.github.hsyyid.spongeessentialcmds.utils.AFK;
-import io.github.hsyyid.spongeessentialcmds.utils.Utils;
-
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
@@ -14,6 +10,9 @@ import org.spongepowered.api.util.command.args.CommandContext;
 import org.spongepowered.api.util.command.source.CommandBlockSource;
 import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
+
+import io.github.hsyyid.spongeessentialcmds.Main;
+import io.github.hsyyid.spongeessentialcmds.utils.AFK;
 
 public class AFKExecutor implements CommandExecutor
 {
