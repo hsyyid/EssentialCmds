@@ -28,8 +28,28 @@ public class PowertoolExecutor implements CommandExecutor
                 if(optionalCommand.isPresent())
                 {
                     String command = optionalCommand.get();
-                    Powertool powertool = new Powertool(player, player.getItemInHand().get().getItem().getName(), command);
-                    Main.powertools.add(powertool);
+                    Powertool replacePowertool = null;
+                    for(Powertool powertool : Main.powertools)
+                    {
+                        if(powertool.getItemID().equals(player.getItemInHand().get().getItem().getName()) && powertool.getPlayer().equals(player))
+                        {
+                            replacePowertool = powertool;
+                            break;
+                        }
+                    }
+                    
+                    if(replacePowertool == null)
+                    {
+                        Powertool powertool = new Powertool(player, player.getItemInHand().get().getItem().getName(), command);
+                        Main.powertools.add(powertool);
+                    }
+                    else
+                    {
+                        Main.powertools.remove(replacePowertool);
+                        Powertool powertool = new Powertool(player, player.getItemInHand().get().getItem().getName(), command);
+                        Main.powertools.add(powertool);
+                    }
+                    
                     player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully bound command ", TextColors.BLUE, command, TextColors.YELLOW, " to ", TextColors.RED, player.getItemInHand().get().getItem().getName(), TextColors.YELLOW, "!"));
                 }
                 else
