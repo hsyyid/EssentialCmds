@@ -1,10 +1,43 @@
 package io.github.hsyyid.spongeessentialcmds;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-
+import com.google.common.base.Optional;
+import com.google.inject.Inject;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.AFKExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BackExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BroadcastExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteHomeExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteWarpExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FeedExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FlyExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HealExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HomeExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.JumpExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListHomeExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListWarpExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.NickExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.PowertoolExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetHomeExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetSpawnExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetWarpExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SpawnExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SudoExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAAcceptExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPADenyExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAHereExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPHereExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.WarpExecutor;
+import io.github.hsyyid.spongeessentialcmds.events.TPAAcceptEvent;
+import io.github.hsyyid.spongeessentialcmds.events.TPAEvent;
+import io.github.hsyyid.spongeessentialcmds.events.TPAHereAcceptEvent;
+import io.github.hsyyid.spongeessentialcmds.events.TPAHereEvent;
+import io.github.hsyyid.spongeessentialcmds.utils.AFK;
+import io.github.hsyyid.spongeessentialcmds.utils.PendingInvitation;
+import io.github.hsyyid.spongeessentialcmds.utils.Powertool;
+import io.github.hsyyid.spongeessentialcmds.utils.Utils;
+import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.block.tileentity.TileEntity;
@@ -14,12 +47,14 @@ import org.spongepowered.api.data.manipulator.mutable.DisplayNameData;
 import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
 import org.spongepowered.api.data.manipulator.mutable.tileentity.SignData;
 import org.spongepowered.api.data.value.mutable.Value;
+import org.spongepowered.api.entity.EntityInteractionTypes;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.Subscribe;
 import org.spongepowered.api.event.block.tileentity.SignChangeEvent;
 import org.spongepowered.api.event.entity.player.PlayerChatEvent;
 import org.spongepowered.api.event.entity.player.PlayerDeathEvent;
 import org.spongepowered.api.event.entity.player.PlayerInteractBlockEvent;
+import org.spongepowered.api.event.entity.player.PlayerInteractEvent;
 import org.spongepowered.api.event.entity.player.PlayerJoinEvent;
 import org.spongepowered.api.event.entity.player.PlayerMoveEvent;
 import org.spongepowered.api.event.state.ServerStartedEvent;
@@ -39,45 +74,12 @@ import org.spongepowered.api.util.command.spec.CommandSpec;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.TeleportHelper;
 
-import com.google.common.base.Optional;
-import com.google.inject.Inject;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.AFKExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BackExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BroadcastExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteHomeExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteWarpExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FeedExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FlyExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HealExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HomeExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.JumpExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListHomeExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListWarpExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.NickExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetHomeExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetSpawnExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetWarpExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SpawnExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SudoExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAAcceptExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPADenyExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAHereExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPHereExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.WarpExecutor;
-import io.github.hsyyid.spongeessentialcmds.events.TPAAcceptEvent;
-import io.github.hsyyid.spongeessentialcmds.events.TPAEvent;
-import io.github.hsyyid.spongeessentialcmds.events.TPAHereAcceptEvent;
-import io.github.hsyyid.spongeessentialcmds.events.TPAHereEvent;
-import io.github.hsyyid.spongeessentialcmds.utils.AFK;
-import io.github.hsyyid.spongeessentialcmds.utils.PendingInvitation;
-import io.github.hsyyid.spongeessentialcmds.utils.Utils;
-import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.commented.CommentedConfigurationNode;
-import ninja.leaping.configurate.loader.ConfigurationLoader;
-
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "2.0")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "2.1")
 public class Main
 {
 	public static Game game = null;
@@ -87,6 +89,7 @@ public class Main
 	public static ArrayList<PendingInvitation> pendingInvites = new ArrayList<PendingInvitation>();
 	public static ArrayList<AFK> movementList = new ArrayList<AFK>();
 	public static ArrayList<Player> recentlyJoined = new ArrayList<Player>();
+    public static ArrayList<Powertool> powertools = new ArrayList<Powertool>();
 
 	@Inject
 	private Logger logger;
@@ -375,6 +378,15 @@ public class Main
 
 		game.getCommandDispatcher().register(this, jumpCommandSpec, "jump");
 		
+		CommandSpec powertoolCommandSpec = CommandSpec.builder()
+                .description(Texts.of("Powertool Command"))
+                .permission("powertool.use")
+                .arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("command")))))
+                .executor(new PowertoolExecutor())
+                .build();
+
+        game.getCommandDispatcher().register(this, powertoolCommandSpec, "powertool");
+		
 		CommandSpec nickCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Nick Command"))
 				.permission("nick.use")
@@ -612,6 +624,32 @@ public class Main
 
 			event.setNewData(signData);
 		}
+	}
+	
+	@Subscribe
+    public void onPlayerInteract(PlayerInteractEvent event)
+	{
+        if (event.getInteractionType().equals(EntityInteractionTypes.USE) || event.getInteractionType().equals(EntityInteractionTypes.ATTACK))
+	    {
+	        Powertool foundTool = null;
+	        
+	        for(Powertool powertool : powertools)
+	        {
+	            if(powertool.getPlayer().equals(event.getEntity()))
+	            {
+	                if(event.getEntity().getItemInHand().isPresent() && powertool.getItemID().equals(event.getEntity().getItemInHand().get().getItem().getName()))
+	                {
+	                    foundTool = powertool;
+	                    break;
+	                }
+	            }
+	        }
+	        
+	        if(foundTool != null)
+	        {
+	            game.getCommandDispatcher().process(event.getEntity(), foundTool.getCommand());
+	        }
+	    }
 	}
 
 	@Subscribe
