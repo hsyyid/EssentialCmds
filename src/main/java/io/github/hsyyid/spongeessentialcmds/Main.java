@@ -546,37 +546,48 @@ public class Main
 
 		if (subject instanceof OptionSubject)
 		{
-			OptionSubject optionSubject = (OptionSubject) subject;
-			String prefix = optionSubject.getOption("prefix").or("");
-			
-			if(!(original.contains(prefix)))
-			{
-				Text textPrefix = null;
-				
-				try
-				{
-					textPrefix = Texts.legacy('&').from(prefix + " ");
-				}
-				catch (TextMessageException e)
-				{
-					getLogger().warn("Error! A TextMessageException was caught when trying to format the prefix!");
-				}
+		    OptionSubject optionSubject = (OptionSubject) subject;
+            String prefix = optionSubject.getOption("prefix").or("");
+            prefix = prefix.replaceAll("&", "\u00A7");
+            original = original.replaceFirst("<", ("<" + prefix + " " + "\u00A7f"));
+            
+            if (!(event.getEntity().hasPermission("color.chat.use")))
+            {
+                event.setNewMessage(Texts.of(original));
+            }
+        }
 
-				DisplayNameData data = player.getOrCreate(DisplayNameData.class).get();
-				Optional<Text> name = data.get(Keys.DISPLAY_NAME);
-				
-				if(name.isPresent())
-				{
-					data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, name.get()));
-				}
-				else
-				{
-					data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, player.getName()));
-				}
-
-				player.offer(data);
-			}
-		}
+//			OptionSubject optionSubject = (OptionSubject) subject;
+//			String prefix = optionSubject.getOption("prefix").or("");
+//			
+//			if(!(original.contains(prefix)))
+//			{
+//				Text textPrefix = null;
+//				
+//				try
+//				{
+//					textPrefix = Texts.legacy('&').from(prefix + " ");
+//				}
+//				catch (TextMessageException e)
+//				{
+//					getLogger().warn("Error! A TextMessageException was caught when trying to format the prefix!");
+//				}
+//
+//				DisplayNameData data = player.getOrCreate(DisplayNameData.class).get();
+//				Optional<Text> name = data.get(Keys.DISPLAY_NAME);
+//				
+//				if(name.isPresent())
+//				{
+//					data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, name.get()));
+//				}
+//				else
+//				{
+//					data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, player.getName()));
+//				}
+//
+//				player.offer(data);
+//			}
+//		}
 
 		if (event.getEntity().hasPermission("color.chat.use"))
 		{
