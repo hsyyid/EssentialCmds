@@ -12,6 +12,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FlyExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HealExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.JumpExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.LightningExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListWarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.NickExecutor;
@@ -187,6 +188,14 @@ public class Main
 				.build();
 
 		game.getCommandDispatcher().register(this, homeCommandSpec, "home");
+		
+		CommandSpec lightningCommandSpec = CommandSpec.builder()
+                .description(Texts.of("Lightning Command"))
+                .permission("lightning.use")
+                .executor(new LightningExecutor())
+                .build();
+
+        game.getCommandDispatcher().register(this, lightningCommandSpec, "thor", "smite", "lightning");
 
 		CommandSpec sudoCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Sudo Command"))

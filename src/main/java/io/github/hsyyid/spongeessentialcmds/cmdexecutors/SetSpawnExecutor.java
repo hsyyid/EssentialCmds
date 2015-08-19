@@ -1,8 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.Main;
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
-import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
@@ -19,12 +17,11 @@ public class SetSpawnExecutor implements CommandExecutor
 
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Game game = Main.game;
 		if(src instanceof Player)
 		{
 			Player player = (Player) src;
 			Utils.setSpawn(player.getLocation(), player.getWorld().getName());
-			game.getCommandDispatcher().process(game.getServer().getConsole(), "setworldspawn" + " " + player.getLocation().getX() + " " + player.getLocation().getY() + " " + player.getLocation().getZ());
+            player.getWorld().getProperties().setSpawnPosition(player.getLocation().getBlockPosition());
 			src.sendMessage(Texts.of(TextColors.GREEN,"Success: ", TextColors.YELLOW, "Spawn set."));
 		}
 		else if(src instanceof ConsoleSource) {
