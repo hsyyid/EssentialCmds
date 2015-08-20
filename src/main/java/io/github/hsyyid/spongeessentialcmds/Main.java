@@ -80,7 +80,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "2.1")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "2.2")
 public class Main
 {
 	public static Game game = null;
@@ -114,6 +114,7 @@ public class Main
 		getLogger().info("SpongeEssentialCmds loading...");
 		game = event.getGame();
 		helper = game.getTeleportHelper();
+
 		// Config File
 		try
 		{
@@ -122,6 +123,8 @@ public class Main
 				dConfig.createNewFile();
 				config = confManager.load();
 				config.getNode("afk", "timer").setValue(30000);
+                config.getNode("afk", "kick", "use").setValue(false);
+                config.getNode("afk", "kick", "timer").setValue(30000);
 				confManager.save(config);
 			}
 
@@ -173,6 +176,11 @@ public class Main
 									food.set(foodLevel);
 									p.offer(food);
 								}
+							}
+							
+							if(!(p.hasPermission("afk.kick.false")) && Utils.getAFKKick() && afk.getLastMovementTime() >= Utils.getAFKKickTimer())
+							{
+							    p.kick(Texts.of(TextColors.GOLD, "Kicked for being AFK too long."));
 							}
 						}
 					}
@@ -434,9 +442,20 @@ public class Main
 
 		recentlyJoined.add(event.getEntity());
 
-		if (movementList.contains(event.getEntity()))
+		AFK afkToRemove = null;
+		
+		for(AFK afk : movementList)
 		{
-			movementList.remove(event.getEntity());
+		    if(afk.getPlayer().equals(player))
+		    {
+		        afkToRemove = afk;
+		        break;
+		    }
+		}
+		
+		if(afkToRemove != null)
+		{
+		    movementList.remove(afkToRemove);
 		}
 		
 		Subject subject = player.getContainingCollection().get(player.getIdentifier());

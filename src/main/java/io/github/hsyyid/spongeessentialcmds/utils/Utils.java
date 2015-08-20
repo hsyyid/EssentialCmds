@@ -1,17 +1,15 @@
 package io.github.hsyyid.spongeessentialcmds.utils;
 
 import io.github.hsyyid.spongeessentialcmds.Main;
+import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
+import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.world.Location;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
-
-import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.commented.CommentedConfigurationNode;
-import ninja.leaping.configurate.loader.ConfigurationLoader;
-
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.world.Location;
 
 public class Utils
 {
@@ -101,6 +99,36 @@ public class Utils
 		}
 	}
 
+    public static boolean getAFKKick() {
+        ConfigurationNode valueNode = Main.config.getNode((Object[]) ("afk.kick.use").split("\\."));
+        
+        if (valueNode.getValue() != null)
+        {
+            return valueNode.getBoolean();
+        }
+        else
+        {
+            Utils.setAFKKick(false);
+            return false;
+        }
+    }
+
+    public static double getAFKKickTimer()
+    {
+        ConfigurationNode valueNode = Main.config.getNode((Object[]) ("afk.kick.timer").split("\\."));
+        
+        if (valueNode.getValue() != null)
+        {
+            return valueNode.getDouble();
+        }
+        else
+        {
+            Utils.setAFKKickTimer(30000);
+            ConfigurationNode valNode = Main.config.getNode((Object[]) ("afk.timer").split("\\."));
+            return valNode.getDouble();
+        }
+    }
+
 	public static void setSpawn(Location playerLocation, String worldName)
 	{
 		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
@@ -133,6 +161,36 @@ public class Utils
 			System.out.println("[SpongeEssentialCmds]: Failed to add AFK to config");
 		}
 	}
+	
+	public static void setAFKKick(boolean val)
+    {
+        ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
+        Main.config.getNode("afk", "kick", "use").setValue(val);
+        try
+        {
+            configManager.save(Main.config);
+            configManager.load();
+        }
+        catch (IOException e)
+        {
+            System.out.println("[SpongeEssentialCmds]: Failed to add AFK to config");
+        }
+    }
+	
+	public static void setAFKKickTimer(double length)
+    {
+        ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
+        Main.config.getNode("afk", "kick", "timer").setValue(length);
+        try
+        {
+            configManager.save(Main.config);
+            configManager.load();
+        }
+        catch (IOException e)
+        {
+            System.out.println("[SpongeEssentialCmds]: Failed to add AFK to config");
+        }
+    }
 
 	public static void addLastDeathLocation(UUID userName, Location playerLocation)
 	{
@@ -384,5 +442,4 @@ public class Utils
 			return false;
 		}
 	}
-
 }
