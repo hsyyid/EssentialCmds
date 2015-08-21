@@ -84,6 +84,20 @@ public class Utils
 		}
 	}
 
+	public static String getJoinMsg()
+    {
+        ConfigurationNode valueNode = Main.config.getNode((Object[]) ("joinmsg").split("\\."));
+	    if(valueNode.getValue() != null)
+	    {
+	        return valueNode.getString();
+	    }
+	    else
+	    {
+	        Utils.setJoinMsg("&4Welcome");
+	        return "&4Welcome";
+	    }
+    }
+	
 	public static double getAFK()
 	{
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("afk.timer").split("\\."));
@@ -147,6 +161,20 @@ public class Utils
 		}
 	}
 	
+	public static void setJoinMsg(String msg)
+    {
+	    ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
+        Main.config.getNode("joinmsg").setValue(msg);
+        try
+        {
+            configManager.save(Main.config);
+            configManager.load();
+        }
+        catch (IOException e)
+        {
+            System.out.println("[SpongeEssentialCmds]: Failed to add Join Message to Config!");
+        }
+    }
 	public static void setAFK(double length)
 	{
 		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();

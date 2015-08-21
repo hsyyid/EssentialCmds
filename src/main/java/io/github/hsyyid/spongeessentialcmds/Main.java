@@ -9,6 +9,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteWarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FeedExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FlyExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.GamemodeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HealExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.JumpExecutor;
@@ -80,7 +81,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "2.2")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "2.3")
 public class Main
 {
 	public static Game game = null;
@@ -125,6 +126,7 @@ public class Main
 				config.getNode("afk", "timer").setValue(30000);
                 config.getNode("afk", "kick", "use").setValue(false);
                 config.getNode("afk", "kick", "timer").setValue(30000);
+                config.getNode("joinmsg").setValue("&4Welcome!");
 				confManager.save(config);
 			}
 
@@ -196,6 +198,15 @@ public class Main
 				.build();
 
 		game.getCommandDispatcher().register(this, homeCommandSpec, "home");
+		
+		CommandSpec gamemodeCommandSpec = CommandSpec.builder()
+                .description(Texts.of("Gamemode Command"))
+                .permission("gamemode.use")
+                .arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("gamemode"))))
+                .executor(new GamemodeExecutor())
+                .build();
+
+        game.getCommandDispatcher().register(this, gamemodeCommandSpec, "gamemode", "gm");
 		
 		CommandSpec lightningCommandSpec = CommandSpec.builder()
                 .description(Texts.of("Lightning Command"))
@@ -439,6 +450,9 @@ public class Main
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
 		Player player = event.getEntity();
+
+        String message = Utils.getJoinMsg().replaceAll("&", "\u00A7");
+        player.sendMessage(Texts.of(message));
 
 		recentlyJoined.add(event.getEntity());
 
