@@ -17,6 +17,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListWarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailListExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailReadExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MessageExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.NickExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.PowertoolExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetHomeExecutor;
@@ -245,6 +246,17 @@ public class Main
                 .build();
 
         game.getCommandDispatcher().register(this, mailCommandSpec, "mail");
+        
+        CommandSpec messageCommandSpec = CommandSpec.builder()
+                .description(Texts.of("Message Command"))
+                .permission("message.use")
+                .arguments(GenericArguments.seq(
+                			GenericArguments.onlyOne(GenericArguments.player(Texts.of("recipient"), game))),
+                			GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("message"))))
+                .executor(new MessageExecutor())
+                .build();
+
+        game.getCommandDispatcher().register(this, messageCommandSpec, "message", "m", "msg");
 		
 		CommandSpec lightningCommandSpec = CommandSpec.builder()
                 .description(Texts.of("Lightning Command"))

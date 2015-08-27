@@ -13,6 +13,7 @@ import org.spongepowered.api.util.command.spec.CommandExecutor;
 
 import io.github.hsyyid.spongeessentialcmds.Main;
 import io.github.hsyyid.spongeessentialcmds.utils.AFK;
+import io.github.hsyyid.spongeessentialcmds.utils.Utils;
 
 public class AFKExecutor implements CommandExecutor
 {
@@ -33,7 +34,9 @@ public class AFKExecutor implements CommandExecutor
 			}
 			else
 			{
-				AFK afk = new AFK(player, 31000);
+				int afkTime = (int) Utils.getAFK();
+				long afkTimer = afkTime + 1000;
+				AFK afk = new AFK(player, afkTimer);
 				Main.movementList.add(afk);
 			}
 		}

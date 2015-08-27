@@ -4,7 +4,6 @@ import io.github.hsyyid.spongeessentialcmds.Main;
 import io.github.hsyyid.spongeessentialcmds.events.MailSendEvent;
 
 import org.spongepowered.api.Game;
-import org.spongepowered.api.Server;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
@@ -25,7 +24,6 @@ public class MailExecutor implements CommandExecutor
 		{
 			Player p = (Player) src;
 			Game game = Main.game;
-			Server server = game.getServer();
 
 			MailSendEvent event = new MailSendEvent(p, playerName, message);
 			game.getEventManager().post(event);
