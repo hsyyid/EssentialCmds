@@ -35,7 +35,7 @@ public class SudoExecutor implements CommandExecutor
 			}
 			else
 			{
-				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "This player cannot is exempt from sudo!"));
+				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "This player is exempt from sudo!"));
 			}
 		}
 		else if (src instanceof ConsoleSource)

@@ -1,7 +1,5 @@
 package io.github.hsyyid.spongeessentialcmds;
 
-import com.google.common.base.Optional;
-import com.google.inject.Inject;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.AFKExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BackExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BroadcastExecutor;
@@ -16,6 +14,9 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.JumpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.LightningExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListWarpExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailListExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailReadExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.NickExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.PowertoolExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetHomeExecutor;
@@ -29,17 +30,26 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAHereExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPHereExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.WarpExecutor;
+import io.github.hsyyid.spongeessentialcmds.events.MailSendEvent;
 import io.github.hsyyid.spongeessentialcmds.events.TPAAcceptEvent;
 import io.github.hsyyid.spongeessentialcmds.events.TPAEvent;
 import io.github.hsyyid.spongeessentialcmds.events.TPAHereAcceptEvent;
 import io.github.hsyyid.spongeessentialcmds.events.TPAHereEvent;
 import io.github.hsyyid.spongeessentialcmds.utils.AFK;
+import io.github.hsyyid.spongeessentialcmds.utils.Mail;
 import io.github.hsyyid.spongeessentialcmds.utils.PendingInvitation;
 import io.github.hsyyid.spongeessentialcmds.utils.Powertool;
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.block.tileentity.TileEntity;
@@ -75,13 +85,12 @@ import org.spongepowered.api.util.command.args.GenericArguments;
 import org.spongepowered.api.util.command.spec.CommandSpec;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.TeleportHelper;
+import org.spongepowered.api.world.World;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
+import com.google.common.base.Optional;
+import com.google.inject.Inject;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "2.3")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "2.4")
 public class Main
 {
 	public static Game game = null;
@@ -207,6 +216,35 @@ public class Main
                 .build();
 
         game.getCommandDispatcher().register(this, gamemodeCommandSpec, "gamemode", "gm");
+        
+        CommandSpec mailListCommandSpec = CommandSpec.builder()
+                .description(Texts.of("List Mail Command"))
+                .permission("mail.list")
+                .arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("page no")))))
+                .executor(new MailListExecutor())
+                .build();
+
+        game.getCommandDispatcher().register(this, mailListCommandSpec, "listmail");
+        
+        CommandSpec mailReadCommandSpec = CommandSpec.builder()
+                .description(Texts.of("Read Mail Command"))
+                .permission("mail.read")
+                .arguments(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("mail no"))))
+                .executor(new MailReadExecutor())
+                .build();
+
+        game.getCommandDispatcher().register(this, mailReadCommandSpec, "readmail");
+        
+        CommandSpec mailCommandSpec = CommandSpec.builder()
+                .description(Texts.of("Mail Command"))
+                .permission("mail.use")
+                .arguments(GenericArguments.seq(
+                			GenericArguments.onlyOne(GenericArguments.string(Texts.of("player")))),
+                			GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("message"))))
+                .executor(new MailExecutor())
+                .build();
+
+        game.getCommandDispatcher().register(this, mailCommandSpec, "mail");
 		
 		CommandSpec lightningCommandSpec = CommandSpec.builder()
                 .description(Texts.of("Lightning Command"))
@@ -439,6 +477,22 @@ public class Main
 	}
 
 	@Subscribe
+	public void onMailSend(MailSendEvent event)
+	{
+		String recipientName = event.getRecipientName();
+		
+		if(game.getServer().getPlayer(recipientName).isPresent())
+		{
+			Utils.addMail(event.getSender().getName(), recipientName, event.getMessage());
+			game.getServer().getPlayer(recipientName).get().sendMessage(Texts.of(TextColors.GOLD, "[Mail]: ", TextColors.GRAY, "You have received new mail from " + event.getSender().getName() + " do ", TextColors.RED, "/listmail!"));
+		}
+		else
+		{
+			Utils.addMail(event.getSender().getName(), recipientName, event.getMessage());
+		}
+	}
+	
+	@Subscribe
 	public void onPlayerDeath(PlayerDeathEvent event)
 	{
 		Player died = event.getEntity();
@@ -450,10 +504,25 @@ public class Main
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
 		Player player = event.getEntity();
-
+		
         String message = Utils.getJoinMsg().replaceAll("&", "\u00A7");
         player.sendMessage(Texts.of(message));
-
+        
+        ArrayList<Mail> newMail = new ArrayList<Mail>();
+        
+        for(Mail mail : Utils.getMail())
+        {
+        	if(mail.getRecipientName().equals(player.getName().toString()))
+        	{
+        		newMail.add(mail);
+        	}
+        }
+        
+        if(newMail.size() > 0)
+        {
+        	player.sendMessage(Texts.of(TextColors.GOLD, "[Mail]: ", TextColors.GRAY, "While you were away, you received new mail to view it do ", TextColors.RED, "/listmail"));
+        }
+        
 		recentlyJoined.add(event.getEntity());
 
 		AFK afkToRemove = null;
@@ -708,12 +777,12 @@ public class Main
 	@Subscribe
 	public void onPlayerInteractBlock(PlayerInteractBlockEvent event)
 	{
-		Location block = event.getLocation();
+		Location<World> location = event.getLocation();
 		Player player = event.getUser();
 
-		if (block.getTileEntity().isPresent())
+		if (location.getTileEntity().isPresent())
 		{
-			TileEntity clickedEntity = block.getTileEntity().get();
+			TileEntity clickedEntity = location.getTileEntity().get();
 			if (clickedEntity.getType() == TileEntityTypes.SIGN)
 			{
 				Optional<SignData> signData = clickedEntity.getOrCreate(SignData.class);

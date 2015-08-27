@@ -1,19 +1,34 @@
 package io.github.hsyyid.spongeessentialcmds.utils;
 
 import io.github.hsyyid.spongeessentialcmds.Main;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.UUID;
+
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.UUID;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class Utils
 {
-	public static void setHome(UUID userName, Location playerLocation, String worldName, String homeName)
+	private static Gson gson = new GsonBuilder().create();
+	
+	public static void setHome(UUID userName, Location<World> playerLocation, String worldName, String homeName)
 	{
 		String playerName = userName.toString();
 		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
@@ -49,7 +64,115 @@ public class Utils
 		}
 	}
 
-	public static void setWarp(Location playerLocation, String worldName, String warpName)
+	public static ArrayList<Mail> getMail()
+	{
+		String json = null;
+
+		try
+		{
+			json = readFile("Mail.json", StandardCharsets.UTF_8);
+		}
+		catch(Exception e)
+		{
+			return new ArrayList<Mail>();
+		}
+
+		if(json != null && json.length() > 0)
+		{	
+			return new ArrayList<Mail>(Arrays.asList(gson.fromJson(json, Mail[].class)));
+		}
+		else
+		{
+			return new ArrayList<Mail>();
+		}
+	}
+
+	static String readFile(String path, Charset encoding) throws IOException
+	{
+		byte[] encoded = Files.readAllBytes(Paths.get(path));
+		return new String(encoded, encoding);
+	}
+
+	public static void addMail(String senderName, String recipientName, String message)
+	{
+		if(Utils.getMail() != null)
+		{
+			ArrayList<Mail> currentMail = Utils.getMail();
+
+			currentMail.add(new Mail(recipientName, senderName, message));
+			String json = null;
+			
+			try
+			{
+				json = gson.toJson(currentMail);
+				
+				// Assume default encoding.
+				FileWriter fileWriter = new FileWriter("Mail.json");
+
+				// Always wrap FileWriter in BufferedWriter.
+				BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+				bufferedWriter.write(json);
+				bufferedWriter.flush();
+
+				// Always close files.
+				bufferedWriter.close();
+			}
+			catch (Exception ex)
+			{
+				System.out.println("Could not save JSON file!");
+			}   
+		}
+	}
+	
+	public static void removeMail(Mail mail)
+	{
+		if(Utils.getMail() != null)
+		{
+			ArrayList<Mail> currentMail = Utils.getMail();
+			
+			Mail mailToRemove = null;
+			
+			for(Mail m : currentMail)
+			{
+				if(m.getRecipientName().equals(mail.getRecipientName()) && m.getSenderName().equals(mail.getSenderName()) && m.getMessage().equals(mail.getMessage()))
+				{
+					mailToRemove = m;
+					break;
+				}
+			}	
+			
+			if(mailToRemove != null)
+			{
+				currentMail.remove(mailToRemove);
+			}
+			
+			String json = null;
+			
+			try
+			{
+				json = gson.toJson(currentMail);
+				
+				// Assume default encoding.
+				FileWriter fileWriter = new FileWriter("Mail.json");
+
+				// Always wrap FileWriter in BufferedWriter.
+				BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+				bufferedWriter.write(json);
+				bufferedWriter.flush();
+
+				// Always close files.
+				bufferedWriter.close();
+			}
+			catch (Exception ex)
+			{
+				System.out.println("Could not save JSON file!");
+			}   
+		}
+	}
+
+	public static void setWarp(Location<World> playerLocation, String worldName, String warpName)
 	{
 		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
 		Main.config.getNode("warps", warpName, "world").setValue(worldName);
@@ -85,19 +208,19 @@ public class Utils
 	}
 
 	public static String getJoinMsg()
-    {
-        ConfigurationNode valueNode = Main.config.getNode((Object[]) ("joinmsg").split("\\."));
-	    if(valueNode.getValue() != null)
-	    {
-	        return valueNode.getString();
-	    }
-	    else
-	    {
-	        Utils.setJoinMsg("&4Welcome");
-	        return "&4Welcome";
-	    }
-    }
-	
+	{
+		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("joinmsg").split("\\."));
+		if(valueNode.getValue() != null)
+		{
+			return valueNode.getString();
+		}
+		else
+		{
+			Utils.setJoinMsg("&4Welcome");
+			return "&4Welcome";
+		}
+	}
+
 	public static double getAFK()
 	{
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("afk.timer").split("\\."));
@@ -113,37 +236,37 @@ public class Utils
 		}
 	}
 
-    public static boolean getAFKKick() {
-        ConfigurationNode valueNode = Main.config.getNode((Object[]) ("afk.kick.use").split("\\."));
-        
-        if (valueNode.getValue() != null)
-        {
-            return valueNode.getBoolean();
-        }
-        else
-        {
-            Utils.setAFKKick(false);
-            return false;
-        }
-    }
+	public static boolean getAFKKick() {
+		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("afk.kick.use").split("\\."));
 
-    public static double getAFKKickTimer()
-    {
-        ConfigurationNode valueNode = Main.config.getNode((Object[]) ("afk.kick.timer").split("\\."));
-        
-        if (valueNode.getValue() != null)
-        {
-            return valueNode.getDouble();
-        }
-        else
-        {
-            Utils.setAFKKickTimer(30000);
-            ConfigurationNode valNode = Main.config.getNode((Object[]) ("afk.timer").split("\\."));
-            return valNode.getDouble();
-        }
-    }
+		if (valueNode.getValue() != null)
+		{
+			return valueNode.getBoolean();
+		}
+		else
+		{
+			Utils.setAFKKick(false);
+			return false;
+		}
+	}
 
-	public static void setSpawn(Location playerLocation, String worldName)
+	public static double getAFKKickTimer()
+	{
+		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("afk.kick.timer").split("\\."));
+
+		if (valueNode.getValue() != null)
+		{
+			return valueNode.getDouble();
+		}
+		else
+		{
+			Utils.setAFKKickTimer(30000);
+			ConfigurationNode valNode = Main.config.getNode((Object[]) ("afk.timer").split("\\."));
+			return valNode.getDouble();
+		}
+	}
+
+	public static void setSpawn(Location<World> playerLocation, String worldName)
 	{
 		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
 		Main.config.getNode("spawn", "X").setValue(playerLocation.getX());
@@ -160,21 +283,21 @@ public class Utils
 			System.out.println("[SpongeEssentialCmds]: Failed to set spawn");
 		}
 	}
-	
+
 	public static void setJoinMsg(String msg)
-    {
-	    ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-        Main.config.getNode("joinmsg").setValue(msg);
-        try
-        {
-            configManager.save(Main.config);
-            configManager.load();
-        }
-        catch (IOException e)
-        {
-            System.out.println("[SpongeEssentialCmds]: Failed to add Join Message to Config!");
-        }
-    }
+	{
+		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
+		Main.config.getNode("joinmsg").setValue(msg);
+		try
+		{
+			configManager.save(Main.config);
+			configManager.load();
+		}
+		catch (IOException e)
+		{
+			System.out.println("[SpongeEssentialCmds]: Failed to add Join Message to Config!");
+		}
+	}
 	public static void setAFK(double length)
 	{
 		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
@@ -189,38 +312,38 @@ public class Utils
 			System.out.println("[SpongeEssentialCmds]: Failed to add AFK to config");
 		}
 	}
-	
-	public static void setAFKKick(boolean val)
-    {
-        ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-        Main.config.getNode("afk", "kick", "use").setValue(val);
-        try
-        {
-            configManager.save(Main.config);
-            configManager.load();
-        }
-        catch (IOException e)
-        {
-            System.out.println("[SpongeEssentialCmds]: Failed to add AFK to config");
-        }
-    }
-	
-	public static void setAFKKickTimer(double length)
-    {
-        ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-        Main.config.getNode("afk", "kick", "timer").setValue(length);
-        try
-        {
-            configManager.save(Main.config);
-            configManager.load();
-        }
-        catch (IOException e)
-        {
-            System.out.println("[SpongeEssentialCmds]: Failed to add AFK to config");
-        }
-    }
 
-	public static void addLastDeathLocation(UUID userName, Location playerLocation)
+	public static void setAFKKick(boolean val)
+	{
+		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
+		Main.config.getNode("afk", "kick", "use").setValue(val);
+		try
+		{
+			configManager.save(Main.config);
+			configManager.load();
+		}
+		catch (IOException e)
+		{
+			System.out.println("[SpongeEssentialCmds]: Failed to add AFK to config");
+		}
+	}
+
+	public static void setAFKKickTimer(double length)
+	{
+		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
+		Main.config.getNode("afk", "kick", "timer").setValue(length);
+		try
+		{
+			configManager.save(Main.config);
+			configManager.load();
+		}
+		catch (IOException e)
+		{
+			System.out.println("[SpongeEssentialCmds]: Failed to add AFK to config");
+		}
+	}
+
+	public static void addLastDeathLocation(UUID userName, Location<World> playerLocation)
 	{
 		String playerName = userName.toString();
 		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
@@ -238,7 +361,7 @@ public class Utils
 		}
 	}
 
-	public static Location lastDeath(Player player)
+	public static Location<World> lastDeath(Player player)
 	{
 		String playerName = player.getUniqueId().toString();
 		ConfigurationNode xNode = Main.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.X").split("\\."));
@@ -248,7 +371,7 @@ public class Utils
 		ConfigurationNode zNode = Main.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Z").split("\\."));
 		double z = zNode.getDouble();
 
-		Location location = new Location(player.getWorld(), x, y, z);
+		Location<World> location = new Location<World>(player.getWorld(), x, y, z);
 		return location;
 	}
 
@@ -378,7 +501,7 @@ public class Utils
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("warps." + warpName + ".world").split("\\."));
 		return valueNode.getString();
 	}
-	
+
 	public static String getSpawnWorldName()
 	{
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("spawn.world").split("\\."));
@@ -441,7 +564,7 @@ public class Utils
 		}
 	}
 
-	public static Location getSpawn(Player player)
+	public static Location<World> getSpawn(Player player)
 	{
 		ConfigurationNode xNode = Main.config.getNode((Object[]) ("spawn.X").split("\\."));
 		double x = xNode.getDouble();
@@ -452,7 +575,7 @@ public class Utils
 		ConfigurationNode zNode = Main.config.getNode((Object[]) ("spawn.Z").split("\\."));
 		double z = zNode.getDouble();
 
-		Location spawn = new Location(player.getWorld(), x, y, z);
+		Location<World> spawn = new Location<World>(player.getWorld(), x, y, z);
 		return spawn;
 	}
 

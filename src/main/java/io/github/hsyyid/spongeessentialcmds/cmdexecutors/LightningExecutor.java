@@ -1,6 +1,5 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import com.google.common.base.Optional;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.player.Player;
@@ -14,7 +13,10 @@ import org.spongepowered.api.util.command.source.CommandBlockSource;
 import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.extent.Extent;
+
+import com.google.common.base.Optional;
 
 public class LightningExecutor implements CommandExecutor
 {
@@ -23,8 +25,8 @@ public class LightningExecutor implements CommandExecutor
         if(src instanceof Player)
         {
             Player player = (Player) src;
-            Location playerLocation = player.getLocation();
-            Location lightningLocation = new Location(playerLocation.getExtent(), playerLocation.getX() + 5, playerLocation.getY(), playerLocation.getZ());
+            Location<World> playerLocation = player.getLocation();
+            Location<World> lightningLocation = new Location<World>(playerLocation.getExtent(), playerLocation.getX() + 5, playerLocation.getY(), playerLocation.getZ());
             spawnEntity(lightningLocation);
             player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Created Lightning Strike!"));
         }
@@ -37,7 +39,7 @@ public class LightningExecutor implements CommandExecutor
         return CommandResult.success();
     }
     
-    public void spawnEntity(Location location)
+    public void spawnEntity(Location<World> location)
     {
         Extent extent = location.getExtent();
         Optional<Entity> optional = extent.createEntity(EntityTypes.LIGHTNING, location.getPosition());
