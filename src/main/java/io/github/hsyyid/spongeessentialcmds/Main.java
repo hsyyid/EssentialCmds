@@ -750,6 +750,12 @@ public class Main
 	@Subscribe
 	public void onSignChange(SignChangeEvent event)
 	{
+		Player player = null;
+		if (event.getCause().isPresent() && event.getCause().get().getCause() instanceof Player)
+		{
+			player = (Player) event.getCause().get().getCause();
+		}
+		
 		SignData signData = event.getNewData();
 		if(signData.getValue(Keys.SIGN_LINES).isPresent())
 		{
@@ -768,14 +774,14 @@ public class Main
 					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Texts.of(TextColors.DARK_RED, "[Warp]")));
 				}
 			}
-			else
+			else if(player != null && player.hasPermission("color.sign.use"))
 			{
 				signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Texts.of(line0.replaceAll("&", "\u00A7"))));
+				signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(1, Texts.of(line1.replaceAll("&", "\u00A7"))));
+				signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(2, Texts.of(line2.replaceAll("&", "\u00A7"))));
+				signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(3, Texts.of(line3.replaceAll("&", "\u00A7"))));
 			}
-			signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(1, Texts.of(line1.replaceAll("&", "\u00A7"))));
-			signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(2, Texts.of(line2.replaceAll("&", "\u00A7"))));
-			signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(3, Texts.of(line3.replaceAll("&", "\u00A7"))));
-
+			
 			event.setNewData(signData);
 		}
 	}
