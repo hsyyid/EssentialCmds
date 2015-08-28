@@ -18,11 +18,13 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailListExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailReadExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MessageExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MotdExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.NickExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.PowertoolExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetSpawnExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetWarpExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SocialSpyExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SpawnExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SudoExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAAcceptExecutor;
@@ -45,6 +47,7 @@ import io.github.hsyyid.spongeessentialcmds.utils.Utils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import ninja.leaping.configurate.ConfigurationNode;
@@ -102,7 +105,8 @@ public class Main
 	public static ArrayList<AFK> movementList = new ArrayList<AFK>();
 	public static ArrayList<Player> recentlyJoined = new ArrayList<Player>();
     public static ArrayList<Powertool> powertools = new ArrayList<Powertool>();
-
+    public static ArrayList<UUID> socialSpies = new ArrayList<UUID>();
+    
 	@Inject
 	private Logger logger;
 
@@ -125,7 +129,7 @@ public class Main
 		getLogger().info("SpongeEssentialCmds loading...");
 		game = event.getGame();
 		helper = game.getTeleportHelper();
-
+		
 		// Config File
 		try
 		{
@@ -217,6 +221,22 @@ public class Main
                 .build();
 
         game.getCommandDispatcher().register(this, gamemodeCommandSpec, "gamemode", "gm");
+        
+        CommandSpec motdCommandSpec = CommandSpec.builder()
+                .description(Texts.of("MOTD Command"))
+                .permission("motd.use")
+                .executor(new MotdExecutor())
+                .build();
+
+        game.getCommandDispatcher().register(this, motdCommandSpec, "motd");
+        
+        CommandSpec socialSpyCommandSpec = CommandSpec.builder()
+                .description(Texts.of("Allows Toggling of Seeing Other Players Private Messages"))
+                .permission("socialspy.use")
+                .executor(new SocialSpyExecutor())
+                .build();
+
+        game.getCommandDispatcher().register(this, socialSpyCommandSpec, "socialspy");
         
         CommandSpec mailListCommandSpec = CommandSpec.builder()
                 .description(Texts.of("List Mail Command"))

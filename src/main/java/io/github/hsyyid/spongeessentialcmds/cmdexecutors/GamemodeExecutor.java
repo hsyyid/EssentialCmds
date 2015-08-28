@@ -22,7 +22,7 @@ public class GamemodeExecutor implements CommandExecutor
         if(src instanceof Player)
         {
             Player player = (Player) src;
-            
+         
             if(gamemode.equals("creative") || gamemode.equals("c") || Integer.parseInt(gamemode) == 1)
             {
                 GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.CREATIVE);
