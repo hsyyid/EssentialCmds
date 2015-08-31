@@ -94,7 +94,7 @@ import org.spongepowered.api.world.World;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "2.4")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "2.5")
 public class Main
 {
 	public static Game game = null;
@@ -693,11 +693,18 @@ public class Main
             String prefix = optionSubject.getOption("prefix").or("");
             prefix = prefix.replaceAll("&", "\u00A7");
             original = original.replaceFirst("<", ("<" + prefix + " " + "\u00A7f"));
-            
             if (!(event.getEntity().hasPermission("color.chat.use")))
             {
                 event.setNewMessage(Texts.of(original));
             }
+        }
+		
+		original = original.replaceFirst("<", Utils.getFirstChatCharReplacement());
+        original = original.replace(">", Utils.getLastChatCharReplacement());
+        
+        if (!(event.getEntity().hasPermission("color.chat.use")))
+        {
+            event.setNewMessage(Texts.of(original));
         }
 
 //			OptionSubject optionSubject = (OptionSubject) subject;

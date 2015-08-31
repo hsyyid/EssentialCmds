@@ -220,6 +220,34 @@ public class Utils
 			return "&4Welcome";
 		}
 	}
+	
+	public static String getFirstChatCharReplacement()
+	{
+		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("chat.firstcharacter").split("\\."));
+		if(valueNode.getValue() != null)
+		{
+			return valueNode.getString();
+		}
+		else
+		{
+			Utils.setFirstChatCharReplacement("<");
+			return "<";
+		}
+	}
+	
+	public static String getLastChatCharReplacement()
+	{
+		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("chat.lastcharacter").split("\\."));
+		if(valueNode.getValue() != null)
+		{
+			return valueNode.getString();
+		}
+		else
+		{
+			Utils.setLastChatCharReplacement(">");
+			return ">";
+		}
+	}
 
 	public static double getAFK()
 	{
@@ -298,6 +326,37 @@ public class Utils
 			System.out.println("[SpongeEssentialCmds]: Failed to add Join Message to Config!");
 		}
 	}
+	
+	public static void setFirstChatCharReplacement(String replacement)
+	{
+		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
+		Main.config.getNode("chat", "firstcharacter").setValue(replacement);
+		try
+		{
+			configManager.save(Main.config);
+			configManager.load();
+		}
+		catch (IOException e)
+		{
+			System.out.println("[SpongeEssentialCmds]: Failed to set First Chat Character in Config!");
+		}
+	}
+	
+	public static void setLastChatCharReplacement(String replacement)
+	{
+		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
+		Main.config.getNode("chat", "lastcharacter").setValue(replacement);
+		try
+		{
+			configManager.save(Main.config);
+			configManager.load();
+		}
+		catch (IOException e)
+		{
+			System.out.println("[SpongeEssentialCmds]: Failed to set Last Chat Character in Config!");
+		}
+	}
+	
 	public static void setAFK(double length)
 	{
 		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
