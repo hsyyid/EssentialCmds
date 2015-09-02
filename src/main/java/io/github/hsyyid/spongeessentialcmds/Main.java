@@ -108,9 +108,9 @@ public class Main
 	public static ArrayList<UUID> socialSpies = new ArrayList<UUID>();
 
 	@Inject
-	private Logger logger;
+	private static Logger logger;
 
-	public Logger getLogger()
+	public static Logger getLogger()
 	{
 		return logger;
 	}
@@ -377,6 +377,7 @@ public class Main
 		CommandSpec healCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Heal Command"))
 				.permission("heal.use")
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))))
 				.executor(new HealExecutor())
 				.build();
 
@@ -463,6 +464,7 @@ public class Main
 		CommandSpec feedCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Feed Command"))
 				.permission("feed.use")
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))))
 				.executor(new FeedExecutor())
 				.build();
 
