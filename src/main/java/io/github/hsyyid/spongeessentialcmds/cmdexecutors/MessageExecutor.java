@@ -1,6 +1,7 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
 import io.github.hsyyid.spongeessentialcmds.Main;
+import io.github.hsyyid.spongeessentialcmds.utils.Message;
 
 import java.util.ArrayList;
 
@@ -43,6 +44,25 @@ public class MessageExecutor implements CommandExecutor
 			Player player = (Player) src;
 			src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.YELLOW, "Sent message to ", TextColors.RED, recipient.getName()));
 			recipient.sendMessage(Texts.of(TextColors.GOLD, "[", TextColors.RED, player.getName(), TextColors.GOLD, " > ", TextColors.RED, recipient.getName(), TextColors.GOLD, "]: ", TextColors.GRAY, message));
+			
+			Message messageToRemove = null;
+			
+			for(Message m : Main.recentlyMessaged)
+			{
+				if(m.getRecipient().getUniqueId().equals(recipient.getUniqueId()))
+				{
+					messageToRemove = m;
+					break;
+				}
+			}
+			
+			if(messageToRemove != null)
+			{
+				Main.recentlyMessaged.remove(messageToRemove);
+			}
+			
+			Message msg = new Message(player, recipient, message);
+			Main.recentlyMessaged.add(msg);
 			
 			for(Player socialspy : socialSpies)
 			{

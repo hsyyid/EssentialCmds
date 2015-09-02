@@ -21,6 +21,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MessageExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MotdExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.NickExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.PowertoolExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.RespondExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetSpawnExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetWarpExecutor;
@@ -40,6 +41,7 @@ import io.github.hsyyid.spongeessentialcmds.events.TPAHereAcceptEvent;
 import io.github.hsyyid.spongeessentialcmds.events.TPAHereEvent;
 import io.github.hsyyid.spongeessentialcmds.utils.AFK;
 import io.github.hsyyid.spongeessentialcmds.utils.Mail;
+import io.github.hsyyid.spongeessentialcmds.utils.Message;
 import io.github.hsyyid.spongeessentialcmds.utils.PendingInvitation;
 import io.github.hsyyid.spongeessentialcmds.utils.Powertool;
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
@@ -106,6 +108,7 @@ public class Main
 	public static ArrayList<Player> recentlyJoined = new ArrayList<Player>();
 	public static ArrayList<Powertool> powertools = new ArrayList<Powertool>();
 	public static ArrayList<UUID> socialSpies = new ArrayList<UUID>();
+	public static ArrayList<Message> recentlyMessaged = new ArrayList<Message>();
 
 	@Inject
 	private static Logger logger;
@@ -255,6 +258,15 @@ public class Main
 				.build();
 
 		game.getCommandDispatcher().register(this, mailReadCommandSpec, "readmail");
+		
+		CommandSpec msgRespondCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Respond to Message Command"))
+				.permission("message.respond")
+				.arguments(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("message"))))
+				.executor(new RespondExecutor())
+				.build();
+
+		game.getCommandDispatcher().register(this, msgRespondCommandSpec, "r");
 
 		CommandSpec mailCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Mail Command"))
