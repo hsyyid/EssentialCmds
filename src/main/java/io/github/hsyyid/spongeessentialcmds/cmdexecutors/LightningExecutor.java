@@ -2,7 +2,7 @@ package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
-import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.command.CommandException;
@@ -47,7 +47,7 @@ public class LightningExecutor implements CommandExecutor
         if (optional.isPresent())
         {
             Entity lightning = optional.get();
-            System.out.println("Spawned Lightning " + extent.spawnEntity(lightning));
+            System.out.println("Spawned Lightning " + extent.spawnEntity(lightning, null));
         }
         else
         {

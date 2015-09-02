@@ -2,8 +2,8 @@ package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.entity.GameModeData;
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.entity.player.gamemode.GameModes;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.command.CommandException;
@@ -32,7 +32,7 @@ public class GamemodeExecutor implements CommandExecutor
             }
             else if(gamemode.equals("survival") || gamemode.equals("s") || Integer.parseInt(gamemode) ==  0)
             {
-                GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.SURVIVAL);
+                GameModeData data = player.	getGameModeData().set(Keys.GAME_MODE, GameModes.SURVIVAL);
                 player.offer(data);
                 player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to survival"));
                 return CommandResult.success();

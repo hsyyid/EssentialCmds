@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.events;
 
-import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.AbstractEvent;
 import org.spongepowered.api.event.Cancellable;
 

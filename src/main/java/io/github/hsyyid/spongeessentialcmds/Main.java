@@ -63,17 +63,17 @@ import org.spongepowered.api.data.manipulator.mutable.DisplayNameData;
 import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
 import org.spongepowered.api.data.manipulator.mutable.tileentity.SignData;
 import org.spongepowered.api.data.value.mutable.Value;
-import org.spongepowered.api.entity.EntityInteractionTypes;
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.event.Subscribe;
-import org.spongepowered.api.event.block.tileentity.SignChangeEvent;
-import org.spongepowered.api.event.entity.player.PlayerChatEvent;
-import org.spongepowered.api.event.entity.player.PlayerDeathEvent;
-import org.spongepowered.api.event.entity.player.PlayerInteractBlockEvent;
-import org.spongepowered.api.event.entity.player.PlayerInteractEvent;
-import org.spongepowered.api.event.entity.player.PlayerJoinEvent;
-import org.spongepowered.api.event.entity.player.PlayerMoveEvent;
-import org.spongepowered.api.event.state.ServerStartedEvent;
+import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.block.InteractBlockEvent;
+import org.spongepowered.api.event.block.tileentity.ChangeSignEvent;
+import org.spongepowered.api.event.entity.DestructEntityEvent;
+import org.spongepowered.api.event.entity.DisplaceEntityEvent;
+import org.spongepowered.api.event.entity.InteractEntityEvent;
+import org.spongepowered.api.event.entity.living.player.PlayerChatEvent;
+import org.spongepowered.api.event.entity.living.player.PlayerJoinEvent;
+import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.config.DefaultConfig;
@@ -104,9 +104,9 @@ public class Main
 	public static ArrayList<PendingInvitation> pendingInvites = new ArrayList<PendingInvitation>();
 	public static ArrayList<AFK> movementList = new ArrayList<AFK>();
 	public static ArrayList<Player> recentlyJoined = new ArrayList<Player>();
-    public static ArrayList<Powertool> powertools = new ArrayList<Powertool>();
-    public static ArrayList<UUID> socialSpies = new ArrayList<UUID>();
-    
+	public static ArrayList<Powertool> powertools = new ArrayList<Powertool>();
+	public static ArrayList<UUID> socialSpies = new ArrayList<UUID>();
+
 	@Inject
 	private Logger logger;
 
@@ -123,13 +123,13 @@ public class Main
 	@DefaultConfig(sharedRoot = true)
 	private ConfigurationLoader<CommentedConfigurationNode> confManager;
 
-	@Subscribe
-	public void onServerStart(ServerStartedEvent event)
+	@Listener
+	public void onServerStart(GameStartedServerEvent event)
 	{
 		getLogger().info("SpongeEssentialCmds loading...");
 		game = event.getGame();
 		helper = game.getTeleportHelper();
-		
+
 		// Config File
 		try
 		{
@@ -138,9 +138,9 @@ public class Main
 				dConfig.createNewFile();
 				config = confManager.load();
 				config.getNode("afk", "timer").setValue(30000);
-                config.getNode("afk", "kick", "use").setValue(false);
-                config.getNode("afk", "kick", "timer").setValue(30000);
-                config.getNode("joinmsg").setValue("&4Welcome!");
+				config.getNode("afk", "kick", "use").setValue(false);
+				config.getNode("afk", "kick", "timer").setValue(30000);
+				config.getNode("joinmsg").setValue("&4Welcome!");
 				confManager.save(config);
 			}
 
@@ -193,10 +193,10 @@ public class Main
 									p.offer(food);
 								}
 							}
-							
+
 							if(!(p.hasPermission("afk.kick.false")) && Utils.getAFKKick() && afk.getLastMovementTime() >= Utils.getAFKKickTimer())
 							{
-							    p.kick(Texts.of(TextColors.GOLD, "Kicked for being AFK too long."));
+								p.kick(Texts.of(TextColors.GOLD, "Kicked for being AFK too long."));
 							}
 						}
 					}
@@ -212,79 +212,79 @@ public class Main
 				.build();
 
 		game.getCommandDispatcher().register(this, homeCommandSpec, "home");
-		
+
 		CommandSpec gamemodeCommandSpec = CommandSpec.builder()
-                .description(Texts.of("Gamemode Command"))
-                .permission("gamemode.use")
-                .arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("gamemode"))))
-                .executor(new GamemodeExecutor())
-                .build();
+				.description(Texts.of("Gamemode Command"))
+				.permission("gamemode.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("gamemode"))))
+				.executor(new GamemodeExecutor())
+				.build();
 
-        game.getCommandDispatcher().register(this, gamemodeCommandSpec, "gamemode", "gm");
-        
-        CommandSpec motdCommandSpec = CommandSpec.builder()
-                .description(Texts.of("MOTD Command"))
-                .permission("motd.use")
-                .executor(new MotdExecutor())
-                .build();
+		game.getCommandDispatcher().register(this, gamemodeCommandSpec, "gamemode", "gm");
 
-        game.getCommandDispatcher().register(this, motdCommandSpec, "motd");
-        
-        CommandSpec socialSpyCommandSpec = CommandSpec.builder()
-                .description(Texts.of("Allows Toggling of Seeing Other Players Private Messages"))
-                .permission("socialspy.use")
-                .executor(new SocialSpyExecutor())
-                .build();
+		CommandSpec motdCommandSpec = CommandSpec.builder()
+				.description(Texts.of("MOTD Command"))
+				.permission("motd.use")
+				.executor(new MotdExecutor())
+				.build();
 
-        game.getCommandDispatcher().register(this, socialSpyCommandSpec, "socialspy");
-        
-        CommandSpec mailListCommandSpec = CommandSpec.builder()
-                .description(Texts.of("List Mail Command"))
-                .permission("mail.list")
-                .arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("page no")))))
-                .executor(new MailListExecutor())
-                .build();
+		game.getCommandDispatcher().register(this, motdCommandSpec, "motd");
 
-        game.getCommandDispatcher().register(this, mailListCommandSpec, "listmail");
-        
-        CommandSpec mailReadCommandSpec = CommandSpec.builder()
-                .description(Texts.of("Read Mail Command"))
-                .permission("mail.read")
-                .arguments(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("mail no"))))
-                .executor(new MailReadExecutor())
-                .build();
+		CommandSpec socialSpyCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Allows Toggling of Seeing Other Players Private Messages"))
+				.permission("socialspy.use")
+				.executor(new SocialSpyExecutor())
+				.build();
 
-        game.getCommandDispatcher().register(this, mailReadCommandSpec, "readmail");
-        
-        CommandSpec mailCommandSpec = CommandSpec.builder()
-                .description(Texts.of("Mail Command"))
-                .permission("mail.use")
-                .arguments(GenericArguments.seq(
-                			GenericArguments.onlyOne(GenericArguments.string(Texts.of("player")))),
-                			GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("message"))))
-                .executor(new MailExecutor())
-                .build();
+		game.getCommandDispatcher().register(this, socialSpyCommandSpec, "socialspy");
 
-        game.getCommandDispatcher().register(this, mailCommandSpec, "mail");
-        
-        CommandSpec messageCommandSpec = CommandSpec.builder()
-                .description(Texts.of("Message Command"))
-                .permission("message.use")
-                .arguments(GenericArguments.seq(
-                			GenericArguments.onlyOne(GenericArguments.player(Texts.of("recipient"), game))),
-                			GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("message"))))
-                .executor(new MessageExecutor())
-                .build();
+		CommandSpec mailListCommandSpec = CommandSpec.builder()
+				.description(Texts.of("List Mail Command"))
+				.permission("mail.list")
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("page no")))))
+				.executor(new MailListExecutor())
+				.build();
 
-        game.getCommandDispatcher().register(this, messageCommandSpec, "message", "m", "msg");
-		
+		game.getCommandDispatcher().register(this, mailListCommandSpec, "listmail");
+
+		CommandSpec mailReadCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Read Mail Command"))
+				.permission("mail.read")
+				.arguments(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("mail no"))))
+				.executor(new MailReadExecutor())
+				.build();
+
+		game.getCommandDispatcher().register(this, mailReadCommandSpec, "readmail");
+
+		CommandSpec mailCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Mail Command"))
+				.permission("mail.use")
+				.arguments(GenericArguments.seq(
+						GenericArguments.onlyOne(GenericArguments.string(Texts.of("player")))),
+						GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("message"))))
+						.executor(new MailExecutor())
+						.build();
+
+		game.getCommandDispatcher().register(this, mailCommandSpec, "mail");
+
+		CommandSpec messageCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Message Command"))
+				.permission("message.use")
+				.arguments(GenericArguments.seq(
+						GenericArguments.onlyOne(GenericArguments.player(Texts.of("recipient"), game))),
+						GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("message"))))
+						.executor(new MessageExecutor())
+						.build();
+
+		game.getCommandDispatcher().register(this, messageCommandSpec, "message", "m", "msg");
+
 		CommandSpec lightningCommandSpec = CommandSpec.builder()
-                .description(Texts.of("Lightning Command"))
-                .permission("lightning.use")
-                .executor(new LightningExecutor())
-                .build();
+				.description(Texts.of("Lightning Command"))
+				.permission("lightning.use")
+				.executor(new LightningExecutor())
+				.build();
 
-        game.getCommandDispatcher().register(this, lightningCommandSpec, "thor", "smite", "lightning");
+		game.getCommandDispatcher().register(this, lightningCommandSpec, "thor", "smite", "lightning");
 
 		CommandSpec sudoCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Sudo Command"))
@@ -292,8 +292,8 @@ public class Main
 				.arguments(GenericArguments.seq(
 						GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)),
 						GenericArguments.remainingJoinedStrings(Texts.of("command"))))
-				.executor(new SudoExecutor())
-				.build();
+						.executor(new SudoExecutor())
+						.build();
 
 		game.getCommandDispatcher().register(this, sudoCommandSpec, "sudo");
 
@@ -475,16 +475,16 @@ public class Main
 				.build();
 
 		game.getCommandDispatcher().register(this, jumpCommandSpec, "jump");
-		
-		CommandSpec powertoolCommandSpec = CommandSpec.builder()
-                .description(Texts.of("Powertool Command"))
-                .permission("powertool.use")
-                .arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("command")))))
-                .executor(new PowertoolExecutor())
-                .build();
 
-        game.getCommandDispatcher().register(this, powertoolCommandSpec, "powertool");
-		
+		CommandSpec powertoolCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Powertool Command"))
+				.permission("powertool.use")
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("command")))))
+				.executor(new PowertoolExecutor())
+				.build();
+
+		game.getCommandDispatcher().register(this, powertoolCommandSpec, "powertool");
+
 		CommandSpec nickCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Nick Command"))
 				.permission("nick.use")
@@ -493,10 +493,10 @@ public class Main
 								GenericArguments.onlyOne(
 										GenericArguments.player(Texts.of("player"), game)
 										)),
-						GenericArguments.onlyOne(
-								GenericArguments.remainingJoinedStrings(Texts.of("nick")))))
-				.executor(new NickExecutor())
-				.build();
+										GenericArguments.onlyOne(
+												GenericArguments.remainingJoinedStrings(Texts.of("nick")))))
+												.executor(new NickExecutor())
+												.build();
 
 		game.getCommandDispatcher().register(this, nickCommandSpec, "nick");
 
@@ -508,11 +508,11 @@ public class Main
 		getLogger().info("SpongeEssentialCmds loaded!");
 	}
 
-	@Subscribe
+	@Listener
 	public void onMailSend(MailSendEvent event)
 	{
 		String recipientName = event.getRecipientName();
-		
+
 		if(game.getServer().getPlayer(recipientName).isPresent())
 		{
 			Utils.addMail(event.getSender().getName(), recipientName, event.getMessage());
@@ -523,56 +523,60 @@ public class Main
 			Utils.addMail(event.getSender().getName(), recipientName, event.getMessage());
 		}
 	}
-	
-	@Subscribe
-	public void onPlayerDeath(PlayerDeathEvent event)
+
+	@Listener
+	public void onPlayerDeath(DestructEntityEvent event)
 	{
-		Player died = event.getEntity();
-		Utils.addLastDeathLocation(died.getUniqueId(), died.getLocation());
+		Entity entity = event.getTargetEntity();
+		if(entity instanceof Player)
+		{
+			Player died = (Player) entity;
+			Utils.addLastDeathLocation(died.getUniqueId(), died.getLocation());
+		}
 	}
 
 	@SuppressWarnings("deprecation")
-	@Subscribe
+	@Listener
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
-		Player player = event.getEntity();
-		
-        String message = Utils.getJoinMsg().replaceAll("&", "\u00A7");
-        player.sendMessage(Texts.of(message));
-        
-        ArrayList<Mail> newMail = new ArrayList<Mail>();
-        
-        for(Mail mail : Utils.getMail())
-        {
-        	if(mail.getRecipientName().equals(player.getName().toString()))
-        	{
-        		newMail.add(mail);
-        	}
-        }
-        
-        if(newMail.size() > 0)
-        {
-        	player.sendMessage(Texts.of(TextColors.GOLD, "[Mail]: ", TextColors.GRAY, "While you were away, you received new mail to view it do ", TextColors.RED, "/listmail"));
-        }
-        
-		recentlyJoined.add(event.getEntity());
+		Player player = event.getSource();
+
+		String message = Utils.getJoinMsg().replaceAll("&", "\u00A7");
+		player.sendMessage(Texts.of(message));
+
+		ArrayList<Mail> newMail = new ArrayList<Mail>();
+
+		for(Mail mail : Utils.getMail())
+		{
+			if(mail.getRecipientName().equals(player.getName().toString()))
+			{
+				newMail.add(mail);
+			}
+		}
+
+		if(newMail.size() > 0)
+		{
+			player.sendMessage(Texts.of(TextColors.GOLD, "[Mail]: ", TextColors.GRAY, "While you were away, you received new mail to view it do ", TextColors.RED, "/listmail"));
+		}
+
+		recentlyJoined.add(event.getSource());
 
 		AFK afkToRemove = null;
-		
+
 		for(AFK afk : movementList)
 		{
-		    if(afk.getPlayer().equals(player))
-		    {
-		        afkToRemove = afk;
-		        break;
-		    }
+			if(afk.getPlayer().equals(player))
+			{
+				afkToRemove = afk;
+				break;
+			}
 		}
-		
+
 		if(afkToRemove != null)
 		{
-		    movementList.remove(afkToRemove);
+			movementList.remove(afkToRemove);
 		}
-		
+
 		Subject subject = player.getContainingCollection().get(player.getIdentifier());
 
 		if (subject instanceof OptionSubject)
@@ -580,7 +584,7 @@ public class Main
 			OptionSubject optionSubject = (OptionSubject) subject;
 			String prefix = optionSubject.getOption("prefix").or("");
 			Text textPrefix = null;
-			
+
 			try
 			{
 				textPrefix = Texts.legacy('&').from(prefix + " ");
@@ -592,7 +596,7 @@ public class Main
 
 			DisplayNameData data = player.getOrCreate(DisplayNameData.class).get();
 			Optional<Text> name = data.get(Keys.DISPLAY_NAME);
-			
+
 			if(name.isPresent())
 			{
 				data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, name.get()));
@@ -610,7 +614,7 @@ public class Main
 		}
 	}
 
-	@Subscribe
+	@Listener
 	public void tpaEventHandler(TPAEvent event)
 	{
 		String senderName = event.getSender().getName();
@@ -636,7 +640,7 @@ public class Main
 		}).delay(10, TimeUnit.SECONDS).name("SpongeEssentialCmds - Remove Pending Invite").submit(game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
 	}
 
-	@Subscribe
+	@Listener
 	public void tpaAcceptEventHandler(TPAAcceptEvent event)
 	{
 		String senderName = event.getSender().getName();
@@ -644,7 +648,7 @@ public class Main
 		event.getRecipient().setLocation(event.getSender().getLocation());
 	}
 
-	@Subscribe
+	@Listener
 	public void tpaHereAcceptEventHandler(TPAHereAcceptEvent event)
 	{
 		String recipientName = event.getRecipient().getName();
@@ -652,7 +656,7 @@ public class Main
 		event.getSender().setLocation(event.getRecipient().getLocation());
 	}
 
-	@Subscribe
+	@Listener
 	public void tpaHereEventHandler(TPAHereEvent event)
 	{
 		String senderName = event.getSender().getName();
@@ -680,66 +684,66 @@ public class Main
 	}
 
 	@SuppressWarnings("deprecation")
-	@Subscribe
+	@Listener
 	public void onMessage(PlayerChatEvent event)
 	{
-		Player player  = event.getEntity();
+		Player player  = event.getSource();
 		String original = Texts.toPlain(event.getMessage());
 		Subject subject = player.getContainingCollection().get(player.getIdentifier());
 
 		if (subject instanceof OptionSubject)
 		{
-		    OptionSubject optionSubject = (OptionSubject) subject;
-            String prefix = optionSubject.getOption("prefix").or("");
-            prefix = prefix.replaceAll("&", "\u00A7");
-            original = original.replaceFirst("<", ("<" + prefix + " " + "\u00A7f"));
-            if (!(event.getEntity().hasPermission("color.chat.use")))
-            {
-                event.setNewMessage(Texts.of(original));
-            }
-        }
-		
+			OptionSubject optionSubject = (OptionSubject) subject;
+			String prefix = optionSubject.getOption("prefix").or("");
+			prefix = prefix.replaceAll("&", "\u00A7");
+			original = original.replaceFirst("<", ("<" + prefix + " " + "\u00A7f"));
+			if (!(event.getSource().hasPermission("color.chat.use")))
+			{
+				event.setNewMessage(Texts.of(original));
+			}
+		}
+
 		original = original.replaceFirst("<", Utils.getFirstChatCharReplacement());
-        original = original.replace(">", Utils.getLastChatCharReplacement());
-        
-        if (!(event.getEntity().hasPermission("color.chat.use")))
-        {
-            event.setNewMessage(Texts.of(original));
-        }
+		original = original.replace(">", Utils.getLastChatCharReplacement());
 
-//			OptionSubject optionSubject = (OptionSubject) subject;
-//			String prefix = optionSubject.getOption("prefix").or("");
-//			
-//			if(!(original.contains(prefix)))
-//			{
-//				Text textPrefix = null;
-//				
-//				try
-//				{
-//					textPrefix = Texts.legacy('&').from(prefix + " ");
-//				}
-//				catch (TextMessageException e)
-//				{
-//					getLogger().warn("Error! A TextMessageException was caught when trying to format the prefix!");
-//				}
-//
-//				DisplayNameData data = player.getOrCreate(DisplayNameData.class).get();
-//				Optional<Text> name = data.get(Keys.DISPLAY_NAME);
-//				
-//				if(name.isPresent())
-//				{
-//					data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, name.get()));
-//				}
-//				else
-//				{
-//					data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, player.getName()));
-//				}
-//
-//				player.offer(data);
-//			}
-//		}
+		if (!(event.getSource().hasPermission("color.chat.use")))
+		{
+			event.setNewMessage(Texts.of(original));
+		}
 
-		if (event.getEntity().hasPermission("color.chat.use"))
+		//			OptionSubject optionSubject = (OptionSubject) subject;
+		//			String prefix = optionSubject.getOption("prefix").or("");
+		//			
+		//			if(!(original.contains(prefix)))
+		//			{
+		//				Text textPrefix = null;
+		//				
+		//				try
+		//				{
+		//					textPrefix = Texts.legacy('&').from(prefix + " ");
+		//				}
+		//				catch (TextMessageException e)
+		//				{
+		//					getLogger().warn("Error! A TextMessageException was caught when trying to format the prefix!");
+		//				}
+		//
+		//				DisplayNameData data = player.getOrCreate(DisplayNameData.class).get();
+		//				Optional<Text> name = data.get(Keys.DISPLAY_NAME);
+		//				
+		//				if(name.isPresent())
+		//				{
+		//					data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, name.get()));
+		//				}
+		//				else
+		//				{
+		//					data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, player.getName()));
+		//				}
+		//
+		//				player.offer(data);
+		//			}
+		//		}
+
+		if (event.getSource().hasPermission("color.chat.use"))
 		{
 			Text newMessage = null;
 			try
@@ -754,22 +758,19 @@ public class Main
 		}
 	}
 
-	@Subscribe
-	public void onSignChange(SignChangeEvent event)
+	@Listener
+	public void onSignChange(ChangeSignEvent.SourcePlayer event)
 	{
-		Player player = null;
-		if (event.getCause().isPresent() && event.getCause().get().getCause() instanceof Player)
-		{
-			player = (Player) event.getCause().get().getCause();
-		}
-		
-		SignData signData = event.getNewData();
+		Player player = event.getSourceEntity();
+		SignData signData = event.getText();
+
 		if(signData.getValue(Keys.SIGN_LINES).isPresent())
 		{
 			String line0 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(0));
 			String line1 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(1));
 			String line2 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(2));
 			String line3 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(3));
+
 			if (line0.equals("[Warp]"))
 			{
 				if (Utils.getWarps().contains(line1))
@@ -788,42 +789,60 @@ public class Main
 				signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(2, Texts.of(line2.replaceAll("&", "\u00A7"))));
 				signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(3, Texts.of(line3.replaceAll("&", "\u00A7"))));
 			}
-			
-			event.setNewData(signData);
+		}
+	}
+
+	@Listener
+	public void onPlayerAttack(InteractEntityEvent.Attack.SourcePlayer event)
+	{
+		Powertool foundTool = null;
+
+		for(Powertool powertool : powertools)
+		{
+			if(powertool.getPlayer().equals(event.getSourceEntity()))
+			{
+				if(event.getSourceEntity().getItemInHand().isPresent() && powertool.getItemID().equals(event.getSourceEntity().getItemInHand().get().getItem().getName()))
+				{
+					foundTool = powertool;
+					break;
+				}
+			}
+		}
+
+		if(foundTool != null)
+		{
+			game.getCommandDispatcher().process(event.getSourceEntity(), foundTool.getCommand());
 		}
 	}
 	
-	@Subscribe
-    public void onPlayerInteract(PlayerInteractEvent event)
+	@Listener
+	public void onPlayerUse(InteractEntityEvent.Use.SourcePlayer event)
 	{
-        if (event.getInteractionType().equals(EntityInteractionTypes.USE) || event.getInteractionType().equals(EntityInteractionTypes.ATTACK))
-	    {
-	        Powertool foundTool = null;
-	        
-	        for(Powertool powertool : powertools)
-	        {
-	            if(powertool.getPlayer().equals(event.getEntity()))
-	            {
-	                if(event.getEntity().getItemInHand().isPresent() && powertool.getItemID().equals(event.getEntity().getItemInHand().get().getItem().getName()))
-	                {
-	                    foundTool = powertool;
-	                    break;
-	                }
-	            }
-	        }
-	        
-	        if(foundTool != null)
-	        {
-	            game.getCommandDispatcher().process(event.getEntity(), foundTool.getCommand());
-	        }
-	    }
+		Powertool foundTool = null;
+
+		for(Powertool powertool : powertools)
+		{
+			if(powertool.getPlayer().equals(event.getSourceEntity()))
+			{
+				if(event.getSourceEntity().getItemInHand().isPresent() && powertool.getItemID().equals(event.getSourceEntity().getItemInHand().get().getItem().getName()))
+				{
+					foundTool = powertool;
+					break;
+				}
+			}
+		}
+
+		if(foundTool != null)
+		{
+			game.getCommandDispatcher().process(event.getSourceEntity(), foundTool.getCommand());
+		}
 	}
 
-	@Subscribe
-	public void onPlayerInteractBlock(PlayerInteractBlockEvent event)
+	@Listener
+	public void onPlayerInteractBlock(InteractBlockEvent.SourcePlayer event)
 	{
-		Location<World> location = event.getLocation();
-		Player player = event.getUser();
+		Location<World> location = event.getTargetLocation();
+		Player player = event.getSourceEntity();
 
 		if (location.getTileEntity().isPresent())
 		{
@@ -855,58 +874,62 @@ public class Main
 		}
 	}
 
-	@Subscribe
-	public void onPlayerMove(PlayerMoveEvent event)
+	@Listener
+	public void onPlayerMove(DisplaceEntityEvent event)
 	{
-		if (recentlyJoined.contains(event.getEntity()))
+		if(event.getTargetEntity() instanceof Player)
 		{
-			recentlyJoined.remove(event.getEntity());
-			AFK removeAFK = null;
-			for (AFK a : movementList)
+			Player player  = (Player) event.getTargetEntity();
+			if (recentlyJoined.contains(player))
 			{
-				if (a.getPlayer() == a.getPlayer())
+				recentlyJoined.remove(player);
+				AFK removeAFK = null;
+				for (AFK a : movementList)
 				{
-					removeAFK = a;
-					break;
-				}
-			}
-			if (removeAFK != null)
-			{
-				movementList.remove(removeAFK);
-			}
-		}
-		else
-		{
-			AFK afk = new AFK(event.getEntity(), System.currentTimeMillis());
-			AFK removeAFK = null;
-			for (AFK a : movementList)
-			{
-				if (a.getPlayer() == a.getPlayer())
-				{
-					removeAFK = a;
-					break;
-				}
-			}
-
-			if (removeAFK != null)
-			{
-				if (removeAFK.getAFK() == true)
-				{
-					for (Player p : game.getServer().getOnlinePlayers())
+					if (a.getPlayer() == a.getPlayer())
 					{
-						p.sendMessage(Texts.of(TextColors.BLUE, event.getEntity().getName(), TextColors.GOLD, " is no longer AFK."));
+						removeAFK = a;
+						break;
 					}
-					movementList.remove(removeAFK);
 				}
-				else if (removeAFK.getAFK() == false)
+				if (removeAFK != null)
 				{
 					movementList.remove(removeAFK);
-					movementList.add(afk);
 				}
 			}
 			else
 			{
-				movementList.add(afk);
+				AFK afk = new AFK(player, System.currentTimeMillis());
+				AFK removeAFK = null;
+				for (AFK a : movementList)
+				{
+					if (a.getPlayer() == a.getPlayer())
+					{
+						removeAFK = a;
+						break;
+					}
+				}
+
+				if (removeAFK != null)
+				{
+					if (removeAFK.getAFK() == true)
+					{
+						for (Player p : game.getServer().getOnlinePlayers())
+						{
+							p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is no longer AFK."));
+						}
+						movementList.remove(removeAFK);
+					}
+					else if (removeAFK.getAFK() == false)
+					{
+						movementList.remove(removeAFK);
+						movementList.add(afk);
+					}
+				}
+				else
+				{
+					movementList.add(afk);
+				}
 			}
 		}
 	}

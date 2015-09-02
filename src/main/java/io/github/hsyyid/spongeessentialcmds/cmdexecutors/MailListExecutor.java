@@ -6,7 +6,7 @@ import io.github.hsyyid.spongeessentialcmds.utils.Utils;
 
 import java.util.ArrayList;
 
-import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.TextBuilder;
 import org.spongepowered.api.text.Texts;

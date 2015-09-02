@@ -4,7 +4,7 @@ import io.github.hsyyid.spongeessentialcmds.Main;
 
 import java.util.ArrayList;
 
-import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.command.CommandException;

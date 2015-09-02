@@ -1,10 +1,8 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
 import org.spongepowered.api.data.key.Keys;
-
-import com.google.common.base.Optional;
 import org.spongepowered.api.data.manipulator.mutable.entity.FlyingData;
-import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.command.CommandException;
@@ -14,6 +12,8 @@ import org.spongepowered.api.util.command.args.CommandContext;
 import org.spongepowered.api.util.command.source.CommandBlockSource;
 import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
+
+import com.google.common.base.Optional;
 
 public class FlyExecutor  implements CommandExecutor
 {

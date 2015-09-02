@@ -2,7 +2,7 @@ package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
 
-import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.service.permission.option.OptionSubject;
 import org.spongepowered.api.text.Texts;
