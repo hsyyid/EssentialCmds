@@ -2,6 +2,7 @@ package io.github.hsyyid.spongeessentialcmds;
 
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.AFKExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BackExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BanExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BroadcastExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteWarpExecutor;
@@ -11,6 +12,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.GamemodeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HealExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.JumpExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.KickExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.LightningExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListWarpExecutor;
@@ -70,12 +72,12 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.block.tileentity.ChangeSignEvent;
+import org.spongepowered.api.event.command.MessageSinkEvent;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.entity.DisplaceEntityEvent;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
-import org.spongepowered.api.event.entity.living.player.PlayerChatEvent;
-import org.spongepowered.api.event.entity.living.player.PlayerJoinEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.config.DefaultConfig;
@@ -96,7 +98,7 @@ import org.spongepowered.api.world.World;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "2.5")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "2.6")
 public class Main
 {
 	public static Game game = null;
@@ -278,6 +280,28 @@ public class Main
 						.build();
 
 		game.getCommandDispatcher().register(this, mailCommandSpec, "mail");
+		
+		CommandSpec banCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Ban Command"))
+				.permission("ban.use")
+				.arguments(GenericArguments.seq(
+						GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))),
+						GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("reason"))))
+						.executor(new BanExecutor())
+						.build();
+
+		game.getCommandDispatcher().register(this, banCommandSpec, "ban");
+		
+		CommandSpec kickCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Kick Command"))
+				.permission("kick.use")
+				.arguments(GenericArguments.seq(
+						GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))),
+						GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("reason"))))
+						.executor(new KickExecutor())
+						.build();
+
+		game.getCommandDispatcher().register(this, kickCommandSpec, "kick");
 
 		CommandSpec messageCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Message Command"))
@@ -551,9 +575,9 @@ public class Main
 
 	@SuppressWarnings("deprecation")
 	@Listener
-	public void onPlayerJoin(PlayerJoinEvent event)
+	public void onPlayerJoin(ClientConnectionEvent.Join event)
 	{
-		Player player = event.getSource();
+		Player player = event.getTargetEntity();
 
 		String message = Utils.getJoinMsg().replaceAll("&", "\u00A7");
 		player.sendMessage(Texts.of(message));
@@ -573,7 +597,7 @@ public class Main
 			player.sendMessage(Texts.of(TextColors.GOLD, "[Mail]: ", TextColors.GRAY, "While you were away, you received new mail to view it do ", TextColors.RED, "/listmail"));
 		}
 
-		recentlyJoined.add(event.getSource());
+		recentlyJoined.add(event.getTargetEntity());
 
 		AFK afkToRemove = null;
 
@@ -699,7 +723,7 @@ public class Main
 
 	@SuppressWarnings("deprecation")
 	@Listener
-	public void onMessage(PlayerChatEvent event)
+	public void onMessage(MessageSinkEvent.SourcePlayer event)
 	{
 		Player player  = event.getSource();
 		String original = Texts.toPlain(event.getMessage());
@@ -713,7 +737,7 @@ public class Main
 			original = original.replaceFirst("<", ("<" + prefix + " " + "\u00A7f"));
 			if (!(event.getSource().hasPermission("color.chat.use")))
 			{
-				event.setNewMessage(Texts.of(original));
+				event.setMessage(Texts.of(original));
 			}
 		}
 
@@ -722,7 +746,7 @@ public class Main
 
 		if (!(event.getSource().hasPermission("color.chat.use")))
 		{
-			event.setNewMessage(Texts.of(original));
+			event.setMessage(Texts.of(original));
 		}
 
 		//			OptionSubject optionSubject = (OptionSubject) subject;
@@ -768,7 +792,7 @@ public class Main
 			{
 				;
 			}
-			event.setNewMessage(newMessage);
+			event.setMessage(newMessage);
 		}
 	}
 
