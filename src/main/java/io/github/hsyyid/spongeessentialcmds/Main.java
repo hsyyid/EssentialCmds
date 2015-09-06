@@ -312,7 +312,7 @@ public class Main
 						.executor(new MessageExecutor())
 						.build();
 
-		game.getCommandDispatcher().register(this, messageCommandSpec, "message", "m", "msg");
+		game.getCommandDispatcher().register(this, messageCommandSpec, "message", "m", "msg", "tell");
 
 		CommandSpec lightningCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Lightning Command"))
