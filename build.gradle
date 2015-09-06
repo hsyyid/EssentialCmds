@@ -1,13 +1,17 @@
 apply plugin: 'java'
+apply plugin: 'eclipse'
 
-tasks.withType(JavaCompile) {
-	sourceCompatibility = "1.6"
-	targetCompatibility = "1.6"
-	options.encoding = 'UTF-8'
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+version = '2.6'
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'SpongeEssentialCmds',
+                   'Implementation-Version': version
+    }
 }
 
 repositories {
-    jcenter()
     mavenCentral()
     maven {
         name 'Sponge maven repo'
@@ -16,7 +20,22 @@ repositories {
 }
 
 dependencies {
-    compile 'org.slf4j:slf4j-api:1.7.12'
-	compile "org.spongepowered:spongeapi:2.1-SNAPSHOT"
-    testCompile 'junit:junit:4.12'
+    compile "org.spongepowered:spongeapi:2.1-SNAPSHOT"
+}
+
+dependencies {
+    compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+test {
+    systemProperties 'property': 'value'
+}
+
+uploadArchives {
+    repositories {
+       flatDir {
+           dirs 'repos'
+       }
+    }
 }
