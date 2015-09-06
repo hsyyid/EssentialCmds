@@ -221,7 +221,9 @@ public class Main
 		CommandSpec gamemodeCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Gamemode Command"))
 				.permission("gamemode.use")
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("gamemode"))))
+				.arguments(GenericArguments.seq(
+						GenericArguments.onlyOne(GenericArguments.string(Texts.of("gamemode"))),
+						GenericArguments.onlyOne(GenericArguments.optional(GenericArguments.player(Texts.of("player"), game)))))
 				.executor(new GamemodeExecutor())
 				.build();
 
@@ -260,7 +262,7 @@ public class Main
 				.build();
 
 		game.getCommandDispatcher().register(this, mailReadCommandSpec, "readmail");
-		
+
 		CommandSpec msgRespondCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Respond to Message Command"))
 				.permission("message.respond")
@@ -280,7 +282,7 @@ public class Main
 						.build();
 
 		game.getCommandDispatcher().register(this, mailCommandSpec, "mail");
-		
+
 		CommandSpec banCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Ban Command"))
 				.permission("ban.use")
@@ -291,7 +293,7 @@ public class Main
 						.build();
 
 		game.getCommandDispatcher().register(this, banCommandSpec, "ban");
-		
+
 		CommandSpec kickCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Kick Command"))
 				.permission("kick.use")
@@ -852,7 +854,7 @@ public class Main
 			game.getCommandDispatcher().process(event.getSourceEntity(), foundTool.getCommand());
 		}
 	}
-	
+
 	@Listener
 	public void onPlayerUse(InteractEntityEvent.Use.SourcePlayer event)
 	{
