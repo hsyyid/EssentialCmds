@@ -804,9 +804,9 @@ public class Main
 	@Listener
 	public void onSignChange(ChangeSignEvent event)
 	{
-		if(event.getCause().root().isPresent() && event.getCause().root().get() instanceof Player)
+		if(event.getCause().first(Player.class).isPresent())
 		{
-			Player player = (Player) event.getCause().root().get();
+			Player player = (Player) event.getCause().first(Player.class).get();
 			SignData signData = event.getText();
 
 			if(signData.getValue(Keys.SIGN_LINES).isPresent())
@@ -841,9 +841,9 @@ public class Main
 	@Listener
 	public void onPlayerAttack(InteractEntityEvent.Attack event)
 	{
-		if(event.getCause().root().isPresent() && event.getCause().root().get() instanceof Player)
+		if(event.getCause().first(Player.class).isPresent())
 		{
-			Player player = (Player) event.getCause().root().get();
+			Player player = (Player) event.getCause().first(Player.class).get();
 			Powertool foundTool = null;
 
 			for(Powertool powertool : powertools)
@@ -868,9 +868,9 @@ public class Main
 	@Listener
 	public void onPlayerUse(InteractEntityEvent.Use event)
 	{
-		if(event.getCause().root().isPresent() && event.getCause().root().get() instanceof Player)
+		if(event.getCause().first(Player.class).isPresent())
 		{
-			Player player = (Player) event.getCause().root().get();
+			Player player = (Player) event.getCause().first(Player.class).get();
 			Powertool foundTool = null;
 
 			for(Powertool powertool : powertools)
@@ -895,9 +895,9 @@ public class Main
 	@Listener
 	public void onPlayerInteractBlock(InteractBlockEvent event)
 	{
-		if(event.getCause().root().isPresent() && event.getCause().root().get() instanceof Player)
+		if(event.getCause().first(Player.class).isPresent())
 		{
-			Player player = (Player) event.getCause().root().get();
+			Player player = (Player) event.getCause().first(Player.class).get();
 			Location<World> location = event.getTargetBlock().getLocation().get();
 
 			if (location.getTileEntity().isPresent())
@@ -936,7 +936,7 @@ public class Main
 	{
 		if(event.getTargetEntity() instanceof Player)
 		{
-			Player player  = (Player) event.getTargetEntity();
+			Player player = (Player) event.getTargetEntity();
 			if (recentlyJoined.contains(player))
 			{
 				recentlyJoined.remove(player);
