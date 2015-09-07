@@ -1,7 +1,5 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.Main;
-
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
 import org.spongepowered.api.entity.living.player.Player;
@@ -42,7 +40,7 @@ public class FeedExecutor implements CommandExecutor
 				}
 				else
 				{
-					Main.getLogger().error("Error! Player " + recipient.getName() + " does not have FoodData!");
+					System.out.println("Error! Player " + recipient.getName() + " does not have FoodData!");
 				}
 			}
 			else if(p.isPresent())

@@ -113,9 +113,9 @@ public class Main
 	public static ArrayList<Message> recentlyMessaged = new ArrayList<Message>();
 
 	@Inject
-	private static Logger logger;
+	private Logger logger;
 
-	public static Logger getLogger()
+	public Logger getLogger()
 	{
 		return logger;
 	}
