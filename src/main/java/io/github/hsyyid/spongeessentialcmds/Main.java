@@ -224,8 +224,8 @@ public class Main
 				.arguments(GenericArguments.seq(
 						GenericArguments.onlyOne(GenericArguments.string(Texts.of("gamemode"))),
 						GenericArguments.onlyOne(GenericArguments.optional(GenericArguments.player(Texts.of("player"), game)))))
-				.executor(new GamemodeExecutor())
-				.build();
+						.executor(new GamemodeExecutor())
+						.build();
 
 		game.getCommandDispatcher().register(this, gamemodeCommandSpec, "gamemode", "gm");
 
@@ -725,188 +725,205 @@ public class Main
 
 	@SuppressWarnings("deprecation")
 	@Listener
-	public void onMessage(MessageSinkEvent.SourcePlayer event)
+	public void onMessage(MessageSinkEvent event)
 	{
-		Player player  = event.getSource();
-		String original = Texts.toPlain(event.getMessage());
-		Subject subject = player.getContainingCollection().get(player.getIdentifier());
-
-		if (subject instanceof OptionSubject)
+		if(event.getCause().root().isPresent() && event.getCause().root().get() instanceof Player)
 		{
-			OptionSubject optionSubject = (OptionSubject) subject;
-			String prefix = optionSubject.getOption("prefix").or("");
-			prefix = prefix.replaceAll("&", "\u00A7");
-			original = original.replaceFirst("<", ("<" + prefix + " " + "\u00A7f"));
-			if (!(event.getSource().hasPermission("color.chat.use")))
+			Player player = (Player) event.getCause().root().get();
+			String original = Texts.toPlain(event.getMessage());
+			Subject subject = player.getContainingCollection().get(player.getIdentifier());
+
+			if (subject instanceof OptionSubject)
+			{
+				OptionSubject optionSubject = (OptionSubject) subject;
+				String prefix = optionSubject.getOption("prefix").or("");
+				prefix = prefix.replaceAll("&", "\u00A7");
+				original = original.replaceFirst("<", ("<" + prefix + " " + "\u00A7f"));
+				if (!(player.hasPermission("color.chat.use")))
+				{
+					event.setMessage(Texts.of(original));
+				}
+			}
+
+			original = original.replaceFirst("<", Utils.getFirstChatCharReplacement());
+			original = original.replace(">", Utils.getLastChatCharReplacement());
+
+			if (!(player.hasPermission("color.chat.use")))
 			{
 				event.setMessage(Texts.of(original));
 			}
-		}
 
-		original = original.replaceFirst("<", Utils.getFirstChatCharReplacement());
-		original = original.replace(">", Utils.getLastChatCharReplacement());
+			//			OptionSubject optionSubject = (OptionSubject) subject;
+			//			String prefix = optionSubject.getOption("prefix").or("");
+			//			
+			//			if(!(original.contains(prefix)))
+			//			{
+			//				Text textPrefix = null;
+			//				
+			//				try
+			//				{
+			//					textPrefix = Texts.legacy('&').from(prefix + " ");
+			//				}
+			//				catch (TextMessageException e)
+			//				{
+			//					getLogger().warn("Error! A TextMessageException was caught when trying to format the prefix!");
+			//				}
+			//
+			//				DisplayNameData data = player.getOrCreate(DisplayNameData.class).get();
+			//				Optional<Text> name = data.get(Keys.DISPLAY_NAME);
+			//				
+			//				if(name.isPresent())
+			//				{
+			//					data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, name.get()));
+			//				}
+			//				else
+			//				{
+			//					data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, player.getName()));
+			//				}
+			//
+			//				player.offer(data);
+			//			}
+			//		}
 
-		if (!(event.getSource().hasPermission("color.chat.use")))
-		{
-			event.setMessage(Texts.of(original));
-		}
-
-		//			OptionSubject optionSubject = (OptionSubject) subject;
-		//			String prefix = optionSubject.getOption("prefix").or("");
-		//			
-		//			if(!(original.contains(prefix)))
-		//			{
-		//				Text textPrefix = null;
-		//				
-		//				try
-		//				{
-		//					textPrefix = Texts.legacy('&').from(prefix + " ");
-		//				}
-		//				catch (TextMessageException e)
-		//				{
-		//					getLogger().warn("Error! A TextMessageException was caught when trying to format the prefix!");
-		//				}
-		//
-		//				DisplayNameData data = player.getOrCreate(DisplayNameData.class).get();
-		//				Optional<Text> name = data.get(Keys.DISPLAY_NAME);
-		//				
-		//				if(name.isPresent())
-		//				{
-		//					data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, name.get()));
-		//				}
-		//				else
-		//				{
-		//					data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, player.getName()));
-		//				}
-		//
-		//				player.offer(data);
-		//			}
-		//		}
-
-		if (event.getSource().hasPermission("color.chat.use"))
-		{
-			Text newMessage = null;
-			try
+			if (player.hasPermission("color.chat.use"))
 			{
-				newMessage = Texts.legacy('&').from(original);
-			}
-			catch (TextMessageException e)
-			{
-				;
-			}
-			event.setMessage(newMessage);
-		}
-	}
-
-	@Listener
-	public void onSignChange(ChangeSignEvent.SourcePlayer event)
-	{
-		Player player = event.getSourceEntity();
-		SignData signData = event.getText();
-
-		if(signData.getValue(Keys.SIGN_LINES).isPresent())
-		{
-			String line0 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(0));
-			String line1 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(1));
-			String line2 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(2));
-			String line3 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(3));
-
-			if (line0.equals("[Warp]"))
-			{
-				if (Utils.getWarps().contains(line1))
-				{	
-					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Texts.of(TextColors.DARK_BLUE, "[Warp]")));
-				}
-				else
+				Text newMessage = null;
+				try
 				{
-					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Texts.of(TextColors.DARK_RED, "[Warp]")));
+					newMessage = Texts.legacy('&').from(original);
 				}
-			}
-			else if(player != null && player.hasPermission("color.sign.use"))
-			{
-				signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Texts.of(line0.replaceAll("&", "\u00A7"))));
-				signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(1, Texts.of(line1.replaceAll("&", "\u00A7"))));
-				signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(2, Texts.of(line2.replaceAll("&", "\u00A7"))));
-				signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(3, Texts.of(line3.replaceAll("&", "\u00A7"))));
+				catch (TextMessageException e)
+				{
+					;
+				}
+				event.setMessage(newMessage);
 			}
 		}
 	}
 
 	@Listener
-	public void onPlayerAttack(InteractEntityEvent.Attack.SourcePlayer event)
+	public void onSignChange(ChangeSignEvent event)
 	{
-		Powertool foundTool = null;
-
-		for(Powertool powertool : powertools)
+		if(event.getCause().root().isPresent() && event.getCause().root().get() instanceof Player)
 		{
-			if(powertool.getPlayer().equals(event.getSourceEntity()))
+			Player player = (Player) event.getCause().root().get();
+			SignData signData = event.getText();
+
+			if(signData.getValue(Keys.SIGN_LINES).isPresent())
 			{
-				if(event.getSourceEntity().getItemInHand().isPresent() && powertool.getItemID().equals(event.getSourceEntity().getItemInHand().get().getItem().getName()))
+				String line0 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(0));
+				String line1 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(1));
+				String line2 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(2));
+				String line3 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(3));
+
+				if (line0.equals("[Warp]"))
 				{
-					foundTool = powertool;
-					break;
-				}
-			}
-		}
-
-		if(foundTool != null)
-		{
-			game.getCommandDispatcher().process(event.getSourceEntity(), foundTool.getCommand());
-		}
-	}
-
-	@Listener
-	public void onPlayerUse(InteractEntityEvent.Use.SourcePlayer event)
-	{
-		Powertool foundTool = null;
-
-		for(Powertool powertool : powertools)
-		{
-			if(powertool.getPlayer().equals(event.getSourceEntity()))
-			{
-				if(event.getSourceEntity().getItemInHand().isPresent() && powertool.getItemID().equals(event.getSourceEntity().getItemInHand().get().getItem().getName()))
-				{
-					foundTool = powertool;
-					break;
-				}
-			}
-		}
-
-		if(foundTool != null)
-		{
-			game.getCommandDispatcher().process(event.getSourceEntity(), foundTool.getCommand());
-		}
-	}
-
-	@Listener
-	public void onPlayerInteractBlock(InteractBlockEvent.SourcePlayer event)
-	{
-		Location<World> location = event.getTargetLocation();
-		Player player = event.getSourceEntity();
-
-		if (location.getTileEntity().isPresent())
-		{
-			TileEntity clickedEntity = location.getTileEntity().get();
-			if (clickedEntity.getType() == TileEntityTypes.SIGN)
-			{
-				Optional<SignData> signData = clickedEntity.getOrCreate(SignData.class);
-				if(signData.isPresent())
-				{
-					SignData data = signData.get();
-					CommandService cmdService = game.getCommandDispatcher();
-					String line0 = Texts.toPlain(data.getValue(Keys.SIGN_LINES).get().get(0));
-					String line1 = Texts.toPlain(data.getValue(Keys.SIGN_LINES).get().get(1));
-					String command = "warp " + line1;
-
-					if (line0.equals("[Warp]"))
+					if (Utils.getWarps().contains(line1))
+					{	
+						signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Texts.of(TextColors.DARK_BLUE, "[Warp]")));
+					}
+					else
 					{
-						if (player.hasPermission("warps.use.sign"))
+						signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Texts.of(TextColors.DARK_RED, "[Warp]")));
+					}
+				}
+				else if(player != null && player.hasPermission("color.sign.use"))
+				{
+					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Texts.of(line0.replaceAll("&", "\u00A7"))));
+					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(1, Texts.of(line1.replaceAll("&", "\u00A7"))));
+					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(2, Texts.of(line2.replaceAll("&", "\u00A7"))));
+					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(3, Texts.of(line3.replaceAll("&", "\u00A7"))));
+				}
+			}
+		}
+	}
+
+	@Listener
+	public void onPlayerAttack(InteractEntityEvent.Attack event)
+	{
+		if(event.getCause().root().isPresent() && event.getCause().root().get() instanceof Player)
+		{
+			Player player = (Player) event.getCause().root().get();
+			Powertool foundTool = null;
+
+			for(Powertool powertool : powertools)
+			{
+				if(powertool.getPlayer().equals(player))
+				{
+					if(player.getItemInHand().isPresent() && powertool.getItemID().equals(player.getItemInHand().get().getItem().getName()))
+					{
+						foundTool = powertool;
+						break;
+					}
+				}
+			}
+
+			if(foundTool != null)
+			{
+				game.getCommandDispatcher().process(player, foundTool.getCommand());
+			}
+		}
+	}
+
+	@Listener
+	public void onPlayerUse(InteractEntityEvent.Use event)
+	{
+		if(event.getCause().root().isPresent() && event.getCause().root().get() instanceof Player)
+		{
+			Player player = (Player) event.getCause().root().get();
+			Powertool foundTool = null;
+
+			for(Powertool powertool : powertools)
+			{
+				if(powertool.getPlayer().equals(player))
+				{
+					if(player.getItemInHand().isPresent() && powertool.getItemID().equals(player.getItemInHand().get().getItem().getName()))
+					{
+						foundTool = powertool;
+						break;
+					}
+				}
+			}
+
+			if(foundTool != null)
+			{
+				game.getCommandDispatcher().process(player, foundTool.getCommand());
+			}
+		}
+	}
+
+	@Listener
+	public void onPlayerInteractBlock(InteractBlockEvent event)
+	{
+		if(event.getCause().root().isPresent() && event.getCause().root().get() instanceof Player)
+		{
+			Player player = (Player) event.getCause().root().get();
+			Location<World> location = event.getTargetBlock().getLocation().get();
+
+			if (location.getTileEntity().isPresent())
+			{
+				TileEntity clickedEntity = location.getTileEntity().get();
+				if (clickedEntity.getType() == TileEntityTypes.SIGN)
+				{
+					Optional<SignData> signData = clickedEntity.getOrCreate(SignData.class);
+					if(signData.isPresent())
+					{
+						SignData data = signData.get();
+						CommandService cmdService = game.getCommandDispatcher();
+						String line0 = Texts.toPlain(data.getValue(Keys.SIGN_LINES).get().get(0));
+						String line1 = Texts.toPlain(data.getValue(Keys.SIGN_LINES).get().get(1));
+						String command = "warp " + line1;
+
+						if (line0.equals("[Warp]"))
 						{
-							cmdService.process(player, command);
-						}
-						else
-						{
-							player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to use Warp Signs!"));
+							if (player.hasPermission("warps.use.sign"))
+							{
+								cmdService.process(player, command);
+							}
+							else
+							{
+								player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to use Warp Signs!"));
+							}
 						}
 					}
 				}
