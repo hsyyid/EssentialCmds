@@ -4,6 +4,9 @@ apply plugin: 'eclipse'
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 version = '2.6'
+group = "io.github.hsyyid"
+archivesBaseName = "SpongeEssentialCmds"
+
 jar {
     manifest {
         attributes 'Implementation-Title': 'SpongeEssentialCmds',
