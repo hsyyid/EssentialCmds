@@ -14,6 +14,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.JumpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.KickExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.LightningExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.RepairExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListWarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailExecutor;
@@ -271,6 +272,14 @@ public class Main
 				.build();
 
 		game.getCommandDispatcher().register(this, msgRespondCommandSpec, "r");
+		
+		CommandSpec repairCommandSpec = CommandSpec.builder()
+                .description(Texts.of("Repair Item in Player's Hand"))
+                .permission("repair.use")
+                .executor(new RepairExecutor())
+                .build();
+
+        game.getCommandDispatcher().register(this, repairCommandSpec, "repair");
 
 		CommandSpec mailCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Mail Command"))
