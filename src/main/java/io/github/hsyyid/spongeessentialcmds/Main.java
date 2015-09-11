@@ -909,7 +909,7 @@ public class Main
 			Player player = (Player) event.getCause().first(Player.class).get();
 			Location<World> location = event.getTargetBlock().getLocation().get();
 
-			if (location.getTileEntity().isPresent())
+			if (location.getTileEntity().isPresent() && location.getTileEntity().get() != null && location.getTileEntity().get().getType() != null)
 			{
 				TileEntity clickedEntity = location.getTileEntity().get();
 				if (clickedEntity.getType() == TileEntityTypes.SIGN)
