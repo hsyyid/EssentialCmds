@@ -875,7 +875,7 @@ public class Main
 	}
 
 	@Listener
-	public void onPlayerUse(InteractEntityEvent.Use event)
+	public void onPlayerUse(InteractEntityEvent.Primary event)
 	{
 		if(event.getCause().first(Player.class).isPresent())
 		{
