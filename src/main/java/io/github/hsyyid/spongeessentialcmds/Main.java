@@ -40,6 +40,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPADenyExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAHereExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPHereExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TeleportPosExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.UnmuteExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.WarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.events.MailSendEvent;
@@ -307,6 +308,19 @@ public class Main
                         .build();
 
         game.getCommandDispatcher().register(this, banCommandSpec, "ban");
+        
+        CommandSpec teleportPosCommandSpec = CommandSpec.builder()
+                .description(Texts.of("Teleport Position Command"))
+                .permission("teleport.pos.use")
+                .arguments(GenericArguments.seq(
+                        GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))),
+                        GenericArguments.onlyOne(GenericArguments.integer(Texts.of("x"))),
+                        GenericArguments.onlyOne(GenericArguments.integer(Texts.of("y"))),
+                        GenericArguments.onlyOne(GenericArguments.integer(Texts.of("z"))))
+                        .executor(new TeleportPosExecutor())
+                        .build();
+
+        game.getCommandDispatcher().register(this, teleportPosCommandSpec, "tppos", "teleportpos", "teleportposition");
 
         CommandSpec kickCommandSpec = CommandSpec.builder()
                 .description(Texts.of("Kick Command"))
