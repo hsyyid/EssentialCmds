@@ -75,7 +75,7 @@ import org.spongepowered.api.event.command.MessageSinkEvent;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.entity.DisplaceEntityEvent;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
-import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.plugin.Plugin;
@@ -133,7 +133,7 @@ public class Main
     private ConfigurationLoader<CommentedConfigurationNode> confManager;
     
     @Listener
-    public void onServerStart(GameStartedServerEvent event)
+    public void onServerStart(GameInitializationEvent event)
     {
         getLogger().info("SpongeEssentialCmds loading...");
         game = event.getGame();
