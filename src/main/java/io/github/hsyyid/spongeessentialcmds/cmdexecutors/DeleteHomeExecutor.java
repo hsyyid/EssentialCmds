@@ -37,7 +37,7 @@ public class DeleteHomeExecutor implements CommandExecutor
 				//Get Value of Home Node
 				String homes = homeNode.getString();
 				
-				//Remove Kit from Kits Node
+				//Remove Home from Homes Node
 				String newVal = homes.replace(homeName + ",","");
 				homeNode.setValue(newVal);
 				
@@ -67,6 +67,7 @@ public class DeleteHomeExecutor implements CommandExecutor
 					System.out.println("[Home]: Failed to remove home " + homeName );
 					src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "The home was not deleted successfully!"));
 				}
+				
 				src.sendMessage(Texts.of(TextColors.GREEN,"Success: ", TextColors.YELLOW, "Deleted home " + homeName));
 			}
 			else

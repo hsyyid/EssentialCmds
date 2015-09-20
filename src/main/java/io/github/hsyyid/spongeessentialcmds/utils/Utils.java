@@ -1,6 +1,14 @@
 package io.github.hsyyid.spongeessentialcmds.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import io.github.hsyyid.spongeessentialcmds.Main;
+import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -9,24 +17,84 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 
-import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.commented.CommentedConfigurationNode;
-import ninja.leaping.configurate.loader.ConfigurationLoader;
-
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 public class Utils
 {
 	private static Gson gson = new GsonBuilder().create();
+	
+	public static void saveMutes()
+	{
+	    Connection c = null;
+        Statement stmt = null;
+
+        try
+        {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:Mutes.db");
+            stmt = c.createStatement();
+            String sql = ("DROP TABLE IF EXISTS MUTES");
+            stmt.executeUpdate(sql);
+
+            sql = "CREATE TABLE MUTES " +
+                    "(UUID TEXT PRIMARY KEY     NOT NULL)";
+            stmt.executeUpdate(sql);
+
+            for(Mute mute : Main.muteList)
+            {
+                String UUID = mute.getUUID();
+
+                sql = "INSERT INTO MUTES (UUID) " +
+                        "VALUES ('" + UUID + "');"; 
+                stmt.executeUpdate(sql);
+            }
+
+            stmt.close();
+            c.close();
+        }
+        catch (Exception e)
+        {
+            ;
+        }
+	}
+	
+	public static void readMutes()
+	{
+	    Connection c = null;
+        Statement stmt = null;
+
+        try
+        {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:Mutes.db");
+            c.setAutoCommit(false);
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM MUTES;");
+            ArrayList<Mute> muteList = new ArrayList<Mute>();
+
+            while (rs.next())
+            {
+               String UUID = rs.getString("uuid");
+               muteList.add(new Mute(UUID));
+            }
+
+            Main.muteList = muteList;
+            
+            rs.close();
+            stmt.close();
+            c.close();
+        }
+        catch (Exception e)
+        {
+            ;
+        }
+	}
 	
 	public static void setHome(UUID userName, Location<World> playerLocation, String worldName, String homeName)
 	{
@@ -464,14 +532,13 @@ public class Utils
 					}
 					else
 					{
+					    if(!(list.equals("")))
+					    {
+					        homeList.add(list);
+					    }
 						finished = true;
 					}
 				}
-			}
-			else
-			{
-				homeList.add(list);
-				finished = true;
 			}
 		}
 
