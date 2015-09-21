@@ -3,7 +3,7 @@ apply plugin: 'eclipse'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
-version = '2.7'
+version = '2.8'
 group = "io.github.hsyyid"
 archivesBaseName = "SpongeEssentialCmds"
 

@@ -43,6 +43,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPHereExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TeleportPosExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.UnmuteExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.WarpExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.WeatherExecutor;
 import io.github.hsyyid.spongeessentialcmds.events.MailSendEvent;
 import io.github.hsyyid.spongeessentialcmds.events.TPAAcceptEvent;
 import io.github.hsyyid.spongeessentialcmds.events.TPAEvent;
@@ -102,7 +103,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "2.7")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "2.8")
 public class Main
 {
     public static Game game = null;
@@ -297,6 +298,17 @@ public class Main
                         .build();
 
         game.getCommandDispatcher().register(this, mailCommandSpec, "mail");
+        
+        CommandSpec weatherCommandSpec = CommandSpec.builder()
+                .description(Texts.of("Weather Command"))
+                .permission("weather.use")
+                .arguments(GenericArguments.seq(
+                        GenericArguments.onlyOne(GenericArguments.string(Texts.of("weather")))),
+                        GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Texts.of("duration")))))
+                        .executor(new WeatherExecutor())
+                        .build();
+
+        game.getCommandDispatcher().register(this, weatherCommandSpec, "weather");
 
         CommandSpec banCommandSpec = CommandSpec.builder()
                 .description(Texts.of("Ban Command"))
