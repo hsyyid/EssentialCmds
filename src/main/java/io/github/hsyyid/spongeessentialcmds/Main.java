@@ -41,6 +41,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAHereExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPHereExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TeleportPosExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TimeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.UnmuteExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.WarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.WeatherExecutor;
@@ -280,6 +281,17 @@ public class Main
 
         game.getCommandDispatcher().register(this, msgRespondCommandSpec, "r");
 
+        CommandSpec timeCommandSpec = CommandSpec.builder()
+                .description(Texts.of("Set Time Command"))
+                .permission("time.set")
+                .arguments(GenericArguments.firstParsing(
+                        GenericArguments.string(Texts.of("time")),
+                                GenericArguments.integer(Texts.of("ticks"))))
+                .executor(new TimeExecutor())
+                .build();
+
+        game.getCommandDispatcher().register(this, timeCommandSpec, "time");
+        
         CommandSpec repairCommandSpec = CommandSpec.builder()
                 .description(Texts.of("Repair Item in Player's Hand"))
                 .permission("repair.use")
