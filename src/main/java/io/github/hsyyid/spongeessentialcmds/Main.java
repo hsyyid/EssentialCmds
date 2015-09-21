@@ -69,7 +69,6 @@ import org.spongepowered.api.data.manipulator.mutable.DisplayNameData;
 import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
 import org.spongepowered.api.data.manipulator.mutable.tileentity.SignData;
 import org.spongepowered.api.data.value.mutable.Value;
-import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.InteractBlockEvent;
@@ -660,12 +659,11 @@ public class Main
 
     @Listener
     public void onPlayerDeath(DestructEntityEvent event)
-    {
-        Entity entity = event.getTargetEntity();
-        if(entity instanceof Player)
+    {   
+        if(event.getTargetEntity() instanceof Player)
         {
-            Player died = (Player) entity;
-            Utils.addLastDeathLocation(died.getUniqueId(), died.getLocation());
+            Player died = (Player) event.getTargetEntity();
+            Utils.setLastDeathLocation(died.getUniqueId(), died.getLocation());
         }
     }
 

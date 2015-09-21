@@ -470,13 +470,14 @@ public class Utils
 		}
 	}
 
-	public static void addLastDeathLocation(UUID userName, Location<World> playerLocation)
+	public static void setLastDeathLocation(UUID userName, Location<World> playerLocation)
 	{
 		String playerName = userName.toString();
 		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
 		Main.config.getNode("back", "users", playerName, "lastDeath", "X").setValue(playerLocation.getX());
 		Main.config.getNode("back", "users", playerName, "lastDeath", "Y").setValue(playerLocation.getY());
 		Main.config.getNode("back", "users", playerName, "lastDeath", "Z").setValue(playerLocation.getZ());
+
 		try
 		{
 			configManager.save(Main.config);
@@ -484,7 +485,7 @@ public class Utils
 		}
 		catch (IOException e)
 		{
-			System.out.println("[Back]: Failed to add " + playerName + "'s last death location!");
+			System.out.println("[SpongeEssentialCmds]: Failed to add " + playerName + "'s last death location!");
 		}
 	}
 
