@@ -841,7 +841,7 @@ public class Main
                 OptionSubject optionSubject = (OptionSubject) subject;
                 String prefix = optionSubject.getOption("prefix").or("");
                 prefix = prefix.replaceAll("&", "\u00A7");
-                original = original.replaceFirst("<", ("<" + prefix + " " + "\u00A7f"));
+                original = original.replaceFirst("<", ("<" + prefix + " "));
                 if (!(player.hasPermission("color.chat.use")))
                 {
                     event.setMessage(Texts.of(original));
