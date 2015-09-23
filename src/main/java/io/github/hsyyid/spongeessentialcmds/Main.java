@@ -45,6 +45,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TimeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.UnmuteExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.WarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.WeatherExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.WhoisExecutor;
 import io.github.hsyyid.spongeessentialcmds.events.MailSendEvent;
 import io.github.hsyyid.spongeessentialcmds.events.TPAAcceptEvent;
 import io.github.hsyyid.spongeessentialcmds.events.TPAEvent;
@@ -103,7 +104,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "2.8")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "2.9")
 public class Main
 {
     public static Game game = null;
@@ -225,6 +226,15 @@ public class Main
                 .build();
 
         game.getCommandDispatcher().register(this, homeCommandSpec, "home");
+        
+        CommandSpec whoIsCommandSpec = CommandSpec.builder()
+                .description(Texts.of("WhoIs Command"))
+                .permission("whois.use")
+                .arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))
+                .executor(new WhoisExecutor())
+                .build();
+
+        game.getCommandDispatcher().register(this, whoIsCommandSpec, "whois");
 
         CommandSpec gamemodeCommandSpec = CommandSpec.builder()
                 .description(Texts.of("Gamemode Command"))
