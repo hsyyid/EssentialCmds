@@ -829,9 +829,9 @@ public class Main
     @Listener
     public void onMessage(MessageSinkEvent event)
     {
-        if(event.getCause().root().isPresent() && event.getCause().root().get() instanceof Player)
+        if(event.getCause().first(Player.class).isPresent())
         {
-            Player player = (Player) event.getCause().root().get();
+            Player player = (Player) event.getCause().first(Player.class).get();
 
             for(Mute mute : muteList)
             {
@@ -852,7 +852,7 @@ public class Main
                 String prefix = optionSubject.getOption("prefix").or("");
                 prefix = prefix.replaceAll("&", "\u00A7");
                 original = original.replaceFirst("<", ("<" + prefix + " "));
-                original = original.replaceFirst(player.getName(), player.getName() + "\u00A7f");
+                
                 if (!(player.hasPermission("color.chat.use")))
                 {
                     event.setMessage(Texts.of(original));
@@ -860,7 +860,7 @@ public class Main
             }
 
             original = original.replaceFirst("<", Utils.getFirstChatCharReplacement());
-            original = original.replace(">", Utils.getLastChatCharReplacement());
+            original = original.replaceFirst(">\u00A7f", Utils.getLastChatCharReplacement());
 
             if (!(player.hasPermission("color.chat.use")))
             {
