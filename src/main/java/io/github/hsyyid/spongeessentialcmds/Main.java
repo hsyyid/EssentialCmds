@@ -860,7 +860,7 @@ public class Main
             }
 
             original = original.replaceFirst("<", Utils.getFirstChatCharReplacement());
-            original = original.replaceFirst(">\u00A7f", Utils.getLastChatCharReplacement());
+            original = original.replaceFirst(">", "\u00A7f" + Utils.getLastChatCharReplacement());
 
             if (!(player.hasPermission("color.chat.use")))
             {
