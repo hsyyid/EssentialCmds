@@ -962,7 +962,7 @@ public class Main
     }
 
     @Listener
-    public void onPlayerAttack(InteractEntityEvent.Attack event)
+    public void onPlayerRightClick(InteractEntityEvent.Secondary event)
     {
         if(event.getCause().first(Player.class).isPresent())
         {
@@ -989,7 +989,7 @@ public class Main
     }
 
     @Listener
-    public void onPlayerUse(InteractEntityEvent.Primary event)
+    public void onPlayerLeftClick(InteractEntityEvent.Primary event)
     {
         if(event.getCause().first(Player.class).isPresent())
         {
@@ -1021,26 +1021,6 @@ public class Main
         if(event.getCause().first(Player.class).isPresent())
         {
             Player player = (Player) event.getCause().first(Player.class).get();
-
-            Powertool foundTool = null;
-
-            for(Powertool powertool : powertools)
-            {
-                if(powertool.getPlayer().equals(player))
-                {
-                    if(player.getItemInHand().isPresent() && powertool.getItemID().equals(player.getItemInHand().get().getItem().getName()))
-                    {
-                        foundTool = powertool;
-                        break;
-                    }
-                }
-            }
-
-            if(foundTool != null)
-            {
-                game.getCommandDispatcher().process(player, foundTool.getCommand());
-            }
-
             Location<World> location = event.getTargetBlock().getLocation().get();
 
             if (location.getTileEntity().isPresent() && location.getTileEntity().get() != null && location.getTileEntity().get().getType() != null)
