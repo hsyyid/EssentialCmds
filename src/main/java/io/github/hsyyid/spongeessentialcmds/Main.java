@@ -134,16 +134,16 @@ public class Main
     @Inject
     @DefaultConfig(sharedRoot = true)
     private ConfigurationLoader<CommentedConfigurationNode> confManager;
-    
+
     @Listener
     public void onServerStart(GameInitializationEvent event)
     {
         getLogger().info("SpongeEssentialCmds loading...");
         game = event.getGame();
         helper = game.getTeleportHelper();
-        
+
         Utils.readMutes();
-        
+
         // Config File
         try
         {
@@ -226,7 +226,7 @@ public class Main
                 .build();
 
         game.getCommandDispatcher().register(this, homeCommandSpec, "home");
-        
+
         CommandSpec whoIsCommandSpec = CommandSpec.builder()
                 .description(Texts.of("WhoIs Command"))
                 .permission("whois.use")
@@ -295,12 +295,12 @@ public class Main
                 .permission("time.set")
                 .arguments(GenericArguments.firstParsing(
                         GenericArguments.string(Texts.of("time")),
-                                GenericArguments.integer(Texts.of("ticks"))))
-                .executor(new TimeExecutor())
-                .build();
+                        GenericArguments.integer(Texts.of("ticks"))))
+                        .executor(new TimeExecutor())
+                        .build();
 
         game.getCommandDispatcher().register(this, timeCommandSpec, "time");
-        
+
         CommandSpec repairCommandSpec = CommandSpec.builder()
                 .description(Texts.of("Repair Item in Player's Hand"))
                 .permission("repair.use")
@@ -319,7 +319,7 @@ public class Main
                         .build();
 
         game.getCommandDispatcher().register(this, mailCommandSpec, "mail");
-        
+
         CommandSpec weatherCommandSpec = CommandSpec.builder()
                 .description(Texts.of("Weather Command"))
                 .permission("weather.use")
@@ -341,7 +341,16 @@ public class Main
                         .build();
 
         game.getCommandDispatcher().register(this, banCommandSpec, "ban");
-        
+
+        CommandSpec pardonCommandSpec = CommandSpec.builder()
+                .description(Texts.of("Unban Command"))
+                .permission("unban.use")
+                .arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))
+                .executor(new BanExecutor())
+                .build();
+
+        game.getCommandDispatcher().register(this, pardonCommandSpec, "unban", "pardon");
+
         CommandSpec teleportPosCommandSpec = CommandSpec.builder()
                 .description(Texts.of("Teleport Position Command"))
                 .permission("teleport.pos.use")
@@ -568,7 +577,7 @@ public class Main
                 .build();
 
         game.getCommandDispatcher().register(this, feedCommandSpec, "feed");
-        
+
         CommandSpec unmuteCommnadSpec = CommandSpec.builder()
                 .description(Texts.of("Unmute Command"))
                 .permission("unmute.use")
@@ -577,7 +586,7 @@ public class Main
                 .build();
 
         game.getCommandDispatcher().register(this, unmuteCommnadSpec, "unmute");
-        
+
         CommandSpec killCommandSpec = CommandSpec.builder()
                 .description(Texts.of("Kill Command"))
                 .permission("kill.use")
@@ -660,7 +669,7 @@ public class Main
             Utils.addMail(event.getSender().getName(), recipientName, event.getMessage());
         }
     }
-    
+
     @Listener
     public void onServerStop(GameStoppingServerEvent event)
     {
@@ -852,7 +861,7 @@ public class Main
                 String prefix = optionSubject.getOption("prefix").or("");
                 prefix = prefix.replaceAll("&", "\u00A7");
                 original = original.replaceFirst("<", ("<" + prefix + " "));
-                
+
                 if (!(player.hasPermission("color.chat.use")))
                 {
                     event.setMessage(Texts.of(original));
@@ -1012,6 +1021,26 @@ public class Main
         if(event.getCause().first(Player.class).isPresent())
         {
             Player player = (Player) event.getCause().first(Player.class).get();
+
+            Powertool foundTool = null;
+
+            for(Powertool powertool : powertools)
+            {
+                if(powertool.getPlayer().equals(player))
+                {
+                    if(player.getItemInHand().isPresent() && powertool.getItemID().equals(player.getItemInHand().get().getItem().getName()))
+                    {
+                        foundTool = powertool;
+                        break;
+                    }
+                }
+            }
+
+            if(foundTool != null)
+            {
+                game.getCommandDispatcher().process(player, foundTool.getCommand());
+            }
+
             Location<World> location = event.getTargetBlock().getLocation().get();
 
             if (location.getTileEntity().isPresent() && location.getTileEntity().get() != null && location.getTileEntity().get().getType() != null)
