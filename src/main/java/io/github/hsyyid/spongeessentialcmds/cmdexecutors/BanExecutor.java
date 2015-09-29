@@ -25,11 +25,11 @@ public class BanExecutor implements CommandExecutor
 
         if(reason.isPresent())
         {
-            game.getCommandDispatcher().process(server.getConsole(), "ban " +  player.getName() + " " + reason.get());
+            game.getCommandDispatcher().process(server.getConsole(), "minecraft:ban " +  player.getName() + " " + reason.get());
         }
         else
         {
-            game.getCommandDispatcher().process(server.getConsole(), "ban " +  player.getName() + " " + "The BanHammer has Spoken!");
+            game.getCommandDispatcher().process(server.getConsole(), "minecraft:ban " +  player.getName() + " " + "The BanHammer has Spoken!");
         }
         
         src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player banned."));
