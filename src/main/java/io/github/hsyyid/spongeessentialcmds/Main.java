@@ -20,6 +20,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.LightningExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListWarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.PardonExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailListExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailReadExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MessageExecutor;
@@ -345,8 +346,8 @@ public class Main
         CommandSpec pardonCommandSpec = CommandSpec.builder()
                 .description(Texts.of("Unban Command"))
                 .permission("unban.use")
-                .arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))
-                .executor(new BanExecutor())
+                .arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("player"))))
+                .executor(new PardonExecutor())
                 .build();
 
         game.getCommandDispatcher().register(this, pardonCommandSpec, "unban", "pardon");

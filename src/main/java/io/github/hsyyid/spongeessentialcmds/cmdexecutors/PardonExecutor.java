@@ -19,18 +19,11 @@ public class PardonExecutor implements CommandExecutor
     {
         Game game = Main.game;
         Server server = game.getServer();
-        Player player = ctx.<Player>getOne("player").get();
-        
-        if(server.getPlayer(player.getUniqueId()).isPresent())
-        {
-            game.getCommandDispatcher().process(server.getConsole(), "pardon " +  player.getName());
-            src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player unbanned."));
-        }
-        else
-        {
-            src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Player doesn't appear to be online!"));
-        }
-        
+        String player = ctx.<String>getOne("player").get();
+
+        game.getCommandDispatcher().process(server.getConsole(), "pardon " +  player);
+        src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player unbanned."));
+      
         return CommandResult.success();
     }
 }
