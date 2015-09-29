@@ -20,13 +20,13 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.LightningExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListWarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.PardonExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailListExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailReadExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MessageExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MotdExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MuteExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.NickExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.PardonExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.PowertoolExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.RepairExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.RespondExecutor;
@@ -337,7 +337,8 @@ public class Main
                 .permission("ban.use")
                 .arguments(GenericArguments.seq(
                         GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))),
-                        GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("reason"))))
+                        GenericArguments.optional(GenericArguments.onlyOne(
+                                GenericArguments.remainingJoinedStrings(Texts.of("reason")))))
                         .executor(new BanExecutor())
                         .build();
 
