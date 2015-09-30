@@ -11,6 +11,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteWarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FeedExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FlyExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.GamemodeExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HatExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HealExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.JumpExecutor;
@@ -508,6 +509,14 @@ public class Main
                 .build();
 
         game.getCommandDispatcher().register(this, tpaDenyCommandSpec, "tpadeny");
+
+        CommandSpec hatCommandSpec = CommandSpec.builder()
+                .description(Texts.of("Hat Command"))
+                .permission("hat.use")
+                .executor(new HatExecutor())
+                .build();
+
+        game.getCommandDispatcher().register(this, hatCommandSpec, "hat");
 
         CommandSpec flyCommandSpec = CommandSpec.builder()
                 .description(Texts.of("Fly Command"))
