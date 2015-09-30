@@ -19,8 +19,14 @@ public class HatExecutor implements CommandExecutor {
 			Optional<ItemStack> itemInHand = player.getItemInHand();
 			if (itemInHand.isPresent()) {
 				player.setHelmet(itemInHand.get());
+				itemInHand.get().setQuantity(itemInHand.get().getQuantity() - 1);
+				if(itemInHand.get().getQuantity() > 0)//Sponge derped up itemstack verification
+					player.setItemInHand(itemInHand.get());
+				else
+					player.setItemInHand(null);
 			} else {
 				player.sendMessage(Texts.of("No item selected in hotbar."));
+				return CommandResult.empty();
 			}
 		}
 		return CommandResult.success();

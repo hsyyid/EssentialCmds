@@ -1,7 +1,8 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.Main;
+import com.google.common.base.Optional;
 
+import io.github.hsyyid.spongeessentialcmds.Main;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.entity.living.player.Player;
@@ -15,24 +16,23 @@ import org.spongepowered.api.util.command.spec.CommandExecutor;
 
 public class BanExecutor implements CommandExecutor
 {
+    public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+    {
+        Game game = Main.game;
+        Server server = game.getServer();
+        Player player = ctx.<Player>getOne("player").get();
+        Optional<String> reason = ctx.<String>getOne("reason");
 
-	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
-	{
-		Game game = Main.game;
-		Server server = game.getServer();
-		Player player = ctx.<Player>getOne("player").get();
-		String reason = ctx.<String>getOne("reason").get();
-		
-		if(server.getPlayer(player.getUniqueId()).isPresent())
-		{
-			game.getCommandDispatcher().process(server.getConsole(), "ban " +  player.getName() + " " + reason);
-			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player banned."));
-		}
-		else
-		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Player doesn't appear to be online!"));
-		}
-		
-		return CommandResult.success();
-	}
+        if(reason.isPresent())
+        {
+            game.getCommandDispatcher().process(server.getConsole(), "minecraft:ban " +  player.getName() + " " + reason.get());
+        }
+        else
+        {
+            game.getCommandDispatcher().process(server.getConsole(), "minecraft:ban " +  player.getName() + " " + "The BanHammer has Spoken!");
+        }
+        
+        src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player banned."));
+        return CommandResult.success();
+    }
 }

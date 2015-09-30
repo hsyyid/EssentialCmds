@@ -337,8 +337,9 @@ public class Main
                 .description(Texts.of("Ban Command"))
                 .permission("ban.use")
                 .arguments(GenericArguments.seq(
-                        GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))),
-                        GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("reason"))))
+                        GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)),
+                        GenericArguments.optional(GenericArguments.onlyOne(
+                                GenericArguments.remainingJoinedStrings(Texts.of("reason"))))))
                         .executor(new BanExecutor())
                         .build();
 

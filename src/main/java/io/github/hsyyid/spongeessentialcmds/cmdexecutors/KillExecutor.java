@@ -26,7 +26,7 @@ public class KillExecutor implements CommandExecutor
             data.set(newHealth);
             p.get().offer(data);
             Utils.setLastDeathLocation(p.get().getUniqueId(), p.get().getLocation());
-            src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Killed player" + p.get().getName()));
+            src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Killed player " + p.get().getName()));
             p.get().sendMessage(Texts.of(TextColors.RED, "You have been killed by " + src.getName()));
         }
         else

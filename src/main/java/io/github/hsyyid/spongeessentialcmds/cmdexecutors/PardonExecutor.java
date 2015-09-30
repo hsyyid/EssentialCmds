@@ -1,10 +1,8 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
 import io.github.hsyyid.spongeessentialcmds.Main;
-
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Server;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.command.CommandException;
@@ -21,7 +19,7 @@ public class PardonExecutor implements CommandExecutor
         Server server = game.getServer();
         String player = ctx.<String>getOne("player").get();
 
-        game.getCommandDispatcher().process(server.getConsole(), "pardon " +  player);
+        game.getCommandDispatcher().process(server.getConsole(), "minecraft:pardon " +  player);
         src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player unbanned."));
       
         return CommandResult.success();

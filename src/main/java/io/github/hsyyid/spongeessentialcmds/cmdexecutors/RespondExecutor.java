@@ -18,94 +18,83 @@ import org.spongepowered.api.util.command.spec.CommandExecutor;
 
 public class RespondExecutor implements CommandExecutor
 {
-	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
-	{
-		Player recipient = null;
+    public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+    {
+        if(src instanceof Player)
+        {
+            Player recipient = null;
+            Player player = (Player) src;
+            
+            for(Message m : Main.recentlyMessaged)
+            {
+                if(m.getRecipient().getUniqueId().toString().equals(player.getUniqueId().toString()))
+                {
+                    recipient = m.getSender();
+                    break;
+                }
+            }
 
-		for(Message m : Main.recentlyMessaged)
-		{
-			if(m.getRecipient().equals(src))
-			{
-				recipient = m.getSender();
-				break;
-			}
-		}
+            if(recipient != null)
+            {
+                String message = ctx.<String>getOne("message").get();
 
-		if(recipient != null)
-		{
-			String message = ctx.<String>getOne("message").get();
+                ArrayList<Player> socialSpies = new ArrayList<Player>();
 
-			ArrayList<Player> socialSpies = new ArrayList<Player>();
+                for(Player p : Main.game.getServer().getOnlinePlayers())
+                {
+                    if(Main.socialSpies.contains(p.getUniqueId()))
+                    {
+                        socialSpies.add(p);
+                    }
+                }
 
-			for(Player player : Main.game.getServer().getOnlinePlayers())
-			{
-				if(Main.socialSpies.contains(player.getUniqueId()))
-				{
-					socialSpies.add(player);
-				}
-			}
+                if(recipient.getUniqueId().toString().equals(player.getUniqueId().toString()))
+                {
+                    src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot send a private message to yourself!"));
+                    return CommandResult.success();
+                }
 
-			if(recipient.equals(src))
-			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot send a private message to yourself!"));
-				return CommandResult.success();
-			}
+                src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.YELLOW, "Sent message to ", TextColors.RED, recipient.getName()));
+                recipient.sendMessage(Texts.of(TextColors.GOLD, "[", TextColors.RED, player.getName(), TextColors.GOLD, " > ", TextColors.RED, recipient.getName(), TextColors.GOLD, "]: ", TextColors.GRAY, message));
 
-			if(src instanceof Player)
-			{
-				Player player = (Player) src;
-				src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.YELLOW, "Sent message to ", TextColors.RED, recipient.getName()));
-				recipient.sendMessage(Texts.of(TextColors.GOLD, "[", TextColors.RED, player.getName(), TextColors.GOLD, " > ", TextColors.RED, recipient.getName(), TextColors.GOLD, "]: ", TextColors.GRAY, message));
+                Message messageToRemove = null;
 
-				Message messageToRemove = null;
+                for(Message m : Main.recentlyMessaged)
+                {
+                    if(m.getRecipient().getUniqueId().equals(recipient.getUniqueId()))
+                    {
+                        messageToRemove = m;
+                        break;
+                    }
+                }
 
-				for(Message m : Main.recentlyMessaged)
-				{
-					if(m.getRecipient().getUniqueId().equals(recipient.getUniqueId()))
-					{
-						messageToRemove = m;
-						break;
-					}
-				}
+                if(messageToRemove != null)
+                {
+                    Main.recentlyMessaged.remove(messageToRemove);
+                }
 
-				if(messageToRemove != null)
-				{
-					Main.recentlyMessaged.remove(messageToRemove);
-				}
+                Message msg = new Message(player, recipient, message);
+                Main.recentlyMessaged.add(msg);
 
-				Message msg = new Message(player, recipient, message);
-				Main.recentlyMessaged.add(msg);
-
-				for(Player socialspy : socialSpies)
-				{
-					socialspy.sendMessage(Texts.of(TextColors.GOLD, "[", TextColors.RED, player.getName(), TextColors.GOLD, " > ", TextColors.RED, recipient.getName(), TextColors.GOLD, "]: ", TextColors.GRAY, message));
-				}
-			}
-			else if(src instanceof ConsoleSource)
-			{
-				src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.RED, "Sent message to " + recipient.getName()));
-				recipient.sendMessage(Texts.of(TextColors.GOLD, "[", TextColors.RED, "Console", TextColors.GOLD, " > ", TextColors.RED, recipient.getName(), TextColors.GOLD, "]: ", TextColors.GRAY, message));
-
-				for(Player socialspy : socialSpies)
-				{
-					socialspy.sendMessage(Texts.of(TextColors.GOLD, "[", TextColors.RED, "Console", TextColors.GOLD, " > ", TextColors.RED, recipient.getName(), TextColors.GOLD, "]: ", TextColors.GRAY, message));
-				}
-			}
-			else if(src instanceof CommandBlockSource)
-			{
-				src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.RED, "Sent message to " + recipient.getName()));
-				recipient.sendMessage(Texts.of(TextColors.GOLD, "[", TextColors.RED, "CommandBlock", TextColors.GOLD, " > ", TextColors.RED, recipient.getName(), TextColors.GOLD, "]: ", TextColors.GRAY, message));
-
-				for(Player socialspy : socialSpies)
-				{
-					socialspy.sendMessage(Texts.of(TextColors.GOLD, "[", TextColors.RED, "CommandBlock", TextColors.GOLD, " > ", TextColors.RED, recipient.getName(), TextColors.GOLD, "]: ", TextColors.GRAY, message));
-				}
-			}
-		}
-		else
-		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "No recent messages found!"));
-		}
-		return CommandResult.success();
-	}
+                for(Player socialspy : socialSpies)
+                {
+                    socialspy.sendMessage(Texts.of(TextColors.GOLD, "[", TextColors.RED, player.getName(), TextColors.GOLD, " > ", TextColors.RED, recipient.getName(), TextColors.GOLD, "]: ", TextColors.GRAY, message));
+                }
+            }
+            else
+            {
+                src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "No recent messages found!"));
+            }
+        }
+        else if(src instanceof ConsoleSource)
+        {
+            src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be an in-game player to use /r!"));
+        }
+        else if(src instanceof CommandBlockSource)
+        {
+            src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be an in-game player to use /r!"));
+        }
+        
+        return CommandResult.success();
+    }
 }
