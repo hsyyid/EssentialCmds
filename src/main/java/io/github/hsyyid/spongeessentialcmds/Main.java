@@ -11,6 +11,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteWarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FeedExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FlyExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.GamemodeExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HatExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HealExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.JumpExecutor;
@@ -20,13 +21,13 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.LightningExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListWarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.PardonExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailListExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailReadExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MessageExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MotdExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MuteExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.NickExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.PardonExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.PowertoolExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.RepairExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.RespondExecutor;
@@ -507,6 +508,14 @@ public class Main
                 .build();
 
         game.getCommandDispatcher().register(this, tpaDenyCommandSpec, "tpadeny");
+
+        CommandSpec hatCommandSpec = CommandSpec.builder()
+                .description(Texts.of("Hat Command"))
+                .permission("hat.use")
+                .executor(new HatExecutor())
+                .build();
+
+        game.getCommandDispatcher().register(this, hatCommandSpec, "hat");
 
         CommandSpec flyCommandSpec = CommandSpec.builder()
                 .description(Texts.of("Fly Command"))
