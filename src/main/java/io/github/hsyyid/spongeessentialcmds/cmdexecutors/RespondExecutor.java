@@ -54,7 +54,7 @@ public class RespondExecutor implements CommandExecutor
                     return CommandResult.success();
                 }
 
-                src.sendMessage(Texts.of(TextColors.GREEN,"Success! ", TextColors.YELLOW, "Sent message to ", TextColors.RED, recipient.getName()));
+                src.sendMessage(Texts.of(TextColors.GOLD, "[", TextColors.RED, player.getName(), TextColors.GOLD, " > ", TextColors.RED, recipient.getName(), TextColors.GOLD, "]: ", TextColors.GRAY, message));
                 recipient.sendMessage(Texts.of(TextColors.GOLD, "[", TextColors.RED, player.getName(), TextColors.GOLD, " > ", TextColors.RED, recipient.getName(), TextColors.GOLD, "]: ", TextColors.GRAY, message));
 
                 Message messageToRemove = null;
