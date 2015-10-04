@@ -13,7 +13,7 @@ import org.spongepowered.api.util.command.source.CommandBlockSource;
 import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 public class FlyExecutor  implements CommandExecutor
 {

@@ -1,6 +1,5 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import com.google.common.base.Optional;
 import io.github.hsyyid.spongeessentialcmds.Main;
 import io.github.hsyyid.spongeessentialcmds.utils.Mute;
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
@@ -15,6 +14,7 @@ import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.util.command.args.CommandContext;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public class MuteExecutor implements CommandExecutor

@@ -1,6 +1,5 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import com.google.common.base.Optional;
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
 import org.spongepowered.api.data.manipulator.mutable.entity.HealthData;
 import org.spongepowered.api.data.value.mutable.Value;
@@ -12,6 +11,8 @@ import org.spongepowered.api.util.command.CommandResult;
 import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.util.command.args.CommandContext;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
+
+import java.util.Optional;
 
 public class KillExecutor implements CommandExecutor
 {

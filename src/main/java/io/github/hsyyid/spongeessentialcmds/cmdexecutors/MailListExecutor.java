@@ -3,9 +3,6 @@ package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 import io.github.hsyyid.spongeessentialcmds.utils.Mail;
 import io.github.hsyyid.spongeessentialcmds.utils.PaginatedList;
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
-
-import java.util.ArrayList;
-
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.TextBuilder;
@@ -21,7 +18,8 @@ import org.spongepowered.api.util.command.source.CommandBlockSource;
 import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
-import com.google.common.base.Optional;
+import java.util.ArrayList;
+import java.util.Optional;
 
 public class MailListExecutor implements CommandExecutor
 {
@@ -51,7 +49,7 @@ public class MailListExecutor implements CommandExecutor
 			Optional<Integer> arguments = ctx.<Integer>getOne("page no");
 			int pgNo = 1;
 
-			if(arguments != Optional.<Integer>absent())
+			if(arguments.isPresent())
 			{
 				pgNo = arguments.get();
 			}

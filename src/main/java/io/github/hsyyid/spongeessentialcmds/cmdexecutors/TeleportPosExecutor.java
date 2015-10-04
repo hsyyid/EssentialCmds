@@ -1,6 +1,5 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import com.google.common.base.Optional;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
@@ -11,6 +10,8 @@ import org.spongepowered.api.util.command.args.CommandContext;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
+
+import java.util.Optional;
 
 public class TeleportPosExecutor implements CommandExecutor
 {

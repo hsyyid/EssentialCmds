@@ -28,7 +28,7 @@ public class SetHomeExecutor implements CommandExecutor
 			String homesAllowed = null;
 			if (subject instanceof OptionSubject)
 			{
-				homesAllowed = ((OptionSubject) subject).getOption("homes").or("");
+				homesAllowed = ((OptionSubject) subject).getOption("homes").orElse("");
 			}
 			if (homesAllowed != null && !(homesAllowed.equals("")))
 			{

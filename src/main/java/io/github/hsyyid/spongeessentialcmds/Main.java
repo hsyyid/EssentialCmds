@@ -1,6 +1,5 @@
 package io.github.hsyyid.spongeessentialcmds;
 
-import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.AFKExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BackExecutor;
@@ -66,8 +65,8 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.block.tileentity.TileEntity;
-import org.spongepowered.api.block.tileentity.TileEntityTypes;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.DisplayNameData;
 import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
@@ -104,6 +103,7 @@ import org.spongepowered.api.world.World;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -753,7 +753,7 @@ public class Main
 		if (subject instanceof OptionSubject)
 		{
 			OptionSubject optionSubject = (OptionSubject) subject;
-			String prefix = optionSubject.getOption("prefix").or("");
+			String prefix = optionSubject.getOption("prefix").orElse("");
 			Text textPrefix = null;
 
 			try
@@ -878,7 +878,7 @@ public class Main
 			if (subject instanceof OptionSubject)
 			{
 				OptionSubject optionSubject = (OptionSubject) subject;
-				String prefix = optionSubject.getOption("prefix").or("");
+				String prefix = optionSubject.getOption("prefix").orElse("");
 				prefix = prefix.replaceAll("&", "\u00A7");
 				original = original.replaceFirst("<", ("<" + prefix + " "));
 
@@ -1042,13 +1042,15 @@ public class Main
 		{
 			Player player = (Player) event.getCause().first(Player.class).get();
 			Location<World> location = event.getTargetBlock().getLocation().get();
-
+			
 			if (location.getTileEntity().isPresent() && location.getTileEntity().get() != null && location.getTileEntity().get().getType() != null)
 			{
 				TileEntity clickedEntity = location.getTileEntity().get();
-				if (clickedEntity.getType() == TileEntityTypes.SIGN)
+				
+				if (event.getTargetBlock().getState().getType().equals(BlockTypes.STANDING_SIGN) || event.getTargetBlock().getState().getType().equals(BlockTypes.WALL_SIGN))
 				{
 					Optional<SignData> signData = clickedEntity.getOrCreate(SignData.class);
+					
 					if (signData.isPresent())
 					{
 						SignData data = signData.get();

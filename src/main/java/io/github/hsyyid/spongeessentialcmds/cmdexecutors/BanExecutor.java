@@ -1,7 +1,5 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import com.google.common.base.Optional;
-
 import io.github.hsyyid.spongeessentialcmds.Main;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Server;
@@ -13,6 +11,8 @@ import org.spongepowered.api.util.command.CommandResult;
 import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.util.command.args.CommandContext;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
+
+import java.util.Optional;
 
 public class BanExecutor implements CommandExecutor
 {
