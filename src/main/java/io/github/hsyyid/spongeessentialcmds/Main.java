@@ -531,6 +531,7 @@ public class Main
 		CommandSpec flyCommandSpec = CommandSpec.builder()
 			.description(Texts.of("Fly Command"))
 			.permission("fly.use")
+			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("palyer"), game))))
 			.executor(new FlyExecutor())
 			.build();
 
@@ -1042,15 +1043,15 @@ public class Main
 		{
 			Player player = (Player) event.getCause().first(Player.class).get();
 			Location<World> location = event.getTargetBlock().getLocation().get();
-			
+
 			if (location.getTileEntity().isPresent() && location.getTileEntity().get() != null && location.getTileEntity().get().getType() != null)
 			{
 				TileEntity clickedEntity = location.getTileEntity().get();
-				
+
 				if (event.getTargetBlock().getState().getType().equals(BlockTypes.STANDING_SIGN) || event.getTargetBlock().getState().getType().equals(BlockTypes.WALL_SIGN))
 				{
 					Optional<SignData> signData = clickedEntity.getOrCreate(SignData.class);
-					
+
 					if (signData.isPresent())
 					{
 						SignData data = signData.get();
