@@ -50,7 +50,7 @@ public class FlyExecutor implements CommandExecutor
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /fly!"));
 			}
 		}
-		else
+		else if (src.hasPermission("fly.others"))
 		{
 			Player player = targetPlayer.get();
 			
@@ -70,6 +70,10 @@ public class FlyExecutor implements CommandExecutor
 					player.sendMessage(Texts.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY,  "on."));
 				}
 			}
+		}
+		else
+		{
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to change others ability to fly."));
 		}
 		
 		return CommandResult.success();
