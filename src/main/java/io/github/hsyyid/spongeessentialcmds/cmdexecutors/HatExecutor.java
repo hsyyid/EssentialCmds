@@ -20,13 +20,16 @@ public class HatExecutor implements CommandExecutor
 		{
 			Player player = (Player) src;
 			Optional<ItemStack> itemInHand = player.getItemInHand();
+			
 			if (itemInHand.isPresent())
 			{
 				player.setHelmet(itemInHand.get());
-				itemInHand.get().setQuantity(itemInHand.get().getQuantity() - 1);
-				if (itemInHand.get().getQuantity() > 0)
+				
+				if (itemInHand.get().getQuantity() > 1)
 				{
-					player.setItemInHand(itemInHand.get());
+				    ItemStack stack = itemInHand.get();
+				    stack.setQuantity(itemInHand.get().getQuantity() - 1);
+					player.setItemInHand(stack);
 				}
 				else
 				{
