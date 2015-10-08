@@ -20,7 +20,7 @@ import org.spongepowered.api.util.command.source.CommandBlockSource;
 import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 public class ListWarpExecutor implements CommandExecutor
 {
@@ -45,7 +45,7 @@ public class ListWarpExecutor implements CommandExecutor
 
 			int pgNo = 1;
 			
-			if(arguments != Optional.<Integer>absent())
+			if(arguments != Optional.<Integer>empty())
 			{
 				pgNo = arguments.get();
 			}

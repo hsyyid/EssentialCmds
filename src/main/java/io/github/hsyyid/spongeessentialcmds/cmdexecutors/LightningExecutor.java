@@ -17,7 +17,7 @@ import org.spongepowered.api.util.command.spec.CommandExecutor;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.extent.Extent;
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 public class LightningExecutor implements CommandExecutor
 {
@@ -44,6 +44,8 @@ public class LightningExecutor implements CommandExecutor
 
 	public void spawnEntity(Location<World> location)
 	{
+
+
 		Extent extent = location.getExtent();
 		Optional<Entity> optional = extent.createEntity(EntityTypes.LIGHTNING, location.getPosition());
 
