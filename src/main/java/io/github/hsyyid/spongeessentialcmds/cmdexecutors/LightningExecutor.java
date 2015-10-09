@@ -23,22 +23,37 @@ public class LightningExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		if (src instanceof Player)
+		Optional<Player> optionalTarget = ctx.<Player>getOne("player");
+
+		if(!optionalTarget.isPresent())
 		{
-			Player player = (Player) src;
+			if (src instanceof Player)
+			{
+				Player player = (Player) src;
+				Location<World> playerLocation = player.getLocation();
+				Location<World> lightningLocation = new Location<World>(playerLocation.getExtent(), playerLocation.getX(), playerLocation.getY(), playerLocation.getZ());
+				spawnEntity(lightningLocation);
+				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Created Lightning Strike!"));
+			}
+			else if (src instanceof ConsoleSource)
+			{
+				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /lightning!"));
+			}
+			else if (src instanceof CommandBlockSource)
+			{
+				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /lightning!"));
+			}
+		}
+		else
+		{
+			Player player = optionalTarget.get();
 			Location<World> playerLocation = player.getLocation();
-			Location<World> lightningLocation = new Location<World>(playerLocation.getExtent(), playerLocation.getX(), playerLocation.getY() + 50, playerLocation.getZ());
+			Location<World> lightningLocation = new Location<World>(playerLocation.getExtent(), playerLocation.getX(), playerLocation.getY(), playerLocation.getZ());
 			spawnEntity(lightningLocation);
-			player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Created Lightning Strike!"));
+			player.sendMessage(Texts.of(TextColors.GRAY, src.getName(), TextColors.GOLD, " has struck you with lightning."));
+			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Struck " + player.getName() + " with lightning."));
 		}
-		else if (src instanceof ConsoleSource)
-		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /lightning!"));
-		}
-		else if (src instanceof CommandBlockSource)
-		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /lightning!"));
-		}
+
 		return CommandResult.success();
 	}
 
@@ -48,6 +63,6 @@ public class LightningExecutor implements CommandExecutor
 		Optional<Entity> optional = extent.createEntity(EntityTypes.LIGHTNING, location.getPosition());
 
 		Entity lightning = optional.get();
-		System.out.println("Spawned Lightning " + extent.spawnEntity(lightning, Cause.empty()));
+		extent.spawnEntity(lightning, Cause.empty());
 	}
 }

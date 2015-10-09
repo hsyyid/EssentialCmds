@@ -402,6 +402,7 @@ public class Main
 		CommandSpec lightningCommandSpec = CommandSpec.builder()
 			.description(Texts.of("Lightning Command"))
 			.permission("lightning.use")
+			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))))
 			.executor(new LightningExecutor())
 			.build();
 
