@@ -808,8 +808,7 @@ public class Main
 	}
 
 	@Listener
-	public void onSignChange(ChangeSignEvent event)// TODO why arnt you
-													// assigning it back
+	public void onSignChange(ChangeSignEvent event)
 	{
 		if (event.getCause().first(Player.class).isPresent())
 		{
