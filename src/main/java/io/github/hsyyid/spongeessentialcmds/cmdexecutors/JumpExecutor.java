@@ -30,7 +30,7 @@ public class JumpExecutor implements CommandExecutor
 			if(ray.hasNext())
 			{
 				BlockRayHit<World> hit = ray.next();
-				Location<World> location = new Location<World>(player.getWorld(), hit.getBlockX(), hit.getBlockY(), hit.getBlockZ());
+				Location<World> location = new Location<>(player.getWorld(), hit.getBlockX(), hit.getBlockY(), hit.getBlockZ());
 				TeleportHelper helper = Main.helper;
 
 				if(helper.getSafeLocation(location).get() != null)

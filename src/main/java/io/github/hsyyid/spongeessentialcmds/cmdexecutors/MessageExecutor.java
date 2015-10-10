@@ -14,6 +14,7 @@ import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class MessageExecutor implements CommandExecutor
 {
@@ -22,15 +23,7 @@ public class MessageExecutor implements CommandExecutor
 		Player recipient = ctx.<Player>getOne("recipient").get();
 		String message = ctx.<String>getOne("message").get();
 
-		ArrayList<Player> socialSpies = new ArrayList<Player>();
-
-		for (Player player : Main.game.getServer().getOnlinePlayers())
-		{
-			if(Main.socialSpies.contains(player.getUniqueId()))
-			{
-				socialSpies.add(player);
-			}
-		}
+		ArrayList<Player> socialSpies = (ArrayList<Player>) Main.game.getServer().getOnlinePlayers().stream().filter(player -> Main.socialSpies.contains(player.getUniqueId())).collect(Collectors.toList());
 
 		if(recipient.equals(src))
 		{

@@ -37,7 +37,7 @@ public class MuteExecutor implements CommandExecutor
 
 		if(time.isPresent() && timeUnit.isPresent())
 		{
-			TimeUnit unit = null;
+			TimeUnit unit;
 
 			if(timeUnit.get().toLowerCase().equals("m"))
 			{
@@ -51,18 +51,15 @@ public class MuteExecutor implements CommandExecutor
 			} else if(timeUnit.get().toLowerCase().equals("d"))
 			{
 				unit = TimeUnit.DAYS;
+			} else {
+				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! Invalid time unit."));
+				return CommandResult.empty();
 			}
 
 			final Mute mute = new Mute(p.getUniqueId().toString());
 
 			TaskBuilder taskBuilder = game.getScheduler().createTaskBuilder();
-			taskBuilder.execute(new Runnable()
-			{
-				public void run()
-				{
-					Main.muteList.remove(mute);
-				}
-			}).delay(time.get(), unit).name("SpongeEssentialCmds removes mute").submit(game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
+			taskBuilder.execute(() -> Main.muteList.remove(mute)).delay(time.get(), unit).name("SpongeEssentialCmds removes mute").submit(game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
 
 			Main.muteList.add(mute);
 		} else

@@ -15,6 +15,8 @@ import org.spongepowered.api.util.command.spec.CommandExecutor;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import java.util.Objects;
+
 public class WarpExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
@@ -25,7 +27,7 @@ public class WarpExecutor implements CommandExecutor
 			Player player = (Player) src;
 			if(Utils.isWarpInConfig(warpName))
 			{
-				if(player.getWorld().getName() != Utils.getWarpWorldName(warpName))
+				if(!Objects.equals(player.getWorld().getName(), Utils.getWarpWorldName(warpName)))
 				{
 					Vector3d position = new Vector3d(Utils.getWarpX(warpName), Utils.getWarpY(warpName), Utils.getWarpZ(warpName));
 					player.transferToWorld(Utils.getWarpWorldName(warpName), position);
@@ -33,7 +35,7 @@ public class WarpExecutor implements CommandExecutor
 					return CommandResult.success();
 				} else
 				{
-					Location<World> warp = new Location<World>(player.getWorld(), Utils.getWarpX(warpName), Utils.getWarpY(warpName), Utils.getWarpZ(warpName));
+					Location<World> warp = new Location<>(player.getWorld(), Utils.getWarpX(warpName), Utils.getWarpY(warpName), Utils.getWarpZ(warpName));
 					player.setLocation(warp);
 				}
 			} else

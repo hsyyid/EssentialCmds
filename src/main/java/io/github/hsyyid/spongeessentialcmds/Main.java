@@ -107,6 +107,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "3.0")
 public class Main
@@ -115,13 +116,13 @@ public class Main
 	public static ConfigurationNode config = null;
 	public static ConfigurationLoader<CommentedConfigurationNode> configurationManager;
 	public static TeleportHelper helper;
-	public static ArrayList<PendingInvitation> pendingInvites = new ArrayList<PendingInvitation>();
-	public static ArrayList<AFK> movementList = new ArrayList<AFK>();
-	public static ArrayList<Player> recentlyJoined = new ArrayList<Player>();
-	public static ArrayList<Powertool> powertools = new ArrayList<Powertool>();
-	public static ArrayList<UUID> socialSpies = new ArrayList<UUID>();
-	public static ArrayList<Message> recentlyMessaged = new ArrayList<Message>();
-	public static ArrayList<Mute> muteList = new ArrayList<Mute>();
+	public static ArrayList<PendingInvitation> pendingInvites = new ArrayList<>();
+	public static ArrayList<AFK> movementList = new ArrayList<>();
+	public static ArrayList<Player> recentlyJoined = new ArrayList<>();
+	public static ArrayList<Powertool> powertools = new ArrayList<>();
+	public static ArrayList<UUID> socialSpies = new ArrayList<>();
+	public static ArrayList<Message> recentlyMessaged = new ArrayList<>();
+	public static ArrayList<Mute> muteList = new ArrayList<>();
 
 	@Inject
 	private Logger logger;
@@ -153,7 +154,6 @@ public class Main
 		{
 			if(!dConfig.exists())
 			{
-				dConfig.createNewFile();
 				config = confManager.load();
 				config.getNode("afk", "timer").setValue(30000);
 				config.getNode("afk", "kick", "use").setValue(false);
@@ -177,7 +177,7 @@ public class Main
 			{
 				for (AFK afk : movementList)
 				{
-					if(afk.getPlayer() == player && ((System.currentTimeMillis() - afk.lastMovementTime) > (Utils.getAFK())) && afk.getMessaged() == false)
+					if(afk.getPlayer() == player && ((System.currentTimeMillis() - afk.lastMovementTime) > (Utils.getAFK())) && !afk.getMessaged())
 					{
 						for (Player p : game.getServer().getOnlinePlayers())
 						{
@@ -673,15 +673,7 @@ public class Main
 		String message = Utils.getJoinMsg().replaceAll("&", "\u00A7");
 		player.sendMessage(Texts.of(message));
 
-		ArrayList<Mail> newMail = new ArrayList<Mail>();
-
-		for (Mail mail : Utils.getMail())
-		{
-			if(mail.getRecipientName().equals(player.getName().toString()))
-			{
-				newMail.add(mail);
-			}
-		}
+		ArrayList<Mail> newMail = (ArrayList<Mail>) Utils.getMail().stream().filter(mail -> mail.getRecipientName().equals(player.getName())).collect(Collectors.toList());
 
 		if(newMail.size() > 0)
 		{
@@ -754,14 +746,10 @@ public class Main
 		SchedulerService scheduler = game.getScheduler();
 		TaskBuilder taskBuilder = scheduler.createTaskBuilder();
 
-		taskBuilder.execute(new Runnable()
-		{
-			public void run()
+		taskBuilder.execute(() -> {
+			if(pendingInvites.contains(invite))
 			{
-				if(pendingInvites.contains(invite))
-				{
-					pendingInvites.remove(invite);
-				}
+				pendingInvites.remove(invite);
 			}
 		}).delay(10, TimeUnit.SECONDS).name("SpongeEssentialCmds - Remove Pending Invite").submit(game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
 	}
@@ -797,14 +785,10 @@ public class Main
 		SchedulerService scheduler = game.getScheduler();
 		TaskBuilder taskBuilder = scheduler.createTaskBuilder();
 
-		taskBuilder.execute(new Runnable()
-		{
-			public void run()
+		taskBuilder.execute(() -> {
+			if(pendingInvites.contains(invite))
 			{
-				if(pendingInvites.contains(invite))
-				{
-					pendingInvites.remove(invite);
-				}
+				pendingInvites.remove(invite);
 			}
 		}).delay(10, TimeUnit.SECONDS).name("SpongeEssentialCmds - Remove Pending Invite").submit(game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
 	}
@@ -815,7 +799,7 @@ public class Main
 	{
 		if(event.getCause().first(Player.class).isPresent())
 		{
-			Player player = (Player) event.getCause().first(Player.class).get();
+			Player player = event.getCause().first(Player.class).get();
 
 			for (Mute mute : muteList)
 			{
@@ -885,25 +869,24 @@ public class Main
 
 			if(player.hasPermission("color.chat.use"))
 			{
-				Text newMessage = null;
 				try
 				{
-					newMessage = Texts.legacy('&').from(original);
+					Text newMessage = Texts.legacy('&').from(original);
+					event.setMessage(newMessage);
 				} catch (TextMessageException e)
 				{
-					;
+					e.printStackTrace();
 				}
-				event.setMessage(newMessage);
 			}
 		}
 	}
 
 	@Listener
-	public void onSignChange(ChangeSignEvent event)
+	public void onSignChange(ChangeSignEvent event)//TODO why arnt you assigning it back
 	{
 		if(event.getCause().first(Player.class).isPresent())
 		{
-			Player player = (Player) event.getCause().first(Player.class).get();
+			Player player = event.getCause().first(Player.class).get();
 			SignData signData = event.getText();
 
 			if(signData.getValue(Keys.SIGN_LINES).isPresent())
@@ -938,7 +921,7 @@ public class Main
 	{
 		if(event.getCause().first(Player.class).isPresent())
 		{
-			Player player = (Player) event.getCause().first(Player.class).get();
+			Player player = event.getCause().first(Player.class).get();
 			Powertool foundTool = null;
 
 			for (Powertool powertool : powertools)
@@ -965,7 +948,7 @@ public class Main
 	{
 		if(event.getCause().first(Player.class).isPresent())
 		{
-			Player player = (Player) event.getCause().first(Player.class).get();
+			Player player = event.getCause().first(Player.class).get();
 			Powertool foundTool = null;
 
 			for (Powertool powertool : powertools)
@@ -992,7 +975,7 @@ public class Main
 	{
 		if(event.getCause().first(Player.class).isPresent())
 		{
-			Player player = (Player) event.getCause().first(Player.class).get();
+			Player player = event.getCause().first(Player.class).get();
 			Location<World> location = event.getTargetBlock().getLocation().get();
 
 			if(location.getTileEntity().isPresent() && location.getTileEntity().get() != null && location.getTileEntity().get().getType() != null)
@@ -1064,14 +1047,14 @@ public class Main
 
 				if(removeAFK != null)
 				{
-					if(removeAFK.getAFK() == true)
+					if(removeAFK.getAFK())
 					{
 						for (Player p : game.getServer().getOnlinePlayers())
 						{
 							p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is no longer AFK."));
 						}
 						movementList.remove(removeAFK);
-					} else if(removeAFK.getAFK() == false)
+					} else if(!removeAFK.getAFK())
 					{
 						movementList.remove(removeAFK);
 						movementList.add(afk);

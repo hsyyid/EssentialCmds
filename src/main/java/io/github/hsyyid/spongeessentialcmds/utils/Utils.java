@@ -35,8 +35,8 @@ public class Utils
 
 	public static void saveMutes()
 	{
-		Connection c = null;
-		Statement stmt = null;
+		Connection c;
+		Statement stmt;
 
 		try
 		{
@@ -92,7 +92,7 @@ public class Utils
 			}
 		} catch (Exception e)
 		{
-			;
+			e.printStackTrace();
 		}
 	}
 
@@ -338,7 +338,7 @@ public class Utils
 
 				DatabaseMetaData metadata = datasource.getConnection().getMetaData();
 				ResultSet rs = metadata.getTables(null, null, "Mutes", null);
-				ArrayList<Mute> muteList = new ArrayList<Mute>();
+				ArrayList<Mute> muteList = new ArrayList<>();
 
 				while (rs.next())
 				{
@@ -350,14 +350,14 @@ public class Utils
 				rs.close();
 			} else
 			{
-				Connection c = null;
-				Statement stmt = null;
+				Connection c;
+				Statement stmt;
 				Class.forName("org.sqlite.JDBC");
 				c = DriverManager.getConnection("jdbc:sqlite:Mutes.db");
 				c.setAutoCommit(false);
 				stmt = c.createStatement();
 				ResultSet rs = stmt.executeQuery("SELECT * FROM MUTES;");
-				ArrayList<Mute> muteList = new ArrayList<Mute>();
+				ArrayList<Mute> muteList = new ArrayList<>();
 
 				while (rs.next())
 				{
@@ -373,7 +373,7 @@ public class Utils
 			}
 		} catch (Exception e)
 		{
-			;
+			e.printStackTrace();
 		}
 	}
 
@@ -389,9 +389,7 @@ public class Utils
 		if(valueNode.getString() != null)
 		{
 			String items = valueNode.getString();
-			if(items.contains(homeName + ","))
-				;
-			else
+			if(!items.contains(homeName + ","))
 			{
 				String formattedItem = (homeName + ",");
 				valueNode.setValue(items + formattedItem);
@@ -413,22 +411,22 @@ public class Utils
 
 	public static ArrayList<Mail> getMail()
 	{
-		String json = null;
+		String json;
 
 		try
 		{
 			json = readFile("Mail.json", StandardCharsets.UTF_8);
 		} catch (Exception e)
 		{
-			return new ArrayList<Mail>();
+			return new ArrayList<>();
 		}
 
 		if(json != null && json.length() > 0)
 		{
-			return new ArrayList<Mail>(Arrays.asList(gson.fromJson(json, Mail[].class)));
+			return new ArrayList<>(Arrays.asList(gson.fromJson(json, Mail[].class)));
 		} else
 		{
-			return new ArrayList<Mail>();
+			return new ArrayList<>();
 		}
 	}
 
@@ -445,7 +443,7 @@ public class Utils
 			ArrayList<Mail> currentMail = Utils.getMail();
 
 			currentMail.add(new Mail(recipientName, senderName, message));
-			String json = null;
+			String json;
 
 			try
 			{
@@ -491,7 +489,7 @@ public class Utils
 				currentMail.remove(mailToRemove);
 			}
 
-			String json = null;
+			String json;
 
 			try
 			{
@@ -526,9 +524,7 @@ public class Utils
 		if(valueNode.getString() != null)
 		{
 			String items = valueNode.getString();
-			if(items.contains(warpName + ","))
-				;
-			else
+			if(!items.contains(warpName + ","))
 			{
 				String formattedItem = (warpName + ",");
 				valueNode.setValue(items + formattedItem);
@@ -759,8 +755,7 @@ public class Utils
 		ConfigurationNode zNode = Main.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Z").split("\\."));
 		double z = zNode.getDouble();
 
-		Location<World> location = new Location<World>(player.getWorld(), x, y, z);
-		return location;
+		return new Location<>(player.getWorld(), x, y, z);
 	}
 
 	public static ArrayList<String> getHomes(UUID userName)
@@ -769,35 +764,32 @@ public class Utils
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("home.users." + playerName + "." + "homes").split("\\."));
 		String list = valueNode.getString();
 
-		ArrayList<String> homeList = new ArrayList<String>();
+		ArrayList<String> homeList = new ArrayList<>();
 		boolean finished = false;
 
 		// Add all homes to homeList
-		if(finished != true)
+		int endIndex = list.indexOf(",");
+		if(endIndex != -1)
 		{
-			int endIndex = list.indexOf(",");
-			if(endIndex != -1)
-			{
-				String substring = list.substring(0, endIndex);
-				homeList.add(substring);
+			String substring = list.substring(0, endIndex);
+			homeList.add(substring);
 
-				// If they Have More than 1
-				while (finished != true)
+			// If they Have More than 1
+			while (!finished)
+			{
+				int startIndex = endIndex;
+				endIndex = list.indexOf(",", startIndex + 1);
+				if(endIndex != -1)
 				{
-					int startIndex = endIndex;
-					endIndex = list.indexOf(",", startIndex + 1);
-					if(endIndex != -1)
+					String substrings = list.substring(startIndex + 1, endIndex);
+					homeList.add(substrings);
+				} else
+				{
+					if(!(list.equals("")))
 					{
-						String substrings = list.substring(startIndex + 1, endIndex);
-						homeList.add(substrings);
-					} else
-					{
-						if(!(list.equals("")))
-						{
-							homeList.add(list);
-						}
-						finished = true;
+						homeList.add(list);
 					}
+					finished = true;
 				}
 			}
 		}
@@ -810,37 +802,33 @@ public class Utils
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("warps.warps").split("\\."));
 		String list = valueNode.getString();
 
-		ArrayList<String> warpList = new ArrayList<String>();
+		ArrayList<String> warpList = new ArrayList<>();
 		boolean finished = false;
 
 		// Add all homes to warpList
-		if(finished != true)
+		int endIndex = list.indexOf(",");
+		if(endIndex != -1)
 		{
-			int endIndex = list.indexOf(",");
-			if(endIndex != -1)
-			{
-				String substring = list.substring(0, endIndex);
-				warpList.add(substring);
+			String substring = list.substring(0, endIndex);
+			warpList.add(substring);
 
-				// If they Have More than 1
-				while (finished != true)
-				{
-					int startIndex = endIndex;
-					endIndex = list.indexOf(",", startIndex + 1);
-					if(endIndex != -1)
-					{
-						String substrings = list.substring(startIndex + 1, endIndex);
-						warpList.add(substrings);
-					} else
-					{
-						finished = true;
-					}
-				}
-			} else
+			// If they Have More than 1
+			while (!finished)
 			{
-				warpList.add(list);
-				finished = true;
+				int startIndex = endIndex;
+				endIndex = list.indexOf(",", startIndex + 1);
+				if(endIndex != -1)
+				{
+					String substrings = list.substring(startIndex + 1, endIndex);
+					warpList.add(substrings);
+				} else
+				{
+					finished = true;
+				}
 			}
+		} else
+		{
+			warpList.add(list);
 		}
 
 		return warpList;
@@ -910,39 +898,21 @@ public class Utils
 		String userName = playerName.toString();
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("home.users." + userName + "." + homeName + ".X").split("\\."));
 		Object inConfig = valueNode.getValue();
-		if(inConfig != null)
-		{
-			return true;
-		} else
-		{
-			return false;
-		}
+		return inConfig != null;
 	}
 
 	public static boolean isWarpInConfig(String warpName)
 	{
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("warps." + warpName + ".X").split("\\."));
 		Object inConfig = valueNode.getValue();
-		if(inConfig != null)
-		{
-			return true;
-		} else
-		{
-			return false;
-		}
+		return inConfig != null;
 	}
 
 	public static boolean isSpawnInConfig()
 	{
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("spawn.X").split("\\."));
 		Object inConfig = valueNode.getValue();
-		if(inConfig != null)
-		{
-			return true;
-		} else
-		{
-			return false;
-		}
+		return inConfig != null;
 	}
 
 	public static Location<World> getSpawn(Player player)
@@ -956,8 +926,7 @@ public class Utils
 		ConfigurationNode zNode = Main.config.getNode((Object[]) ("spawn.Z").split("\\."));
 		double z = zNode.getDouble();
 
-		Location<World> spawn = new Location<World>(player.getWorld(), x, y, z);
-		return spawn;
+		return new Location<>(player.getWorld(), x, y, z);
 	}
 
 	public static boolean isLastDeathInConfig(Player player)
@@ -965,12 +934,6 @@ public class Utils
 		String userName = player.getUniqueId().toString();
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("back.users." + userName + ".lastDeath.X").split("\\."));
 		Object inConfig = valueNode.getValue();
-		if(inConfig != null)
-		{
-			return true;
-		} else
-		{
-			return false;
-		}
+		return inConfig != null;
 	}
 }

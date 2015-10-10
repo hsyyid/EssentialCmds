@@ -14,6 +14,7 @@ import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class MailReadExecutor implements CommandExecutor
 {
@@ -26,15 +27,7 @@ public class MailReadExecutor implements CommandExecutor
 
 			ArrayList<Mail> mail = Utils.getMail();
 
-			ArrayList<Mail> myMail = new ArrayList<Mail>();
-
-			for (Mail m : mail)
-			{
-				if(m.getRecipientName().equals(player.getName()))
-				{
-					myMail.add(m);
-				}
-			}
+			ArrayList<Mail> myMail = (ArrayList<Mail>) mail.stream().filter(m -> m.getRecipientName().equals(player.getName())).collect(Collectors.toList());
 
 			if(myMail.isEmpty())
 			{

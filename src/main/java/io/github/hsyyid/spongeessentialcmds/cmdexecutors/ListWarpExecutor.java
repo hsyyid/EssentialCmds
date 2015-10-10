@@ -27,7 +27,7 @@ public class ListWarpExecutor implements CommandExecutor
 		if(src instanceof Player)
 		{
 			Player player = (Player) src;
-			ArrayList<String> warps = null;
+			ArrayList<String> warps;
 
 			try
 			{
@@ -40,7 +40,7 @@ public class ListWarpExecutor implements CommandExecutor
 
 			Optional<Integer> arguments = ctx.<Integer>getOne("page no");
 
-			int pgNo = 1;
+			int pgNo;
 
 			if(arguments.isPresent())
 			{

@@ -9,12 +9,13 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.command.CommandMessageFormatting;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PaginatedList
 {
 
-	private List<Text> items = new ArrayList<Text>();
+	private List<Text> items = new ArrayList<>();
 	private Text header;
 	private Text footer;
 	private String command;
@@ -39,11 +40,8 @@ public class PaginatedList
 
 	public boolean add(Text... texts)
 	{
-		List<Text> temp = new ArrayList<Text>();
-		for (Text text : texts)
-		{
-			temp.add(text);
-		}
+		List<Text> temp = new ArrayList<>();
+		Collections.addAll(temp, texts);
 		return this.addAll(temp);
 	}
 
@@ -59,11 +57,8 @@ public class PaginatedList
 
 	public boolean remove(Text... texts)
 	{
-		List<Text> temp = new ArrayList<Text>();
-		for (Text text : texts)
-		{
-			temp.add(text);
-		}
+		List<Text> temp = new ArrayList<>();
+		Collections.addAll(temp, texts);
 		return this.items.removeAll(temp);
 	}
 
@@ -289,7 +284,7 @@ public class PaginatedList
 	 */
 	public PaginatedList(String command)
 	{
-		this.items = new ArrayList<Text>();
+		this.items = new ArrayList<>();
 		this.command = command;
 	}
 
@@ -299,7 +294,7 @@ public class PaginatedList
 	 */
 	public PaginatedList(String command, int itemsPerPage)
 	{
-		this.items = new ArrayList<Text>();
+		this.items = new ArrayList<>();
 		this.command = command;
 		this.itemsPerPage = itemsPerPage;
 	}

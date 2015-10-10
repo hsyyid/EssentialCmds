@@ -23,13 +23,7 @@ public class AFKExecutor implements CommandExecutor
 			Player player = (Player) src;
 			if(Main.movementList.contains(player))
 			{
-				for (AFK afk : Main.movementList)
-				{
-					if(afk.getPlayer() == player)
-					{
-						afk.lastMovementTime = -1000000000;
-					}
-				}
+				Main.movementList.stream().filter(afk -> afk.getPlayer() == player).forEach(afk -> afk.lastMovementTime = -1000000000);
 			} else
 			{
 				int afkTime = (int) Utils.getAFK();

@@ -31,7 +31,7 @@ public class LightningExecutor implements CommandExecutor
 			{
 				Player player = (Player) src;
 				Location<World> playerLocation = player.getLocation();
-				Location<World> lightningLocation = new Location<World>(playerLocation.getExtent(), playerLocation.getX(), playerLocation.getY(), playerLocation.getZ());
+				Location<World> lightningLocation = new Location<>(playerLocation.getExtent(), playerLocation.getX(), playerLocation.getY(), playerLocation.getZ());
 				spawnEntity(lightningLocation);
 				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Created Lightning Strike!"));
 			} else if(src instanceof ConsoleSource)
@@ -45,7 +45,7 @@ public class LightningExecutor implements CommandExecutor
 		{
 			Player player = optionalTarget.get();
 			Location<World> playerLocation = player.getLocation();
-			Location<World> lightningLocation = new Location<World>(playerLocation.getExtent(), playerLocation.getX(), playerLocation.getY(), playerLocation.getZ());
+			Location<World> lightningLocation = new Location<>(playerLocation.getExtent(), playerLocation.getX(), playerLocation.getY(), playerLocation.getZ());
 			spawnEntity(lightningLocation);
 			player.sendMessage(Texts.of(TextColors.GRAY, src.getName(), TextColors.GOLD, " has struck you with lightning."));
 			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Struck " + player.getName() + " with lightning."));

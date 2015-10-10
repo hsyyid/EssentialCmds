@@ -14,6 +14,7 @@ import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class RespondExecutor implements CommandExecutor
 {
@@ -37,15 +38,7 @@ public class RespondExecutor implements CommandExecutor
 			{
 				String message = ctx.<String>getOne("message").get();
 
-				ArrayList<Player> socialSpies = new ArrayList<Player>();
-
-				for (Player p : Main.game.getServer().getOnlinePlayers())
-				{
-					if(Main.socialSpies.contains(p.getUniqueId()))
-					{
-						socialSpies.add(p);
-					}
-				}
+				ArrayList<Player> socialSpies = (ArrayList<Player>) Main.game.getServer().getOnlinePlayers().stream().filter(p -> Main.socialSpies.contains(p.getUniqueId())).collect(Collectors.toList());
 
 				if(recipient.getUniqueId().toString().equals(player.getUniqueId().toString()))
 				{

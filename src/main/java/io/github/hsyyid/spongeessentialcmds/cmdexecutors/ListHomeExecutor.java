@@ -28,7 +28,7 @@ public class ListHomeExecutor implements CommandExecutor
 		{
 			Player player = (Player) src;
 
-			ArrayList<String> homes = null;
+			ArrayList<String> homes;
 			try
 			{
 				homes = Utils.getHomes(player.getUniqueId());
@@ -40,7 +40,7 @@ public class ListHomeExecutor implements CommandExecutor
 
 			Optional<Integer> arguments = ctx.<Integer>getOne("page no");
 
-			int pgNo = 1;
+			int pgNo;
 
 			if(arguments.isPresent())
 			{

@@ -46,7 +46,7 @@ public class TPAAcceptExecutor implements CommandExecutor
 			{
 				game.getEventManager().post(new TPAAcceptEvent(player, sender));
 				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.WHITE, "TPA Request Accepted."));
-			} else if(sender != null && tpaHere)
+			} else if(sender != null)
 			{
 				game.getEventManager().post(new TPAHereAcceptEvent(player, sender));
 				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.WHITE, "TPA Here Request Accepted."));

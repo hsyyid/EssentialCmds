@@ -24,7 +24,7 @@ public class WeatherExecutor implements CommandExecutor
 		{
 			Player player = (Player) src;
 
-			Weather weather = null;
+			Weather weather;
 
 			if(weatherString.toLowerCase().equals("clear") || weatherString.toLowerCase().equals("sun"))
 			{

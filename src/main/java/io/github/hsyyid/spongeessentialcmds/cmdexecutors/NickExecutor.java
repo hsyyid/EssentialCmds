@@ -19,7 +19,7 @@ public class NickExecutor implements CommandExecutor
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		String nick = ctx.<String>getOne("nick").get();
-		nick.replace("&", "\u00A7");
+		nick = nick.replace("&", "\u00A7");
 
 		if(src instanceof Player)
 		{

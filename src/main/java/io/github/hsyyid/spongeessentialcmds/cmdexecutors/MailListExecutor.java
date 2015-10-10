@@ -20,6 +20,7 @@ import org.spongepowered.api.util.command.spec.CommandExecutor;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class MailListExecutor implements CommandExecutor
 {
@@ -30,15 +31,7 @@ public class MailListExecutor implements CommandExecutor
 			Player player = (Player) src;
 			ArrayList<Mail> mail = Utils.getMail();
 
-			ArrayList<Mail> myMail = new ArrayList<Mail>();
-
-			for (Mail m : mail)
-			{
-				if(m.getRecipientName().equals(player.getName()))
-				{
-					myMail.add(m);
-				}
-			}
+			ArrayList<Mail> myMail = (ArrayList<Mail>) mail.stream().filter(m -> m.getRecipientName().equals(player.getName())).collect(Collectors.toList());
 
 			if(myMail.isEmpty())
 			{
@@ -47,7 +40,7 @@ public class MailListExecutor implements CommandExecutor
 			}
 
 			Optional<Integer> arguments = ctx.<Integer>getOne("page no");
-			int pgNo = 1;
+			int pgNo;
 
 			if(arguments.isPresent())
 			{

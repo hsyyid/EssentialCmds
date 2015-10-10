@@ -66,7 +66,7 @@ public class GamemodeExecutor implements CommandExecutor
 					}
 				} catch (NumberFormatException e)
 				{
-					;
+					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, gamemode + " does not appear to be a gamemode!"));
 				}
 			} else
 			{
