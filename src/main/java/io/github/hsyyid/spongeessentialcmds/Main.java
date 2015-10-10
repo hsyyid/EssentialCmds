@@ -69,18 +69,13 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
-import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
-import org.spongepowered.api.data.value.mutable.Value;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.config.DefaultConfig;
-import org.spongepowered.api.service.scheduler.SchedulerService;
-import org.spongepowered.api.service.scheduler.TaskBuilder;
 import org.spongepowered.api.text.Texts;
-import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.command.args.GenericArguments;
 import org.spongepowered.api.util.command.spec.CommandSpec;
 import org.spongepowered.api.world.TeleportHelper;
@@ -88,9 +83,7 @@ import org.spongepowered.api.world.TeleportHelper;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "3.0")
 public class Main
@@ -153,54 +146,7 @@ public class Main
 			getLogger().error("The default configuration could not be loaded or created!");
 		}
 
-		SchedulerService scheduler = game.getScheduler();
-		TaskBuilder taskBuilder = scheduler.createTaskBuilder();
-
-		taskBuilder.execute(() -> {
-			for (Player player : game.getServer().getOnlinePlayers())
-			{
-				for (AFK afk : movementList)
-				{
-					if (afk.getPlayer() == player && ((System.currentTimeMillis() - afk.lastMovementTime) > (Utils.getAFK())) && !afk.getMessaged())
-					{
-						for (Player p : game.getServer().getOnlinePlayers())
-						{
-							p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is now AFK."));
-							Optional<FoodData> data = p.get(FoodData.class);
-							if (data.isPresent())
-							{
-								FoodData food = data.get();
-								afk.setFood(food.foodLevel().get());
-							}
-						}
-						afk.setMessaged(true);
-						afk.setAFK(true);
-					}
-
-					if (afk.getAFK())
-					{
-						Player p = afk.getPlayer();
-						Optional<FoodData> data = p.get(FoodData.class);
-						if (data.isPresent())
-						{
-							FoodData food = data.get();
-							if (food.foodLevel().get() < afk.getFood())
-							{
-								Value<Integer> foodLevel = food.foodLevel().set(afk.getFood());
-								food.set(foodLevel);
-								p.offer(food);
-							}
-						}
-
-						if (!(p.hasPermission("afk.kick.false")) && Utils.getAFKKick() && afk.getLastMovementTime() >= Utils.getAFKKickTimer())
-						{
-							p.kick(Texts.of(TextColors.GOLD, "Kicked for being AFK too long."));
-						}
-					}
-				}
-			}
-		}).interval(1, TimeUnit.SECONDS).name("SpongeEssentialCmds - AFK")
-			.submit(game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
+		Utils.startAFKService();
 
 		CommandSpec homeCommandSpec =
 			CommandSpec.builder().description(Texts.of("Home Command")).permission("home.use")

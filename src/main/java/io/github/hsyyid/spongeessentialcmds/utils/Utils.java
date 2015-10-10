@@ -1,5 +1,12 @@
 package io.github.hsyyid.spongeessentialcmds.utils;
 
+import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
+import org.spongepowered.api.data.value.mutable.Value;
+import org.spongepowered.api.service.scheduler.SchedulerService;
+import org.spongepowered.api.service.scheduler.TaskBuilder;
+import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.format.TextColors;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.hsyyid.spongeessentialcmds.Main;
@@ -12,6 +19,7 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import javax.sql.DataSource;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -27,7 +35,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class Utils
 {
@@ -96,6 +106,58 @@ public class Utils
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	public static void startAFKService()
+	{
+		SchedulerService scheduler = Main.game.getScheduler();
+		TaskBuilder taskBuilder = scheduler.createTaskBuilder();
+
+		taskBuilder.execute(() -> {
+			for (Player player : Main.game.getServer().getOnlinePlayers())
+			{
+				for (AFK afk : Main.movementList)
+				{
+					if (afk.getPlayer() == player && ((System.currentTimeMillis() - afk.lastMovementTime) > (Utils.getAFK())) && !afk.getMessaged())
+					{
+						for (Player p : Main.game.getServer().getOnlinePlayers())
+						{
+							p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is now AFK."));
+							Optional<FoodData> data = p.get(FoodData.class);
+							if (data.isPresent())
+							{
+								FoodData food = data.get();
+								afk.setFood(food.foodLevel().get());
+							}
+						}
+						afk.setMessaged(true);
+						afk.setAFK(true);
+					}
+
+					if (afk.getAFK())
+					{
+						Player p = afk.getPlayer();
+						Optional<FoodData> data = p.get(FoodData.class);
+						if (data.isPresent())
+						{
+							FoodData food = data.get();
+							if (food.foodLevel().get() < afk.getFood())
+							{
+								Value<Integer> foodLevel = food.foodLevel().set(afk.getFood());
+								food.set(foodLevel);
+								p.offer(food);
+							}
+						}
+
+						if (!(p.hasPermission("afk.kick.false")) && Utils.getAFKKick() && afk.getLastMovementTime() >= Utils.getAFKKickTimer())
+						{
+							p.kick(Texts.of(TextColors.GOLD, "Kicked for being AFK too long."));
+						}
+					}
+				}
+			}
+		}).interval(1, TimeUnit.SECONDS).name("SpongeEssentialCmds - AFK")
+			.submit(Main.game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
 	}
 
 	public static String getMySQLPort()
