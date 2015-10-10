@@ -112,9 +112,8 @@ import java.util.stream.Collectors;
 @Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "3.0")
 public class Main
 {
-
-	public static Game game = null;
-	public static ConfigurationNode config = null;
+	public static Game game;
+	public static ConfigurationNode config;
 	public static ConfigurationLoader<CommentedConfigurationNode> configurationManager;
 	public static TeleportHelper helper;
 	public static ArrayList<PendingInvitation> pendingInvites = new ArrayList<>();
