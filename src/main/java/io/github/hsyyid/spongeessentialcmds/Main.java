@@ -314,7 +314,7 @@ public class Main
 		game.getCommandDispatcher().register(this, spawnCommandSpec, "spawn");
 
 		CommandSpec setSpawnCommandSpec =
-			CommandSpec.builder().description(Texts.of("Spawn Command")).permission("spawn.set").executor(new SetSpawnExecutor()).build();
+			CommandSpec.builder().description(Texts.of("Set Spawn Command")).permission("spawn.set").executor(new SetSpawnExecutor()).build();
 		game.getCommandDispatcher().register(this, setSpawnCommandSpec, "setspawn");
 
 		CommandSpec tpaCommandSpec =
