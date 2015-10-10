@@ -32,7 +32,7 @@ public class MailListExecutor implements CommandExecutor
 
 			ArrayList<Mail> myMail = new ArrayList<Mail>();
 
-			for(Mail m : mail)
+			for (Mail m : mail)
 			{
 				if(m.getRecipientName().equals(player.getName()))
 				{
@@ -42,7 +42,7 @@ public class MailListExecutor implements CommandExecutor
 
 			if(myMail.isEmpty())
 			{
-				player.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "You have no new mail!"));
+				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You have no new mail!"));
 				return CommandResult.success();
 			}
 
@@ -52,8 +52,7 @@ public class MailListExecutor implements CommandExecutor
 			if(arguments.isPresent())
 			{
 				pgNo = arguments.get();
-			}
-			else
+			} else
 			{
 				pgNo = 1;
 			}
@@ -63,7 +62,7 @@ public class MailListExecutor implements CommandExecutor
 			for (Mail newM : myMail)
 			{
 				String name = "New mail from " + newM.getSenderName();
-				
+
 				Text item = Texts.builder(name)
 						.onClick(TextActions.runCommand("/readmail " + (myMail.indexOf(newM))))
 						.onHover(TextActions.showText(Texts.of(TextColors.WHITE, "Read mail from ", TextColors.GOLD, newM.getSenderName())))
@@ -83,14 +82,12 @@ public class MailListExecutor implements CommandExecutor
 			pList.setHeader(header.build());
 			//Send List
 			src.sendMessage(pList.getPage(pgNo));
-		}
-		else if(src instanceof ConsoleSource)
+		} else if(src instanceof ConsoleSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /maillist!"));
-		}
-		else if(src instanceof CommandBlockSource)
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /maillist!"));
+		} else if(src instanceof CommandBlockSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /mailist!"));
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /mailist!"));
 		}
 
 		return CommandResult.success();

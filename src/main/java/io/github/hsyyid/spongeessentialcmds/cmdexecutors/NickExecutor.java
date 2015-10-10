@@ -20,11 +20,11 @@ public class NickExecutor implements CommandExecutor
 	{
 		String nick = ctx.<String>getOne("nick").get();
 		nick.replace("&", "\u00A7");
-		
+
 		if(src instanceof Player)
 		{
 			Player player = (Player) src;
-			
+
 			Optional<Player> p = ctx.<Player>getOne("player");
 			Player targetPlayer = null;
 
@@ -42,8 +42,7 @@ public class NickExecutor implements CommandExecutor
 				{
 					Text newName = Texts.of(name.get().toString().replace(player.getName(), nick));
 					data.set(Keys.DISPLAY_NAME, Texts.of(newName));
-				}
-				else
+				} else
 				{
 					data.set(Keys.DISPLAY_NAME, Texts.of(nick));
 				}
@@ -52,8 +51,7 @@ public class NickExecutor implements CommandExecutor
 				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Nick successfully set!"));
 
 				return CommandResult.success();
-			}
-			else
+			} else
 			{
 				DisplayNameData data = player.getOrCreate(DisplayNameData.class).get();
 				Optional<Text> name = data.get(Keys.DISPLAY_NAME);
@@ -62,19 +60,17 @@ public class NickExecutor implements CommandExecutor
 				{
 					Text newName = Texts.of(name.get().toString().replace(player.getName(), nick));
 					data.set(Keys.DISPLAY_NAME, Texts.of(newName));
-				}
-				else
+				} else
 				{
 					data.set(Keys.DISPLAY_NAME, Texts.of(nick));
 				}
-				
+
 				player.offer(data);
 				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Nick successfully set!"));
 
 				return CommandResult.success();
 			}
-		}
-		else
+		} else
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be a in-game player to do /nick!"));
 			return CommandResult.success();

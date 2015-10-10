@@ -1,7 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
 import io.github.hsyyid.spongeessentialcmds.Main;
-
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.entity.living.player.Player;
@@ -23,30 +22,29 @@ public class BroadcastExecutor implements CommandExecutor
 		String message = ctx.<String>getOne("message").get();
 		Game game = Main.game;
 		Server server = game.getServer();
-		
-		try 
+
+		try
 		{
 			Text msg = Texts.legacy('&').from(message);
-			Text broadcast = Texts.of(TextColors.DARK_GRAY, "[",TextColors.DARK_RED,"Broadcast", TextColors.DARK_GRAY, "]", TextColors.GREEN, " ");
+			Text broadcast = Texts.of(TextColors.DARK_GRAY, "[", TextColors.DARK_RED, "Broadcast", TextColors.DARK_GRAY, "]", TextColors.GREEN, " ");
 			Text finalBroadcast = Texts.builder().append(broadcast).append(msg).build();
-			
-			for(Player player : server.getOnlinePlayers())
+
+			for (Player player : server.getOnlinePlayers())
 			{
 				player.sendMessage(finalBroadcast);
 			}
-			
+
 			server.getConsole().sendMessage(finalBroadcast);
-		}
-		catch (TextMessageException e)
+		} catch (TextMessageException e)
 		{
-			for(Player player : server.getOnlinePlayers())
+			for (Player player : server.getOnlinePlayers())
 			{
-				player.sendMessage(Texts.of(TextColors.DARK_GRAY, "[",TextColors.DARK_RED,"Broadcast", TextColors.DARK_GRAY, "]", TextColors.GREEN, " " + message));
+				player.sendMessage(Texts.of(TextColors.DARK_GRAY, "[", TextColors.DARK_RED, "Broadcast", TextColors.DARK_GRAY, "]", TextColors.GREEN, " " + message));
 			}
-			
-			server.getConsole().sendMessage(Texts.of(TextColors.DARK_GRAY, "[",TextColors.DARK_RED,"Broadcast", TextColors.DARK_GRAY, "]", TextColors.GREEN, " " + message));
+
+			server.getConsole().sendMessage(Texts.of(TextColors.DARK_GRAY, "[", TextColors.DARK_RED, "Broadcast", TextColors.DARK_GRAY, "]", TextColors.GREEN, " " + message));
 		}
-		
+
 		return CommandResult.success();
 	}
 }

@@ -13,15 +13,15 @@ import org.spongepowered.api.util.command.spec.CommandExecutor;
 
 public class PardonExecutor implements CommandExecutor
 {
-    public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
-    {
-        Game game = Main.game;
-        Server server = game.getServer();
-        String player = ctx.<String>getOne("player").get();
+	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+	{
+		Game game = Main.game;
+		Server server = game.getServer();
+		String player = ctx.<String>getOne("player").get();
 
-        game.getCommandDispatcher().process(server.getConsole(), "minecraft:pardon " +  player);
-        src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player unbanned."));
-      
-        return CommandResult.success();
-    }
+		game.getCommandDispatcher().process(server.getConsole(), "minecraft:pardon " + player);
+		src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player unbanned."));
+
+		return CommandResult.success();
+	}
 }

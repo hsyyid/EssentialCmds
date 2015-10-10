@@ -1,7 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
 import io.github.hsyyid.spongeessentialcmds.Main;
-
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
@@ -38,18 +37,17 @@ public class JumpExecutor implements CommandExecutor
 				{
 					Location<World> safe = helper.getSafeLocation(location).get();
 					player.setLocation(safe);
-				}
-				else
+				} else
 				{
-					src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Couldn't find safe place!"));
+					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Couldn't find safe place!"));
 				}
 			}
-		}
-		else if(src instanceof ConsoleSource) {
-			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /jump!"));
-		}
-		else if(src instanceof CommandBlockSource) {
-			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /jump!"));
+		} else if(src instanceof ConsoleSource)
+		{
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /jump!"));
+		} else if(src instanceof CommandBlockSource)
+		{
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /jump!"));
 		}
 		return CommandResult.success();
 	}

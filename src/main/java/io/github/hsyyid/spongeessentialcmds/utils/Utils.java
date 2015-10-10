@@ -11,6 +11,7 @@ import org.spongepowered.api.service.sql.SqlService;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import javax.sql.DataSource;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -28,8 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 
-import javax.sql.DataSource;
-
 public class Utils
 {
 	private static Gson gson = new GsonBuilder().create();
@@ -41,7 +40,7 @@ public class Utils
 
 		try
 		{
-			if (Utils.useMySQL())
+			if(Utils.useMySQL())
 			{
 				SqlService sql = Main.game.getServiceManager().provide(SqlService.class).get();
 				String host = Utils.getMySQLHost();
@@ -56,7 +55,7 @@ public class Utils
 				execute(executeString, datasource);
 
 				executeString = "CREATE TABLE MUTES " +
-					"(UUID TEXT PRIMARY KEY     NOT NULL)";
+						"(UUID TEXT PRIMARY KEY     NOT NULL)";
 				execute(executeString, datasource);
 
 				for (Mute mute : Main.muteList)
@@ -64,11 +63,10 @@ public class Utils
 					String UUID = mute.getUUID();
 
 					executeString = "INSERT INTO MUTES (UUID) " +
-						"VALUES ('" + UUID + "');";
+							"VALUES ('" + UUID + "');";
 					execute(executeString, datasource);
 				}
-			}
-			else
+			} else
 			{
 				Class.forName("org.sqlite.JDBC");
 				c = DriverManager.getConnection("jdbc:sqlite:Mutes.db");
@@ -77,7 +75,7 @@ public class Utils
 				stmt.executeUpdate(sql);
 
 				sql = "CREATE TABLE MUTES " +
-					"(UUID TEXT PRIMARY KEY     NOT NULL)";
+						"(UUID TEXT PRIMARY KEY     NOT NULL)";
 				stmt.executeUpdate(sql);
 
 				for (Mute mute : Main.muteList)
@@ -85,15 +83,14 @@ public class Utils
 					String UUID = mute.getUUID();
 
 					sql = "INSERT INTO MUTES (UUID) " +
-						"VALUES ('" + UUID + "');";
+							"VALUES ('" + UUID + "');";
 					stmt.executeUpdate(sql);
 				}
 
 				stmt.close();
 				c.close();
 			}
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			;
 		}
@@ -105,17 +102,15 @@ public class Utils
 		{
 			ConfigurationNode valueNode = Main.config.getNode((Object[]) ("mysql.port").split("\\."));
 
-			if (valueNode.getValue() != null)
+			if(valueNode.getValue() != null)
 			{
 				return valueNode.getString();
-			}
-			else
+			} else
 			{
 				setSQLPort("8080");
 				return "";
 			}
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			setSQLPort("8080");
 			return "";
@@ -128,17 +123,15 @@ public class Utils
 		{
 			ConfigurationNode valueNode = Main.config.getNode((Object[]) ("mysql.database").split("\\."));
 
-			if (valueNode.getValue() != null)
+			if(valueNode.getValue() != null)
 			{
 				return valueNode.getString();
-			}
-			else
+			} else
 			{
 				setSQLDatabase("Mutes");
 				return "";
 			}
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			setSQLDatabase("Mutes");
 			return "";
@@ -151,17 +144,15 @@ public class Utils
 		{
 			ConfigurationNode valueNode = Main.config.getNode((Object[]) ("mysql.password").split("\\."));
 
-			if (valueNode.getValue() != null)
+			if(valueNode.getValue() != null)
 			{
 				return valueNode.getString();
-			}
-			else
+			} else
 			{
 				setSQLPass("cat");
 				return "";
 			}
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			setSQLPass("cats");
 			return "";
@@ -174,17 +165,15 @@ public class Utils
 		{
 			ConfigurationNode valueNode = Main.config.getNode((Object[]) ("mysql.username").split("\\."));
 
-			if (valueNode.getValue() != null)
+			if(valueNode.getValue() != null)
 			{
 				return valueNode.getString();
-			}
-			else
+			} else
 			{
 				setSQLUsername("HassanS6000");
 				return "";
 			}
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			setSQLUsername("HassanS6000");
 			return "";
@@ -197,17 +186,15 @@ public class Utils
 		{
 			ConfigurationNode valueNode = Main.config.getNode((Object[]) ("mysql.host").split("\\."));
 
-			if (valueNode.getValue() != null)
+			if(valueNode.getValue() != null)
 			{
 				return valueNode.getString();
-			}
-			else
+			} else
 			{
 				setSQLHost("null");
 				return "";
 			}
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			setSQLHost("null");
 			return "";
@@ -218,11 +205,10 @@ public class Utils
 	{
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("mysql.use").split("\\."));
 
-		if (valueNode.getValue() != null)
+		if(valueNode.getValue() != null)
 		{
 			return valueNode.getBoolean();
-		}
-		else
+		} else
 		{
 			setUseMySQL(false);
 			return false;
@@ -238,8 +224,7 @@ public class Utils
 		{
 			configManager.save(Main.config);
 			configManager.load();
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
 			System.out.println("[SpongeEssentialCmds]: Failed to update config.");
 		}
@@ -254,8 +239,7 @@ public class Utils
 		{
 			configManager.save(Main.config);
 			configManager.load();
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
 			System.out.println("[SpongeEssentialCmds]: Failed to update config.");
 		}
@@ -270,8 +254,7 @@ public class Utils
 		{
 			configManager.save(Main.config);
 			configManager.load();
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
 			System.out.println("[SpongeEssentialCmds]: Failed to update config.");
 		}
@@ -286,8 +269,7 @@ public class Utils
 		{
 			configManager.save(Main.config);
 			configManager.load();
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
 			System.out.println("[SpongeEssentialCmds]: Failed to update config.");
 		}
@@ -302,8 +284,7 @@ public class Utils
 		{
 			configManager.save(Main.config);
 			configManager.load();
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
 			System.out.println("[SpongeEssentialCmds]: Failed to update config.");
 		}
@@ -318,8 +299,7 @@ public class Utils
 		{
 			configManager.save(Main.config);
 			configManager.load();
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
 			System.out.println("[SpongeEssentialCmds]: Failed to update config.");
 		}
@@ -335,8 +315,7 @@ public class Utils
 			statement.close();
 			connection.close();
 
-		}
-		catch (SQLException e)
+		} catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
@@ -346,7 +325,7 @@ public class Utils
 	{
 		try
 		{
-			if (Utils.useMySQL())
+			if(Utils.useMySQL())
 			{
 				SqlService sql = Main.game.getServiceManager().provide(SqlService.class).get();
 				String host = Utils.getMySQLHost();
@@ -369,8 +348,7 @@ public class Utils
 
 				Main.muteList = muteList;
 				rs.close();
-			}
-			else
+			} else
 			{
 				Connection c = null;
 				Statement stmt = null;
@@ -393,8 +371,7 @@ public class Utils
 				stmt.close();
 				c.close();
 			}
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			;
 		}
@@ -409,18 +386,17 @@ public class Utils
 		Main.config.getNode("home", "users", playerName, homeName, "Y").setValue(playerLocation.getY());
 		Main.config.getNode("home", "users", playerName, homeName, "Z").setValue(playerLocation.getZ());
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("home.users." + playerName + "." + "homes").split("\\."));
-		if (valueNode.getString() != null)
+		if(valueNode.getString() != null)
 		{
 			String items = valueNode.getString();
-			if (items.contains(homeName + ","))
+			if(items.contains(homeName + ","))
 				;
 			else
 			{
 				String formattedItem = (homeName + ",");
 				valueNode.setValue(items + formattedItem);
 			}
-		}
-		else
+		} else
 		{
 			valueNode.setValue(homeName + ",");
 		}
@@ -429,8 +405,7 @@ public class Utils
 		{
 			configManager.save(Main.config);
 			configManager.load();
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
 			System.out.println("[SpongeEssentialCmds]: Failed to add " + playerName + "'s home!");
 		}
@@ -443,17 +418,15 @@ public class Utils
 		try
 		{
 			json = readFile("Mail.json", StandardCharsets.UTF_8);
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			return new ArrayList<Mail>();
 		}
 
-		if (json != null && json.length() > 0)
+		if(json != null && json.length() > 0)
 		{
 			return new ArrayList<Mail>(Arrays.asList(gson.fromJson(json, Mail[].class)));
-		}
-		else
+		} else
 		{
 			return new ArrayList<Mail>();
 		}
@@ -467,7 +440,7 @@ public class Utils
 
 	public static void addMail(String senderName, String recipientName, String message)
 	{
-		if (Utils.getMail() != null)
+		if(Utils.getMail() != null)
 		{
 			ArrayList<Mail> currentMail = Utils.getMail();
 
@@ -489,8 +462,7 @@ public class Utils
 
 				// Always close files.
 				bufferedWriter.close();
-			}
-			catch (Exception ex)
+			} catch (Exception ex)
 			{
 				System.out.println("Could not save JSON file!");
 			}
@@ -499,7 +471,7 @@ public class Utils
 
 	public static void removeMail(Mail mail)
 	{
-		if (Utils.getMail() != null)
+		if(Utils.getMail() != null)
 		{
 			ArrayList<Mail> currentMail = Utils.getMail();
 
@@ -507,14 +479,14 @@ public class Utils
 
 			for (Mail m : currentMail)
 			{
-				if (m.getRecipientName().equals(mail.getRecipientName()) && m.getSenderName().equals(mail.getSenderName()) && m.getMessage().equals(mail.getMessage()))
+				if(m.getRecipientName().equals(mail.getRecipientName()) && m.getSenderName().equals(mail.getSenderName()) && m.getMessage().equals(mail.getMessage()))
 				{
 					mailToRemove = m;
 					break;
 				}
 			}
 
-			if (mailToRemove != null)
+			if(mailToRemove != null)
 			{
 				currentMail.remove(mailToRemove);
 			}
@@ -536,8 +508,7 @@ public class Utils
 
 				// Always close files.
 				bufferedWriter.close();
-			}
-			catch (Exception ex)
+			} catch (Exception ex)
 			{
 				System.out.println("Could not save JSON file!");
 			}
@@ -552,18 +523,17 @@ public class Utils
 		Main.config.getNode("warps", warpName, "Y").setValue(playerLocation.getY());
 		Main.config.getNode("warps", warpName, "Z").setValue(playerLocation.getZ());
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("warps.warps").split("\\."));
-		if (valueNode.getString() != null)
+		if(valueNode.getString() != null)
 		{
 			String items = valueNode.getString();
-			if (items.contains(warpName + ","))
+			if(items.contains(warpName + ","))
 				;
 			else
 			{
 				String formattedItem = (warpName + ",");
 				valueNode.setValue(items + formattedItem);
 			}
-		}
-		else
+		} else
 		{
 			valueNode.setValue(warpName + ",");
 		}
@@ -572,8 +542,7 @@ public class Utils
 		{
 			configManager.save(Main.config);
 			configManager.load();
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
 			System.out.println("[SpongeEssentialCmds]: Failed to add warp!");
 		}
@@ -582,11 +551,10 @@ public class Utils
 	public static String getJoinMsg()
 	{
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("joinmsg").split("\\."));
-		if (valueNode.getValue() != null)
+		if(valueNode.getValue() != null)
 		{
 			return valueNode.getString();
-		}
-		else
+		} else
 		{
 			Utils.setJoinMsg("&4Welcome");
 			return "&4Welcome";
@@ -596,11 +564,10 @@ public class Utils
 	public static String getFirstChatCharReplacement()
 	{
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("chat.firstcharacter").split("\\."));
-		if (valueNode.getValue() != null)
+		if(valueNode.getValue() != null)
 		{
 			return valueNode.getString();
-		}
-		else
+		} else
 		{
 			Utils.setFirstChatCharReplacement("<");
 			return "<";
@@ -610,11 +577,10 @@ public class Utils
 	public static String getLastChatCharReplacement()
 	{
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("chat.lastcharacter").split("\\."));
-		if (valueNode.getValue() != null)
+		if(valueNode.getValue() != null)
 		{
 			return valueNode.getString();
-		}
-		else
+		} else
 		{
 			Utils.setLastChatCharReplacement(">");
 			return ">";
@@ -624,11 +590,10 @@ public class Utils
 	public static double getAFK()
 	{
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("afk.timer").split("\\."));
-		if (valueNode.getDouble() != 0)
+		if(valueNode.getDouble() != 0)
 		{
 			return valueNode.getDouble();
-		}
-		else
+		} else
 		{
 			Utils.setAFK(30000);
 			ConfigurationNode valNode = Main.config.getNode((Object[]) ("afk.timer").split("\\."));
@@ -640,11 +605,10 @@ public class Utils
 	{
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("afk.kick.use").split("\\."));
 
-		if (valueNode.getValue() != null)
+		if(valueNode.getValue() != null)
 		{
 			return valueNode.getBoolean();
-		}
-		else
+		} else
 		{
 			Utils.setAFKKick(false);
 			return false;
@@ -655,11 +619,10 @@ public class Utils
 	{
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("afk.kick.timer").split("\\."));
 
-		if (valueNode.getValue() != null)
+		if(valueNode.getValue() != null)
 		{
 			return valueNode.getDouble();
-		}
-		else
+		} else
 		{
 			Utils.setAFKKickTimer(30000);
 			ConfigurationNode valNode = Main.config.getNode((Object[]) ("afk.timer").split("\\."));
@@ -678,8 +641,7 @@ public class Utils
 		{
 			configManager.save(Main.config);
 			configManager.load();
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
 			System.out.println("[SpongeEssentialCmds]: Failed to set spawn");
 		}
@@ -693,8 +655,7 @@ public class Utils
 		{
 			configManager.save(Main.config);
 			configManager.load();
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
 			System.out.println("[SpongeEssentialCmds]: Failed to add Join Message to Config!");
 		}
@@ -708,8 +669,7 @@ public class Utils
 		{
 			configManager.save(Main.config);
 			configManager.load();
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
 			System.out.println("[SpongeEssentialCmds]: Failed to set First Chat Character in Config!");
 		}
@@ -723,8 +683,7 @@ public class Utils
 		{
 			configManager.save(Main.config);
 			configManager.load();
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
 			System.out.println("[SpongeEssentialCmds]: Failed to set Last Chat Character in Config!");
 		}
@@ -738,8 +697,7 @@ public class Utils
 		{
 			configManager.save(Main.config);
 			configManager.load();
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
 			System.out.println("[SpongeEssentialCmds]: Failed to add AFK to config");
 		}
@@ -753,8 +711,7 @@ public class Utils
 		{
 			configManager.save(Main.config);
 			configManager.load();
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
 			System.out.println("[SpongeEssentialCmds]: Failed to add AFK to config");
 		}
@@ -768,8 +725,7 @@ public class Utils
 		{
 			configManager.save(Main.config);
 			configManager.load();
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
 			System.out.println("[SpongeEssentialCmds]: Failed to add AFK to config");
 		}
@@ -787,8 +743,7 @@ public class Utils
 		{
 			configManager.save(Main.config);
 			configManager.load();
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
 			System.out.println("[SpongeEssentialCmds]: Failed to add " + playerName + "'s last death location!");
 		}
@@ -818,10 +773,10 @@ public class Utils
 		boolean finished = false;
 
 		// Add all homes to homeList
-		if (finished != true)
+		if(finished != true)
 		{
 			int endIndex = list.indexOf(",");
-			if (endIndex != -1)
+			if(endIndex != -1)
 			{
 				String substring = list.substring(0, endIndex);
 				homeList.add(substring);
@@ -831,14 +786,13 @@ public class Utils
 				{
 					int startIndex = endIndex;
 					endIndex = list.indexOf(",", startIndex + 1);
-					if (endIndex != -1)
+					if(endIndex != -1)
 					{
 						String substrings = list.substring(startIndex + 1, endIndex);
 						homeList.add(substrings);
-					}
-					else
+					} else
 					{
-						if (!(list.equals("")))
+						if(!(list.equals("")))
 						{
 							homeList.add(list);
 						}
@@ -860,10 +814,10 @@ public class Utils
 		boolean finished = false;
 
 		// Add all homes to warpList
-		if (finished != true)
+		if(finished != true)
 		{
 			int endIndex = list.indexOf(",");
-			if (endIndex != -1)
+			if(endIndex != -1)
 			{
 				String substring = list.substring(0, endIndex);
 				warpList.add(substring);
@@ -873,18 +827,16 @@ public class Utils
 				{
 					int startIndex = endIndex;
 					endIndex = list.indexOf(",", startIndex + 1);
-					if (endIndex != -1)
+					if(endIndex != -1)
 					{
 						String substrings = list.substring(startIndex + 1, endIndex);
 						warpList.add(substrings);
-					}
-					else
+					} else
 					{
 						finished = true;
 					}
 				}
-			}
-			else
+			} else
 			{
 				warpList.add(list);
 				finished = true;
@@ -958,11 +910,10 @@ public class Utils
 		String userName = playerName.toString();
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("home.users." + userName + "." + homeName + ".X").split("\\."));
 		Object inConfig = valueNode.getValue();
-		if (inConfig != null)
+		if(inConfig != null)
 		{
 			return true;
-		}
-		else
+		} else
 		{
 			return false;
 		}
@@ -972,11 +923,10 @@ public class Utils
 	{
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("warps." + warpName + ".X").split("\\."));
 		Object inConfig = valueNode.getValue();
-		if (inConfig != null)
+		if(inConfig != null)
 		{
 			return true;
-		}
-		else
+		} else
 		{
 			return false;
 		}
@@ -986,11 +936,10 @@ public class Utils
 	{
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("spawn.X").split("\\."));
 		Object inConfig = valueNode.getValue();
-		if (inConfig != null)
+		if(inConfig != null)
 		{
 			return true;
-		}
-		else
+		} else
 		{
 			return false;
 		}
@@ -1016,11 +965,10 @@ public class Utils
 		String userName = player.getUniqueId().toString();
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("back.users." + userName + ".lastDeath.X").split("\\."));
 		Object inConfig = valueNode.getValue();
-		if (inConfig != null)
+		if(inConfig != null)
 		{
 			return true;
-		}
-		else
+		} else
 		{
 			return false;
 		}

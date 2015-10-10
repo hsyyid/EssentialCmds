@@ -1,7 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
-
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.service.permission.option.OptionSubject;
@@ -20,24 +19,23 @@ public class SetHomeExecutor implements CommandExecutor
 
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		String homeName = ctx.<String> getOne("home name").get();
-		if (src instanceof Player)
+		String homeName = ctx.<String>getOne("home name").get();
+		if(src instanceof Player)
 		{
 			Player player = (Player) src;
 			Subject subject = player.getContainingCollection().get(player.getIdentifier());
 			String homesAllowed = null;
-			if (subject instanceof OptionSubject)
+			if(subject instanceof OptionSubject)
 			{
 				homesAllowed = ((OptionSubject) subject).getOption("homes").orElse("");
 			}
-			if (homesAllowed != null && !(homesAllowed.equals("")))
+			if(homesAllowed != null && !(homesAllowed.equals("")))
 			{
-				if (homesAllowed.equals("unlimited"))
+				if(homesAllowed.equals("unlimited"))
 				{
 					Utils.setHome(player.getUniqueId(), player.getLocation(), player.getWorld().getName(), homeName);
 					src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Home set."));
-				}
-				else
+				} else
 				{
 					Integer allowedHomes = Integer.parseInt(homesAllowed);
 					try
@@ -46,37 +44,31 @@ public class SetHomeExecutor implements CommandExecutor
 						{
 							Utils.setHome(player.getUniqueId(), player.getLocation(), player.getWorld().getName(), homeName);
 							src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Home set."));
-						}
-						else
+						} else
 						{
 							src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You have reached the maximum number of homes you are allowed!"));
 						}
-					}
-					catch(NullPointerException e)
+					} catch (NullPointerException e)
 					{
 						if(allowedHomes > 0)
 						{
 							Utils.setHome(player.getUniqueId(), player.getLocation(), player.getWorld().getName(), homeName);
 							src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Home set."));
-						}
-						else
+						} else
 						{
 							src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You have reached the maximum number of homes you are allowed!"));
 						}
 					}
 				}
-			}
-			else
+			} else
 			{
 				Utils.setHome(player.getUniqueId(), player.getLocation(), player.getWorld().getName(), homeName);
 				src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Home set."));
 			}
-		}
-		else if (src instanceof ConsoleSource)
+		} else if(src instanceof ConsoleSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /sethome!"));
-		}
-		else if (src instanceof CommandBlockSource)
+		} else if(src instanceof CommandBlockSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /sethome!"));
 		}

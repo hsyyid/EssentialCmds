@@ -6,34 +6,34 @@ import org.spongepowered.api.event.impl.AbstractEvent;
 
 public class TPAAcceptEvent extends AbstractEvent implements Cancellable
 {
-   private boolean cancelled = false;
+	private boolean cancelled = false;
 
-   private Player sender;
-   private Player recipient;
-   
-   public Player getSender()
-   {
-      return sender;
-   }
+	private Player sender;
+	private Player recipient;
 
-   public Player getRecipient()
-   {
-      return recipient;
-   }
-   
-   public boolean isCancelled()
-   {
-      return cancelled;
-   }
+	public Player getSender()
+	{
+		return sender;
+	}
 
-   public void setCancelled(boolean cancel)
-   {
-      cancelled = cancel;
-   }
+	public Player getRecipient()
+	{
+		return recipient;
+	}
 
-   public TPAAcceptEvent(Player sender, Player recipient)
-   {
-	   this.sender = sender;
-	   this.recipient = recipient;
-   }
+	public boolean isCancelled()
+	{
+		return cancelled;
+	}
+
+	public void setCancelled(boolean cancel)
+	{
+		cancelled = cancel;
+	}
+
+	public TPAAcceptEvent(Player sender, Player recipient)
+	{
+		this.sender = sender;
+		this.recipient = recipient;
+	}
 }

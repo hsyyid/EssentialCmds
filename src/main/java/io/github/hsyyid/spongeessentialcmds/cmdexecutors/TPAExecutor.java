@@ -2,7 +2,6 @@ package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
 import io.github.hsyyid.spongeessentialcmds.Main;
 import io.github.hsyyid.spongeessentialcmds.events.TPAEvent;
-
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
@@ -15,7 +14,7 @@ import org.spongepowered.api.util.command.source.CommandBlockSource;
 import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
-public class TPAExecutor  implements CommandExecutor
+public class TPAExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
@@ -27,20 +26,17 @@ public class TPAExecutor  implements CommandExecutor
 			Player player = (Player) src;
 			if(recipient == player)
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "You cannot teleport to yourself!"));
-			}
-			else
+				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot teleport to yourself!"));
+			} else
 			{
 				game.getEventManager().post(new TPAEvent(player, recipient));
 			}
-		}
-		else if(src instanceof ConsoleSource)
+		} else if(src instanceof ConsoleSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /tpa!"));
-		}
-		else if(src instanceof CommandBlockSource)
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tpa!"));
+		} else if(src instanceof CommandBlockSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /tpa!"));
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tpa!"));
 		}
 		return CommandResult.success();
 	}

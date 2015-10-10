@@ -6,41 +6,41 @@ import org.spongepowered.api.event.impl.AbstractEvent;
 
 public class MailSendEvent extends AbstractEvent implements Cancellable
 {
-   private boolean cancelled = false;
+	private boolean cancelled = false;
 
-   private Player sender;
-   private String recipientName;
-   private String message;
+	private Player sender;
+	private String recipientName;
+	private String message;
 
-   public Player getSender()
-   {
-      return sender;
-   }
+	public Player getSender()
+	{
+		return sender;
+	}
 
-   public String getRecipientName()
-   {
-      return recipientName;
-   }
+	public String getRecipientName()
+	{
+		return recipientName;
+	}
 
-   public boolean isCancelled()
-   {
-      return cancelled;
-   }
+	public boolean isCancelled()
+	{
+		return cancelled;
+	}
 
-   public String getMessage()
-   {
-	   return message;
-   }
-   
-   public void setCancelled(boolean cancel)
-   {
-      cancelled = cancel;
-   }
+	public String getMessage()
+	{
+		return message;
+	}
 
-   public MailSendEvent(Player sender, String recipientName, String message)
-   {
-      this.sender = sender;
-      this.recipientName = recipientName;
-      this.message = message;
-   }
+	public void setCancelled(boolean cancel)
+	{
+		cancelled = cancel;
+	}
+
+	public MailSendEvent(Player sender, String recipientName, String message)
+	{
+		this.sender = sender;
+		this.recipientName = recipientName;
+		this.message = message;
+	}
 }

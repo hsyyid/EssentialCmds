@@ -28,26 +28,24 @@ public class ListWarpExecutor implements CommandExecutor
 		{
 			Player player = (Player) src;
 			ArrayList<String> warps = null;
-			
+
 			try
 			{
 				warps = Utils.getWarps();
-			}
-			catch(NullPointerException e)
+			} catch (NullPointerException e)
 			{
-				player.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "No warps set!"));
+				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "No warps set!"));
 				return CommandResult.success();
 			}
-			
+
 			Optional<Integer> arguments = ctx.<Integer>getOne("page no");
 
 			int pgNo = 1;
-			
+
 			if(arguments.isPresent())
 			{
 				pgNo = arguments.get();
-			}
-			else
+			} else
 			{
 				pgNo = 1;
 			}
@@ -56,7 +54,7 @@ public class ListWarpExecutor implements CommandExecutor
 			{
 				//Add List
 				PaginatedList pList = new PaginatedList("/warps");
-				for (String name: warps)
+				for (String name : warps)
 				{
 					Text item = Texts.builder(name)
 							.onClick(TextActions.runCommand("/warp " + name))
@@ -76,20 +74,17 @@ public class ListWarpExecutor implements CommandExecutor
 
 				pList.setHeader(header.build());
 				//Send List
-				src.sendMessage(pList.getPage(pgNo));	
-			}
-			else
+				src.sendMessage(pList.getPage(pgNo));
+			} else
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "No warps set!"));
+				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "No warps set!"));
 			}
-		}
-		else if(src instanceof ConsoleSource)
+		} else if(src instanceof ConsoleSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /warps!"));
-		}
-		else if(src instanceof CommandBlockSource)
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /warps!"));
+		} else if(src instanceof CommandBlockSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /warps!"));
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /warps!"));
 		}
 
 		return CommandResult.success();

@@ -16,23 +16,22 @@ import java.util.Optional;
 
 public class BanExecutor implements CommandExecutor
 {
-    public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
-    {
-        Game game = Main.game;
-        Server server = game.getServer();
-        Player player = ctx.<Player>getOne("player").get();
-        Optional<String> reason = ctx.<String>getOne("reason");
+	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+	{
+		Game game = Main.game;
+		Server server = game.getServer();
+		Player player = ctx.<Player>getOne("player").get();
+		Optional<String> reason = ctx.<String>getOne("reason");
 
-        if(reason.isPresent())
-        {
-            game.getCommandDispatcher().process(server.getConsole(), "minecraft:ban " +  player.getName() + " " + reason.get());
-        }
-        else
-        {
-            game.getCommandDispatcher().process(server.getConsole(), "minecraft:ban " +  player.getName() + " " + "The BanHammer has Spoken!");
-        }
-        
-        src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player banned."));
-        return CommandResult.success();
-    }
+		if(reason.isPresent())
+		{
+			game.getCommandDispatcher().process(server.getConsole(), "minecraft:ban " + player.getName() + " " + reason.get());
+		} else
+		{
+			game.getCommandDispatcher().process(server.getConsole(), "minecraft:ban " + player.getName() + " " + "The BanHammer has Spoken!");
+		}
+
+		src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player banned."));
+		return CommandResult.success();
+	}
 }
