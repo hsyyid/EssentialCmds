@@ -1,53 +1,7 @@
 package io.github.hsyyid.spongeessentialcmds;
 
 import com.google.inject.Inject;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.AFKExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BackExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BanExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BroadcastExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteHomeExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteWarpExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FeedExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FlyExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.GamemodeExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.GetPosExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HatExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HealExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HomeExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.JumpExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.KickExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.KillExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.LightningExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListHomeExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListWarpExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailListExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailReadExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MessageExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MotdExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MuteExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.NickExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.PardonExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.PowertoolExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.RepairExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.RespondExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetHomeExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetSpawnExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetWarpExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SocialSpyExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SpawnExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SudoExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAAcceptExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPADenyExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAHereExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPHereExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TeleportPosExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TimeExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.UnmuteExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.WarpExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.WeatherExecutor;
-import io.github.hsyyid.spongeessentialcmds.cmdexecutors.WhoisExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.*;
 import io.github.hsyyid.spongeessentialcmds.events.MailSendEvent;
 import io.github.hsyyid.spongeessentialcmds.events.TPAAcceptEvent;
 import io.github.hsyyid.spongeessentialcmds.events.TPAEvent;
@@ -252,8 +206,8 @@ public class Main
 			.description(Texts.of("Gamemode Command"))
 			.permission("gamemode.use")
 			.arguments(GenericArguments.seq(
-				GenericArguments.onlyOne(GenericArguments.string(Texts.of("gamemode"))),
-				GenericArguments.onlyOne(GenericArguments.optional(GenericArguments.player(Texts.of("player"), game)))))
+					GenericArguments.onlyOne(GenericArguments.string(Texts.of("gamemode"))),
+					GenericArguments.onlyOne(GenericArguments.optional(GenericArguments.player(Texts.of("player"), game)))))
 			.executor(new GamemodeExecutor())
 			.build();
 
@@ -306,8 +260,8 @@ public class Main
 			.description(Texts.of("Set Time Command"))
 			.permission("time.set")
 			.arguments(GenericArguments.firstParsing(
-				GenericArguments.string(Texts.of("time")),
-				GenericArguments.integer(Texts.of("ticks"))))
+					GenericArguments.string(Texts.of("time")),
+					GenericArguments.integer(Texts.of("ticks"))))
 			.executor(new TimeExecutor())
 			.build();
 
@@ -325,8 +279,8 @@ public class Main
 			.description(Texts.of("Mail Command"))
 			.permission("mail.use")
 			.arguments(GenericArguments.seq(
-				GenericArguments.onlyOne(GenericArguments.string(Texts.of("player")))),
-				GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("message"))))
+							GenericArguments.onlyOne(GenericArguments.string(Texts.of("player")))),
+					GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("message"))))
 			.executor(new MailExecutor())
 			.build();
 
@@ -347,9 +301,9 @@ public class Main
 			.description(Texts.of("Ban Command"))
 			.permission("ban.use")
 			.arguments(GenericArguments.seq(
-				GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)),
-				GenericArguments.optional(GenericArguments.onlyOne(
-					GenericArguments.remainingJoinedStrings(Texts.of("reason"))))))
+					GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)),
+					GenericArguments.optional(GenericArguments.onlyOne(
+							GenericArguments.remainingJoinedStrings(Texts.of("reason"))))))
 			.executor(new BanExecutor())
 			.build();
 
@@ -381,7 +335,7 @@ public class Main
 			.description(Texts.of("Kick Command"))
 			.permission("kick.use")
 			.arguments(GenericArguments.seq(
-				GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))),
+							GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))),
 				GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("reason"))))
 			.executor(new KickExecutor())
 			.build();
@@ -412,8 +366,8 @@ public class Main
 			.description(Texts.of("Sudo Command"))
 			.permission("sudo.use")
 			.arguments(GenericArguments.seq(
-				GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)),
-				GenericArguments.remainingJoinedStrings(Texts.of("command"))))
+					GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)),
+					GenericArguments.remainingJoinedStrings(Texts.of("command"))))
 			.executor(new SudoExecutor())
 			.build();
 
@@ -626,6 +580,14 @@ public class Main
 			.build();
 
 		game.getCommandDispatcher().register(this, jumpCommandSpec, "jump");
+
+		CommandSpec speedCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Speed Command"))
+				.permission("speed.use")
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("speed")))))
+				.executor(new SpeedExecutor())
+				.build();
+		game.getCommandDispatcher().register(this, speedCommandSpec, "speed");
 
 		CommandSpec powertoolCommandSpec = CommandSpec.builder()
 			.description(Texts.of("Powertool Command"))
