@@ -22,30 +22,33 @@ public class JumpExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		if(src instanceof Player)
+		if (src instanceof Player)
 		{
 			Player player = (Player) src;
 			BlockRayBuilder<World> blockRayBuilder = BlockRay.from(player);
 			BlockRay<World> ray = blockRayBuilder.blockLimit(1).build();
-			if(ray.hasNext())
+			if (ray.hasNext())
 			{
 				BlockRayHit<World> hit = ray.next();
 				Location<World> location = new Location<>(player.getWorld(), hit.getBlockX(), hit.getBlockY(), hit.getBlockZ());
 				TeleportHelper helper = Main.helper;
 
-				if(helper.getSafeLocation(location).get() != null)
+				if (helper.getSafeLocation(location).get() != null)
 				{
 					Location<World> safe = helper.getSafeLocation(location).get();
 					player.setLocation(safe);
-				} else
+				}
+				else
 				{
 					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Couldn't find safe place!"));
 				}
 			}
-		} else if(src instanceof ConsoleSource)
+		}
+		else if (src instanceof ConsoleSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /jump!"));
-		} else if(src instanceof CommandBlockSource)
+		}
+		else if (src instanceof CommandBlockSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /jump!"));
 		}

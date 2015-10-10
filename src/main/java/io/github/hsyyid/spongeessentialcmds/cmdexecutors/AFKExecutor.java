@@ -18,23 +18,26 @@ public class AFKExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		if(src instanceof Player)
+		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			if(Main.movementList.contains(player))
+			if (Main.movementList.contains(player))
 			{
 				Main.movementList.stream().filter(afk -> afk.getPlayer() == player).forEach(afk -> afk.lastMovementTime = -1000000000);
-			} else
+			}
+			else
 			{
 				int afkTime = (int) Utils.getAFK();
 				long afkTimer = afkTime + 1000;
 				AFK afk = new AFK(player, afkTimer);
 				Main.movementList.add(afk);
 			}
-		} else if(src instanceof ConsoleSource)
+		}
+		else if (src instanceof ConsoleSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /afk!"));
-		} else if(src instanceof CommandBlockSource)
+		}
+		else if (src instanceof CommandBlockSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /afk!"));
 		}

@@ -22,11 +22,10 @@ public class KickExecutor implements CommandExecutor
 	{
 		Game game = Main.game;
 		Server server = game.getServer();
-		Player player = ctx.<Player>getOne("player").get();
-		String reason = ctx.<String>getOne("reason").get();
+		Player player = ctx.<Player> getOne("player").get();
+		String reason = ctx.<String> getOne("reason").get();
 
-
-		if(server.getPlayer(player.getUniqueId()).isPresent())
+		if (server.getPlayer(player.getUniqueId()).isPresent())
 		{
 			try
 			{
@@ -40,7 +39,8 @@ public class KickExecutor implements CommandExecutor
 				}
 
 				player.kick(reas);
-			} catch (TextMessageException e)
+			}
+			catch (TextMessageException e)
 			{
 				Text kickMessage = Texts.of(TextColors.GOLD, src.getName() + " kicked " + player.getName() + " for ", TextColors.RED);
 				Text finalKickMessage = Texts.builder().append(kickMessage).append(Texts.of(reason)).build();
@@ -54,7 +54,8 @@ public class KickExecutor implements CommandExecutor
 			}
 
 			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player kicked."));
-		} else
+		}
+		else
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Player doesn't appear to be online!"));
 		}

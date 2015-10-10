@@ -42,7 +42,7 @@ public class MailListExecutor implements CommandExecutor
 			Optional<Integer> arguments = ctx.<Integer>getOne("page no");
 			int pgNo;
 
-			if(arguments.isPresent())
+			if (arguments.isPresent())
 			{
 				pgNo = arguments.get();
 			} else

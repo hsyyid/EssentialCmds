@@ -17,7 +17,7 @@ public class PardonExecutor implements CommandExecutor
 	{
 		Game game = Main.game;
 		Server server = game.getServer();
-		String player = ctx.<String>getOne("player").get();
+		String player = ctx.<String> getOne("player").get();
 
 		game.getCommandDispatcher().process(server.getConsole(), "minecraft:pardon " + player);
 		src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player unbanned."));

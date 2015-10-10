@@ -20,8 +20,8 @@ public class MailReadExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		int number = ctx.<Integer>getOne("mail no").get();
-		if(src instanceof Player)
+		int number = ctx.<Integer> getOne("mail no").get();
+		if (src instanceof Player)
 		{
 			Player player = (Player) src;
 
@@ -29,7 +29,7 @@ public class MailReadExecutor implements CommandExecutor
 
 			ArrayList<Mail> myMail = (ArrayList<Mail>) mail.stream().filter(m -> m.getRecipientName().equals(player.getName())).collect(Collectors.toList());
 
-			if(myMail.isEmpty())
+			if (myMail.isEmpty())
 			{
 				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You have no new mail!"));
 				return CommandResult.success();
@@ -40,15 +40,18 @@ public class MailReadExecutor implements CommandExecutor
 				Mail m = myMail.get(number);
 				Utils.removeMail(m);
 				player.sendMessage(Texts.of(TextColors.GOLD, "[Mail]: Message from ", TextColors.WHITE, m.getSenderName() + ": ", TextColors.GRAY, m.getMessage()));
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
 				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "That mail does not exist!"));
 			}
 
-		} else if(src instanceof ConsoleSource)
+		}
+		else if (src instanceof ConsoleSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /readmail!"));
-		} else if(src instanceof CommandBlockSource)
+		}
+		else if (src instanceof CommandBlockSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /readmail!"));
 		}

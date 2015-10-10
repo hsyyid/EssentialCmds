@@ -23,11 +23,11 @@ public class RepairExecutor implements CommandExecutor
 		Game game = Main.game;
 		ItemStackBuilder itemStackBuilder = game.getRegistry().createItemBuilder();
 
-		if(src instanceof Player)
+		if (src instanceof Player)
 		{
 			Player player = (Player) src;
 
-			if(player.getItemInHand().isPresent())
+			if (player.getItemInHand().isPresent())
 			{
 				ItemStack itemInHand = player.getItemInHand().get();
 				ItemType itemType = itemInHand.getItem();
@@ -36,14 +36,17 @@ public class RepairExecutor implements CommandExecutor
 				player.setItemInHand(null);
 				player.setItemInHand(newItemStack);
 				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Repaired item(s) in your hand."));
-			} else
+			}
+			else
 			{
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be holding something to repair!"));
 			}
-		} else if(src instanceof ConsoleSource)
+		}
+		else if (src instanceof ConsoleSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /repair!"));
-		} else if(src instanceof CommandBlockSource)
+		}
+		else if (src instanceof CommandBlockSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /repair!"));
 		}

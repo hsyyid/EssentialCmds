@@ -21,35 +21,38 @@ public class WarpExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		String warpName = ctx.<String>getOne("warp name").get();
-		if(src instanceof Player)
+		String warpName = ctx.<String> getOne("warp name").get();
+		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			if(Utils.isWarpInConfig(warpName))
+			if (Utils.isWarpInConfig(warpName))
 			{
-				if(!Objects.equals(player.getWorld().getName(), Utils.getWarpWorldName(warpName)))
+				if (!Objects.equals(player.getWorld().getName(), Utils.getWarpWorldName(warpName)))
 				{
 					Vector3d position = new Vector3d(Utils.getWarpX(warpName), Utils.getWarpY(warpName), Utils.getWarpZ(warpName));
 					player.transferToWorld(Utils.getWarpWorldName(warpName), position);
 					src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
 					return CommandResult.success();
-				} else
+				}
+				else
 				{
 					Location<World> warp = new Location<>(player.getWorld(), Utils.getWarpX(warpName), Utils.getWarpY(warpName), Utils.getWarpZ(warpName));
 					player.setLocation(warp);
 				}
-			} else
+			}
+			else
 			{
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Warp " + warpName + " does not exist!"));
 			}
-		} else if(src instanceof ConsoleSource)
+		}
+		else if (src instanceof ConsoleSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /warp!"));
-		} else if(src instanceof CommandBlockSource)
+		}
+		else if (src instanceof CommandBlockSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /warp!"));
 		}
 		return CommandResult.success();
 	}
 }
-

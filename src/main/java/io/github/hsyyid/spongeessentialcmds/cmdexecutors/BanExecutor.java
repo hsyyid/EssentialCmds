@@ -20,13 +20,14 @@ public class BanExecutor implements CommandExecutor
 	{
 		Game game = Main.game;
 		Server server = game.getServer();
-		Player player = ctx.<Player>getOne("player").get();
-		Optional<String> reason = ctx.<String>getOne("reason");
+		Player player = ctx.<Player> getOne("player").get();
+		Optional<String> reason = ctx.<String> getOne("reason");
 
-		if(reason.isPresent())
+		if (reason.isPresent())
 		{
 			game.getCommandDispatcher().process(server.getConsole(), "minecraft:ban " + player.getName() + " " + reason.get());
-		} else
+		}
+		else
 		{
 			game.getCommandDispatcher().process(server.getConsole(), "minecraft:ban " + player.getName() + " " + "The BanHammer has Spoken!");
 		}

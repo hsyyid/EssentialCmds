@@ -17,16 +17,18 @@ public class SetWarpExecutor implements CommandExecutor
 
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		String warpName = ctx.<String>getOne("warp name").get();
-		if(src instanceof Player)
+		String warpName = ctx.<String> getOne("warp name").get();
+		if (src instanceof Player)
 		{
 			Player player = (Player) src;
 			Utils.setWarp(player.getLocation(), player.getWorld().getName(), warpName);
 			src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Warp set."));
-		} else if(src instanceof ConsoleSource)
+		}
+		else if (src instanceof ConsoleSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /setwarp!"));
-		} else if(src instanceof CommandBlockSource)
+		}
+		else if (src instanceof CommandBlockSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /setwarp!"));
 		}

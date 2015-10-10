@@ -240,7 +240,7 @@ public class PaginatedList
 		TextBuilder list = Texts.builder();
 		List<Text> items = this.subList(startIndex, startIndex + this.itemsPerPage);
 
-		if(this.header != null)
+		if (this.header != null)
 		{
 			list.append(this.header);
 		}
@@ -250,11 +250,11 @@ public class PaginatedList
 		for (Text item : items)
 		{
 
-			if(this.displayLineNumbers)
+			if (this.displayLineNumbers)
 			{
 				list.append(Texts.of(this.lineNumberColor, (itemIndex < 10) ?
-						"0" + itemIndex + this.lineNumberType :
-						Integer.toString(itemIndex) + this.lineNumberType));
+					"0" + itemIndex + this.lineNumberType :
+					Integer.toString(itemIndex) + this.lineNumberType));
 			}
 
 			list.append(item);
@@ -271,7 +271,7 @@ public class PaginatedList
 		list.append(getNextLinks(currentPage));
 		list.append(Texts.of(this.paginationColor, fill(18, this.paginationType)));
 
-		if(this.footer != null)
+		if (this.footer != null)
 		{
 			list.append(footer);
 		}
@@ -306,18 +306,20 @@ public class PaginatedList
 
 		paginationPrev.append(Texts.of(" "));
 
-		if(currentPage > 2)
+		if (currentPage > 2)
 		{
 			paginationPrev.append(Texts.of(" "), getLink(PaginatedListUtil.PAGINATION_FIRST, 1), Texts.of(" "));
-		} else
+		}
+		else
 		{
 			paginationPrev.append(Texts.of(this.nonClickableLinkColor, " " + PaginatedListUtil.PAGINATION_FIRST + " "));
 		}
 
-		if(currentPage > 1)
+		if (currentPage > 1)
 		{
 			paginationPrev.append(Texts.of(" "), getLink(PaginatedListUtil.PAGINATION_BACK, (currentPage - 1)), Texts.of(" "));
-		} else
+		}
+		else
 		{
 			paginationPrev.append(Texts.of(this.nonClickableLinkColor, " " + PaginatedListUtil.PAGINATION_BACK + " "));
 		}
@@ -331,18 +333,20 @@ public class PaginatedList
 
 		TextBuilder paginationNext = Texts.builder();
 
-		if(currentPage < this.getTotalPages())
+		if (currentPage < this.getTotalPages())
 		{
 			paginationNext.append(Texts.of(" "), getLink(PaginatedListUtil.PAGINATION_NEXT, (currentPage + 1)), Texts.of(" "));
-		} else
+		}
+		else
 		{
 			paginationNext.append(Texts.of(this.nonClickableLinkColor, " " + PaginatedListUtil.PAGINATION_NEXT + " "));
 		}
 
-		if(currentPage < (this.getTotalPages() - 1))
+		if (currentPage < (this.getTotalPages() - 1))
 		{
 			paginationNext.append(Texts.of(" "), getLink(PaginatedListUtil.PAGINATION_LAST, this.getTotalPages()), Texts.of(" "));
-		} else
+		}
+		else
 		{
 			paginationNext.append(Texts.of(this.nonClickableLinkColor, " " + PaginatedListUtil.PAGINATION_LAST + " "));
 		}
@@ -355,10 +359,10 @@ public class PaginatedList
 	{
 
 		return Texts.builder(preview)
-				.onClick(TextActions.runCommand(this.command + " " + page))
-				.onHover(TextActions.showText(Texts.of(TextColors.WHITE, "Go to page ", TextColors.GOLD, page)))
-				.color(this.clickableLinkColor)
-				.build();
+			.onClick(TextActions.runCommand(this.command + " " + page))
+			.onHover(TextActions.showText(Texts.of(TextColors.WHITE, "Go to page ", TextColors.GOLD, page)))
+			.color(this.clickableLinkColor)
+			.build();
 
 	}
 

@@ -19,30 +19,34 @@ public class HealExecutor implements CommandExecutor
 
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Optional<Player> p = ctx.<Player>getOne("player");
+		Optional<Player> p = ctx.<Player> getOne("player");
 
-		if(src instanceof Player)
+		if (src instanceof Player)
 		{
 			Player player = (Player) src;
 
-			if(player.hasPermission("heal.others") && p.isPresent())
+			if (player.hasPermission("heal.others") && p.isPresent())
 			{
 				Player recipient = p.get();
 				recipient.offer(Keys.HEALTH, player.get(Keys.MAX_HEALTH).get());
 				recipient.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "You've been healed by " + player.getName()));
 				src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "You've healed " + recipient.getName()));
-			} else if(p.isPresent())
+			}
+			else if (p.isPresent())
 			{
 				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to heal other players!"));
-			} else
+			}
+			else
 			{
 				player.offer(Keys.HEALTH, player.get(Keys.MAX_HEALTH).get());
 				src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "You've been healed."));
 			}
-		} else if(src instanceof ConsoleSource)
+		}
+		else if (src instanceof ConsoleSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /heal!"));
-		} else if(src instanceof CommandBlockSource)
+		}
+		else if (src instanceof CommandBlockSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /heal!"));
 		}

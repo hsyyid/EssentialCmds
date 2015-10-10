@@ -18,9 +18,9 @@ public class KillExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Optional<Player> p = ctx.<Player>getOne("player");
+		Optional<Player> p = ctx.<Player> getOne("player");
 
-		if(p.isPresent())
+		if (p.isPresent())
 		{
 			HealthData data = p.get().getHealthData();
 			Value<Double> newHealth = data.health().set(0d);
@@ -29,9 +29,10 @@ public class KillExecutor implements CommandExecutor
 			Utils.setLastDeathLocation(p.get().getUniqueId(), p.get().getLocation());
 			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Killed player " + p.get().getName()));
 			p.get().sendMessage(Texts.of(TextColors.RED, "You have been killed by " + src.getName()));
-		} else
+		}
+		else
 		{
-			if(src instanceof Player)
+			if (src instanceof Player)
 			{
 				Player player = (Player) src;
 				HealthData data = player.getHealthData();
@@ -40,7 +41,8 @@ public class KillExecutor implements CommandExecutor
 				player.offer(data);
 				Utils.setLastDeathLocation(player.getUniqueId(), player.getLocation());
 				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Killed yourself."));
-			} else
+			}
+			else
 			{
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot kill yourself, you are not a player!"));
 			}

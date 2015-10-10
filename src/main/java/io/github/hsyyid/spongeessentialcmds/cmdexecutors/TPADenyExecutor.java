@@ -17,7 +17,7 @@ public class TPADenyExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		if(src instanceof Player)
+		if (src instanceof Player)
 		{
 			Player player = (Player) src;
 			Player sender = null;
@@ -26,7 +26,7 @@ public class TPADenyExecutor implements CommandExecutor
 
 			for (PendingInvitation invitation : Main.pendingInvites)
 			{
-				if(invitation.recipient == player)
+				if (invitation.recipient == player)
 				{
 					sender = invitation.sender;
 					cancel = invitation;
@@ -34,19 +34,22 @@ public class TPADenyExecutor implements CommandExecutor
 				}
 			}
 
-			if(cancel != null && sender != null)
+			if (cancel != null && sender != null)
 			{
 				sender.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Your TPA Request was Denied by " + player.getName() + "!"));
 				Main.pendingInvites.remove(cancel);
 				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.WHITE, "TPA Request Denied."));
-			} else
+			}
+			else
 			{
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Pending TPA request not found!"));
 			}
-		} else if(src instanceof ConsoleSource)
+		}
+		else if (src instanceof ConsoleSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tpadeny!"));
-		} else if(src instanceof CommandBlockSource)
+		}
+		else if (src instanceof CommandBlockSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tpadeny!"));
 		}

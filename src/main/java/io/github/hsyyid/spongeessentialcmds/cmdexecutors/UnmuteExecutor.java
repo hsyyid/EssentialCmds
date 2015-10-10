@@ -16,23 +16,24 @@ public class UnmuteExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Player p = ctx.<Player>getOne("player").get();
+		Player p = ctx.<Player> getOne("player").get();
 
 		Mute targetMute = null;
 
 		for (Mute mute : Main.muteList)
 		{
-			if(mute.getUUID().equals(p.getUniqueId().toString()))
+			if (mute.getUUID().equals(p.getUniqueId().toString()))
 			{
 				targetMute = mute;
 			}
 		}
 
-		if(targetMute != null)
+		if (targetMute != null)
 		{
 			Main.muteList.remove(targetMute);
 			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player un-muted."));
-		} else
+		}
+		else
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "This player is not muted."));
 		}

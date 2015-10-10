@@ -24,7 +24,7 @@ public class ListHomeExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		if(src instanceof Player)
+		if (src instanceof Player)
 		{
 			Player player = (Player) src;
 
@@ -32,20 +32,22 @@ public class ListHomeExecutor implements CommandExecutor
 			try
 			{
 				homes = Utils.getHomes(player.getUniqueId());
-			} catch (NullPointerException e)
+			}
+			catch (NullPointerException e)
 			{
 				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must first set a home to list your homes!"));
 				return CommandResult.success();
 			}
 
-			Optional<Integer> arguments = ctx.<Integer>getOne("page no");
+			Optional<Integer> arguments = ctx.<Integer> getOne("page no");
 
 			int pgNo;
 
-			if(arguments.isPresent())
+			if (arguments.isPresent())
 			{
 				pgNo = arguments.get();
-			} else
+			}
+			else
 			{
 				pgNo = 1;
 			}
@@ -55,11 +57,11 @@ public class ListHomeExecutor implements CommandExecutor
 			for (String name : homes)
 			{
 				Text item = Texts.builder(name)
-						.onClick(TextActions.runCommand("/home " + name))
-						.onHover(TextActions.showText(Texts.of(TextColors.WHITE, "Teleport to home ", TextColors.GOLD, name)))
-						.color(TextColors.DARK_AQUA)
-						.style(TextStyles.UNDERLINE)
-						.build();
+					.onClick(TextActions.runCommand("/home " + name))
+					.onHover(TextActions.showText(Texts.of(TextColors.WHITE, "Teleport to home ", TextColors.GOLD, name)))
+					.color(TextColors.DARK_AQUA)
+					.style(TextStyles.UNDERLINE)
+					.build();
 
 				pList.add(item);
 			}
@@ -74,10 +76,12 @@ public class ListHomeExecutor implements CommandExecutor
 			// Send List
 			src.sendMessage(pList.getPage(pgNo));
 
-		} else if(src instanceof ConsoleSource)
+		}
+		else if (src instanceof ConsoleSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /homes!"));
-		} else if(src instanceof CommandBlockSource)
+		}
+		else if (src instanceof CommandBlockSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /homes!"));
 		}

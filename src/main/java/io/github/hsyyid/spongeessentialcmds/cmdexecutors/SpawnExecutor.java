@@ -22,31 +22,35 @@ public class SpawnExecutor implements CommandExecutor
 
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		if(src instanceof Player)
+		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			if(Utils.isSpawnInConfig())
+			if (Utils.isSpawnInConfig())
 			{
-				if(!Objects.equals(player.getWorld().getName(), Utils.getSpawnWorldName()))
+				if (!Objects.equals(player.getWorld().getName(), Utils.getSpawnWorldName()))
 				{
 					Vector3d position = new Vector3d(Utils.getSpawn(player).getX(), Utils.getSpawn(player).getY(), Utils.getSpawn(player).getZ());
 					player.transferToWorld(Utils.getSpawnWorldName(), position);
 					src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Spawn"));
 					return CommandResult.success();
-				} else
+				}
+				else
 				{
 					Location<World> spawn = new Location<>(player.getWorld(), Utils.getSpawn(player).getX(), Utils.getSpawn(player).getY(), Utils.getSpawn(player).getZ());
 					player.setLocation(spawn);
 				}
 				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Spawn"));
-			} else
+			}
+			else
 			{
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Spawn has not been set yet!"));
 			}
-		} else if(src instanceof ConsoleSource)
+		}
+		else if (src instanceof ConsoleSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /spawn!"));
-		} else if(src instanceof CommandBlockSource)
+		}
+		else if (src instanceof CommandBlockSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /spawn!"));
 		}

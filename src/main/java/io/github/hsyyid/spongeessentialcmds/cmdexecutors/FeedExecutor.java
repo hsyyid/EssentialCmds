@@ -20,48 +20,54 @@ public class FeedExecutor implements CommandExecutor
 
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Optional<Player> p = ctx.<Player>getOne("player");
+		Optional<Player> p = ctx.<Player> getOne("player");
 
-		if(src instanceof Player)
+		if (src instanceof Player)
 		{
 			Player player = (Player) src;
 
-			if(player.hasPermission("feed.others") && p.isPresent())
+			if (player.hasPermission("feed.others") && p.isPresent())
 			{
 				Player recipient = p.get();
 				Optional<FoodData> foodData = recipient.getOrCreate(FoodData.class);
 
-				if(foodData.isPresent())
+				if (foodData.isPresent())
 				{
 					FoodData newData = foodData.get().set(Keys.FOOD_LEVEL, 20);
 					recipient.offer(newData);
 					player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Fed " + recipient.getName()));
 					recipient.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "You have been fed by " + player.getName()));
-				} else
+				}
+				else
 				{
 					System.out.println("Error! Player " + recipient.getName() + " does not have FoodData!");
 				}
-			} else if(p.isPresent())
+			}
+			else if (p.isPresent())
 			{
 				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to feed other players!"));
-			} else
+			}
+			else
 			{
 				Optional<FoodData> foodData = player.getOrCreate(FoodData.class);
 
-				if(foodData.isPresent())
+				if (foodData.isPresent())
 				{
 					FoodData newData = foodData.get().set(Keys.FOOD_LEVEL, 20);
 					player.offer(newData);
 					player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "You have been fed."));
-				} else
+				}
+				else
 				{
 					System.out.println("Error! Player " + player.getName() + " does not have FoodData!");
 				}
 			}
-		} else if(src instanceof ConsoleSource)
+		}
+		else if (src instanceof ConsoleSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /feed!"));
-		} else if(src instanceof CommandBlockSource)
+		}
+		else if (src instanceof CommandBlockSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /feed!"));
 		}

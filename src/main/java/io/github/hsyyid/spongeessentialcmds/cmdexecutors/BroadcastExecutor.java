@@ -19,7 +19,7 @@ public class BroadcastExecutor implements CommandExecutor
 	@SuppressWarnings("deprecation")
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		String message = ctx.<String>getOne("message").get();
+		String message = ctx.<String> getOne("message").get();
 		Game game = Main.game;
 		Server server = game.getServer();
 
@@ -35,7 +35,8 @@ public class BroadcastExecutor implements CommandExecutor
 			}
 
 			server.getConsole().sendMessage(finalBroadcast);
-		} catch (TextMessageException e)
+		}
+		catch (TextMessageException e)
 		{
 			for (Player player : server.getOnlinePlayers())
 			{

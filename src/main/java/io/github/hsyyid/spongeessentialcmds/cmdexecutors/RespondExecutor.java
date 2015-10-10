@@ -20,27 +20,27 @@ public class RespondExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		if(src instanceof Player)
+		if (src instanceof Player)
 		{
 			Player recipient = null;
 			Player player = (Player) src;
 
 			for (Message m : Main.recentlyMessaged)
 			{
-				if(m.getRecipient().getUniqueId().toString().equals(player.getUniqueId().toString()))
+				if (m.getRecipient().getUniqueId().toString().equals(player.getUniqueId().toString()))
 				{
 					recipient = m.getSender();
 					break;
 				}
 			}
 
-			if(recipient != null)
+			if (recipient != null)
 			{
-				String message = ctx.<String>getOne("message").get();
+				String message = ctx.<String> getOne("message").get();
 
 				ArrayList<Player> socialSpies = (ArrayList<Player>) Main.game.getServer().getOnlinePlayers().stream().filter(p -> Main.socialSpies.contains(p.getUniqueId())).collect(Collectors.toList());
 
-				if(recipient.getUniqueId().toString().equals(player.getUniqueId().toString()))
+				if (recipient.getUniqueId().toString().equals(player.getUniqueId().toString()))
 				{
 					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot send a private message to yourself!"));
 					return CommandResult.success();
@@ -53,14 +53,14 @@ public class RespondExecutor implements CommandExecutor
 
 				for (Message m : Main.recentlyMessaged)
 				{
-					if(m.getRecipient().getUniqueId().equals(recipient.getUniqueId()))
+					if (m.getRecipient().getUniqueId().equals(recipient.getUniqueId()))
 					{
 						messageToRemove = m;
 						break;
 					}
 				}
 
-				if(messageToRemove != null)
+				if (messageToRemove != null)
 				{
 					Main.recentlyMessaged.remove(messageToRemove);
 				}
@@ -72,14 +72,17 @@ public class RespondExecutor implements CommandExecutor
 				{
 					socialspy.sendMessage(Texts.of(TextColors.GOLD, "[", TextColors.RED, player.getName(), TextColors.GOLD, " > ", TextColors.RED, recipient.getName(), TextColors.GOLD, "]: ", TextColors.GRAY, message));
 				}
-			} else
+			}
+			else
 			{
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "No recent messages found!"));
 			}
-		} else if(src instanceof ConsoleSource)
+		}
+		else if (src instanceof ConsoleSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be an in-game player to use /r!"));
-		} else if(src instanceof CommandBlockSource)
+		}
+		else if (src instanceof CommandBlockSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be an in-game player to use /r!"));
 		}

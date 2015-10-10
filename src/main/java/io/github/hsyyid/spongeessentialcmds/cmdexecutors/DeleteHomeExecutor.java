@@ -24,55 +24,60 @@ public class DeleteHomeExecutor implements CommandExecutor
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-		String homeName = ctx.<String>getOne("home name").get();
-		if(src instanceof Player)
+		String homeName = ctx.<String> getOne("home name").get();
+		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			if(Utils.inConfig(player.getUniqueId(), homeName))
+			if (Utils.inConfig(player.getUniqueId(), homeName))
 			{
 				ConfigurationNode homeNode = Main.config.getNode((Object[]) ("home.users." + player.getUniqueId() + ".homes").split("\\."));
 
-				//Get Value of Home Node
+				// Get Value of Home Node
 				String homes = homeNode.getString();
 
-				//Remove Home from Homes Node
+				// Remove Home from Homes Node
 				String newVal = homes.replace(homeName + ",", "");
 				homeNode.setValue(newVal);
 
-				//Save CONFIG
+				// Save CONFIG
 				try
 				{
 					configManager.save(Main.config);
 					configManager.load();
-				} catch (IOException e)
+				}
+				catch (IOException e)
 				{
 					System.out.println("[Home]: Failed to delete home " + homeName);
 					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The home was not deleted successfully!"));
 				}
-				//Get Item Node
+				// Get Item Node
 				ConfigurationNode itemNode = Main.config.getNode((Object[]) ("home.users." + player.getUniqueId() + ".").split("\\."));
 				itemNode.removeChild(homeName);
 
-				//save config
+				// save config
 				try
 				{
 					configManager.save(Main.config);
 					configManager.load();
-				} catch (IOException e)
+				}
+				catch (IOException e)
 				{
 					System.out.println("[Home]: Failed to remove home " + homeName);
 					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The home was not deleted successfully!"));
 				}
 
 				src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Deleted home " + homeName));
-			} else
+			}
+			else
 			{
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "This home doesn't exist!"));
 			}
-		} else if(src instanceof ConsoleSource)
+		}
+		else if (src instanceof ConsoleSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /delhome!"));
-		} else if(src instanceof CommandBlockSource)
+		}
+		else if (src instanceof CommandBlockSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /delhome!"));
 		}

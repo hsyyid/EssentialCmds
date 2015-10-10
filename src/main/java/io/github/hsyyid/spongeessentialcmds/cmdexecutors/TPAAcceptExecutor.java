@@ -22,7 +22,7 @@ public class TPAAcceptExecutor implements CommandExecutor
 	{
 		Game game = Main.game;
 
-		if(src instanceof Player)
+		if (src instanceof Player)
 		{
 			Player player = (Player) src;
 			Player sender = null;
@@ -30,11 +30,12 @@ public class TPAAcceptExecutor implements CommandExecutor
 
 			for (PendingInvitation invitation : Main.pendingInvites)
 			{
-				if(!invitation.isTPAHere && invitation.recipient == player)
+				if (!invitation.isTPAHere && invitation.recipient == player)
 				{
 					sender = invitation.sender;
 					break;
-				} else if(invitation.isTPAHere && invitation.recipient == player)
+				}
+				else if (invitation.isTPAHere && invitation.recipient == player)
 				{
 					tpaHere = true;
 					sender = invitation.sender;
@@ -42,22 +43,26 @@ public class TPAAcceptExecutor implements CommandExecutor
 				}
 			}
 
-			if(sender != null && !tpaHere)
+			if (sender != null && !tpaHere)
 			{
 				game.getEventManager().post(new TPAAcceptEvent(player, sender));
 				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.WHITE, "TPA Request Accepted."));
-			} else if(sender != null)
+			}
+			else if (sender != null)
 			{
 				game.getEventManager().post(new TPAHereAcceptEvent(player, sender));
 				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.WHITE, "TPA Here Request Accepted."));
-			} else
+			}
+			else
 			{
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Pending TPA request not found!"));
 			}
-		} else if(src instanceof ConsoleSource)
+		}
+		else if (src instanceof ConsoleSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tpaccept!"));
-		} else if(src instanceof CommandBlockSource)
+		}
+		else if (src instanceof CommandBlockSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tpaccept!"));
 		}

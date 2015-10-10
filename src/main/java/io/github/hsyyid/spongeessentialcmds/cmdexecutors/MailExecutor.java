@@ -16,10 +16,10 @@ public class MailExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		String message = ctx.<String>getOne("message").get();
-		String playerName = ctx.<String>getOne("player").get();
+		String message = ctx.<String> getOne("message").get();
+		String playerName = ctx.<String> getOne("player").get();
 
-		if(src instanceof Player)
+		if (src instanceof Player)
 		{
 			Player p = (Player) src;
 			Game game = Main.game;
@@ -28,7 +28,8 @@ public class MailExecutor implements CommandExecutor
 			game.getEventManager().post(event);
 
 			p.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Sent Mail to " + playerName));
-		} else
+		}
+		else
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be an in-game player to send mail!"));
 		}

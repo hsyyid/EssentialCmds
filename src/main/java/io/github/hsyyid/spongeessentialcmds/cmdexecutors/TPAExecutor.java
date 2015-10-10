@@ -19,22 +19,25 @@ public class TPAExecutor implements CommandExecutor
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		Game game = Main.game;
-		Player recipient = ctx.<Player>getOne("player").get();
+		Player recipient = ctx.<Player> getOne("player").get();
 
-		if(src instanceof Player)
+		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			if(recipient == player)
+			if (recipient == player)
 			{
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot teleport to yourself!"));
-			} else
+			}
+			else
 			{
 				game.getEventManager().post(new TPAEvent(player, recipient));
 			}
-		} else if(src instanceof ConsoleSource)
+		}
+		else if (src instanceof ConsoleSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tpa!"));
-		} else if(src instanceof CommandBlockSource)
+		}
+		else if (src instanceof CommandBlockSource)
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tpa!"));
 		}

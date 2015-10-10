@@ -22,36 +22,41 @@ public class MuteExecutor implements CommandExecutor
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		Game game = Main.game;
-		Player p = ctx.<Player>getOne("player").get();
-		Optional<Long> time = ctx.<Long>getOne("time");
-		Optional<String> timeUnit = ctx.<String>getOne("time unit");
+		Player p = ctx.<Player> getOne("player").get();
+		Optional<Long> time = ctx.<Long> getOne("time");
+		Optional<String> timeUnit = ctx.<String> getOne("time unit");
 
 		for (Mute mute : Main.muteList)
 		{
-			if(mute.getUUID().equals(p.getUniqueId().toString()))
+			if (mute.getUUID().equals(p.getUniqueId().toString()))
 			{
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "This player has already been muted."));
 				return CommandResult.success();
 			}
 		}
 
-		if(time.isPresent() && timeUnit.isPresent())
+		if (time.isPresent() && timeUnit.isPresent())
 		{
 			TimeUnit unit;
 
-			if(timeUnit.get().toLowerCase().equals("m"))
+			if (timeUnit.get().toLowerCase().equals("m"))
 			{
 				unit = TimeUnit.MINUTES;
-			} else if(timeUnit.get().toLowerCase().equals("h"))
+			}
+			else if (timeUnit.get().toLowerCase().equals("h"))
 			{
 				unit = TimeUnit.HOURS;
-			} else if(timeUnit.get().toLowerCase().equals("s"))
+			}
+			else if (timeUnit.get().toLowerCase().equals("s"))
 			{
 				unit = TimeUnit.SECONDS;
-			} else if(timeUnit.get().toLowerCase().equals("d"))
+			}
+			else if (timeUnit.get().toLowerCase().equals("d"))
 			{
 				unit = TimeUnit.DAYS;
-			} else {
+			}
+			else
+			{
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! Invalid time unit."));
 				return CommandResult.empty();
 			}
@@ -62,7 +67,8 @@ public class MuteExecutor implements CommandExecutor
 			taskBuilder.execute(() -> Main.muteList.remove(mute)).delay(time.get(), unit).name("SpongeEssentialCmds removes mute").submit(game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
 
 			Main.muteList.add(mute);
-		} else
+		}
+		else
 		{
 			Main.muteList.add(new Mute(p.getUniqueId().toString()));
 		}

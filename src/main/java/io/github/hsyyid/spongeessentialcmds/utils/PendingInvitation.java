@@ -2,7 +2,6 @@ package io.github.hsyyid.spongeessentialcmds.utils;
 
 import org.spongepowered.api.entity.living.player.Player;
 
-
 public class PendingInvitation
 {
 	public boolean isTPAHere = false;

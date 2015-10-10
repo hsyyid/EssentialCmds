@@ -112,6 +112,7 @@ import java.util.stream.Collectors;
 @Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "3.0")
 public class Main
 {
+
 	public static Game game = null;
 	public static ConfigurationNode config = null;
 	public static ConfigurationLoader<CommentedConfigurationNode> configurationManager;
@@ -152,7 +153,7 @@ public class Main
 		// Config File
 		try
 		{
-			if(!dConfig.exists())
+			if (!dConfig.exists())
 			{
 				config = confManager.load();
 				config.getNode("afk", "timer").setValue(30000);
@@ -164,7 +165,8 @@ public class Main
 
 			configurationManager = confManager;
 			config = confManager.load();
-		} catch (IOException exception)
+		}
+		catch (IOException exception)
 		{
 			getLogger().error("The default configuration could not be loaded or created!");
 		}
@@ -177,13 +179,13 @@ public class Main
 			{
 				for (AFK afk : movementList)
 				{
-					if(afk.getPlayer() == player && ((System.currentTimeMillis() - afk.lastMovementTime) > (Utils.getAFK())) && !afk.getMessaged())
+					if (afk.getPlayer() == player && ((System.currentTimeMillis() - afk.lastMovementTime) > (Utils.getAFK())) && !afk.getMessaged())
 					{
 						for (Player p : game.getServer().getOnlinePlayers())
 						{
 							p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is now AFK."));
 							Optional<FoodData> data = p.get(FoodData.class);
-							if(data.isPresent())
+							if (data.isPresent())
 							{
 								FoodData food = data.get();
 								afk.setFood(food.foodLevel().get());
@@ -193,14 +195,14 @@ public class Main
 						afk.setAFK(true);
 					}
 
-					if(afk.getAFK())
+					if (afk.getAFK())
 					{
 						Player p = afk.getPlayer();
 						Optional<FoodData> data = p.get(FoodData.class);
-						if(data.isPresent())
+						if (data.isPresent())
 						{
 							FoodData food = data.get();
-							if(food.foodLevel().get() < afk.getFood())
+							if (food.foodLevel().get() < afk.getFood())
 							{
 								Value<Integer> foodLevel = food.foodLevel().set(afk.getFood());
 								food.set(foodLevel);
@@ -208,421 +210,325 @@ public class Main
 							}
 						}
 
-						if(!(p.hasPermission("afk.kick.false")) && Utils.getAFKKick() && afk.getLastMovementTime() >= Utils.getAFKKickTimer())
+						if (!(p.hasPermission("afk.kick.false")) && Utils.getAFKKick() && afk.getLastMovementTime() >= Utils.getAFKKickTimer())
 						{
 							p.kick(Texts.of(TextColors.GOLD, "Kicked for being AFK too long."));
 						}
 					}
 				}
 			}
-		}).interval(1, TimeUnit.SECONDS).name("SpongeEssentialCmds - AFK").submit(game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
+		}).interval(1, TimeUnit.SECONDS).name("SpongeEssentialCmds - AFK")
+			.submit(game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
 
-		CommandSpec homeCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Home Command"))
-				.permission("home.use")
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name"))))
-				.executor(new HomeExecutor())
-				.build();
+		CommandSpec homeCommandSpec =
+			CommandSpec.builder().description(Texts.of("Home Command")).permission("home.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name")))).executor(new HomeExecutor()).build();
 		game.getCommandDispatcher().register(this, homeCommandSpec, "home");
 
-		CommandSpec whoIsCommandSpec = CommandSpec.builder()
-				.description(Texts.of("WhoIs Command"))
-				.permission("whois.use")
-				.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))
-				.executor(new WhoisExecutor())
-				.build();
+		CommandSpec whoIsCommandSpec =
+			CommandSpec.builder().description(Texts.of("WhoIs Command")).permission("whois.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))).executor(new WhoisExecutor()).build();
 		game.getCommandDispatcher().register(this, whoIsCommandSpec, "whois");
 
-		CommandSpec getPosCommandSpec = CommandSpec.builder()
-				.description(Texts.of("GetPos Command"))
-				.permission("getpos.use")
+		CommandSpec getPosCommandSpec =
+			CommandSpec.builder().description(Texts.of("GetPos Command")).permission("getpos.use")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))))
-				.executor(new GetPosExecutor())
-				.build();
+				.executor(new GetPosExecutor()).build();
 		game.getCommandDispatcher().register(this, getPosCommandSpec, "getpos");
 
-		CommandSpec gamemodeCommandSpec = CommandSpec.builder()
+		CommandSpec gamemodeCommandSpec =
+			CommandSpec
+				.builder()
 				.description(Texts.of("Gamemode Command"))
 				.permission("gamemode.use")
-				.arguments(GenericArguments.seq(
-						GenericArguments.onlyOne(GenericArguments.string(Texts.of("gamemode"))),
+				.arguments(
+					GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.string(Texts.of("gamemode"))),
 						GenericArguments.onlyOne(GenericArguments.optional(GenericArguments.player(Texts.of("player"), game)))))
-				.executor(new GamemodeExecutor())
-				.build();
+				.executor(new GamemodeExecutor()).build();
 		game.getCommandDispatcher().register(this, gamemodeCommandSpec, "gamemode", "gm");
 
-		CommandSpec motdCommandSpec = CommandSpec.builder()
-				.description(Texts.of("MOTD Command"))
-				.permission("motd.use")
-				.executor(new MotdExecutor())
-				.build();
+		CommandSpec motdCommandSpec =
+			CommandSpec.builder().description(Texts.of("MOTD Command")).permission("motd.use").executor(new MotdExecutor()).build();
 		game.getCommandDispatcher().register(this, motdCommandSpec, "motd");
 
-		CommandSpec socialSpyCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Allows Toggling of Seeing Other Players Private Messages"))
-				.permission("socialspy.use")
-				.executor(new SocialSpyExecutor())
-				.build();
+		CommandSpec socialSpyCommandSpec =
+			CommandSpec.builder().description(Texts.of("Allows Toggling of Seeing Other Players Private Messages")).permission("socialspy.use")
+				.executor(new SocialSpyExecutor()).build();
 		game.getCommandDispatcher().register(this, socialSpyCommandSpec, "socialspy");
 
-		CommandSpec mailListCommandSpec = CommandSpec.builder()
-				.description(Texts.of("List Mail Command"))
-				.permission("mail.list")
+		CommandSpec mailListCommandSpec =
+			CommandSpec.builder().description(Texts.of("List Mail Command")).permission("mail.list")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("page no")))))
-				.executor(new MailListExecutor())
-				.build();
+				.executor(new MailListExecutor()).build();
 		game.getCommandDispatcher().register(this, mailListCommandSpec, "listmail");
 
-		CommandSpec mailReadCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Read Mail Command"))
-				.permission("mail.read")
-				.arguments(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("mail no"))))
-				.executor(new MailReadExecutor())
-				.build();
+		CommandSpec mailReadCommandSpec =
+			CommandSpec.builder().description(Texts.of("Read Mail Command")).permission("mail.read")
+				.arguments(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("mail no")))).executor(new MailReadExecutor()).build();
 		game.getCommandDispatcher().register(this, mailReadCommandSpec, "readmail");
 
-		CommandSpec msgRespondCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Respond to Message Command"))
-				.permission("message.respond")
+		CommandSpec msgRespondCommandSpec =
+			CommandSpec.builder().description(Texts.of("Respond to Message Command")).permission("message.respond")
 				.arguments(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("message"))))
-				.executor(new RespondExecutor())
-				.build();
+				.executor(new RespondExecutor()).build();
 		game.getCommandDispatcher().register(this, msgRespondCommandSpec, "r");
 
-		CommandSpec timeCommandSpec = CommandSpec.builder()
+		CommandSpec timeCommandSpec =
+			CommandSpec
+				.builder()
 				.description(Texts.of("Set Time Command"))
 				.permission("time.set")
-				.arguments(GenericArguments.firstParsing(
-						GenericArguments.string(Texts.of("time")),
-						GenericArguments.integer(Texts.of("ticks"))))
-				.executor(new TimeExecutor())
-				.build();
+				.arguments(
+					GenericArguments.firstParsing(GenericArguments.string(Texts.of("time")), GenericArguments.integer(Texts.of("ticks"))))
+				.executor(new TimeExecutor()).build();
 		game.getCommandDispatcher().register(this, timeCommandSpec, "time");
 
-		CommandSpec repairCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Repair Item in Player's Hand"))
-				.permission("repair.use")
-				.executor(new RepairExecutor())
+		CommandSpec repairCommandSpec =
+			CommandSpec.builder().description(Texts.of("Repair Item in Player's Hand")).permission("repair.use").executor(new RepairExecutor())
 				.build();
 		game.getCommandDispatcher().register(this, repairCommandSpec, "repair");
 
-		CommandSpec mailCommandSpec = CommandSpec.builder()
+		CommandSpec mailCommandSpec =
+			CommandSpec
+				.builder()
 				.description(Texts.of("Mail Command"))
 				.permission("mail.use")
-				.arguments(GenericArguments.seq(
-								GenericArguments.onlyOne(GenericArguments.string(Texts.of("player")))),
-						GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("message"))))
-				.executor(new MailExecutor())
+				.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.string(Texts.of("player")))),
+					GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("message")))).executor(new MailExecutor())
 				.build();
 		game.getCommandDispatcher().register(this, mailCommandSpec, "mail");
 
-		CommandSpec weatherCommandSpec = CommandSpec.builder()
+		CommandSpec weatherCommandSpec =
+			CommandSpec
+				.builder()
 				.description(Texts.of("Weather Command"))
 				.permission("weather.use")
-				.arguments(GenericArguments.seq(
-								GenericArguments.onlyOne(GenericArguments.string(Texts.of("weather")))),
-						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Texts.of("duration")))))
-				.executor(new WeatherExecutor())
-				.build();
+				.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.string(Texts.of("weather")))),
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Texts.of("duration")))))
+				.executor(new WeatherExecutor()).build();
 		game.getCommandDispatcher().register(this, weatherCommandSpec, "weather");
 
-		CommandSpec banCommandSpec = CommandSpec.builder()
+		CommandSpec banCommandSpec =
+			CommandSpec
+				.builder()
 				.description(Texts.of("Ban Command"))
 				.permission("ban.use")
-				.arguments(GenericArguments.seq(
-						GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)),
-						GenericArguments.optional(GenericArguments.onlyOne(
-								GenericArguments.remainingJoinedStrings(Texts.of("reason"))))))
-				.executor(new BanExecutor())
-				.build();
+				.arguments(
+					GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)), GenericArguments
+						.optional(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("reason"))))))
+				.executor(new BanExecutor()).build();
 		game.getCommandDispatcher().register(this, banCommandSpec, "ban");
 
-		CommandSpec pardonCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Unban Command"))
-				.permission("unban.use")
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("player"))))
-				.executor(new PardonExecutor())
-				.build();
+		CommandSpec pardonCommandSpec =
+			CommandSpec.builder().description(Texts.of("Unban Command")).permission("unban.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("player")))).executor(new PardonExecutor()).build();
 		game.getCommandDispatcher().register(this, pardonCommandSpec, "unban", "pardon");
 
-		CommandSpec teleportPosCommandSpec = CommandSpec.builder()
+		CommandSpec teleportPosCommandSpec =
+			CommandSpec
+				.builder()
 				.description(Texts.of("Teleport Position Command"))
 				.permission("teleport.pos.use")
-				.arguments(GenericArguments.seq(
-								GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))),
-						GenericArguments.onlyOne(GenericArguments.integer(Texts.of("x"))),
-						GenericArguments.onlyOne(GenericArguments.integer(Texts.of("y"))),
-						GenericArguments.onlyOne(GenericArguments.integer(Texts.of("z"))))
-				.executor(new TeleportPosExecutor())
-				.build();
+				.arguments(
+					GenericArguments.seq(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"),
+						game)))), GenericArguments.onlyOne(GenericArguments.integer(Texts.of("x"))),
+					GenericArguments.onlyOne(GenericArguments.integer(Texts.of("y"))),
+					GenericArguments.onlyOne(GenericArguments.integer(Texts.of("z")))).executor(new TeleportPosExecutor()).build();
 		game.getCommandDispatcher().register(this, teleportPosCommandSpec, "tppos", "teleportpos", "teleportposition");
 
-		CommandSpec kickCommandSpec = CommandSpec.builder()
+		CommandSpec kickCommandSpec =
+			CommandSpec
+				.builder()
 				.description(Texts.of("Kick Command"))
 				.permission("kick.use")
-				.arguments(GenericArguments.seq(
-								GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))),
-						GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("reason"))))
-				.executor(new KickExecutor())
+				.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))),
+					GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("reason")))).executor(new KickExecutor())
 				.build();
 		game.getCommandDispatcher().register(this, kickCommandSpec, "kick");
 
-		CommandSpec messageCommandSpec = CommandSpec.builder()
+		CommandSpec messageCommandSpec =
+			CommandSpec
+				.builder()
 				.description(Texts.of("Message Command"))
 				.permission("message.use")
-				.arguments(GenericArguments.seq(
-								GenericArguments.onlyOne(GenericArguments.player(Texts.of("recipient"), game))),
-						GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("message"))))
-				.executor(new MessageExecutor())
-				.build();
+				.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Texts.of("recipient"), game))),
+					GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("message"))))
+				.executor(new MessageExecutor()).build();
 		game.getCommandDispatcher().register(this, messageCommandSpec, "message", "m", "msg", "tell");
 
-		CommandSpec lightningCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Lightning Command"))
-				.permission("lightning.use")
+		CommandSpec lightningCommandSpec =
+			CommandSpec.builder().description(Texts.of("Lightning Command")).permission("lightning.use")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))))
-				.executor(new LightningExecutor())
-				.build();
+				.executor(new LightningExecutor()).build();
 		game.getCommandDispatcher().register(this, lightningCommandSpec, "thor", "smite", "lightning");
 
-		CommandSpec sudoCommandSpec = CommandSpec.builder()
+		CommandSpec sudoCommandSpec =
+			CommandSpec
+				.builder()
 				.description(Texts.of("Sudo Command"))
 				.permission("sudo.use")
-				.arguments(GenericArguments.seq(
-						GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)),
-						GenericArguments.remainingJoinedStrings(Texts.of("command"))))
-				.executor(new SudoExecutor())
-				.build();
+				.arguments(
+					GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)),
+						GenericArguments.remainingJoinedStrings(Texts.of("command")))).executor(new SudoExecutor()).build();
 		game.getCommandDispatcher().register(this, sudoCommandSpec, "sudo");
 
-		CommandSpec afkCommandSpec = CommandSpec.builder()
-				.description(Texts.of("AFK Command"))
-				.permission("afk.use")
-				.executor(new AFKExecutor())
-				.build();
+		CommandSpec afkCommandSpec =
+			CommandSpec.builder().description(Texts.of("AFK Command")).permission("afk.use").executor(new AFKExecutor()).build();
 		game.getCommandDispatcher().register(this, afkCommandSpec, "afk");
 
-		CommandSpec broadcastCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Broadcast Command"))
-				.permission("broadcast.use")
-				.arguments(GenericArguments.remainingJoinedStrings(Texts.of("message")))
-				.executor(new BroadcastExecutor())
-				.build();
+		CommandSpec broadcastCommandSpec =
+			CommandSpec.builder().description(Texts.of("Broadcast Command")).permission("broadcast.use")
+				.arguments(GenericArguments.remainingJoinedStrings(Texts.of("message"))).executor(new BroadcastExecutor()).build();
 		game.getCommandDispatcher().register(this, broadcastCommandSpec, "broadcast");
 
-		CommandSpec spawnCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Spawn Command"))
-				.permission("spawn.use")
-				.executor(new SpawnExecutor())
-				.build();
+		CommandSpec spawnCommandSpec =
+			CommandSpec.builder().description(Texts.of("Spawn Command")).permission("spawn.use").executor(new SpawnExecutor()).build();
 		game.getCommandDispatcher().register(this, spawnCommandSpec, "spawn");
 
-		CommandSpec setSpawnCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Spawn Command"))
-				.permission("spawn.set")
-				.executor(new SetSpawnExecutor())
-				.build();
+		CommandSpec setSpawnCommandSpec =
+			CommandSpec.builder().description(Texts.of("Spawn Command")).permission("spawn.set").executor(new SetSpawnExecutor()).build();
 		game.getCommandDispatcher().register(this, setSpawnCommandSpec, "setspawn");
 
-		CommandSpec tpaCommandSpec = CommandSpec.builder()
-				.description(Texts.of("TPA Command"))
-				.permission("tpa.use")
-				.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))
-				.executor(new TPAExecutor())
-				.build();
+		CommandSpec tpaCommandSpec =
+			CommandSpec.builder().description(Texts.of("TPA Command")).permission("tpa.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))).executor(new TPAExecutor()).build();
 		game.getCommandDispatcher().register(this, tpaCommandSpec, "tpa");
 
-		CommandSpec tpaHereCommandSpec = CommandSpec.builder()
-				.description(Texts.of("TPA Here Command"))
-				.permission("tpahere.use")
-				.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))
-				.executor(new TPAHereExecutor())
+		CommandSpec tpaHereCommandSpec =
+			CommandSpec.builder().description(Texts.of("TPA Here Command")).permission("tpahere.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))).executor(new TPAHereExecutor())
 				.build();
 		game.getCommandDispatcher().register(this, tpaHereCommandSpec, "tpahere");
 
-		CommandSpec tpHereCommandSpec = CommandSpec.builder()
-				.description(Texts.of("TP Here Command"))
-				.permission("tphere.use")
-				.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))
-				.executor(new TPHereExecutor())
+		CommandSpec tpHereCommandSpec =
+			CommandSpec.builder().description(Texts.of("TP Here Command")).permission("tphere.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))).executor(new TPHereExecutor())
 				.build();
 		game.getCommandDispatcher().register(this, tpHereCommandSpec, "tphere");
 
-		CommandSpec tpaAcceptCommandSpec = CommandSpec.builder()
-				.description(Texts.of("TPA Accept Command"))
-				.permission("tpa.accept")
-				.executor(new TPAAcceptExecutor())
-				.build();
+		CommandSpec tpaAcceptCommandSpec =
+			CommandSpec.builder().description(Texts.of("TPA Accept Command")).permission("tpa.accept").executor(new TPAAcceptExecutor()).build();
 		game.getCommandDispatcher().register(this, tpaAcceptCommandSpec, "tpaccept");
 
-		CommandSpec listHomeCommandSpec = CommandSpec.builder()
-				.description(Texts.of("List Home Command"))
-				.permission("home.list")
+		CommandSpec listHomeCommandSpec =
+			CommandSpec.builder().description(Texts.of("List Home Command")).permission("home.list")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("page no")))))
-				.executor(new ListHomeExecutor())
-				.build();
+				.executor(new ListHomeExecutor()).build();
 		game.getCommandDispatcher().register(this, listHomeCommandSpec, "homes");
 
-		CommandSpec healCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Heal Command"))
-				.permission("heal.use")
+		CommandSpec healCommandSpec =
+			CommandSpec.builder().description(Texts.of("Heal Command")).permission("heal.use")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))))
-				.executor(new HealExecutor())
-				.build();
+				.executor(new HealExecutor()).build();
 		game.getCommandDispatcher().register(this, healCommandSpec, "heal");
 
-		CommandSpec backCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Back Command"))
-				.permission("back.use")
-				.executor(new BackExecutor())
-				.build();
+		CommandSpec backCommandSpec =
+			CommandSpec.builder().description(Texts.of("Back Command")).permission("back.use").executor(new BackExecutor()).build();
 		game.getCommandDispatcher().register(this, backCommandSpec, "back");
 
-		CommandSpec tpaDenyCommandSpec = CommandSpec.builder()
-				.description(Texts.of("TPA Deny Command"))
-				.permission("tpadeny.use")
-				.executor(new TPADenyExecutor())
-				.build();
+		CommandSpec tpaDenyCommandSpec =
+			CommandSpec.builder().description(Texts.of("TPA Deny Command")).permission("tpadeny.use").executor(new TPADenyExecutor()).build();
 		game.getCommandDispatcher().register(this, tpaDenyCommandSpec, "tpadeny");
 
-		CommandSpec hatCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Hat Command"))
-				.permission("hat.use")
-				.executor(new HatExecutor())
-				.build();
+		CommandSpec hatCommandSpec =
+			CommandSpec.builder().description(Texts.of("Hat Command")).permission("hat.use").executor(new HatExecutor()).build();
 		game.getCommandDispatcher().register(this, hatCommandSpec, "hat");
 
-		CommandSpec flyCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Fly Command"))
-				.permission("fly.use")
+		CommandSpec flyCommandSpec =
+			CommandSpec.builder().description(Texts.of("Fly Command")).permission("fly.use")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("palyer"), game))))
-				.executor(new FlyExecutor())
-				.build();
+				.executor(new FlyExecutor()).build();
 		game.getCommandDispatcher().register(this, flyCommandSpec, "fly");
 
-		CommandSpec setHomeCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Set Home Command"))
-				.permission("home.set")
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name"))))
-				.executor(new SetHomeExecutor())
-				.build();
+		CommandSpec setHomeCommandSpec =
+			CommandSpec.builder().description(Texts.of("Set Home Command")).permission("home.set")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name")))).executor(new SetHomeExecutor()).build();
 		game.getCommandDispatcher().register(this, setHomeCommandSpec, "sethome");
 
-		CommandSpec deleteHomeCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Delete Home Command"))
-				.permission("home.delete")
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name"))))
-				.executor(new DeleteHomeExecutor())
+		CommandSpec deleteHomeCommandSpec =
+			CommandSpec.builder().description(Texts.of("Delete Home Command")).permission("home.delete")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name")))).executor(new DeleteHomeExecutor())
 				.build();
 		game.getCommandDispatcher().register(this, deleteHomeCommandSpec, "deletehome", "delhome");
 
-		CommandSpec warpCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Warp Command"))
-				.permission("warp.use")
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name"))))
-				.executor(new WarpExecutor())
-				.build();
+		CommandSpec warpCommandSpec =
+			CommandSpec.builder().description(Texts.of("Warp Command")).permission("warp.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name")))).executor(new WarpExecutor()).build();
 		game.getCommandDispatcher().register(this, warpCommandSpec, "warp");
 
-		CommandSpec listWarpCommandSpec = CommandSpec.builder()
-				.description(Texts.of("List Warps Command"))
-				.permission("warps.list")
+		CommandSpec listWarpCommandSpec =
+			CommandSpec.builder().description(Texts.of("List Warps Command")).permission("warps.list")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("page no")))))
-				.executor(new ListWarpExecutor())
-				.build();
+				.executor(new ListWarpExecutor()).build();
 		game.getCommandDispatcher().register(this, listWarpCommandSpec, "warps");
 
-		CommandSpec setWarpCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Set Warp Command"))
-				.permission("warp.set")
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name"))))
-				.executor(new SetWarpExecutor())
-				.build();
+		CommandSpec setWarpCommandSpec =
+			CommandSpec.builder().description(Texts.of("Set Warp Command")).permission("warp.set")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name")))).executor(new SetWarpExecutor()).build();
 		game.getCommandDispatcher().register(this, setWarpCommandSpec, "setwarp");
 
-		CommandSpec deleteWarpCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Delete Warp Command"))
-				.permission("warp.delete")
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name"))))
-				.executor(new DeleteWarpExecutor())
+		CommandSpec deleteWarpCommandSpec =
+			CommandSpec.builder().description(Texts.of("Delete Warp Command")).permission("warp.delete")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name")))).executor(new DeleteWarpExecutor())
 				.build();
 		game.getCommandDispatcher().register(this, deleteWarpCommandSpec, "deletewarp", "delwarp");
 
-		CommandSpec feedCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Feed Command"))
-				.permission("feed.use")
+		CommandSpec feedCommandSpec =
+			CommandSpec.builder().description(Texts.of("Feed Command")).permission("feed.use")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))))
-				.executor(new FeedExecutor())
-				.build();
+				.executor(new FeedExecutor()).build();
 		game.getCommandDispatcher().register(this, feedCommandSpec, "feed");
 
-		CommandSpec unmuteCommnadSpec = CommandSpec.builder()
-				.description(Texts.of("Unmute Command"))
-				.permission("unmute.use")
-				.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))
-				.executor(new UnmuteExecutor())
+		CommandSpec unmuteCommnadSpec =
+			CommandSpec.builder().description(Texts.of("Unmute Command")).permission("unmute.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))).executor(new UnmuteExecutor())
 				.build();
 		game.getCommandDispatcher().register(this, unmuteCommnadSpec, "unmute");
 
-		CommandSpec killCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Kill Command"))
-				.permission("kill.use")
+		CommandSpec killCommandSpec =
+			CommandSpec.builder().description(Texts.of("Kill Command")).permission("kill.use")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))))
-				.executor(new KillExecutor())
-				.build();
+				.executor(new KillExecutor()).build();
 		game.getCommandDispatcher().register(this, killCommandSpec, "kill");
 
-		CommandSpec jumpCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Jump Command"))
-				.permission("jump.use")
-				.executor(new JumpExecutor())
-				.build();
+		CommandSpec jumpCommandSpec =
+			CommandSpec.builder().description(Texts.of("Jump Command")).permission("jump.use").executor(new JumpExecutor()).build();
 		game.getCommandDispatcher().register(this, jumpCommandSpec, "jump");
 
-		CommandSpec speedCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Speed Command"))
-				.permission("speed.use")
+		CommandSpec speedCommandSpec =
+			CommandSpec.builder().description(Texts.of("Speed Command")).permission("speed.use")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("speed")))))
-				.executor(new SpeedExecutor())
-				.build();
+				.executor(new SpeedExecutor()).build();
 		game.getCommandDispatcher().register(this, speedCommandSpec, "speed");
 
-		CommandSpec powertoolCommandSpec = CommandSpec.builder()
-				.description(Texts.of("Powertool Command"))
-				.permission("powertool.use")
+		CommandSpec powertoolCommandSpec =
+			CommandSpec.builder().description(Texts.of("Powertool Command")).permission("powertool.use")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("command")))))
-				.executor(new PowertoolExecutor())
-				.build();
+				.executor(new PowertoolExecutor()).build();
 		game.getCommandDispatcher().register(this, powertoolCommandSpec, "powertool");
 
-		CommandSpec nickCommandSpec = CommandSpec.builder()
+		CommandSpec nickCommandSpec =
+			CommandSpec
+				.builder()
 				.description(Texts.of("Nick Command"))
 				.permission("nick.use")
-				.arguments(GenericArguments.seq(
-						GenericArguments.optional(
-								GenericArguments.onlyOne(
-										GenericArguments.player(Texts.of("player"), game)
-								)),
-						GenericArguments.onlyOne(
-								GenericArguments.remainingJoinedStrings(Texts.of("nick")))))
-				.executor(new NickExecutor())
-				.build();
+				.arguments(
+					GenericArguments.seq(
+						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))),
+						GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("nick")))))
+				.executor(new NickExecutor()).build();
 		game.getCommandDispatcher().register(this, nickCommandSpec, "nick");
 
-		CommandSpec muteCommandSpec = CommandSpec.builder()
+		CommandSpec muteCommandSpec =
+			CommandSpec
+				.builder()
 				.description(Texts.of("Mute Command"))
 				.permission("mute.use")
-				.arguments(GenericArguments.seq(
-						GenericArguments.onlyOne(
-								GenericArguments.player(Texts.of("player"), game)
-						),
-						GenericArguments.onlyOne(
-								GenericArguments.optional(GenericArguments.integer(Texts.of("time")))),
-						GenericArguments.onlyOne(
-								GenericArguments.optional(
-										GenericArguments.string(Texts.of("time unit"))))))
-				.executor(new MuteExecutor())
-				.build();
+				.arguments(
+					GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)),
+						GenericArguments.onlyOne(GenericArguments.optional(GenericArguments.integer(Texts.of("time")))),
+						GenericArguments.onlyOne(GenericArguments.optional(GenericArguments.string(Texts.of("time unit"))))))
+				.executor(new MuteExecutor()).build();
 		game.getCommandDispatcher().register(this, muteCommandSpec, "mute");
 
 		getLogger().info("-----------------------------");
@@ -638,11 +544,17 @@ public class Main
 	{
 		String recipientName = event.getRecipientName();
 
-		if(game.getServer().getPlayer(recipientName).isPresent())
+		if (game.getServer().getPlayer(recipientName).isPresent())
 		{
 			Utils.addMail(event.getSender().getName(), recipientName, event.getMessage());
-			game.getServer().getPlayer(recipientName).get().sendMessage(Texts.of(TextColors.GOLD, "[Mail]: ", TextColors.GRAY, "You have received new mail from " + event.getSender().getName() + " do ", TextColors.RED, "/listmail!"));
-		} else
+			game.getServer()
+				.getPlayer(recipientName)
+				.get()
+				.sendMessage(
+					Texts.of(TextColors.GOLD, "[Mail]: ", TextColors.GRAY, "You have received new mail from " + event.getSender().getName()
+						+ " do ", TextColors.RED, "/listmail!"));
+		}
+		else
 		{
 			Utils.addMail(event.getSender().getName(), recipientName, event.getMessage());
 		}
@@ -657,7 +569,7 @@ public class Main
 	@Listener
 	public void onPlayerDeath(DestructEntityEvent event)
 	{
-		if(event.getTargetEntity() instanceof Player)
+		if (event.getTargetEntity() instanceof Player)
 		{
 			Player died = (Player) event.getTargetEntity();
 			Utils.setLastDeathLocation(died.getUniqueId(), died.getLocation());
@@ -673,11 +585,14 @@ public class Main
 		String message = Utils.getJoinMsg().replaceAll("&", "\u00A7");
 		player.sendMessage(Texts.of(message));
 
-		ArrayList<Mail> newMail = (ArrayList<Mail>) Utils.getMail().stream().filter(mail -> mail.getRecipientName().equals(player.getName())).collect(Collectors.toList());
+		ArrayList<Mail> newMail =
+			(ArrayList<Mail>) Utils.getMail().stream().filter(mail -> mail.getRecipientName().equals(player.getName()))
+				.collect(Collectors.toList());
 
-		if(newMail.size() > 0)
+		if (newMail.size() > 0)
 		{
-			player.sendMessage(Texts.of(TextColors.GOLD, "[Mail]: ", TextColors.GRAY, "While you were away, you received new mail to view it do ", TextColors.RED, "/listmail"));
+			player.sendMessage(Texts.of(TextColors.GOLD, "[Mail]: ", TextColors.GRAY, "While you were away, you received new mail to view it do ",
+				TextColors.RED, "/listmail"));
 		}
 
 		recentlyJoined.add(event.getTargetEntity());
@@ -686,21 +601,21 @@ public class Main
 
 		for (AFK afk : movementList)
 		{
-			if(afk.getPlayer().equals(player))
+			if (afk.getPlayer().equals(player))
 			{
 				afkToRemove = afk;
 				break;
 			}
 		}
 
-		if(afkToRemove != null)
+		if (afkToRemove != null)
 		{
 			movementList.remove(afkToRemove);
 		}
 
 		Subject subject = player.getContainingCollection().get(player.getIdentifier());
 
-		if(subject instanceof OptionSubject)
+		if (subject instanceof OptionSubject)
 		{
 			OptionSubject optionSubject = (OptionSubject) subject;
 			String prefix = optionSubject.getOption("prefix").orElse("");
@@ -709,7 +624,8 @@ public class Main
 			try
 			{
 				textPrefix = Texts.legacy('&').from(prefix + " ");
-			} catch (TextMessageException e)
+			}
+			catch (TextMessageException e)
 			{
 				getLogger().warn("Error! A TextMessageException was caught when trying to format the prefix!");
 			}
@@ -717,16 +633,18 @@ public class Main
 			DisplayNameData data = player.getOrCreate(DisplayNameData.class).get();
 			Optional<Text> name = data.get(Keys.DISPLAY_NAME);
 
-			if(name.isPresent())
+			if (name.isPresent())
 			{
 				data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, name.get()));
-			} else
+			}
+			else
 			{
 				data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, player.getName()));
 			}
 
 			player.offer(data);
-		} else
+		}
+		else
 		{
 			getLogger().info("Player is not an instance of OptionSubject!");
 		}
@@ -736,7 +654,9 @@ public class Main
 	public void tpaEventHandler(TPAEvent event)
 	{
 		String senderName = event.getSender().getName();
-		event.getRecipient().sendMessage(Texts.of(TextColors.BLUE, "TPA Request From: ", TextColors.GOLD, senderName + ".", TextColors.RED, " You have 10 seconds to do /tpaccept to accept the request"));
+		event.getRecipient().sendMessage(
+			Texts.of(TextColors.BLUE, "TPA Request From: ", TextColors.GOLD, senderName + ".", TextColors.RED,
+				" You have 10 seconds to do /tpaccept to accept the request"));
 
 		// Adds Invite to List
 		final PendingInvitation invite = new PendingInvitation(event.getSender(), event.getRecipient());
@@ -747,11 +667,12 @@ public class Main
 		TaskBuilder taskBuilder = scheduler.createTaskBuilder();
 
 		taskBuilder.execute(() -> {
-			if(pendingInvites.contains(invite))
+			if (pendingInvites.contains(invite))
 			{
 				pendingInvites.remove(invite);
 			}
-		}).delay(10, TimeUnit.SECONDS).name("SpongeEssentialCmds - Remove Pending Invite").submit(game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
+		}).delay(10, TimeUnit.SECONDS).name("SpongeEssentialCmds - Remove Pending Invite")
+			.submit(game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
 	}
 
 	@Listener
@@ -774,7 +695,9 @@ public class Main
 	public void tpaHereEventHandler(TPAHereEvent event)
 	{
 		String senderName = event.getSender().getName();
-		event.getRecipient().sendMessage(Texts.of(TextColors.BLUE, senderName, TextColors.GOLD, " has requested for you to teleport to them.", TextColors.RED, " You have 10 seconds to do /tpaccept to accept the request"));
+		event.getRecipient().sendMessage(
+			Texts.of(TextColors.BLUE, senderName, TextColors.GOLD, " has requested for you to teleport to them.", TextColors.RED,
+				" You have 10 seconds to do /tpaccept to accept the request"));
 
 		// Adds Invite to List
 		final PendingInvitation invite = new PendingInvitation(event.getSender(), event.getRecipient());
@@ -786,24 +709,25 @@ public class Main
 		TaskBuilder taskBuilder = scheduler.createTaskBuilder();
 
 		taskBuilder.execute(() -> {
-			if(pendingInvites.contains(invite))
+			if (pendingInvites.contains(invite))
 			{
 				pendingInvites.remove(invite);
 			}
-		}).delay(10, TimeUnit.SECONDS).name("SpongeEssentialCmds - Remove Pending Invite").submit(game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
+		}).delay(10, TimeUnit.SECONDS).name("SpongeEssentialCmds - Remove Pending Invite")
+			.submit(game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
 	}
 
 	@SuppressWarnings("deprecation")
 	@Listener
 	public void onMessage(MessageSinkEvent event)
 	{
-		if(event.getCause().first(Player.class).isPresent())
+		if (event.getCause().first(Player.class).isPresent())
 		{
 			Player player = event.getCause().first(Player.class).get();
 
 			for (Mute mute : muteList)
 			{
-				if(mute.getUUID().equals(player.getUniqueId().toString()))
+				if (mute.getUUID().equals(player.getUniqueId().toString()))
 				{
 					player.sendMessage(Texts.of(TextColors.RED, "You have been muted."));
 					event.setCancelled(true);
@@ -814,14 +738,14 @@ public class Main
 			String original = Texts.toPlain(event.getMessage());
 			Subject subject = player.getContainingCollection().get(player.getIdentifier());
 
-			if(subject instanceof OptionSubject)
+			if (subject instanceof OptionSubject)
 			{
 				OptionSubject optionSubject = (OptionSubject) subject;
 				String prefix = optionSubject.getOption("prefix").orElse("");
 				prefix = prefix.replaceAll("&", "\u00A7");
 				original = original.replaceFirst("<", ("<" + prefix + " "));
 
-				if(!(player.hasPermission("color.chat.use")))
+				if (!(player.hasPermission("color.chat.use")))
 				{
 					event.setMessage(Texts.of(original));
 				}
@@ -830,7 +754,7 @@ public class Main
 			original = original.replaceFirst("<", Utils.getFirstChatCharReplacement());
 			original = original.replaceFirst(">", "\u00A7f" + Utils.getLastChatCharReplacement());
 
-			if(!(player.hasPermission("color.chat.use")))
+			if (!(player.hasPermission("color.chat.use")))
 			{
 				event.setMessage(Texts.of(original));
 			}
@@ -851,7 +775,8 @@ public class Main
 			// getLogger().warn("Error! A TextMessageException was caught when trying to format the prefix!");
 			// }
 			//
-			// DisplayNameData data = player.getOrCreate(DisplayNameData.class).get();
+			// DisplayNameData data =
+			// player.getOrCreate(DisplayNameData.class).get();
 			// Optional<Text> name = data.get(Keys.DISPLAY_NAME);
 			//
 			// if(name.isPresent())
@@ -860,20 +785,22 @@ public class Main
 			// }
 			// else
 			// {
-			// data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, player.getName()));
+			// data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix,
+			// player.getName()));
 			// }
 			//
 			// player.offer(data);
 			// }
 			// }
 
-			if(player.hasPermission("color.chat.use"))
+			if (player.hasPermission("color.chat.use"))
 			{
 				try
 				{
 					Text newMessage = Texts.legacy('&').from(original);
 					event.setMessage(newMessage);
-				} catch (TextMessageException e)
+				}
+				catch (TextMessageException e)
 				{
 					e.printStackTrace();
 				}
@@ -882,30 +809,33 @@ public class Main
 	}
 
 	@Listener
-	public void onSignChange(ChangeSignEvent event)//TODO why arnt you assigning it back
+	public void onSignChange(ChangeSignEvent event)// TODO why arnt you
+													// assigning it back
 	{
-		if(event.getCause().first(Player.class).isPresent())
+		if (event.getCause().first(Player.class).isPresent())
 		{
 			Player player = event.getCause().first(Player.class).get();
 			SignData signData = event.getText();
 
-			if(signData.getValue(Keys.SIGN_LINES).isPresent())
+			if (signData.getValue(Keys.SIGN_LINES).isPresent())
 			{
 				String line0 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(0));
 				String line1 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(1));
 				String line2 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(2));
 				String line3 = Texts.toPlain(signData.getValue(Keys.SIGN_LINES).get().get(3));
 
-				if(line0.equals("[Warp]"))
+				if (line0.equals("[Warp]"))
 				{
-					if(Utils.getWarps().contains(line1))
+					if (Utils.getWarps().contains(line1))
 					{
 						signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Texts.of(TextColors.DARK_BLUE, "[Warp]")));
-					} else
+					}
+					else
 					{
 						signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Texts.of(TextColors.DARK_RED, "[Warp]")));
 					}
-				} else if(player != null && player.hasPermission("color.sign.use"))
+				}
+				else if (player != null && player.hasPermission("color.sign.use"))
 				{
 					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Texts.of(line0.replaceAll("&", "\u00A7"))));
 					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(1, Texts.of(line1.replaceAll("&", "\u00A7"))));
@@ -919,16 +849,16 @@ public class Main
 	@Listener
 	public void onPlayerRightClick(InteractEntityEvent.Secondary event)
 	{
-		if(event.getCause().first(Player.class).isPresent())
+		if (event.getCause().first(Player.class).isPresent())
 		{
 			Player player = event.getCause().first(Player.class).get();
 			Powertool foundTool = null;
 
 			for (Powertool powertool : powertools)
 			{
-				if(powertool.getPlayer().equals(player))
+				if (powertool.getPlayer().equals(player))
 				{
-					if(player.getItemInHand().isPresent() && powertool.getItemID().equals(player.getItemInHand().get().getItem().getName()))
+					if (player.getItemInHand().isPresent() && powertool.getItemID().equals(player.getItemInHand().get().getItem().getName()))
 					{
 						foundTool = powertool;
 						break;
@@ -936,7 +866,7 @@ public class Main
 				}
 			}
 
-			if(foundTool != null)
+			if (foundTool != null)
 			{
 				game.getCommandDispatcher().process(player, foundTool.getCommand());
 			}
@@ -946,16 +876,16 @@ public class Main
 	@Listener
 	public void onPlayerLeftClick(InteractEntityEvent.Primary event)
 	{
-		if(event.getCause().first(Player.class).isPresent())
+		if (event.getCause().first(Player.class).isPresent())
 		{
 			Player player = event.getCause().first(Player.class).get();
 			Powertool foundTool = null;
 
 			for (Powertool powertool : powertools)
 			{
-				if(powertool.getPlayer().equals(player))
+				if (powertool.getPlayer().equals(player))
 				{
-					if(player.getItemInHand().isPresent() && powertool.getItemID().equals(player.getItemInHand().get().getItem().getName()))
+					if (player.getItemInHand().isPresent() && powertool.getItemID().equals(player.getItemInHand().get().getItem().getName()))
 					{
 						foundTool = powertool;
 						break;
@@ -963,7 +893,7 @@ public class Main
 				}
 			}
 
-			if(foundTool != null)
+			if (foundTool != null)
 			{
 				game.getCommandDispatcher().process(player, foundTool.getCommand());
 			}
@@ -973,20 +903,21 @@ public class Main
 	@Listener
 	public void onPlayerInteractBlock(InteractBlockEvent event)
 	{
-		if(event.getCause().first(Player.class).isPresent())
+		if (event.getCause().first(Player.class).isPresent())
 		{
 			Player player = event.getCause().first(Player.class).get();
 			Location<World> location = event.getTargetBlock().getLocation().get();
 
-			if(location.getTileEntity().isPresent() && location.getTileEntity().get() != null && location.getTileEntity().get().getType() != null)
+			if (location.getTileEntity().isPresent() && location.getTileEntity().get() != null && location.getTileEntity().get().getType() != null)
 			{
 				TileEntity clickedEntity = location.getTileEntity().get();
 
-				if(event.getTargetBlock().getState().getType().equals(BlockTypes.STANDING_SIGN) || event.getTargetBlock().getState().getType().equals(BlockTypes.WALL_SIGN))
+				if (event.getTargetBlock().getState().getType().equals(BlockTypes.STANDING_SIGN)
+					|| event.getTargetBlock().getState().getType().equals(BlockTypes.WALL_SIGN))
 				{
 					Optional<SignData> signData = clickedEntity.getOrCreate(SignData.class);
 
-					if(signData.isPresent())
+					if (signData.isPresent())
 					{
 						SignData data = signData.get();
 						CommandService cmdService = game.getCommandDispatcher();
@@ -994,14 +925,16 @@ public class Main
 						String line1 = Texts.toPlain(data.getValue(Keys.SIGN_LINES).get().get(1));
 						String command = "warp " + line1;
 
-						if(line0.equals("[Warp]"))
+						if (line0.equals("[Warp]"))
 						{
-							if(player.hasPermission("warps.use.sign"))
+							if (player.hasPermission("warps.use.sign"))
 							{
 								cmdService.process(player, command);
-							} else
+							}
+							else
 							{
-								player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to use Warp Signs!"));
+								player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED,
+									"You do not have permission to use Warp Signs!"));
 							}
 						}
 					}
@@ -1013,53 +946,56 @@ public class Main
 	@Listener
 	public void onPlayerMove(DisplaceEntityEvent event)
 	{
-		if(event.getTargetEntity() instanceof Player)
+		if (event.getTargetEntity() instanceof Player)
 		{
 			Player player = (Player) event.getTargetEntity();
-			if(recentlyJoined.contains(player))
+			if (recentlyJoined.contains(player))
 			{
 				recentlyJoined.remove(player);
 				AFK removeAFK = null;
 				for (AFK a : movementList)
 				{
-					if(a.getPlayer() == a.getPlayer())
+					if (a.getPlayer() == a.getPlayer())
 					{
 						removeAFK = a;
 						break;
 					}
 				}
-				if(removeAFK != null)
+				if (removeAFK != null)
 				{
 					movementList.remove(removeAFK);
 				}
-			} else
+			}
+			else
 			{
 				AFK afk = new AFK(player, System.currentTimeMillis());
 				AFK removeAFK = null;
 				for (AFK a : movementList)
 				{
-					if(a.getPlayer() == a.getPlayer())
+					if (a.getPlayer() == a.getPlayer())
 					{
 						removeAFK = a;
 						break;
 					}
 				}
 
-				if(removeAFK != null)
+				if (removeAFK != null)
 				{
-					if(removeAFK.getAFK())
+					if (removeAFK.getAFK())
 					{
 						for (Player p : game.getServer().getOnlinePlayers())
 						{
 							p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is no longer AFK."));
 						}
 						movementList.remove(removeAFK);
-					} else if(!removeAFK.getAFK())
+					}
+					else if (!removeAFK.getAFK())
 					{
 						movementList.remove(removeAFK);
 						movementList.add(afk);
 					}
-				} else
+				}
+				else
 				{
 					movementList.add(afk);
 				}

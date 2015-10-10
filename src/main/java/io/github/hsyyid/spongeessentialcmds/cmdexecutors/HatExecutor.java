@@ -16,25 +16,27 @@ public class HatExecutor implements CommandExecutor
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException
 	{
-		if(src instanceof Player)
+		if (src instanceof Player)
 		{
 			Player player = (Player) src;
 			Optional<ItemStack> itemInHand = player.getItemInHand();
 
-			if(itemInHand.isPresent())
+			if (itemInHand.isPresent())
 			{
 				player.setHelmet(itemInHand.get());
 
-				if(itemInHand.get().getQuantity() > 1)
+				if (itemInHand.get().getQuantity() > 1)
 				{
 					ItemStack stack = itemInHand.get();
 					stack.setQuantity(itemInHand.get().getQuantity() - 1);
 					player.setItemInHand(stack);
-				} else
+				}
+				else
 				{
 					player.setItemInHand(null);
 				}
-			} else
+			}
+			else
 			{
 				player.sendMessage(Texts.of("No item selected in hotbar."));
 				return CommandResult.empty();
