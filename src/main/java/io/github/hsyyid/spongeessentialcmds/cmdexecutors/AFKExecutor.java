@@ -3,7 +3,6 @@ package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 import io.github.hsyyid.spongeessentialcmds.Main;
 import io.github.hsyyid.spongeessentialcmds.utils.AFK;
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
-
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
@@ -24,27 +23,20 @@ public class AFKExecutor implements CommandExecutor
 			Player player = (Player) src;
 			if(Main.movementList.contains(player))
 			{
-				for(AFK afk : Main.movementList)
-				{
-					if(afk.getPlayer() == player)
-					{
-						afk.lastMovementTime = -1000000000;
-					}
-				}
-			}
-			else
+				Main.movementList.stream().filter(afk -> afk.getPlayer() == player).forEach(afk -> afk.lastMovementTime = -1000000000);
+			} else
 			{
 				int afkTime = (int) Utils.getAFK();
 				long afkTimer = afkTime + 1000;
 				AFK afk = new AFK(player, afkTimer);
 				Main.movementList.add(afk);
 			}
-		}
-		else if(src instanceof ConsoleSource) {
-			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /afk!"));
-		}
-		else if(src instanceof CommandBlockSource) {
-			src.sendMessage(Texts.of(TextColors.DARK_RED,"Error! ", TextColors.RED, "Must be an in-game player to use /afk!"));
+		} else if(src instanceof ConsoleSource)
+		{
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /afk!"));
+		} else if(src instanceof CommandBlockSource)
+		{
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /afk!"));
 		}
 		return CommandResult.success();
 	}

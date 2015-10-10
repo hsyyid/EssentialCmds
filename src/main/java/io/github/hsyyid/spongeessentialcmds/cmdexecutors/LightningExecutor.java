@@ -27,28 +27,25 @@ public class LightningExecutor implements CommandExecutor
 
 		if(!optionalTarget.isPresent())
 		{
-			if (src instanceof Player)
+			if(src instanceof Player)
 			{
 				Player player = (Player) src;
 				Location<World> playerLocation = player.getLocation();
-				Location<World> lightningLocation = new Location<World>(playerLocation.getExtent(), playerLocation.getX(), playerLocation.getY(), playerLocation.getZ());
+				Location<World> lightningLocation = new Location<>(playerLocation.getExtent(), playerLocation.getX(), playerLocation.getY(), playerLocation.getZ());
 				spawnEntity(lightningLocation);
 				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Created Lightning Strike!"));
-			}
-			else if (src instanceof ConsoleSource)
+			} else if(src instanceof ConsoleSource)
+			{
+				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /lightning!"));
+			} else if(src instanceof CommandBlockSource)
 			{
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /lightning!"));
 			}
-			else if (src instanceof CommandBlockSource)
-			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /lightning!"));
-			}
-		}
-		else
+		} else
 		{
 			Player player = optionalTarget.get();
 			Location<World> playerLocation = player.getLocation();
-			Location<World> lightningLocation = new Location<World>(playerLocation.getExtent(), playerLocation.getX(), playerLocation.getY(), playerLocation.getZ());
+			Location<World> lightningLocation = new Location<>(playerLocation.getExtent(), playerLocation.getX(), playerLocation.getY(), playerLocation.getZ());
 			spawnEntity(lightningLocation);
 			player.sendMessage(Texts.of(TextColors.GRAY, src.getName(), TextColors.GOLD, " has struck you with lightning."));
 			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Struck " + player.getName() + " with lightning."));

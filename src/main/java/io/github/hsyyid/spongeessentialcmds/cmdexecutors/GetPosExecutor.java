@@ -17,35 +17,31 @@ public class GetPosExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Optional<Player> optionalPlayer = ctx.<Player> getOne("player");
+		Optional<Player> optionalPlayer = ctx.<Player>getOne("player");
 
-		if (!optionalPlayer.isPresent())
+		if(!optionalPlayer.isPresent())
 		{
-			if (src instanceof Player)
+			if(src instanceof Player)
 			{
 				Player player = (Player) src;
 				player.sendMessage(Texts.of(TextColors.GOLD, "Your current position is: ", TextColors.GRAY, player.getLocation().getX() + ", " + player.getLocation().getY() + ", " + player.getLocation().getZ()));
 
-			}
-			else if (src instanceof ConsoleSource)
+			} else if(src instanceof ConsoleSource)
+			{
+				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /getpos!"));
+			} else if(src instanceof CommandBlockSource)
 			{
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /getpos!"));
 			}
-			else if (src instanceof CommandBlockSource)
-			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /getpos!"));
-			}
-		}
-		else if(src.hasPermission("getpos.others"))
+		} else if(src.hasPermission("getpos.others"))
 		{
 			Player player = optionalPlayer.get();
 			src.sendMessage(Texts.of(TextColors.GOLD, player.getName() + "'s current position is: ", TextColors.GRAY, player.getLocation().getX() + ", " + player.getLocation().getY() + ", " + player.getLocation().getZ()));
-		}
-		else
+		} else
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You don't have permission to get the positon of others!"));
 		}
-		
+
 		return CommandResult.success();
 	}
 }

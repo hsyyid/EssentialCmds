@@ -2,7 +2,6 @@ package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
 import io.github.hsyyid.spongeessentialcmds.Main;
 import io.github.hsyyid.spongeessentialcmds.events.MailSendEvent;
-
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
@@ -29,8 +28,7 @@ public class MailExecutor implements CommandExecutor
 			game.getEventManager().post(event);
 
 			p.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Sent Mail to " + playerName));
-		}
-		else
+		} else
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be an in-game player to send mail!"));
 		}
