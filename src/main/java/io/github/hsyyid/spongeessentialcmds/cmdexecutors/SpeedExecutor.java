@@ -13,23 +13,24 @@ import org.spongepowered.api.util.command.spec.CommandExecutor;
 public class SpeedExecutor implements CommandExecutor
 {
 	@Override
-	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException
+	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		double multiplier = args.<Integer> getOne("speed").get();
+		int multiplier = ctx.<Integer> getOne("speed").get();
 
-		if (!(src instanceof Player))
+		if (src instanceof Player)
+		{
+			Player player = (Player) src;
+			multiplier = Math.min(multiplier, 20);
+			double flySpeed = 0.05d * multiplier;
+			double walkSpeed = 0.1d * multiplier;
+			player.offer(Keys.WALKING_SPEED, walkSpeed);
+			player.offer(Keys.FLYING_SPEED, flySpeed);
+			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Your speed has been updated."));
+		}
+		else
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error!", TextColors.RED, "You must be a player to do /speed"));
-			return CommandResult.empty();
 		}
-
-		Player player = (Player) src;
-		multiplier = Math.min(multiplier, 20);
-		double flySpeed = 0.05d * multiplier;
-		double walkSpeed = 0.1d * multiplier;
-		player.offer(Keys.WALKING_SPEED, walkSpeed);
-		player.offer(Keys.FLYING_SPEED, flySpeed);
-		src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Your speed has been updated."));
 
 		return CommandResult.success();
 	}
