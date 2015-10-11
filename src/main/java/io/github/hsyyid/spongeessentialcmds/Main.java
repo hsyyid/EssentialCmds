@@ -123,13 +123,12 @@ public class Main
 		game = event.getGame();
 		helper = game.getTeleportHelper();
 
-		Utils.readMutes();
-
 		// Config File
 		try
 		{
 			if (!dConfig.exists())
 			{
+				dConfig.createNewFile();
 				config = confManager.load();
 				config.getNode("afk", "timer").setValue(30000);
 				config.getNode("afk", "kick", "use").setValue(false);
@@ -146,8 +145,9 @@ public class Main
 			getLogger().error("The default configuration could not be loaded or created!");
 		}
 
+		Utils.readMutes();
 		Utils.startAFKService();
-
+		
 		CommandSpec homeCommandSpec =
 			CommandSpec.builder().description(Texts.of("Home Command")).permission("home.use")
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name")))).executor(new HomeExecutor()).build();
