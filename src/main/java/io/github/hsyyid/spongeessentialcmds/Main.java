@@ -85,7 +85,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "3.0")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "4.1")
 public class Main
 {
 	public static Game game;
