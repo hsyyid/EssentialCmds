@@ -1,26 +1,22 @@
 package io.github.hsyyid.spongeessentialcmds.utils;
 
-import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
-import org.spongepowered.api.data.value.mutable.Value;
-import org.spongepowered.api.service.scheduler.SchedulerService;
-import org.spongepowered.api.service.scheduler.TaskBuilder;
-import org.spongepowered.api.text.Texts;
-import org.spongepowered.api.text.format.TextColors;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.hsyyid.spongeessentialcmds.Main;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
+import org.spongepowered.api.data.value.mutable.Value;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.service.scheduler.SchedulerService;
+import org.spongepowered.api.service.scheduler.TaskBuilder;
 import org.spongepowered.api.service.sql.SqlService;
+import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.storage.WorldProperties;
-import org.spongepowered.common.Sponge;
-
-import javax.sql.DataSource;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -40,6 +36,8 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
+import javax.sql.DataSource;
 
 public class Utils
 {
@@ -986,10 +984,10 @@ public class Utils
 			UUID worlduuid = UUID.fromString(valueNode.getString());
 			return worlduuid;
 		} catch (IllegalArgumentException e) {
-			Optional<WorldProperties> props = Sponge.getSpongeRegistry().getWorldProperties(valueNode.getString());
+			Optional<WorldProperties> props = Main.game.getServer().getWorldProperties(valueNode.getString());
 			if (props.isPresent()) {
 				if (props.get().isEnabled()) {
-					Optional<World> world = Sponge.getGame().getServer().loadWorld(valueNode.getString());
+					Optional<World> world = Main.game.getServer().loadWorld(valueNode.getString());
 					if (world.isPresent()) {
 						return world.get().getUniqueId();
 					}
