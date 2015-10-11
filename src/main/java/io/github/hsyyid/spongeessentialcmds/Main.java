@@ -426,7 +426,7 @@ public class Main
 
 		CommandSpec speedCommandSpec =
 			CommandSpec.builder().description(Texts.of("Speed Command")).permission("speed.use")
-				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("speed")))))
+				.arguments(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("speed"))))
 				.executor(new SpeedExecutor()).build();
 		game.getCommandDispatcher().register(this, speedCommandSpec, "speed");
 
