@@ -144,6 +144,7 @@ public class Main
 		{
 			getLogger().error("The default configuration could not be loaded or created!");
 		}
+		Utils.readMutes();
 
 		Utils.readMutes();
 		Utils.startAFKService();

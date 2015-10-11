@@ -27,10 +27,10 @@ public class WarpExecutor implements CommandExecutor
 			Player player = (Player) src;
 			if (Utils.isWarpInConfig(warpName))
 			{
-				if (!Objects.equals(player.getWorld().getName(), Utils.getWarpWorldName(warpName)))
+				if (!Objects.equals(player.getWorld().getUniqueId(), Utils.getWarpWorldUUID(warpName)))
 				{
 					Vector3d position = new Vector3d(Utils.getWarpX(warpName), Utils.getWarpY(warpName), Utils.getWarpZ(warpName));
-					player.transferToWorld(Utils.getWarpWorldName(warpName), position);
+					player.transferToWorld(Utils.getWarpWorldUUID(warpName), position);
 					src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
 					return CommandResult.success();
 				}

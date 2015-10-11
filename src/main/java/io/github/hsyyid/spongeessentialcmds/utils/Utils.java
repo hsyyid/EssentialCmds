@@ -17,6 +17,8 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.sql.SqlService;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
+import org.spongepowered.api.world.storage.WorldProperties;
+import org.spongepowered.common.Sponge;
 
 import javax.sql.DataSource;
 
@@ -277,7 +279,7 @@ public class Utils
 
 	public static boolean useMySQL()
 	{
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("mysql.use").split("\\."));
+		ConfigurationNode valueNode = Main.config.getNode("mysql", "use");
 
 		if (valueNode.getValue() != null)
 		{
@@ -603,10 +605,10 @@ public class Utils
 		}
 	}
 
-	public static void setWarp(Location<World> playerLocation, String worldName, String warpName)
+	public static void setWarp(Location<World> playerLocation, String warpName)
 	{
 		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-		Main.config.getNode("warps", warpName, "world").setValue(worldName);
+		Main.config.getNode("warps", warpName, "world").setValue(playerLocation.getExtent().getUniqueId().toString());
 		Main.config.getNode("warps", warpName, "X").setValue(playerLocation.getX());
 		Main.config.getNode("warps", warpName, "Y").setValue(playerLocation.getY());
 		Main.config.getNode("warps", warpName, "Z").setValue(playerLocation.getZ());
@@ -977,10 +979,24 @@ public class Utils
 		return valueNode.getDouble();
 	}
 
-	public static String getWarpWorldName(String warpName)
+	public static UUID getWarpWorldUUID(String warpName)
 	{
 		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("warps." + warpName + ".world").split("\\."));
-		return valueNode.getString();
+		try {
+			UUID worlduuid = UUID.fromString(valueNode.getString());
+			return worlduuid;
+		} catch (IllegalArgumentException e) {
+			Optional<WorldProperties> props = Sponge.getSpongeRegistry().getWorldProperties(valueNode.getString());
+			if (props.isPresent()) {
+				if (props.get().isEnabled()) {
+					Optional<World> world = Sponge.getGame().getServer().loadWorld(valueNode.getString());
+					if (world.isPresent()) {
+						return world.get().getUniqueId();
+					}
+				}
+			}
+		}
+		throw new IllegalArgumentException();
 	}
 
 	public static String getSpawnWorldName()
