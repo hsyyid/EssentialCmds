@@ -130,8 +130,6 @@ public class Main
 		game = event.getGame();
 		helper = game.getTeleportHelper();
 
-		Utils.readMutes();
-
 		// Config File
 		try
 		{
@@ -152,6 +150,7 @@ public class Main
 		{
 			getLogger().error("The default configuration could not be loaded or created!");
 		}
+		Utils.readMutes();
 
 		SchedulerService scheduler = game.getScheduler();
 		TaskBuilder taskBuilder = scheduler.createTaskBuilder();
