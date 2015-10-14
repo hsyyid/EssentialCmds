@@ -14,6 +14,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.GetPosExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HatExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HealExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.HomeExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.IgniteExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.JumpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.KickExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.KillExecutor;
@@ -46,6 +47,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPHereExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TeleportPosExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TimeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.UnmuteExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.VanishExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.WarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.WeatherExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.WhoisExecutor;
@@ -153,6 +155,16 @@ public class Main
 			CommandSpec.builder().description(Texts.of("Home Command")).permission("home.use")
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name")))).executor(new HomeExecutor()).build();
 		game.getCommandDispatcher().register(this, homeCommandSpec, "home");
+		
+		CommandSpec vanishCommandSpec =
+			CommandSpec.builder().description(Texts.of("Vanish Command")).permission("vanish.use")
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))).executor(new VanishExecutor()).build();
+		game.getCommandDispatcher().register(this, vanishCommandSpec, "vanish");
+		
+		CommandSpec igniteCommandSpec =
+			CommandSpec.builder().description(Texts.of("Ignite Command")).permission("ignite.use")
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))).executor(new IgniteExecutor()).build();
+		game.getCommandDispatcher().register(this, igniteCommandSpec, "ignite", "fire");
 
 		CommandSpec whoIsCommandSpec =
 			CommandSpec.builder().description(Texts.of("WhoIs Command")).permission("whois.use")
