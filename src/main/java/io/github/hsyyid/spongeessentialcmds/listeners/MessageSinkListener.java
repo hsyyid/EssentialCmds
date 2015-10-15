@@ -57,7 +57,6 @@ public class MessageSinkListener
 
 				if(!nick.equals(""))
 				{
-					System.out.println("test: " + nick);
 					original = original.replaceFirst(player.getName(), nick);
 					event.setMessage(Texts.of(original));
 				}
