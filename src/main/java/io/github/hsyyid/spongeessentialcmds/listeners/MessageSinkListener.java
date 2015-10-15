@@ -39,12 +39,26 @@ public class MessageSinkListener
 			if (subject instanceof OptionSubject)
 			{
 				OptionSubject optionSubject = (OptionSubject) subject;
-				String prefix = optionSubject.getOption("prefix").orElse("");
-				prefix = prefix.replaceAll("&", "\u00A7");
-				original = original.replaceFirst("<", ("<" + prefix + " "));
 
-				if (!(player.hasPermission("color.chat.use")))
+				String prefix = optionSubject.getOption("prefix").orElse("");
+				
+				if(!prefix.equals(""))
 				{
+					prefix = prefix.replaceAll("&", "\u00A7");
+					original = original.replaceFirst("<", ("<" + prefix + " "));
+
+					if (!(player.hasPermission("color.chat.use")))
+					{
+						event.setMessage(Texts.of(original));
+					}
+				}
+				
+				String nick = optionSubject.getOption("nick").orElse("");
+
+				if(!nick.equals(""))
+				{
+					System.out.println("test: " + nick);
+					original = original.replaceFirst(player.getName(), nick);
 					event.setMessage(Texts.of(original));
 				}
 			}
@@ -56,40 +70,6 @@ public class MessageSinkListener
 			{
 				event.setMessage(Texts.of(original));
 			}
-
-			// OptionSubject optionSubject = (OptionSubject) subject;
-			// String prefix = optionSubject.getOption("prefix").or("");
-			//
-			// if(!(original.contains(prefix)))
-			// {
-			// Text textPrefix = null;
-			//
-			// try
-			// {
-			// textPrefix = Texts.legacy('&').from(prefix + " ");
-			// }
-			// catch (TextMessageException e)
-			// {
-			// getLogger().warn("Error! A TextMessageException was caught when trying to format the prefix!");
-			// }
-			//
-			// DisplayNameData data =
-			// player.getOrCreate(DisplayNameData.class).get();
-			// Optional<Text> name = data.get(Keys.DISPLAY_NAME);
-			//
-			// if(name.isPresent())
-			// {
-			// data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, name.get()));
-			// }
-			// else
-			// {
-			// data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix,
-			// player.getName()));
-			// }
-			//
-			// player.offer(data);
-			// }
-			// }
 
 			if (player.hasPermission("color.chat.use"))
 			{

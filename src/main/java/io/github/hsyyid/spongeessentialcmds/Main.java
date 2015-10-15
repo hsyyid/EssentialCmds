@@ -25,6 +25,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailListExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailReadExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MessageExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MoreExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MotdExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MuteExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.NickExecutor;
@@ -87,7 +88,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "4.1")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "4.3")
 public class Main
 {
 	public static Game game;
@@ -155,6 +156,11 @@ public class Main
 			CommandSpec.builder().description(Texts.of("Home Command")).permission("home.use")
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name")))).executor(new HomeExecutor()).build();
 		game.getCommandDispatcher().register(this, homeCommandSpec, "home");
+		
+		CommandSpec moreCommandSpec =
+			CommandSpec.builder().description(Texts.of("More Command")).permission("more.use")
+				.executor(new MoreExecutor()).build();
+		game.getCommandDispatcher().register(this, moreCommandSpec, "more", "stack");
 		
 		CommandSpec vanishCommandSpec =
 			CommandSpec.builder().description(Texts.of("Vanish Command")).permission("vanish.use")
@@ -455,8 +461,8 @@ public class Main
 				.permission("nick.use")
 				.arguments(
 					GenericArguments.seq(
-						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))),
-						GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("nick")))))
+						GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("nick"))),
+						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))))
 				.executor(new NickExecutor()).build();
 		game.getCommandDispatcher().register(this, nickCommandSpec, "nick");
 

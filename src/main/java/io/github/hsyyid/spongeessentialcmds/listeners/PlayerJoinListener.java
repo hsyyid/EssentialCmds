@@ -4,25 +4,17 @@ import io.github.hsyyid.spongeessentialcmds.Main;
 import io.github.hsyyid.spongeessentialcmds.utils.AFK;
 import io.github.hsyyid.spongeessentialcmds.utils.Mail;
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
-import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.manipulator.mutable.DisplayNameData;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
-import org.spongepowered.api.service.permission.Subject;
-import org.spongepowered.api.service.permission.option.OptionSubject;
-import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.util.TextMessageException;
 
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PlayerJoinListener
 {
-	@SuppressWarnings("deprecation")
 	@Listener
 	public void onPlayerJoin(ClientConnectionEvent.Join event)
 	{
@@ -59,40 +51,41 @@ public class PlayerJoinListener
 			Main.movementList.remove(afkToRemove);
 		}
 
-		Subject subject = player.getContainingCollection().get(player.getIdentifier());
-
-		if (subject instanceof OptionSubject)
-		{
-			OptionSubject optionSubject = (OptionSubject) subject;
-			String prefix = optionSubject.getOption("prefix").orElse("");
-			Text textPrefix = null;
-
-			try
-			{
-				textPrefix = Texts.legacy('&').from(prefix + " ");
-			}
-			catch (TextMessageException e)
-			{
-				System.out.println("Error! A TextMessageException was caught when trying to format the prefix!");
-			}
-
-			DisplayNameData data = player.getOrCreate(DisplayNameData.class).get();
-			Optional<Text> name = data.get(Keys.DISPLAY_NAME);
-
-			if (name.isPresent())
-			{
-				data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, name.get()));
-			}
-			else
-			{
-				data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, player.getName()));
-			}
-
-			player.offer(data);
-		}
-		else
-		{
-			System.out.println("Player is not an instance of OptionSubject!");
-		}
+		//Not working in Sponge yet
+//		Subject subject = player.getContainingCollection().get(player.getIdentifier());
+//
+//		if (subject instanceof OptionSubject)
+//		{
+//			OptionSubject optionSubject = (OptionSubject) subject;
+//			String prefix = optionSubject.getOption("prefix").orElse("");
+//			Text textPrefix = null;
+//
+//			try
+//			{
+//				textPrefix = Texts.legacy('&').from(prefix + " ");
+//			}
+//			catch (TextMessageException e)
+//			{
+//				System.out.println("Error! A TextMessageException was caught when trying to format the prefix!");
+//			}
+//
+//			DisplayNameData data = player.getOrCreate(DisplayNameData.class).get();
+//			Optional<Text> name = data.get(Keys.DISPLAY_NAME);
+//
+//			if (name.isPresent())
+//			{
+//				data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, name.get()));
+//			}
+//			else
+//			{
+//				data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, player.getName()));
+//			}
+//
+//			player.offer(data);
+//		}
+//		else
+//		{
+//			System.out.println("Player is not an instance of OptionSubject!");
+//		}
 	}
 }

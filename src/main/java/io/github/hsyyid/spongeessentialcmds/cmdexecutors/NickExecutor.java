@@ -1,9 +1,8 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.manipulator.mutable.DisplayNameData;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Text;
+import org.spongepowered.api.service.permission.Subject;
+import org.spongepowered.api.service.permission.option.OptionSubject;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.command.CommandException;
@@ -18,66 +17,52 @@ public class NickExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
+		Optional<Player> target = ctx.getOne("player");
+
 		String nick = ctx.<String> getOne("nick").get();
 		nick = nick.replace("&", "\u00A7");
 
-		if (src instanceof Player)
+		if(!target.isPresent())
 		{
-			Player player = (Player) src;
-
-			Optional<Player> p = ctx.<Player> getOne("player");
-			Player targetPlayer = null;
-
-			if (p.isPresent())
+			if (src instanceof Player)
 			{
-				targetPlayer = p.get();
-			}
+				Player player = (Player) src;
 
-			if (targetPlayer != null)
-			{
-				DisplayNameData data = targetPlayer.getOrCreate(DisplayNameData.class).get();
-				Optional<Text> name = data.get(Keys.DISPLAY_NAME);
+				Subject subject = player.getContainingCollection().get(player.getIdentifier());
 
-				if (name.isPresent())
+				if (subject instanceof OptionSubject)
 				{
-					Text newName = Texts.of(name.get().toString().replace(player.getName(), nick));
-					data.set(Keys.DISPLAY_NAME, Texts.of(newName));
+					OptionSubject optionSubject = (OptionSubject) subject;
+					optionSubject.getTransientSubjectData().setOption(player.getActiveContexts(), "nick", nick);
+					src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Nick successfully set!"));
 				}
 				else
 				{
-					data.set(Keys.DISPLAY_NAME, Texts.of(nick));
+					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Your server doesn't currently support /nick!"));
 				}
-
-				targetPlayer.offer(data);
-				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Nick successfully set!"));
-
-				return CommandResult.success();
 			}
 			else
 			{
-				DisplayNameData data = player.getOrCreate(DisplayNameData.class).get();
-				Optional<Text> name = data.get(Keys.DISPLAY_NAME);
-
-				if (name.isPresent())
-				{
-					Text newName = Texts.of(name.get().toString().replace(player.getName(), nick));
-					data.set(Keys.DISPLAY_NAME, Texts.of(newName));
-				}
-				else
-				{
-					data.set(Keys.DISPLAY_NAME, Texts.of(nick));
-				}
-
-				player.offer(data);
-				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Nick successfully set!"));
-
-				return CommandResult.success();
+				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be a in-game player to do /nick!"));
 			}
 		}
 		else
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be a in-game player to do /nick!"));
-			return CommandResult.success();
+			Player player = target.get();
+
+			Subject subject = player.getContainingCollection().get(player.getIdentifier());
+
+			if (subject instanceof OptionSubject)
+			{
+				OptionSubject optionSubject = (OptionSubject) subject;
+				optionSubject.getTransientSubjectData().setOption(player.getActiveContexts(), "nick", nick);
+			}
+			else
+			{
+				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Your server doesn't currently support /nick!"));
+			}
 		}
+
+		return CommandResult.success();
 	}
 }
