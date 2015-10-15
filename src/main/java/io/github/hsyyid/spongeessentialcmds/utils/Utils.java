@@ -885,6 +885,7 @@ public class Utils
 			{
 				int startIndex = endIndex;
 				endIndex = list.indexOf(",", startIndex + 1);
+				
 				if (endIndex != -1)
 				{
 					String substrings = list.substring(startIndex + 1, endIndex);
@@ -892,10 +893,6 @@ public class Utils
 				}
 				else
 				{
-					if (!(list.equals("")))
-					{
-						homeList.add(list);
-					}
 					finished = true;
 				}
 			}
