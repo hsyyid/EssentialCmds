@@ -1,5 +1,9 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
+import org.spongepowered.api.block.BlockTypes;
+import org.spongepowered.api.util.blockray.BlockRay;
+import org.spongepowered.api.util.blockray.BlockRayHit;
+
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.player.Player;
@@ -30,8 +34,36 @@ public class LightningExecutor implements CommandExecutor
 			if (src instanceof Player)
 			{
 				Player player = (Player) src;
-				Location<World> playerLocation = player.getLocation();
-				Location<World> lightningLocation = new Location<>(playerLocation.getExtent(), playerLocation.getX(), playerLocation.getY(), playerLocation.getZ());
+				BlockRay<World> playerBlockRay = BlockRay.from(player).blockLimit(350).build();
+				
+				BlockRayHit<World> finalHitRay = null;
+
+				while (playerBlockRay.hasNext())
+				{
+					BlockRayHit<World> currentHitRay = playerBlockRay.next();
+
+					if (player.getWorld().getBlockType(currentHitRay.getBlockPosition()).equals(BlockTypes.AIR))
+					{
+						continue;
+					}
+					else
+					{
+						finalHitRay = currentHitRay;
+						break;
+					}
+				}
+
+				Location<World> lightningLocation = null;
+				
+				if (finalHitRay == null)
+				{
+					lightningLocation = player.getLocation();
+				}
+				else
+				{
+					lightningLocation = finalHitRay.getLocation();
+				}
+				
 				spawnEntity(lightningLocation);
 				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Created Lightning Strike!"));
 			}
@@ -48,8 +80,7 @@ public class LightningExecutor implements CommandExecutor
 		{
 			Player player = optionalTarget.get();
 			Location<World> playerLocation = player.getLocation();
-			Location<World> lightningLocation = new Location<>(playerLocation.getExtent(), playerLocation.getX(), playerLocation.getY(), playerLocation.getZ());
-			spawnEntity(lightningLocation);
+			spawnEntity(playerLocation);
 			player.sendMessage(Texts.of(TextColors.GRAY, src.getName(), TextColors.GOLD, " has struck you with lightning."));
 			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Struck " + player.getName() + " with lightning."));
 		}

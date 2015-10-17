@@ -25,6 +25,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailListExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailReadExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MessageExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MobSpawnExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MoreExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MotdExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MuteExecutor;
@@ -254,6 +255,17 @@ public class Main
 					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Texts.of("duration")))))
 				.executor(new WeatherExecutor()).build();
 		game.getCommandDispatcher().register(this, weatherCommandSpec, "weather");
+		
+		CommandSpec mobSpawnCommandSpec =
+			CommandSpec
+				.builder()
+				.description(Texts.of("Mob Spawn Command"))
+				.permission("mobspawn.use")
+				.arguments(GenericArguments.seq(
+					GenericArguments.onlyOne(GenericArguments.integer(Texts.of("amount")))),
+					GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("mob name"))))
+				.executor(new MobSpawnExecutor()).build();
+		game.getCommandDispatcher().register(this, mobSpawnCommandSpec, "mobspawn", "entityspawn");
 
 		CommandSpec banCommandSpec =
 			CommandSpec
