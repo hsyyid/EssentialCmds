@@ -29,7 +29,7 @@ public class MobSpawnExecutor implements CommandExecutor
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		int amount = ctx.<Integer> getOne("amount").get();
-		String entityType = ctx.<String> getOne("type").get();
+		String entityType = ctx.<String> getOne("mob name").get();
 
 		if (src instanceof Player)
 		{
@@ -140,7 +140,7 @@ public class MobSpawnExecutor implements CommandExecutor
 					return CommandResult.success();
 			}
 
-			spawnEntity(getSpawnLocFromPlayerLoc(player), type, amount);
+			spawnEntity(getSpawnLocFromPlayerLoc(player).add(0, 1, 0), type, amount);
 			player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Spawned mob(s)!"));
 		}
 		else if (src instanceof ConsoleSource)
@@ -157,11 +157,10 @@ public class MobSpawnExecutor implements CommandExecutor
 
 	public void spawnEntity(Location<World> location, EntityType type, int amount)
 	{
-		Extent extent = location.getExtent();
-		Optional<Entity> optional = extent.createEntity(type, location.getPosition());
-
 		for (int i = 1; i <= amount; i++)
 		{
+			Extent extent = location.getExtent();
+			Optional<Entity> optional = extent.createEntity(type, location.getPosition());
 			Entity entity = optional.get();
 			extent.spawnEntity(entity, Cause.empty());
 		}
