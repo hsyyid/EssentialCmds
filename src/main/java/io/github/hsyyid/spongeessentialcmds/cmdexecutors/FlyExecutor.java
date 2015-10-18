@@ -29,15 +29,16 @@ public class FlyExecutor implements CommandExecutor
 				if (player.get(Keys.CAN_FLY).isPresent())
 				{
 					boolean canFly = player.get(Keys.CAN_FLY).get();
-					player.offer(Keys.CAN_FLY, !canFly);
 
 					if (canFly)
 					{
 						player.offer(Keys.IS_FLYING, false);
+						player.offer(Keys.CAN_FLY, !canFly);
 						player.sendMessage(Texts.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "off."));
 					}
 					else
 					{
+						player.offer(Keys.CAN_FLY, !canFly);
 						player.sendMessage(Texts.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "on."));
 					}
 				}
