@@ -33,6 +33,7 @@ public class FlyExecutor implements CommandExecutor
 
 					if (canFly)
 					{
+						player.offer(Keys.IS_FLYING, false);
 						player.sendMessage(Texts.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "off."));
 					}
 					else
