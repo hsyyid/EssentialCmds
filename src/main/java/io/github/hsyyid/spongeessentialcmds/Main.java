@@ -7,6 +7,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BanExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BroadcastExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteWarpExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.EnchantExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FeedExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FlyExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.GamemodeExecutor;
@@ -89,7 +90,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "4.3")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "4.4")
 public class Main
 {
 	public static Game game;
@@ -266,6 +267,17 @@ public class Main
 					GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("mob name"))))
 				.executor(new MobSpawnExecutor()).build();
 		game.getCommandDispatcher().register(this, mobSpawnCommandSpec, "mobspawn", "entityspawn");
+		
+		CommandSpec enchantCommandSpec =
+			CommandSpec
+				.builder()
+				.description(Texts.of("Enchant Command"))
+				.permission("enchant.use")
+				.arguments(GenericArguments.seq(
+					GenericArguments.onlyOne(GenericArguments.integer(Texts.of("level")))),
+					GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("enchantment"))))
+				.executor(new EnchantExecutor()).build();
+		game.getCommandDispatcher().register(this, enchantCommandSpec, "enchant", "ench");
 
 		CommandSpec banCommandSpec =
 			CommandSpec

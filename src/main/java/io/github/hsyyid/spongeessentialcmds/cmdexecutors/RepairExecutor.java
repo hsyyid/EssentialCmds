@@ -2,6 +2,7 @@ package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
 import io.github.hsyyid.spongeessentialcmds.Main;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.data.manipulator.mutable.item.EnchantmentData;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -30,9 +31,11 @@ public class RepairExecutor implements CommandExecutor
 			if (player.getItemInHand().isPresent())
 			{
 				ItemStack itemInHand = player.getItemInHand().get();
+				EnchantmentData enchantmentData = itemInHand.getOrCreate(EnchantmentData.class).get();
 				ItemType itemType = itemInHand.getItem();
 				int quantity = itemInHand.getQuantity();
 				ItemStack newItemStack = itemStackBuilder.quantity(quantity).itemType(itemType).build();
+				newItemStack.offer(enchantmentData);
 				player.setItemInHand(null);
 				player.setItemInHand(newItemStack);
 				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Repaired item(s) in your hand."));
