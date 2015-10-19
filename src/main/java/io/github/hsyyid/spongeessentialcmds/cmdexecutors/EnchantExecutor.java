@@ -112,7 +112,7 @@ public class EnchantExecutor implements CommandExecutor
 					return CommandResult.success();
 			}
 			
-			if(enchantment.getMaximumLevel() > level)
+			if(enchantment.getMaximumLevel() < level)
 			{
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment level too high!"));
 				return CommandResult.success();
