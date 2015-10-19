@@ -305,6 +305,37 @@ public class Utils
 			System.out.println("[SpongeEssentialCmds]: Failed to update config.");
 		}
 	}
+	
+	public static boolean unsafeEnchanmentsEnabled()
+	{
+		ConfigurationNode valueNode = Main.config.getNode("unsafeenchantments", "enabled");
+
+		if (valueNode.getValue() != null)
+		{
+			return valueNode.getBoolean();
+		}
+		else
+		{
+			setUnsafeEnchanmentsEnabled(false);
+			return false;
+		}
+	}
+
+	public static void setUnsafeEnchanmentsEnabled(boolean value)
+	{
+		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
+		Main.config.getNode("unsafeenchantments", "enabled").setValue(value);
+
+		try
+		{
+			configManager.save(Main.config);
+			configManager.load();
+		}
+		catch (IOException e)
+		{
+			System.out.println("[SpongeEssentialCmds]: Failed to update config.");
+		}
+	}
 
 	public static void setSQLPort(String value)
 	{

@@ -1,11 +1,11 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import org.spongepowered.api.item.Enchantments;
-
+import io.github.hsyyid.spongeessentialcmds.utils.Utils;
 import org.spongepowered.api.data.manipulator.mutable.item.EnchantmentData;
 import org.spongepowered.api.data.meta.ItemEnchantment;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.Enchantment;
+import org.spongepowered.api.item.Enchantments;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
@@ -111,36 +111,40 @@ public class EnchantExecutor implements CommandExecutor
 					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment specified not found!"));
 					return CommandResult.success();
 			}
-			
-			if(enchantment.getMaximumLevel() < level)
+
+			if (!Utils.unsafeEnchanmentsEnabled())
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment level too high!"));
-				return CommandResult.success();
+				if (enchantment.getMaximumLevel() < level)
+				{
+					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment level too high!"));
+					return CommandResult.success();
+				}
+
 			}
-			
+
 			if (player.getItemInHand().isPresent())
 			{
 				ItemStack itemInHand = player.getItemInHand().get();
 
-				if(!enchantment.canBeAppliedToStack(itemInHand))
+				if (!enchantment.canBeAppliedToStack(itemInHand))
 				{
 					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment cannot be applied to this item!"));
 					return CommandResult.success();
 				}
-				
+
 				EnchantmentData enchantmentData = itemInHand.getOrCreate(EnchantmentData.class).get();
 				ItemEnchantment itemEnchantment = new ItemEnchantment(enchantment, level);
 				ItemEnchantment sameEnchantment = null;
-				
-				for(ItemEnchantment ench : enchantmentData.enchantments())
+
+				for (ItemEnchantment ench : enchantmentData.enchantments())
 				{
-					if(ench.getEnchantment().getId().equals(enchantment.getId()))
+					if (ench.getEnchantment().getId().equals(enchantment.getId()))
 					{
 						sameEnchantment = ench;
 						break;
 					}
 				}
-				
+
 				if (sameEnchantment == null)
 				{
 					enchantmentData.set(enchantmentData.enchantments().add(itemEnchantment));
@@ -150,7 +154,7 @@ public class EnchantExecutor implements CommandExecutor
 					enchantmentData.set(enchantmentData.enchantments().remove(sameEnchantment));
 					enchantmentData.set(enchantmentData.enchantments().add(itemEnchantment));
 				}
-				
+
 				itemInHand.offer(enchantmentData);
 				player.setItemInHand(itemInHand);
 				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Enchanted item(s) in your hand."));
