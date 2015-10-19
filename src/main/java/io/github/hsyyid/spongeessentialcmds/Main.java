@@ -90,7 +90,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "4.4")
+@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "4.5")
 public class Main
 {
 	public static Game game;
@@ -468,7 +468,9 @@ public class Main
 
 		CommandSpec speedCommandSpec =
 			CommandSpec.builder().description(Texts.of("Speed Command")).permission("speed.use")
-				.arguments(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("speed"))))
+				.arguments(GenericArguments.seq(
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))),
+					GenericArguments.onlyOne(GenericArguments.integer(Texts.of("speed")))))
 				.executor(new SpeedExecutor()).build();
 		game.getCommandDispatcher().register(this, speedCommandSpec, "speed");
 
