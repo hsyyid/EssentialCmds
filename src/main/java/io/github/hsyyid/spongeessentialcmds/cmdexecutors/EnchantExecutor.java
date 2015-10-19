@@ -115,11 +115,19 @@ public class EnchantExecutor implements CommandExecutor
 			if(enchantment.getMaximumLevel() > level)
 			{
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment level too high!"));
+				return CommandResult.success();
 			}
 			
 			if (player.getItemInHand().isPresent())
 			{
 				ItemStack itemInHand = player.getItemInHand().get();
+
+				if(!enchantment.canBeAppliedToStack(itemInHand))
+				{
+					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment cannot be applied to this item!"));
+					return CommandResult.success();
+				}
+				
 				EnchantmentData enchantmentData = itemInHand.getOrCreate(EnchantmentData.class).get();
 				ItemEnchantment itemEnchantment = new ItemEnchantment(enchantment, level);
 				ItemEnchantment sameEnchantment = null;
