@@ -59,7 +59,7 @@ public class WhoisExecutor implements CommandExecutor
 			else
 			{
 				Player foundPlayer = null;
-				
+
 				for (Player player : SpongeEssentialCmds.game.getServer().getOnlinePlayers())
 				{
 					Subject subject = player.getContainingCollection().get(player.getIdentifier());
@@ -67,10 +67,14 @@ public class WhoisExecutor implements CommandExecutor
 					if (subject instanceof OptionSubject)
 					{
 						OptionSubject optionSubject = (OptionSubject) subject;
-						if (optionSubject.getOption("nick").isPresent() && optionSubject.getOption("nick").get().equals(optPlayerName))
+						
+						if (optionSubject.getOption("nick").isPresent())
 						{
-							foundPlayer = player;
-							break;
+							if (optionSubject.getOption("nick").get().equals(optPlayerName.get()))
+							{
+								foundPlayer = player;
+								break;
+							}
 						}
 					}
 					else
@@ -78,8 +82,8 @@ public class WhoisExecutor implements CommandExecutor
 						continue;
 					}
 				}
-				
-				if(foundPlayer == null)
+
+				if (foundPlayer == null)
 				{
 					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Player not found."));
 					return CommandResult.success();
