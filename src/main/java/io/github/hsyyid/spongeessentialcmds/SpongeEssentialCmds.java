@@ -92,7 +92,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 @Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "4.5")
-public class Main
+public class SpongeEssentialCmds
 {
 	public static Game game;
 	public static ConfigurationNode config;
@@ -178,7 +178,10 @@ public class Main
 
 		CommandSpec whoIsCommandSpec =
 			CommandSpec.builder().description(Texts.of("WhoIs Command")).permission("whois.use")
-				.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))).executor(new WhoisExecutor()).build();
+				.arguments(
+					GenericArguments.firstParsing(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)),
+					GenericArguments.onlyOne(GenericArguments.string(Texts.of("player name")))))
+				.executor(new WhoisExecutor()).build();
 		game.getCommandDispatcher().register(this, whoIsCommandSpec, "whois");
 
 		CommandSpec playerFreezeCommandSpec =

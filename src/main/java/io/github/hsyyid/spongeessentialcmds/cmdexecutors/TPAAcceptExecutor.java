@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.Main;
+import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
 import io.github.hsyyid.spongeessentialcmds.events.TPAAcceptEvent;
 import io.github.hsyyid.spongeessentialcmds.events.TPAHereAcceptEvent;
 import io.github.hsyyid.spongeessentialcmds.utils.PendingInvitation;
@@ -20,7 +20,7 @@ public class TPAAcceptExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Game game = Main.game;
+		Game game = SpongeEssentialCmds.game;
 
 		if (src instanceof Player)
 		{
@@ -28,7 +28,7 @@ public class TPAAcceptExecutor implements CommandExecutor
 			Player sender = null;
 			boolean tpaHere = false;
 
-			for (PendingInvitation invitation : Main.pendingInvites)
+			for (PendingInvitation invitation : SpongeEssentialCmds.pendingInvites)
 			{
 				if (!invitation.isTPAHere && invitation.recipient == player)
 				{

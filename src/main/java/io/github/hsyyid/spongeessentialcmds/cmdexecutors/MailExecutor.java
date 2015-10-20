@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.Main;
+import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
 import io.github.hsyyid.spongeessentialcmds.events.MailSendEvent;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.living.player.Player;
@@ -22,7 +22,7 @@ public class MailExecutor implements CommandExecutor
 		if (src instanceof Player)
 		{
 			Player p = (Player) src;
-			Game game = Main.game;
+			Game game = SpongeEssentialCmds.game;
 
 			MailSendEvent event = new MailSendEvent(p, playerName, message);
 			game.getEventManager().post(event);

@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.Main;
+import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
 import io.github.hsyyid.spongeessentialcmds.utils.PendingInvitation;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
@@ -24,7 +24,7 @@ public class TPADenyExecutor implements CommandExecutor
 
 			PendingInvitation cancel = null;
 
-			for (PendingInvitation invitation : Main.pendingInvites)
+			for (PendingInvitation invitation : SpongeEssentialCmds.pendingInvites)
 			{
 				if (invitation.recipient == player)
 				{
@@ -37,7 +37,7 @@ public class TPADenyExecutor implements CommandExecutor
 			if (cancel != null && sender != null)
 			{
 				sender.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Your TPA Request was Denied by " + player.getName() + "!"));
-				Main.pendingInvites.remove(cancel);
+				SpongeEssentialCmds.pendingInvites.remove(cancel);
 				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.WHITE, "TPA Request Denied."));
 			}
 			else

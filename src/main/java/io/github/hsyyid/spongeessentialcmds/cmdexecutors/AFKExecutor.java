@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.Main;
+import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
 import io.github.hsyyid.spongeessentialcmds.utils.AFK;
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
 import org.spongepowered.api.entity.living.player.Player;
@@ -21,16 +21,16 @@ public class AFKExecutor implements CommandExecutor
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			if (Main.movementList.contains(player))
+			if (SpongeEssentialCmds.movementList.contains(player))
 			{
-				Main.movementList.stream().filter(afk -> afk.getPlayer() == player).forEach(afk -> afk.lastMovementTime = -1000000000);
+				SpongeEssentialCmds.movementList.stream().filter(afk -> afk.getPlayer() == player).forEach(afk -> afk.lastMovementTime = -1000000000);
 			}
 			else
 			{
 				int afkTime = (int) Utils.getAFK();
 				long afkTimer = afkTime + 1000;
 				AFK afk = new AFK(player, afkTimer);
-				Main.movementList.add(afk);
+				SpongeEssentialCmds.movementList.add(afk);
 			}
 		}
 		else if (src instanceof ConsoleSource)

@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.Main;
+import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.text.Texts;
@@ -15,7 +15,7 @@ public class MotdExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Game game = Main.game;
+		Game game = SpongeEssentialCmds.game;
 		Server server = game.getServer();
 		src.sendMessage(Texts.of(TextColors.GOLD, "[MOTD]: ", server.getMotd()));
 		return CommandResult.success();

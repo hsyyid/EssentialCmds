@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.Main;
+import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
 import io.github.hsyyid.spongeessentialcmds.utils.Powertool;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
@@ -29,7 +29,7 @@ public class PowertoolExecutor implements CommandExecutor
 				{
 					String command = optionalCommand.get();
 					Powertool replacePowertool = null;
-					for (Powertool powertool : Main.powertools)
+					for (Powertool powertool : SpongeEssentialCmds.powertools)
 					{
 						if (powertool.getItemID().equals(player.getItemInHand().get().getItem().getName()) && powertool.getPlayer().equals(player))
 						{
@@ -41,13 +41,13 @@ public class PowertoolExecutor implements CommandExecutor
 					if (replacePowertool == null)
 					{
 						Powertool powertool = new Powertool(player, player.getItemInHand().get().getItem().getName(), command);
-						Main.powertools.add(powertool);
+						SpongeEssentialCmds.powertools.add(powertool);
 					}
 					else
 					{
-						Main.powertools.remove(replacePowertool);
+						SpongeEssentialCmds.powertools.remove(replacePowertool);
 						Powertool powertool = new Powertool(player, player.getItemInHand().get().getItem().getName(), command);
-						Main.powertools.add(powertool);
+						SpongeEssentialCmds.powertools.add(powertool);
 					}
 
 					player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully bound command ", TextColors.BLUE, command, TextColors.YELLOW, " to ", TextColors.RED, player.getItemInHand().get().getItem().getName(), TextColors.YELLOW, "!"));
@@ -55,7 +55,7 @@ public class PowertoolExecutor implements CommandExecutor
 				else
 				{
 					Powertool powertoolToRemove = null;
-					for (Powertool powertool : Main.powertools)
+					for (Powertool powertool : SpongeEssentialCmds.powertools)
 					{
 						if (powertool.getPlayer().equals(player) && powertool.getItemID().equals(player.getItemInHand().get().getItem().getName()))
 						{
@@ -66,7 +66,7 @@ public class PowertoolExecutor implements CommandExecutor
 
 					if (powertoolToRemove != null)
 					{
-						Main.powertools.remove(powertoolToRemove);
+						SpongeEssentialCmds.powertools.remove(powertoolToRemove);
 						player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Removed command from this powertool!"));
 					}
 					else

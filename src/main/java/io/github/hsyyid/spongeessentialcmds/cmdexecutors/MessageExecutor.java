@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.Main;
+import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
 import io.github.hsyyid.spongeessentialcmds.utils.Message;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
@@ -23,7 +23,7 @@ public class MessageExecutor implements CommandExecutor
 		Player recipient = ctx.<Player> getOne("recipient").get();
 		String message = ctx.<String> getOne("message").get();
 
-		ArrayList<Player> socialSpies = (ArrayList<Player>) Main.game.getServer().getOnlinePlayers().stream().filter(player -> Main.socialSpies.contains(player.getUniqueId())).collect(Collectors.toList());
+		ArrayList<Player> socialSpies = (ArrayList<Player>) SpongeEssentialCmds.game.getServer().getOnlinePlayers().stream().filter(player -> SpongeEssentialCmds.socialSpies.contains(player.getUniqueId())).collect(Collectors.toList());
 
 		if (recipient.equals(src))
 		{
@@ -39,7 +39,7 @@ public class MessageExecutor implements CommandExecutor
 
 			Message messageToRemove = null;
 
-			for (Message m : Main.recentlyMessaged)
+			for (Message m : SpongeEssentialCmds.recentlyMessaged)
 			{
 				if (m.getRecipient().getUniqueId().equals(recipient.getUniqueId()))
 				{
@@ -50,11 +50,11 @@ public class MessageExecutor implements CommandExecutor
 
 			if (messageToRemove != null)
 			{
-				Main.recentlyMessaged.remove(messageToRemove);
+				SpongeEssentialCmds.recentlyMessaged.remove(messageToRemove);
 			}
 
 			Message msg = new Message(player, recipient, message);
-			Main.recentlyMessaged.add(msg);
+			SpongeEssentialCmds.recentlyMessaged.add(msg);
 
 			for (Player socialspy : socialSpies)
 			{

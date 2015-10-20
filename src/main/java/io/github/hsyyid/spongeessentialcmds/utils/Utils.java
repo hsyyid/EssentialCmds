@@ -2,7 +2,7 @@ package io.github.hsyyid.spongeessentialcmds.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.github.hsyyid.spongeessentialcmds.Main;
+import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -52,7 +52,7 @@ public class Utils
 		{
 			if (Utils.useMySQL())
 			{
-				SqlService sql = Main.game.getServiceManager().provide(SqlService.class).get();
+				SqlService sql = SpongeEssentialCmds.game.getServiceManager().provide(SqlService.class).get();
 				String host = Utils.getMySQLHost();
 				String port = String.valueOf(Utils.getMySQLPort());
 				String username = Utils.getMySQLUsername();
@@ -68,7 +68,7 @@ public class Utils
 					"(UUID TEXT PRIMARY KEY     NOT NULL)";
 				execute(executeString, datasource);
 
-				for (Mute mute : Main.muteList)
+				for (Mute mute : SpongeEssentialCmds.muteList)
 				{
 					String UUID = mute.getUUID();
 
@@ -89,7 +89,7 @@ public class Utils
 					"(UUID TEXT PRIMARY KEY     NOT NULL)";
 				stmt.executeUpdate(sql);
 
-				for (Mute mute : Main.muteList)
+				for (Mute mute : SpongeEssentialCmds.muteList)
 				{
 					String UUID = mute.getUUID();
 
@@ -110,17 +110,17 @@ public class Utils
 	
 	public static void startAFKService()
 	{
-		SchedulerService scheduler = Main.game.getScheduler();
+		SchedulerService scheduler = SpongeEssentialCmds.game.getScheduler();
 		TaskBuilder taskBuilder = scheduler.createTaskBuilder();
 
 		taskBuilder.execute(() -> {
-			for (Player player : Main.game.getServer().getOnlinePlayers())
+			for (Player player : SpongeEssentialCmds.game.getServer().getOnlinePlayers())
 			{
-				for (AFK afk : Main.movementList)
+				for (AFK afk : SpongeEssentialCmds.movementList)
 				{
 					if (afk.getPlayer() == player && ((System.currentTimeMillis() - afk.lastMovementTime) > (Utils.getAFK())) && !afk.getMessaged())
 					{
-						for (Player p : Main.game.getServer().getOnlinePlayers())
+						for (Player p : SpongeEssentialCmds.game.getServer().getOnlinePlayers())
 						{
 							p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is now AFK."));
 							Optional<FoodData> data = p.get(FoodData.class);
@@ -157,14 +157,14 @@ public class Utils
 				}
 			}
 		}).interval(1, TimeUnit.SECONDS).name("SpongeEssentialCmds - AFK")
-			.submit(Main.game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
+			.submit(SpongeEssentialCmds.game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
 	}
 
 	public static String getMySQLPort()
 	{
 		try
 		{
-			ConfigurationNode valueNode = Main.config.getNode((Object[]) ("mysql.port").split("\\."));
+			ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("mysql.port").split("\\."));
 
 			if (valueNode.getValue() != null)
 			{
@@ -187,7 +187,7 @@ public class Utils
 	{
 		try
 		{
-			ConfigurationNode valueNode = Main.config.getNode((Object[]) ("mysql.database").split("\\."));
+			ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("mysql.database").split("\\."));
 
 			if (valueNode.getValue() != null)
 			{
@@ -210,7 +210,7 @@ public class Utils
 	{
 		try
 		{
-			ConfigurationNode valueNode = Main.config.getNode((Object[]) ("mysql.password").split("\\."));
+			ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("mysql.password").split("\\."));
 
 			if (valueNode.getValue() != null)
 			{
@@ -233,7 +233,7 @@ public class Utils
 	{
 		try
 		{
-			ConfigurationNode valueNode = Main.config.getNode((Object[]) ("mysql.username").split("\\."));
+			ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("mysql.username").split("\\."));
 
 			if (valueNode.getValue() != null)
 			{
@@ -256,7 +256,7 @@ public class Utils
 	{
 		try
 		{
-			ConfigurationNode valueNode = Main.config.getNode((Object[]) ("mysql.host").split("\\."));
+			ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("mysql.host").split("\\."));
 
 			if (valueNode.getValue() != null)
 			{
@@ -277,7 +277,7 @@ public class Utils
 
 	public static boolean useMySQL()
 	{
-		ConfigurationNode valueNode = Main.config.getNode("mysql", "use");
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode("mysql", "use");
 
 		if (valueNode.getValue() != null)
 		{
@@ -292,12 +292,49 @@ public class Utils
 
 	public static void setUseMySQL(boolean value)
 	{
-		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-		Main.config.getNode("mysql", "use").setValue(value);
+		ConfigurationLoader<CommentedConfigurationNode> configManager = SpongeEssentialCmds.getConfigManager();
+		SpongeEssentialCmds.config.getNode("mysql", "use").setValue(value);
 
 		try
 		{
-			configManager.save(Main.config);
+			configManager.save(SpongeEssentialCmds.config);
+			configManager.load();
+		}
+		catch (IOException e)
+		{
+			System.out.println("[SpongeEssentialCmds]: Failed to update config.");
+		}
+	}
+	
+	public static String getLastTimePlayerJoined(UUID uuid)
+	{
+		try
+		{
+			ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("player." + uuid.toString() + ".time").split("\\."));
+
+			if (valueNode.getValue() != null)
+			{
+				return valueNode.getString();
+			}
+			else
+			{
+				return "";
+			}
+		}
+		catch (Exception e)
+		{
+			return "";
+		}
+	}
+	
+	public static void setLastTimePlayerJoined(UUID uuid, String time)
+	{
+		ConfigurationLoader<CommentedConfigurationNode> configManager = SpongeEssentialCmds.getConfigManager();
+		SpongeEssentialCmds.config.getNode("player", uuid.toString(), "time").setValue(time);
+
+		try
+		{
+			configManager.save(SpongeEssentialCmds.config);
 			configManager.load();
 		}
 		catch (IOException e)
@@ -308,7 +345,7 @@ public class Utils
 	
 	public static boolean unsafeEnchanmentsEnabled()
 	{
-		ConfigurationNode valueNode = Main.config.getNode("unsafeenchantments", "enabled");
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode("unsafeenchantments", "enabled");
 
 		if (valueNode.getValue() != null)
 		{
@@ -323,12 +360,12 @@ public class Utils
 
 	public static void setUnsafeEnchanmentsEnabled(boolean value)
 	{
-		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-		Main.config.getNode("unsafeenchantments", "enabled").setValue(value);
+		ConfigurationLoader<CommentedConfigurationNode> configManager = SpongeEssentialCmds.getConfigManager();
+		SpongeEssentialCmds.config.getNode("unsafeenchantments", "enabled").setValue(value);
 
 		try
 		{
-			configManager.save(Main.config);
+			configManager.save(SpongeEssentialCmds.config);
 			configManager.load();
 		}
 		catch (IOException e)
@@ -339,12 +376,12 @@ public class Utils
 
 	public static void setSQLPort(String value)
 	{
-		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-		Main.config.getNode("mysql", "port").setValue(value);
+		ConfigurationLoader<CommentedConfigurationNode> configManager = SpongeEssentialCmds.getConfigManager();
+		SpongeEssentialCmds.config.getNode("mysql", "port").setValue(value);
 
 		try
 		{
-			configManager.save(Main.config);
+			configManager.save(SpongeEssentialCmds.config);
 			configManager.load();
 		}
 		catch (IOException e)
@@ -355,12 +392,12 @@ public class Utils
 
 	public static void setSQLDatabase(String value)
 	{
-		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-		Main.config.getNode("mysql", "database").setValue(value);
+		ConfigurationLoader<CommentedConfigurationNode> configManager = SpongeEssentialCmds.getConfigManager();
+		SpongeEssentialCmds.config.getNode("mysql", "database").setValue(value);
 
 		try
 		{
-			configManager.save(Main.config);
+			configManager.save(SpongeEssentialCmds.config);
 			configManager.load();
 		}
 		catch (IOException e)
@@ -371,12 +408,12 @@ public class Utils
 
 	public static void setSQLHost(String value)
 	{
-		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-		Main.config.getNode("mysql", "host").setValue(value);
+		ConfigurationLoader<CommentedConfigurationNode> configManager = SpongeEssentialCmds.getConfigManager();
+		SpongeEssentialCmds.config.getNode("mysql", "host").setValue(value);
 
 		try
 		{
-			configManager.save(Main.config);
+			configManager.save(SpongeEssentialCmds.config);
 			configManager.load();
 		}
 		catch (IOException e)
@@ -387,12 +424,12 @@ public class Utils
 
 	public static void setSQLPass(String value)
 	{
-		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-		Main.config.getNode("mysql", "password").setValue(value);
+		ConfigurationLoader<CommentedConfigurationNode> configManager = SpongeEssentialCmds.getConfigManager();
+		SpongeEssentialCmds.config.getNode("mysql", "password").setValue(value);
 
 		try
 		{
-			configManager.save(Main.config);
+			configManager.save(SpongeEssentialCmds.config);
 			configManager.load();
 		}
 		catch (IOException e)
@@ -403,12 +440,12 @@ public class Utils
 
 	public static void setSQLUsername(String value)
 	{
-		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-		Main.config.getNode("mysql", "username").setValue(value);
+		ConfigurationLoader<CommentedConfigurationNode> configManager = SpongeEssentialCmds.getConfigManager();
+		SpongeEssentialCmds.config.getNode("mysql", "username").setValue(value);
 
 		try
 		{
-			configManager.save(Main.config);
+			configManager.save(SpongeEssentialCmds.config);
 			configManager.load();
 		}
 		catch (IOException e)
@@ -440,7 +477,7 @@ public class Utils
 		{
 			if (Utils.useMySQL())
 			{
-				SqlService sql = Main.game.getServiceManager().provide(SqlService.class).get();
+				SqlService sql = SpongeEssentialCmds.game.getServiceManager().provide(SqlService.class).get();
 				String host = Utils.getMySQLHost();
 				String port = String.valueOf(Utils.getMySQLPort());
 				String username = Utils.getMySQLUsername();
@@ -459,7 +496,7 @@ public class Utils
 					muteList.add(new Mute(UUID));
 				}
 
-				Main.muteList = muteList;
+				SpongeEssentialCmds.muteList = muteList;
 				rs.close();
 			}
 			else
@@ -479,7 +516,7 @@ public class Utils
 					muteList.add(new Mute(UUID));
 				}
 
-				Main.muteList = muteList;
+				SpongeEssentialCmds.muteList = muteList;
 
 				rs.close();
 				stmt.close();
@@ -495,12 +532,12 @@ public class Utils
 	public static void setHome(UUID userName, Location<World> playerLocation, String worldName, String homeName)
 	{
 		String playerName = userName.toString();
-		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-		Main.config.getNode("home", "users", playerName, homeName, "world").setValue(worldName);
-		Main.config.getNode("home", "users", playerName, homeName, "X").setValue(playerLocation.getX());
-		Main.config.getNode("home", "users", playerName, homeName, "Y").setValue(playerLocation.getY());
-		Main.config.getNode("home", "users", playerName, homeName, "Z").setValue(playerLocation.getZ());
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("home.users." + playerName + "." + "homes").split("\\."));
+		ConfigurationLoader<CommentedConfigurationNode> configManager = SpongeEssentialCmds.getConfigManager();
+		SpongeEssentialCmds.config.getNode("home", "users", playerName, homeName, "world").setValue(worldName);
+		SpongeEssentialCmds.config.getNode("home", "users", playerName, homeName, "X").setValue(playerLocation.getX());
+		SpongeEssentialCmds.config.getNode("home", "users", playerName, homeName, "Y").setValue(playerLocation.getY());
+		SpongeEssentialCmds.config.getNode("home", "users", playerName, homeName, "Z").setValue(playerLocation.getZ());
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("home.users." + playerName + "." + "homes").split("\\."));
 		if (valueNode.getString() != null)
 		{
 			String items = valueNode.getString();
@@ -517,7 +554,7 @@ public class Utils
 
 		try
 		{
-			configManager.save(Main.config);
+			configManager.save(SpongeEssentialCmds.config);
 			configManager.load();
 		}
 		catch (IOException e)
@@ -636,12 +673,12 @@ public class Utils
 
 	public static void setWarp(Location<World> playerLocation, String warpName)
 	{
-		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-		Main.config.getNode("warps", warpName, "world").setValue(playerLocation.getExtent().getUniqueId().toString());
-		Main.config.getNode("warps", warpName, "X").setValue(playerLocation.getX());
-		Main.config.getNode("warps", warpName, "Y").setValue(playerLocation.getY());
-		Main.config.getNode("warps", warpName, "Z").setValue(playerLocation.getZ());
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("warps.warps").split("\\."));
+		ConfigurationLoader<CommentedConfigurationNode> configManager = SpongeEssentialCmds.getConfigManager();
+		SpongeEssentialCmds.config.getNode("warps", warpName, "world").setValue(playerLocation.getExtent().getUniqueId().toString());
+		SpongeEssentialCmds.config.getNode("warps", warpName, "X").setValue(playerLocation.getX());
+		SpongeEssentialCmds.config.getNode("warps", warpName, "Y").setValue(playerLocation.getY());
+		SpongeEssentialCmds.config.getNode("warps", warpName, "Z").setValue(playerLocation.getZ());
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("warps.warps").split("\\."));
 		if (valueNode.getString() != null)
 		{
 			String items = valueNode.getString();
@@ -658,7 +695,7 @@ public class Utils
 
 		try
 		{
-			configManager.save(Main.config);
+			configManager.save(SpongeEssentialCmds.config);
 			configManager.load();
 		}
 		catch (IOException e)
@@ -669,7 +706,7 @@ public class Utils
 
 	public static String getJoinMsg()
 	{
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("joinmsg").split("\\."));
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("joinmsg").split("\\."));
 		if (valueNode.getValue() != null)
 		{
 			return valueNode.getString();
@@ -683,7 +720,7 @@ public class Utils
 
 	public static String getFirstChatCharReplacement()
 	{
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("chat.firstcharacter").split("\\."));
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("chat.firstcharacter").split("\\."));
 		if (valueNode.getValue() != null)
 		{
 			return valueNode.getString();
@@ -697,7 +734,7 @@ public class Utils
 
 	public static String getLastChatCharReplacement()
 	{
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("chat.lastcharacter").split("\\."));
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("chat.lastcharacter").split("\\."));
 		if (valueNode.getValue() != null)
 		{
 			return valueNode.getString();
@@ -711,7 +748,7 @@ public class Utils
 
 	public static double getAFK()
 	{
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("afk.timer").split("\\."));
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("afk.timer").split("\\."));
 		if (valueNode.getDouble() != 0)
 		{
 			return valueNode.getDouble();
@@ -719,14 +756,14 @@ public class Utils
 		else
 		{
 			Utils.setAFK(30000);
-			ConfigurationNode valNode = Main.config.getNode((Object[]) ("afk.timer").split("\\."));
+			ConfigurationNode valNode = SpongeEssentialCmds.config.getNode((Object[]) ("afk.timer").split("\\."));
 			return valNode.getDouble();
 		}
 	}
 
 	public static boolean getAFKKick()
 	{
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("afk.kick.use").split("\\."));
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("afk.kick.use").split("\\."));
 
 		if (valueNode.getValue() != null)
 		{
@@ -741,7 +778,7 @@ public class Utils
 
 	public static double getAFKKickTimer()
 	{
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("afk.kick.timer").split("\\."));
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("afk.kick.timer").split("\\."));
 
 		if (valueNode.getValue() != null)
 		{
@@ -750,21 +787,21 @@ public class Utils
 		else
 		{
 			Utils.setAFKKickTimer(30000);
-			ConfigurationNode valNode = Main.config.getNode((Object[]) ("afk.timer").split("\\."));
+			ConfigurationNode valNode = SpongeEssentialCmds.config.getNode((Object[]) ("afk.timer").split("\\."));
 			return valNode.getDouble();
 		}
 	}
 
 	public static void setSpawn(Location<World> playerLocation, String worldName)
 	{
-		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-		Main.config.getNode("spawn", "X").setValue(playerLocation.getX());
-		Main.config.getNode("spawn", "Y").setValue(playerLocation.getY());
-		Main.config.getNode("spawn", "Z").setValue(playerLocation.getZ());
-		Main.config.getNode("spawn", "world").setValue(worldName);
+		ConfigurationLoader<CommentedConfigurationNode> configManager = SpongeEssentialCmds.getConfigManager();
+		SpongeEssentialCmds.config.getNode("spawn", "X").setValue(playerLocation.getX());
+		SpongeEssentialCmds.config.getNode("spawn", "Y").setValue(playerLocation.getY());
+		SpongeEssentialCmds.config.getNode("spawn", "Z").setValue(playerLocation.getZ());
+		SpongeEssentialCmds.config.getNode("spawn", "world").setValue(worldName);
 		try
 		{
-			configManager.save(Main.config);
+			configManager.save(SpongeEssentialCmds.config);
 			configManager.load();
 		}
 		catch (IOException e)
@@ -775,11 +812,11 @@ public class Utils
 
 	public static void setJoinMsg(String msg)
 	{
-		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-		Main.config.getNode("joinmsg").setValue(msg);
+		ConfigurationLoader<CommentedConfigurationNode> configManager = SpongeEssentialCmds.getConfigManager();
+		SpongeEssentialCmds.config.getNode("joinmsg").setValue(msg);
 		try
 		{
-			configManager.save(Main.config);
+			configManager.save(SpongeEssentialCmds.config);
 			configManager.load();
 		}
 		catch (IOException e)
@@ -790,11 +827,11 @@ public class Utils
 
 	public static void setFirstChatCharReplacement(String replacement)
 	{
-		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-		Main.config.getNode("chat", "firstcharacter").setValue(replacement);
+		ConfigurationLoader<CommentedConfigurationNode> configManager = SpongeEssentialCmds.getConfigManager();
+		SpongeEssentialCmds.config.getNode("chat", "firstcharacter").setValue(replacement);
 		try
 		{
-			configManager.save(Main.config);
+			configManager.save(SpongeEssentialCmds.config);
 			configManager.load();
 		}
 		catch (IOException e)
@@ -805,11 +842,11 @@ public class Utils
 
 	public static void setLastChatCharReplacement(String replacement)
 	{
-		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-		Main.config.getNode("chat", "lastcharacter").setValue(replacement);
+		ConfigurationLoader<CommentedConfigurationNode> configManager = SpongeEssentialCmds.getConfigManager();
+		SpongeEssentialCmds.config.getNode("chat", "lastcharacter").setValue(replacement);
 		try
 		{
-			configManager.save(Main.config);
+			configManager.save(SpongeEssentialCmds.config);
 			configManager.load();
 		}
 		catch (IOException e)
@@ -820,11 +857,11 @@ public class Utils
 
 	public static void setAFK(double length)
 	{
-		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-		Main.config.getNode("afk", "timer").setValue(length);
+		ConfigurationLoader<CommentedConfigurationNode> configManager = SpongeEssentialCmds.getConfigManager();
+		SpongeEssentialCmds.config.getNode("afk", "timer").setValue(length);
 		try
 		{
-			configManager.save(Main.config);
+			configManager.save(SpongeEssentialCmds.config);
 			configManager.load();
 		}
 		catch (IOException e)
@@ -835,11 +872,11 @@ public class Utils
 
 	public static void setAFKKick(boolean val)
 	{
-		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-		Main.config.getNode("afk", "kick", "use").setValue(val);
+		ConfigurationLoader<CommentedConfigurationNode> configManager = SpongeEssentialCmds.getConfigManager();
+		SpongeEssentialCmds.config.getNode("afk", "kick", "use").setValue(val);
 		try
 		{
-			configManager.save(Main.config);
+			configManager.save(SpongeEssentialCmds.config);
 			configManager.load();
 		}
 		catch (IOException e)
@@ -850,11 +887,11 @@ public class Utils
 
 	public static void setAFKKickTimer(double length)
 	{
-		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-		Main.config.getNode("afk", "kick", "timer").setValue(length);
+		ConfigurationLoader<CommentedConfigurationNode> configManager = SpongeEssentialCmds.getConfigManager();
+		SpongeEssentialCmds.config.getNode("afk", "kick", "timer").setValue(length);
 		try
 		{
-			configManager.save(Main.config);
+			configManager.save(SpongeEssentialCmds.config);
 			configManager.load();
 		}
 		catch (IOException e)
@@ -866,14 +903,14 @@ public class Utils
 	public static void setLastDeathLocation(UUID userName, Location<World> playerLocation)
 	{
 		String playerName = userName.toString();
-		ConfigurationLoader<CommentedConfigurationNode> configManager = Main.getConfigManager();
-		Main.config.getNode("back", "users", playerName, "lastDeath", "X").setValue(playerLocation.getX());
-		Main.config.getNode("back", "users", playerName, "lastDeath", "Y").setValue(playerLocation.getY());
-		Main.config.getNode("back", "users", playerName, "lastDeath", "Z").setValue(playerLocation.getZ());
+		ConfigurationLoader<CommentedConfigurationNode> configManager = SpongeEssentialCmds.getConfigManager();
+		SpongeEssentialCmds.config.getNode("back", "users", playerName, "lastDeath", "X").setValue(playerLocation.getX());
+		SpongeEssentialCmds.config.getNode("back", "users", playerName, "lastDeath", "Y").setValue(playerLocation.getY());
+		SpongeEssentialCmds.config.getNode("back", "users", playerName, "lastDeath", "Z").setValue(playerLocation.getZ());
 
 		try
 		{
-			configManager.save(Main.config);
+			configManager.save(SpongeEssentialCmds.config);
 			configManager.load();
 		}
 		catch (IOException e)
@@ -885,11 +922,11 @@ public class Utils
 	public static Location<World> lastDeath(Player player)
 	{
 		String playerName = player.getUniqueId().toString();
-		ConfigurationNode xNode = Main.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.X").split("\\."));
+		ConfigurationNode xNode = SpongeEssentialCmds.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.X").split("\\."));
 		double x = xNode.getDouble();
-		ConfigurationNode yNode = Main.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Y").split("\\."));
+		ConfigurationNode yNode = SpongeEssentialCmds.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Y").split("\\."));
 		double y = yNode.getDouble();
-		ConfigurationNode zNode = Main.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Z").split("\\."));
+		ConfigurationNode zNode = SpongeEssentialCmds.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Z").split("\\."));
 		double z = zNode.getDouble();
 
 		return new Location<>(player.getWorld(), x, y, z);
@@ -898,7 +935,7 @@ public class Utils
 	public static ArrayList<String> getHomes(UUID userName)
 	{
 		String playerName = userName.toString();
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("home.users." + playerName + "." + "homes").split("\\."));
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("home.users." + playerName + "." + "homes").split("\\."));
 		String list = valueNode.getString();
 
 		ArrayList<String> homeList = new ArrayList<>();
@@ -934,7 +971,7 @@ public class Utils
 
 	public static ArrayList<String> getWarps()
 	{
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("warps.warps").split("\\."));
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("warps.warps").split("\\."));
 		String list = valueNode.getString();
 
 		ArrayList<String> warpList = new ArrayList<>();
@@ -974,48 +1011,48 @@ public class Utils
 	public static double getX(UUID playerName, String homeName)
 	{
 		String userName = playerName.toString();
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("home.users." + userName + "." + homeName + ".X").split("\\."));
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("home.users." + userName + "." + homeName + ".X").split("\\."));
 		return valueNode.getDouble();
 	}
 
 	public static String getHomeWorldName(UUID playerName, String homeName)
 	{
 		String userName = playerName.toString();
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("home.users." + userName + "." + homeName + ".world").split("\\."));
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("home.users." + userName + "." + homeName + ".world").split("\\."));
 		return valueNode.getString();
 	}
 
 	public static double getY(UUID playerName, String homeName)
 	{
 		String userName = playerName.toString();
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("home.users." + userName + "." + homeName + ".Y").split("\\."));
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("home.users." + userName + "." + homeName + ".Y").split("\\."));
 		return valueNode.getDouble();
 	}
 
 	public static double getZ(UUID playerName, String homeName)
 	{
 		String userName = playerName.toString();
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("home.users." + userName + "." + homeName + ".Z").split("\\."));
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("home.users." + userName + "." + homeName + ".Z").split("\\."));
 		return valueNode.getDouble();
 	}
 
 	public static double getWarpX(String warpName)
 	{
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("warps." + warpName + ".X").split("\\."));
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("warps." + warpName + ".X").split("\\."));
 		return valueNode.getDouble();
 	}
 
 	public static UUID getWarpWorldUUID(String warpName)
 	{
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("warps." + warpName + ".world").split("\\."));
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("warps." + warpName + ".world").split("\\."));
 		try {
 			UUID worlduuid = UUID.fromString(valueNode.getString());
 			return worlduuid;
 		} catch (IllegalArgumentException e) {
-			Optional<WorldProperties> props = Main.game.getServer().getWorldProperties(valueNode.getString());
+			Optional<WorldProperties> props = SpongeEssentialCmds.game.getServer().getWorldProperties(valueNode.getString());
 			if (props.isPresent()) {
 				if (props.get().isEnabled()) {
-					Optional<World> world = Main.game.getServer().loadWorld(valueNode.getString());
+					Optional<World> world = SpongeEssentialCmds.game.getServer().loadWorld(valueNode.getString());
 					if (world.isPresent()) {
 						return world.get().getUniqueId();
 					}
@@ -1027,19 +1064,19 @@ public class Utils
 
 	public static String getSpawnWorldName()
 	{
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("spawn.world").split("\\."));
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("spawn.world").split("\\."));
 		return valueNode.getString();
 	}
 
 	public static double getWarpY(String warpName)
 	{
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("warps." + warpName + ".Y").split("\\."));
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("warps." + warpName + ".Y").split("\\."));
 		return valueNode.getDouble();
 	}
 
 	public static double getWarpZ(String warpName)
 	{
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("warps." + warpName + ".Z").split("\\."));
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("warps." + warpName + ".Z").split("\\."));
 		return valueNode.getDouble();
 	}
 
@@ -1047,34 +1084,34 @@ public class Utils
 	public static boolean inConfig(UUID playerName, String homeName)
 	{
 		String userName = playerName.toString();
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("home.users." + userName + "." + homeName + ".X").split("\\."));
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("home.users." + userName + "." + homeName + ".X").split("\\."));
 		Object inConfig = valueNode.getValue();
 		return inConfig != null;
 	}
 
 	public static boolean isWarpInConfig(String warpName)
 	{
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("warps." + warpName + ".X").split("\\."));
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("warps." + warpName + ".X").split("\\."));
 		Object inConfig = valueNode.getValue();
 		return inConfig != null;
 	}
 
 	public static boolean isSpawnInConfig()
 	{
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("spawn.X").split("\\."));
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("spawn.X").split("\\."));
 		Object inConfig = valueNode.getValue();
 		return inConfig != null;
 	}
 
 	public static Location<World> getSpawn(Player player)
 	{
-		ConfigurationNode xNode = Main.config.getNode((Object[]) ("spawn.X").split("\\."));
+		ConfigurationNode xNode = SpongeEssentialCmds.config.getNode((Object[]) ("spawn.X").split("\\."));
 		double x = xNode.getDouble();
 
-		ConfigurationNode yNode = Main.config.getNode((Object[]) ("spawn.Y").split("\\."));
+		ConfigurationNode yNode = SpongeEssentialCmds.config.getNode((Object[]) ("spawn.Y").split("\\."));
 		double y = yNode.getDouble();
 
-		ConfigurationNode zNode = Main.config.getNode((Object[]) ("spawn.Z").split("\\."));
+		ConfigurationNode zNode = SpongeEssentialCmds.config.getNode((Object[]) ("spawn.Z").split("\\."));
 		double z = zNode.getDouble();
 
 		return new Location<>(player.getWorld(), x, y, z);
@@ -1083,7 +1120,7 @@ public class Utils
 	public static boolean isLastDeathInConfig(Player player)
 	{
 		String userName = player.getUniqueId().toString();
-		ConfigurationNode valueNode = Main.config.getNode((Object[]) ("back.users." + userName + ".lastDeath.X").split("\\."));
+		ConfigurationNode valueNode = SpongeEssentialCmds.config.getNode((Object[]) ("back.users." + userName + ".lastDeath.X").split("\\."));
 		Object inConfig = valueNode.getValue();
 		return inConfig != null;
 	}

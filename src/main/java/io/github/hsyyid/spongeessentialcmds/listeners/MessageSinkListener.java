@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.listeners;
 
-import io.github.hsyyid.spongeessentialcmds.Main;
+import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
 import io.github.hsyyid.spongeessentialcmds.utils.Mute;
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
 import org.spongepowered.api.entity.living.player.Player;
@@ -23,7 +23,7 @@ public class MessageSinkListener
 		{
 			Player player = event.getCause().first(Player.class).get();
 
-			for (Mute mute : Main.muteList)
+			for (Mute mute : SpongeEssentialCmds.muteList)
 			{
 				if (mute.getUUID().equals(player.getUniqueId().toString()))
 				{
