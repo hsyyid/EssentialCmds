@@ -16,6 +16,14 @@ public class PlayerMoveListener
 		if (event.getTargetEntity() instanceof Player)
 		{
 			Player player = (Player) event.getTargetEntity();
+			
+			if(Main.frozenPlayers.contains(player.getUniqueId()))
+			{
+				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot move while frozen."));
+				event.setCancelled(true);
+				return;
+			}
+			
 			if (Main.recentlyJoined.contains(player))
 			{
 				Main.recentlyJoined.remove(player);

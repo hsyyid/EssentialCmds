@@ -1,5 +1,8 @@
 package io.github.hsyyid.spongeessentialcmds.listeners;
 
+import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.format.TextColors;
+
 import io.github.hsyyid.spongeessentialcmds.Main;
 import io.github.hsyyid.spongeessentialcmds.utils.Powertool;
 import org.spongepowered.api.entity.living.player.Player;
@@ -14,6 +17,15 @@ public class PlayerClickListener
 		if (event.getCause().first(Player.class).isPresent())
 		{
 			Player player = event.getCause().first(Player.class).get();
+			
+
+			if(Main.frozenPlayers.contains(player.getUniqueId()))
+			{
+				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot click while frozen."));
+				event.setCancelled(true);
+				return;
+			}
+			
 			Powertool foundTool = null;
 
 			for (Powertool powertool : Main.powertools)
@@ -41,6 +53,15 @@ public class PlayerClickListener
 		if (event.getCause().first(Player.class).isPresent())
 		{
 			Player player = event.getCause().first(Player.class).get();
+			
+
+			if(Main.frozenPlayers.contains(player.getUniqueId()))
+			{
+				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot click while frozen."));
+				event.setCancelled(true);
+				return;
+			}
+			
 			Powertool foundTool = null;
 
 			for (Powertool powertool : Main.powertools)

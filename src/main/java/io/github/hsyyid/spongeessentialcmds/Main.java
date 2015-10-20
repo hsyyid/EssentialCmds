@@ -32,6 +32,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MotdExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MuteExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.NickExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.PardonExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.PlayerFreezeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.PowertoolExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.RepairExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.RespondExecutor;
@@ -104,6 +105,7 @@ public class Main
 	public static ArrayList<UUID> socialSpies = new ArrayList<>();
 	public static ArrayList<Message> recentlyMessaged = new ArrayList<>();
 	public static ArrayList<Mute> muteList = new ArrayList<>();
+	public static ArrayList<UUID> frozenPlayers = new ArrayList<>();
 
 	@Inject
 	private Logger logger;
@@ -178,6 +180,11 @@ public class Main
 			CommandSpec.builder().description(Texts.of("WhoIs Command")).permission("whois.use")
 				.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))).executor(new WhoisExecutor()).build();
 		game.getCommandDispatcher().register(this, whoIsCommandSpec, "whois");
+
+		CommandSpec playerFreezeCommandSpec =
+			CommandSpec.builder().description(Texts.of("Player Freeze Command")).permission("playerfreeze.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))).executor(new PlayerFreezeExecutor()).build();
+		game.getCommandDispatcher().register(this, playerFreezeCommandSpec, "playerfreeze", "freezeplayer");
 
 		CommandSpec getPosCommandSpec =
 			CommandSpec.builder().description(Texts.of("GetPos Command")).permission("getpos.use")

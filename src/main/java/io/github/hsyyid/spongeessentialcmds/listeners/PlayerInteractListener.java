@@ -24,6 +24,14 @@ public class PlayerInteractListener
 		if (event.getCause().first(Player.class).isPresent())
 		{
 			Player player = event.getCause().first(Player.class).get();
+
+			if(Main.frozenPlayers.contains(player.getUniqueId()))
+			{
+				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot interact while frozen."));
+				event.setCancelled(true);
+				return;
+			}
+			
 			Location<World> location = event.getTargetBlock().getLocation().get();
 
 			if (location.getTileEntity().isPresent() && location.getTileEntity().get() != null && location.getTileEntity().get().getType() != null)
