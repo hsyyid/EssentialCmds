@@ -5,6 +5,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.AFKExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BackExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BanExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BroadcastExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ButcherExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteWarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.EnchantExecutor;
@@ -165,6 +166,11 @@ public class SpongeEssentialCmds
 			CommandSpec.builder().description(Texts.of("More Command")).permission("more.use")
 				.executor(new MoreExecutor()).build();
 		game.getCommandDispatcher().register(this, moreCommandSpec, "more", "stack");
+		
+		CommandSpec butcherCommandSpec =
+			CommandSpec.builder().description(Texts.of("Butcher Command")).permission("butcher.use")
+				.executor(new ButcherExecutor()).build();
+		game.getCommandDispatcher().register(this, butcherCommandSpec, "butcher");
 		
 		CommandSpec vanishCommandSpec =
 			CommandSpec.builder().description(Texts.of("Vanish Command")).permission("vanish.use")
