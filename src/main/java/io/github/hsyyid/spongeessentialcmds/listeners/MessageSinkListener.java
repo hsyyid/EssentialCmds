@@ -23,33 +23,79 @@ public class MessageSinkListener
 	@Listener
 	public void onMessage(MessageSinkEvent event)
 	{
-		String message = Texts.toPlain(event.getMessage());
-
-		if (message.contains("http://") || message.contains("https://"))
+		if (event.getCause().first(Player.class).isPresent())
 		{
-			String foundLink;
+			Player player = event.getCause().first(Player.class).get();
 
-			if (message.substring(message.indexOf("http")).contains(" "))
+			if (player.hasPermission("spongeessentialcmds.link.chat"))
 			{
-				foundLink = message.substring(message.indexOf("http"), message.indexOf(" ", message.indexOf("http")));
+				String message = Texts.toPlain(event.getMessage());
+
+				if (message.contains("http://") || message.contains("https://"))
+				{
+					String foundLink;
+
+					if (message.substring(message.indexOf("http")).contains(" "))
+					{
+						foundLink = message.substring(message.indexOf("http"), message.indexOf(" ", message.indexOf("http")));
+					}
+					else
+					{
+						foundLink = message.substring(message.indexOf("http"));
+					}
+
+					try
+					{
+						Text newMessage = Texts.builder()
+							.append(event.getMessage())
+							.onClick(TextActions.openUrl(new URL(foundLink)))
+							.build();
+
+						event.setMessage(newMessage);
+					}
+					catch (MalformedURLException e)
+					{
+						e.printStackTrace();
+					}
+				}
 			}
 			else
 			{
-				foundLink = message.substring(message.indexOf("http"));
+				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You don't have permission to send links."));
+				event.setCancelled(true);
+				return;
 			}
+		}
+		else
+		{
+			String message = Texts.toPlain(event.getMessage());
 
-			try
+			if (message.contains("http://") || message.contains("https://"))
 			{
-				Text newMessage = Texts.builder()
-									.append(event.getMessage())
-									.onClick(TextActions.openUrl(new URL(foundLink)))
-									.build();
-				
-				event.setMessage(newMessage);
-			}
-			catch (MalformedURLException e)
-			{
-				e.printStackTrace();
+				String foundLink;
+
+				if (message.substring(message.indexOf("http")).contains(" "))
+				{
+					foundLink = message.substring(message.indexOf("http"), message.indexOf(" ", message.indexOf("http")));
+				}
+				else
+				{
+					foundLink = message.substring(message.indexOf("http"));
+				}
+
+				try
+				{
+					Text newMessage = Texts.builder()
+						.append(event.getMessage())
+						.onClick(TextActions.openUrl(new URL(foundLink)))
+						.build();
+
+					event.setMessage(newMessage);
+				}
+				catch (MalformedURLException e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 
@@ -112,11 +158,11 @@ public class MessageSinkListener
 			if (!(player.hasPermission("color.chat.use")))
 			{
 				event.setMessage(Texts.builder()
-									.append(Texts.of(original))
-									.style(event.getMessage().getStyle())
-									.onClick(event.getMessage().getClickAction().orElse(null))
-									.onHover(event.getMessage().getHoverAction().orElse(null))
-									.build());
+					.append(Texts.of(original))
+					.style(event.getMessage().getStyle())
+					.onClick(event.getMessage().getClickAction().orElse(null))
+					.onHover(event.getMessage().getHoverAction().orElse(null))
+					.build());
 			}
 
 			if (player.hasPermission("color.chat.use"))
