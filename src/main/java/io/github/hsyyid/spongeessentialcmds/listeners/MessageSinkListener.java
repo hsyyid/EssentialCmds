@@ -27,7 +27,6 @@ public class MessageSinkListener
 
 		if (message.contains("http://") || message.contains("https://"))
 		{
-			System.out.println("found http");
 			String foundLink;
 
 			if (message.substring(message.indexOf("http")).contains(" "))
@@ -38,8 +37,6 @@ public class MessageSinkListener
 			{
 				foundLink = message.substring(message.indexOf("http"));
 			}
-			
-			System.out.println(foundLink);
 
 			try
 			{
