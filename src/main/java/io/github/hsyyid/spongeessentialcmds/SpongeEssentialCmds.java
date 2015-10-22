@@ -40,6 +40,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.RespondExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetSpawnExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetWarpExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SkullExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SocialSpyExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SpawnExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SpeedExecutor;
@@ -188,12 +189,17 @@ public class SpongeEssentialCmds
 					GenericArguments.firstParsing(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)),
 					GenericArguments.onlyOne(GenericArguments.string(Texts.of("player name")))))
 				.executor(new WhoisExecutor()).build();
-		game.getCommandDispatcher().register(this, whoIsCommandSpec, "whois");
+		game.getCommandDispatcher().register(this, whoIsCommandSpec, "whois", "realname");
 
 		CommandSpec playerFreezeCommandSpec =
 			CommandSpec.builder().description(Texts.of("Player Freeze Command")).permission("playerfreeze.use")
 				.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))).executor(new PlayerFreezeExecutor()).build();
 		game.getCommandDispatcher().register(this, playerFreezeCommandSpec, "playerfreeze", "freezeplayer");
+		
+		CommandSpec skullCommandSpec =
+			CommandSpec.builder().description(Texts.of("Skull Command")).permission("skull.use")
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))).executor(new SkullExecutor()).build();
+		game.getCommandDispatcher().register(this, skullCommandSpec, "skull", "playerskull", "head");
 
 		CommandSpec getPosCommandSpec =
 			CommandSpec.builder().description(Texts.of("GetPos Command")).permission("getpos.use")
