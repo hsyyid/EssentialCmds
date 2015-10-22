@@ -26,12 +26,11 @@ public class MessageSinkListener
 		if (event.getCause().first(Player.class).isPresent())
 		{
 			Player player = event.getCause().first(Player.class).get();
+			String message = Texts.toPlain(event.getMessage());
 
-			if (player.hasPermission("spongeessentialcmds.link.chat"))
+			if (message.contains("http://") || message.contains("https://"))
 			{
-				String message = Texts.toPlain(event.getMessage());
-
-				if (message.contains("http://") || message.contains("https://"))
+				if (player.hasPermission("spongeessentialcmds.link.chat"))
 				{
 					String foundLink;
 
@@ -58,12 +57,12 @@ public class MessageSinkListener
 						e.printStackTrace();
 					}
 				}
-			}
-			else
-			{
-				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You don't have permission to send links."));
-				event.setCancelled(true);
-				return;
+				else
+				{
+					player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You don't have permission to send links."));
+					event.setCancelled(true);
+					return;
+				}
 			}
 		}
 		else

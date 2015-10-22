@@ -6,6 +6,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BackExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BanExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.BroadcastExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ButcherExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.CreateWorldExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteWarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.EnchantExecutor;
@@ -23,6 +24,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.KillExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.LightningExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListWarpExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ListWorldExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailListExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.MailReadExecutor;
@@ -51,6 +53,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPAHereExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TPHereExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TeleportPosExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TeleportWorldExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.TimeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.UnmuteExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.VanishExecutor;
@@ -157,27 +160,27 @@ public class SpongeEssentialCmds
 
 		Utils.readMutes();
 		Utils.startAFKService();
-		
+
 		CommandSpec homeCommandSpec =
 			CommandSpec.builder().description(Texts.of("Home Command")).permission("home.use")
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name")))).executor(new HomeExecutor()).build();
 		game.getCommandDispatcher().register(this, homeCommandSpec, "home");
-		
+
 		CommandSpec moreCommandSpec =
 			CommandSpec.builder().description(Texts.of("More Command")).permission("more.use")
 				.executor(new MoreExecutor()).build();
 		game.getCommandDispatcher().register(this, moreCommandSpec, "more", "stack");
-		
+
 		CommandSpec butcherCommandSpec =
 			CommandSpec.builder().description(Texts.of("Butcher Command")).permission("butcher.use")
 				.executor(new ButcherExecutor()).build();
 		game.getCommandDispatcher().register(this, butcherCommandSpec, "butcher");
-		
+
 		CommandSpec vanishCommandSpec =
 			CommandSpec.builder().description(Texts.of("Vanish Command")).permission("vanish.use")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))).executor(new VanishExecutor()).build();
 		game.getCommandDispatcher().register(this, vanishCommandSpec, "vanish");
-		
+
 		CommandSpec igniteCommandSpec =
 			CommandSpec.builder().description(Texts.of("Ignite Command")).permission("ignite.use")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))).executor(new IgniteExecutor()).build();
@@ -187,15 +190,15 @@ public class SpongeEssentialCmds
 			CommandSpec.builder().description(Texts.of("WhoIs Command")).permission("whois.use")
 				.arguments(
 					GenericArguments.firstParsing(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)),
-					GenericArguments.onlyOne(GenericArguments.string(Texts.of("player name")))))
+						GenericArguments.onlyOne(GenericArguments.string(Texts.of("player name")))))
 				.executor(new WhoisExecutor()).build();
-		game.getCommandDispatcher().register(this, whoIsCommandSpec, "whois", "realname");
+		game.getCommandDispatcher().register(this, whoIsCommandSpec, "whois", "realname", "seen");
 
 		CommandSpec playerFreezeCommandSpec =
 			CommandSpec.builder().description(Texts.of("Player Freeze Command")).permission("playerfreeze.use")
 				.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))).executor(new PlayerFreezeExecutor()).build();
 		game.getCommandDispatcher().register(this, playerFreezeCommandSpec, "playerfreeze", "freezeplayer");
-		
+
 		CommandSpec skullCommandSpec =
 			CommandSpec.builder().description(Texts.of("Skull Command")).permission("skull.use")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))).executor(new SkullExecutor()).build();
@@ -278,7 +281,7 @@ public class SpongeEssentialCmds
 					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Texts.of("duration")))))
 				.executor(new WeatherExecutor()).build();
 		game.getCommandDispatcher().register(this, weatherCommandSpec, "weather");
-		
+
 		CommandSpec mobSpawnCommandSpec =
 			CommandSpec
 				.builder()
@@ -289,7 +292,7 @@ public class SpongeEssentialCmds
 					GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("mob name"))))
 				.executor(new MobSpawnExecutor()).build();
 		game.getCommandDispatcher().register(this, mobSpawnCommandSpec, "mobspawn", "entityspawn");
-		
+
 		CommandSpec enchantCommandSpec =
 			CommandSpec
 				.builder()
@@ -365,6 +368,20 @@ public class SpongeEssentialCmds
 						GenericArguments.remainingJoinedStrings(Texts.of("command")))).executor(new SudoExecutor()).build();
 		game.getCommandDispatcher().register(this, sudoCommandSpec, "sudo");
 
+		CommandSpec createWorldCommandSpec =
+			CommandSpec
+				.builder()
+				.description(Texts.of("Create World Command"))
+				.permission("world.create")
+				.arguments(
+					GenericArguments.seq(
+						GenericArguments.onlyOne(GenericArguments.string(Texts.of("name"))),
+						GenericArguments.onlyOne(GenericArguments.string(Texts.of("environment"))),
+						GenericArguments.onlyOne(GenericArguments.string(Texts.of("gamemode"))),
+						GenericArguments.onlyOne(GenericArguments.string(Texts.of("difficulty")))))
+				.executor(new CreateWorldExecutor()).build();
+		game.getCommandDispatcher().register(this, createWorldCommandSpec, "createworld");
+
 		CommandSpec afkCommandSpec =
 			CommandSpec.builder().description(Texts.of("AFK Command")).permission("afk.use").executor(new AFKExecutor()).build();
 		game.getCommandDispatcher().register(this, afkCommandSpec, "afk");
@@ -393,6 +410,14 @@ public class SpongeEssentialCmds
 				.build();
 		game.getCommandDispatcher().register(this, tpaHereCommandSpec, "tpahere");
 
+		CommandSpec tpWorldSpec =
+			CommandSpec.builder().description(Texts.of("TP World Command")).permission("tpworld.use")
+				.arguments(GenericArguments.seq(GenericArguments.string(Texts.of("name")),
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))))
+				.executor(new TeleportWorldExecutor())
+				.build();
+		game.getCommandDispatcher().register(this, tpWorldSpec, "tpworld");
+
 		CommandSpec tpHereCommandSpec =
 			CommandSpec.builder().description(Texts.of("TP Here Command")).permission("tphere.use")
 				.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))).executor(new TPHereExecutor())
@@ -408,6 +433,12 @@ public class SpongeEssentialCmds
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("page no")))))
 				.executor(new ListHomeExecutor()).build();
 		game.getCommandDispatcher().register(this, listHomeCommandSpec, "homes");
+
+		CommandSpec listWorldsCommandSpec =
+			CommandSpec.builder().description(Texts.of("List World Command")).permission("worlds.list")
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("page no")))))
+				.executor(new ListWorldExecutor()).build();
+		game.getCommandDispatcher().register(this, listWorldsCommandSpec, "worlds");
 
 		CommandSpec healCommandSpec =
 			CommandSpec.builder().description(Texts.of("Heal Command")).permission("heal.use")
@@ -535,7 +566,7 @@ public class SpongeEssentialCmds
 		game.getEventManager().registerListeners(this, new PlayerDeathListener());
 		game.getEventManager().registerListeners(this, new TPAListener());
 		game.getEventManager().registerListeners(this, new MailListener());
-		
+
 		getLogger().info("-----------------------------");
 		getLogger().info("SpongeEssentialCmds was made by HassanS6000!");
 		getLogger().info("Please post all errors on the Sponge Thread or on GitHub!");
