@@ -9,6 +9,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.ButcherExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.CreateWorldExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteWarpExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteWorldExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.EnchantExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FeedExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FlyExecutor;
@@ -96,7 +97,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-@Plugin(id = "SpongeEssentialCmds", name = "SpongeEssentialCmds", version = "4.6")
+@Plugin(id = "EssentialCmds", name = "EssentialCmds", version = "4.7")
 public class SpongeEssentialCmds
 {
 	public static Game game;
@@ -165,6 +166,11 @@ public class SpongeEssentialCmds
 			CommandSpec.builder().description(Texts.of("Home Command")).permission("home.use")
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name")))).executor(new HomeExecutor()).build();
 		game.getCommandDispatcher().register(this, homeCommandSpec, "home");
+		
+		CommandSpec deleteWorldCommandSpec =
+			CommandSpec.builder().description(Texts.of("Delete World Command")).permission("world.delete")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("name")))).executor(new DeleteWorldExecutor()).build();
+		game.getCommandDispatcher().register(this, deleteWorldCommandSpec, "delworld", "deleteworld");
 
 		CommandSpec moreCommandSpec =
 			CommandSpec.builder().description(Texts.of("More Command")).permission("more.use")

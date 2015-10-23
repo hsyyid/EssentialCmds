@@ -94,7 +94,7 @@ public class CreateWorldExecutor implements CommandExecutor
 		}
 
 		src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Beginning creation of world."));
-
+		
 		Optional<World> world = SpongeEssentialCmds.game.getRegistry().createWorldBuilder()
 			.name(name)
 			.enabled(true)
@@ -109,6 +109,10 @@ public class CreateWorldExecutor implements CommandExecutor
 		{
 			world.get().getProperties().setDifficulty(difficulty);
 			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "World ", TextColors.GRAY, name, TextColors.GOLD, " has been created."));
+		}
+		else
+		{
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The world could not be created."));
 		}
 
 		return CommandResult.success();
