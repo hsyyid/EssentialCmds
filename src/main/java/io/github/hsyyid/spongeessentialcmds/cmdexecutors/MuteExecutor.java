@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
+import io.github.hsyyid.spongeessentialcmds.EssentialCmds;
 import io.github.hsyyid.spongeessentialcmds.utils.Mute;
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
 import org.spongepowered.api.Game;
@@ -21,12 +21,12 @@ public class MuteExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Game game = SpongeEssentialCmds.game;
+		Game game = EssentialCmds.game;
 		Player p = ctx.<Player> getOne("player").get();
 		Optional<Long> time = ctx.<Long> getOne("time");
 		Optional<String> timeUnit = ctx.<String> getOne("time unit");
 
-		for (Mute mute : SpongeEssentialCmds.muteList)
+		for (Mute mute : EssentialCmds.muteList)
 		{
 			if (mute.getUUID().equals(p.getUniqueId().toString()))
 			{
@@ -64,13 +64,13 @@ public class MuteExecutor implements CommandExecutor
 			final Mute mute = new Mute(p.getUniqueId().toString());
 
 			TaskBuilder taskBuilder = game.getScheduler().createTaskBuilder();
-			taskBuilder.execute(() -> SpongeEssentialCmds.muteList.remove(mute)).delay(time.get(), unit).name("SpongeEssentialCmds removes mute").submit(game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
+			taskBuilder.execute(() -> EssentialCmds.muteList.remove(mute)).delay(time.get(), unit).name("EssentialCmds removes mute").submit(game.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
 
-			SpongeEssentialCmds.muteList.add(mute);
+			EssentialCmds.muteList.add(mute);
 		}
 		else
 		{
-			SpongeEssentialCmds.muteList.add(new Mute(p.getUniqueId().toString()));
+			EssentialCmds.muteList.add(new Mute(p.getUniqueId().toString()));
 		}
 
 		Utils.saveMutes();

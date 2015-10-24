@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.listeners;
 
-import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
+import io.github.hsyyid.spongeessentialcmds.EssentialCmds;
 import io.github.hsyyid.spongeessentialcmds.utils.AFK;
 import io.github.hsyyid.spongeessentialcmds.utils.Mail;
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
@@ -40,11 +40,11 @@ public class PlayerJoinListener
 				TextColors.RED, "/listmail"));
 		}
 
-		SpongeEssentialCmds.recentlyJoined.add(event.getTargetEntity());
+		EssentialCmds.recentlyJoined.add(event.getTargetEntity());
 
 		AFK afkToRemove = null;
 
-		for (AFK afk : SpongeEssentialCmds.movementList)
+		for (AFK afk : EssentialCmds.movementList)
 		{
 			if (afk.getPlayer().equals(player))
 			{
@@ -55,7 +55,7 @@ public class PlayerJoinListener
 
 		if (afkToRemove != null)
 		{
-			SpongeEssentialCmds.movementList.remove(afkToRemove);
+			EssentialCmds.movementList.remove(afkToRemove);
 		}
 
 		// Not working in Sponge yet

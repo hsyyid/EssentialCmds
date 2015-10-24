@@ -3,7 +3,7 @@ package io.github.hsyyid.spongeessentialcmds.listeners;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
-import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
+import io.github.hsyyid.spongeessentialcmds.EssentialCmds;
 import io.github.hsyyid.spongeessentialcmds.utils.Powertool;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -19,7 +19,7 @@ public class PlayerClickListener
 			Player player = event.getCause().first(Player.class).get();
 			
 
-			if(SpongeEssentialCmds.frozenPlayers.contains(player.getUniqueId()))
+			if(EssentialCmds.frozenPlayers.contains(player.getUniqueId()))
 			{
 				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot click while frozen."));
 				event.setCancelled(true);
@@ -28,7 +28,7 @@ public class PlayerClickListener
 			
 			Powertool foundTool = null;
 
-			for (Powertool powertool : SpongeEssentialCmds.powertools)
+			for (Powertool powertool : EssentialCmds.powertools)
 			{
 				if (powertool.getPlayer().equals(player))
 				{
@@ -42,7 +42,7 @@ public class PlayerClickListener
 
 			if (foundTool != null)
 			{
-				SpongeEssentialCmds.game.getCommandDispatcher().process(player, foundTool.getCommand());
+				EssentialCmds.game.getCommandDispatcher().process(player, foundTool.getCommand());
 			}
 		}
 	}
@@ -55,7 +55,7 @@ public class PlayerClickListener
 			Player player = event.getCause().first(Player.class).get();
 			
 
-			if(SpongeEssentialCmds.frozenPlayers.contains(player.getUniqueId()))
+			if(EssentialCmds.frozenPlayers.contains(player.getUniqueId()))
 			{
 				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot click while frozen."));
 				event.setCancelled(true);
@@ -64,7 +64,7 @@ public class PlayerClickListener
 			
 			Powertool foundTool = null;
 
-			for (Powertool powertool : SpongeEssentialCmds.powertools)
+			for (Powertool powertool : EssentialCmds.powertools)
 			{
 				if (powertool.getPlayer().equals(player))
 				{
@@ -78,7 +78,7 @@ public class PlayerClickListener
 
 			if (foundTool != null)
 			{
-				SpongeEssentialCmds.game.getCommandDispatcher().process(player, foundTool.getCommand());
+				EssentialCmds.game.getCommandDispatcher().process(player, foundTool.getCommand());
 			}
 		}
 	}

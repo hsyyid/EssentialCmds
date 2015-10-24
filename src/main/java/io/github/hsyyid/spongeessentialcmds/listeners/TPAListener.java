@@ -4,7 +4,7 @@ import io.github.hsyyid.spongeessentialcmds.events.TPAAcceptEvent;
 import io.github.hsyyid.spongeessentialcmds.events.TPAHereAcceptEvent;
 import io.github.hsyyid.spongeessentialcmds.events.TPAHereEvent;
 
-import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
+import io.github.hsyyid.spongeessentialcmds.EssentialCmds;
 import io.github.hsyyid.spongeessentialcmds.events.TPAEvent;
 import io.github.hsyyid.spongeessentialcmds.utils.PendingInvitation;
 import org.spongepowered.api.event.Listener;
@@ -27,19 +27,19 @@ public class TPAListener
 
 		// Adds Invite to List
 		final PendingInvitation invite = new PendingInvitation(event.getSender(), event.getRecipient());
-		SpongeEssentialCmds.pendingInvites.add(invite);
+		EssentialCmds.pendingInvites.add(invite);
 
 		// Removes Invite after 10 Seconds
-		SchedulerService scheduler = SpongeEssentialCmds.game.getScheduler();
+		SchedulerService scheduler = EssentialCmds.game.getScheduler();
 		TaskBuilder taskBuilder = scheduler.createTaskBuilder();
 
 		taskBuilder.execute(() -> {
-			if (SpongeEssentialCmds.pendingInvites.contains(invite))
+			if (EssentialCmds.pendingInvites.contains(invite))
 			{
-				SpongeEssentialCmds.pendingInvites.remove(invite);
+				EssentialCmds.pendingInvites.remove(invite);
 			}
-		}).delay(10, TimeUnit.SECONDS).name("SpongeEssentialCmds - Remove Pending Invite")
-			.submit(SpongeEssentialCmds.game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
+		}).delay(10, TimeUnit.SECONDS).name("EssentialCmds - Remove Pending Invite")
+			.submit(EssentialCmds.game.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
 	}
 	
 	@Listener
@@ -69,18 +69,18 @@ public class TPAListener
 		// Adds Invite to List
 		final PendingInvitation invite = new PendingInvitation(event.getSender(), event.getRecipient());
 		invite.isTPAHere = true;
-		SpongeEssentialCmds.pendingInvites.add(invite);
+		EssentialCmds.pendingInvites.add(invite);
 
 		// Removes Invite after 10 Seconds
-		SchedulerService scheduler = SpongeEssentialCmds.game.getScheduler();
+		SchedulerService scheduler = EssentialCmds.game.getScheduler();
 		TaskBuilder taskBuilder = scheduler.createTaskBuilder();
 
 		taskBuilder.execute(() -> {
-			if (SpongeEssentialCmds.pendingInvites.contains(invite))
+			if (EssentialCmds.pendingInvites.contains(invite))
 			{
-				SpongeEssentialCmds.pendingInvites.remove(invite);
+				EssentialCmds.pendingInvites.remove(invite);
 			}
-		}).delay(10, TimeUnit.SECONDS).name("SpongeEssentialCmds - Remove Pending Invite")
-			.submit(SpongeEssentialCmds.game.getPluginManager().getPlugin("SpongeEssentialCmds").get().getInstance());
+		}).delay(10, TimeUnit.SECONDS).name("EssentialCmds - Remove Pending Invite")
+			.submit(EssentialCmds.game.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
 	}
 }

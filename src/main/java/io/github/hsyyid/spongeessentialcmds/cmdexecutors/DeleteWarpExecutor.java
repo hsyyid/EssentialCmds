@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
+import io.github.hsyyid.spongeessentialcmds.EssentialCmds;
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -23,14 +23,14 @@ public class DeleteWarpExecutor implements CommandExecutor
 
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		ConfigurationLoader<CommentedConfigurationNode> configManager = SpongeEssentialCmds.getConfigManager();
+		ConfigurationLoader<CommentedConfigurationNode> configManager = EssentialCmds.getConfigManager();
 		String warpName = ctx.<String> getOne("warp name").get();
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
 			if (Utils.isWarpInConfig(warpName))
 			{
-				ConfigurationNode warpNode = SpongeEssentialCmds.config.getNode((Object[]) ("warps.warps").split("\\."));
+				ConfigurationNode warpNode = EssentialCmds.config.getNode((Object[]) ("warps.warps").split("\\."));
 
 				// Get Value of Warp Node
 				String warps = warpNode.getString();
@@ -42,7 +42,7 @@ public class DeleteWarpExecutor implements CommandExecutor
 				// Save CONFIG
 				try
 				{
-					configManager.save(SpongeEssentialCmds.config);
+					configManager.save(EssentialCmds.config);
 					configManager.load();
 				}
 				catch (IOException e)
@@ -51,13 +51,13 @@ public class DeleteWarpExecutor implements CommandExecutor
 					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The warp was not deleted successfully!"));
 				}
 				// Get Item Node
-				ConfigurationNode itemNode = SpongeEssentialCmds.config.getNode((Object[]) ("home.users." + player.getUniqueId() + ".").split("\\."));
+				ConfigurationNode itemNode = EssentialCmds.config.getNode((Object[]) ("home.users." + player.getUniqueId() + ".").split("\\."));
 				itemNode.removeChild(warpName);
 
 				// save config
 				try
 				{
-					configManager.save(SpongeEssentialCmds.config);
+					configManager.save(EssentialCmds.config);
 					configManager.load();
 				}
 				catch (IOException e)

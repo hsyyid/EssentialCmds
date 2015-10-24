@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
+import io.github.hsyyid.spongeessentialcmds.EssentialCmds;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.data.manipulator.mutable.item.EnchantmentData;
 import org.spongepowered.api.entity.living.player.Player;
@@ -21,7 +21,7 @@ public class RepairExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Game game = SpongeEssentialCmds.game;
+		Game game = EssentialCmds.game;
 		ItemStackBuilder itemStackBuilder = game.getRegistry().createItemBuilder();
 
 		if (src instanceof Player)

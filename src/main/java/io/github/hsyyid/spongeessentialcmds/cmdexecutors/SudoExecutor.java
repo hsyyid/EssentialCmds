@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
+import io.github.hsyyid.spongeessentialcmds.EssentialCmds;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.command.CommandService;
@@ -16,7 +16,7 @@ import org.spongepowered.api.util.command.spec.CommandExecutor;
 
 public class SudoExecutor implements CommandExecutor
 {
-	Game game = SpongeEssentialCmds.game;
+	Game game = EssentialCmds.game;
 
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{

@@ -2,7 +2,7 @@ package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
 import org.spongepowered.api.world.difficulty.Difficulties;
 
-import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
+import io.github.hsyyid.spongeessentialcmds.EssentialCmds;
 import org.spongepowered.api.entity.living.player.gamemode.GameMode;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.text.Texts;
@@ -95,7 +95,7 @@ public class CreateWorldExecutor implements CommandExecutor
 
 		src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Beginning creation of world."));
 		
-		Optional<World> world = SpongeEssentialCmds.game.getRegistry().createWorldBuilder()
+		Optional<World> world = EssentialCmds.game.getRegistry().createWorldBuilder()
 			.name(name)
 			.enabled(true)
 			.loadsOnStartup(true)

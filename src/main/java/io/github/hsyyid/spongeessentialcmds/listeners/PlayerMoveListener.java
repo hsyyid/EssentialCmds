@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.listeners;
 
-import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
+import io.github.hsyyid.spongeessentialcmds.EssentialCmds;
 import io.github.hsyyid.spongeessentialcmds.utils.AFK;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -17,18 +17,18 @@ public class PlayerMoveListener
 		{
 			Player player = (Player) event.getTargetEntity();
 			
-			if(SpongeEssentialCmds.frozenPlayers.contains(player.getUniqueId()))
+			if(EssentialCmds.frozenPlayers.contains(player.getUniqueId()))
 			{
 				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot move while frozen."));
 				event.setCancelled(true);
 				return;
 			}
 			
-			if (SpongeEssentialCmds.recentlyJoined.contains(player))
+			if (EssentialCmds.recentlyJoined.contains(player))
 			{
-				SpongeEssentialCmds.recentlyJoined.remove(player);
+				EssentialCmds.recentlyJoined.remove(player);
 				AFK removeAFK = null;
-				for (AFK a : SpongeEssentialCmds.movementList)
+				for (AFK a : EssentialCmds.movementList)
 				{
 					if (a.getPlayer() == a.getPlayer())
 					{
@@ -38,14 +38,14 @@ public class PlayerMoveListener
 				}
 				if (removeAFK != null)
 				{
-					SpongeEssentialCmds.movementList.remove(removeAFK);
+					EssentialCmds.movementList.remove(removeAFK);
 				}
 			}
 			else
 			{
 				AFK afk = new AFK(player, System.currentTimeMillis());
 				AFK removeAFK = null;
-				for (AFK a : SpongeEssentialCmds.movementList)
+				for (AFK a : EssentialCmds.movementList)
 				{
 					if (a.getPlayer() == a.getPlayer())
 					{
@@ -58,21 +58,21 @@ public class PlayerMoveListener
 				{
 					if (removeAFK.getAFK())
 					{
-						for (Player p : SpongeEssentialCmds.game.getServer().getOnlinePlayers())
+						for (Player p : EssentialCmds.game.getServer().getOnlinePlayers())
 						{
 							p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is no longer AFK."));
 						}
-						SpongeEssentialCmds.movementList.remove(removeAFK);
+						EssentialCmds.movementList.remove(removeAFK);
 					}
 					else if (!removeAFK.getAFK())
 					{
-						SpongeEssentialCmds.movementList.remove(removeAFK);
-						SpongeEssentialCmds.movementList.add(afk);
+						EssentialCmds.movementList.remove(removeAFK);
+						EssentialCmds.movementList.add(afk);
 					}
 				}
 				else
 				{
-					SpongeEssentialCmds.movementList.add(afk);
+					EssentialCmds.movementList.add(afk);
 				}
 			}
 		}

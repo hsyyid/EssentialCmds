@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.listeners;
 
-import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
+import io.github.hsyyid.spongeessentialcmds.EssentialCmds;
 import io.github.hsyyid.spongeessentialcmds.events.MailSendEvent;
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
 import org.spongepowered.api.event.Listener;
@@ -14,10 +14,10 @@ public class MailListener
 	{
 		String recipientName = event.getRecipientName();
 
-		if (SpongeEssentialCmds.game.getServer().getPlayer(recipientName).isPresent())
+		if (EssentialCmds.game.getServer().getPlayer(recipientName).isPresent())
 		{
 			Utils.addMail(event.getSender().getName(), recipientName, event.getMessage());
-			SpongeEssentialCmds.game.getServer()
+			EssentialCmds.game.getServer()
 				.getPlayer(recipientName)
 				.get()
 				.sendMessage(

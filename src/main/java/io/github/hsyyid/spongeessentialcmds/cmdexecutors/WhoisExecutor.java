@@ -3,7 +3,7 @@ package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.service.permission.option.OptionSubject;
 
-import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
+import io.github.hsyyid.spongeessentialcmds.EssentialCmds;
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
@@ -35,7 +35,7 @@ public class WhoisExecutor implements CommandExecutor
 			Player player = optPlayer.get();
 			src.sendMessage(Texts.of(TextColors.GOLD, "Real Name: ", TextColors.GRAY, player.getName()));
 			src.sendMessage(Texts.of(TextColors.GOLD, "UUID: ", TextColors.GRAY, player.getUniqueId().toString()));
-			if (SpongeEssentialCmds.game.getServer().getPlayer(player.getUniqueId()).isPresent())
+			if (EssentialCmds.game.getServer().getPlayer(player.getUniqueId()).isPresent())
 				src.sendMessage(Texts.of(TextColors.GOLD, "Current Ontime: ", TextColors.GRAY, getCurrentOnTime(player.getUniqueId())));
 			else
 				src.sendMessage(Texts.of(TextColors.GOLD, "Last Time Online: ", TextColors.GRAY, Utils.getLastTimePlayerJoined(player.getUniqueId())));
@@ -43,14 +43,14 @@ public class WhoisExecutor implements CommandExecutor
 		}
 		else if (optPlayerName.isPresent())
 		{
-			Optional<Player> optionalPlayer = SpongeEssentialCmds.game.getServer().getPlayer(optPlayerName.get());
+			Optional<Player> optionalPlayer = EssentialCmds.game.getServer().getPlayer(optPlayerName.get());
 
 			if (optionalPlayer.isPresent())
 			{
 				Player player = optionalPlayer.get();
 				src.sendMessage(Texts.of(TextColors.GOLD, "Real Name: ", TextColors.GRAY, player.getName()));
 				src.sendMessage(Texts.of(TextColors.GOLD, "UUID: ", TextColors.GRAY, player.getUniqueId().toString()));
-				if (SpongeEssentialCmds.game.getServer().getPlayer(player.getUniqueId()).isPresent())
+				if (EssentialCmds.game.getServer().getPlayer(player.getUniqueId()).isPresent())
 					src.sendMessage(Texts.of(TextColors.GOLD, "Current Ontime: ", TextColors.GRAY, getCurrentOnTime(player.getUniqueId())));
 				else
 					src.sendMessage(Texts.of(TextColors.GOLD, "Last Time Online: ", TextColors.GRAY, Utils.getLastTimePlayerJoined(player.getUniqueId())));
@@ -60,7 +60,7 @@ public class WhoisExecutor implements CommandExecutor
 			{
 				Player foundPlayer = null;
 
-				for (Player player : SpongeEssentialCmds.game.getServer().getOnlinePlayers())
+				for (Player player : EssentialCmds.game.getServer().getOnlinePlayers())
 				{
 					Subject subject = player.getContainingCollection().get(player.getIdentifier());
 
@@ -93,7 +93,7 @@ public class WhoisExecutor implements CommandExecutor
 					Player player = foundPlayer;
 					src.sendMessage(Texts.of(TextColors.GOLD, "Real Name: ", TextColors.GRAY, player.getName()));
 					src.sendMessage(Texts.of(TextColors.GOLD, "UUID: ", TextColors.GRAY, player.getUniqueId().toString()));
-					if (SpongeEssentialCmds.game.getServer().getPlayer(player.getUniqueId()).isPresent())
+					if (EssentialCmds.game.getServer().getPlayer(player.getUniqueId()).isPresent())
 						src.sendMessage(Texts.of(TextColors.GOLD, "Current Ontime: ", TextColors.GRAY, getCurrentOnTime(player.getUniqueId())));
 					else
 						src.sendMessage(Texts.of(TextColors.GOLD, "Last Time Online: ", TextColors.GRAY, Utils.getLastTimePlayerJoined(player.getUniqueId())));

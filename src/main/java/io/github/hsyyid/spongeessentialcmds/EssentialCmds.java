@@ -98,7 +98,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 @Plugin(id = "EssentialCmds", name = "EssentialCmds", version = "4.7")
-public class SpongeEssentialCmds
+public class EssentialCmds
 {
 	public static Game game;
 	public static ConfigurationNode config;

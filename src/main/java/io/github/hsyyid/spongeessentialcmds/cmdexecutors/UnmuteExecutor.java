@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
+import io.github.hsyyid.spongeessentialcmds.EssentialCmds;
 import io.github.hsyyid.spongeessentialcmds.utils.Mute;
 import io.github.hsyyid.spongeessentialcmds.utils.Utils;
 import org.spongepowered.api.entity.living.player.Player;
@@ -20,7 +20,7 @@ public class UnmuteExecutor implements CommandExecutor
 
 		Mute targetMute = null;
 
-		for (Mute mute : SpongeEssentialCmds.muteList)
+		for (Mute mute : EssentialCmds.muteList)
 		{
 			if (mute.getUUID().equals(p.getUniqueId().toString()))
 			{
@@ -30,7 +30,7 @@ public class UnmuteExecutor implements CommandExecutor
 
 		if (targetMute != null)
 		{
-			SpongeEssentialCmds.muteList.remove(targetMute);
+			EssentialCmds.muteList.remove(targetMute);
 			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player un-muted."));
 		}
 		else

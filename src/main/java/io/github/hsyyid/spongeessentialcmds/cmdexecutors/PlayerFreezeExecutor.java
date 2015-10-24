@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
+import io.github.hsyyid.spongeessentialcmds.EssentialCmds;
 
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
@@ -23,14 +23,14 @@ public class PlayerFreezeExecutor implements CommandExecutor
 			return CommandResult.success();
 		}
 		
-		if(SpongeEssentialCmds.frozenPlayers.contains(targetPlayer.getUniqueId()))
+		if(EssentialCmds.frozenPlayers.contains(targetPlayer.getUniqueId()))
 		{
-			SpongeEssentialCmds.frozenPlayers.remove(targetPlayer.getUniqueId());
+			EssentialCmds.frozenPlayers.remove(targetPlayer.getUniqueId());
 			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Un-froze player."));
 		}
 		else
 		{
-			SpongeEssentialCmds.frozenPlayers.add(targetPlayer.getUniqueId());
+			EssentialCmds.frozenPlayers.add(targetPlayer.getUniqueId());
 			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Froze player."));
 		}
 		

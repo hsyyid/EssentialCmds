@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
+import io.github.hsyyid.spongeessentialcmds.EssentialCmds;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
@@ -20,7 +20,7 @@ public class DeleteWorldExecutor implements CommandExecutor
 		World foundWorld = null;
 		World altWorld = null;
 		
-		for (World world : SpongeEssentialCmds.game.getServer().getWorlds())
+		for (World world : EssentialCmds.game.getServer().getWorlds())
 		{
 			if (world.getName().equals(worldName))
 			{
@@ -29,7 +29,7 @@ public class DeleteWorldExecutor implements CommandExecutor
 			}
 		}
 		
-		for (World world : SpongeEssentialCmds.game.getServer().getWorlds())
+		for (World world : EssentialCmds.game.getServer().getWorlds())
 		{
 			if (!world.getName().equals(worldName))
 			{
@@ -40,7 +40,7 @@ public class DeleteWorldExecutor implements CommandExecutor
 		
 		if (foundWorld != null)
 		{
-			for(Player player : SpongeEssentialCmds.game.getServer().getOnlinePlayers())
+			for(Player player : EssentialCmds.game.getServer().getOnlinePlayers())
 			{
 				if(player.getWorld().getUniqueId().equals(foundWorld.getUniqueId()) && altWorld != null)
 				{

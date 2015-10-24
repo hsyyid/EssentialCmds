@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
+import io.github.hsyyid.spongeessentialcmds.EssentialCmds;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.text.Texts;
@@ -15,7 +15,7 @@ public class PardonExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Game game = SpongeEssentialCmds.game;
+		Game game = EssentialCmds.game;
 		Server server = game.getServer();
 		String player = ctx.<String> getOne("player").get();
 

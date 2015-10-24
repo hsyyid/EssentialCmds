@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
+import io.github.hsyyid.spongeessentialcmds.EssentialCmds;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
@@ -20,14 +20,14 @@ public class SocialSpyExecutor implements CommandExecutor
 		{
 			Player player = (Player) src;
 
-			if (SpongeEssentialCmds.socialSpies.contains(player.getUniqueId()))
+			if (EssentialCmds.socialSpies.contains(player.getUniqueId()))
 			{
-				SpongeEssentialCmds.socialSpies.remove(player.getUniqueId());
+				EssentialCmds.socialSpies.remove(player.getUniqueId());
 				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.RED, "Toggled social spy off!"));
 			}
 			else
 			{
-				SpongeEssentialCmds.socialSpies.add(player.getUniqueId());
+				EssentialCmds.socialSpies.add(player.getUniqueId());
 				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "Toggled social spy on!"));
 			}
 		}

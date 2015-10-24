@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
+import io.github.hsyyid.spongeessentialcmds.EssentialCmds;
 import io.github.hsyyid.spongeessentialcmds.utils.PaginatedList;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.TextBuilder;
@@ -24,9 +24,10 @@ public class ListWorldExecutor implements CommandExecutor
 	{
 		ArrayList<String> worlds = new ArrayList<>();
 
-		for (World world : SpongeEssentialCmds.game.getServer().getWorlds())
+		for (World world : EssentialCmds.game.getServer().getWorlds())
 		{
-			worlds.add(world.getName());
+			if (world.getProperties().isEnabled())
+				worlds.add(world.getName());
 		}
 
 		Optional<Integer> optionalPageNo = ctx.<Integer> getOne("page no");
@@ -42,7 +43,7 @@ public class ListWorldExecutor implements CommandExecutor
 		}
 
 		PaginatedList pList = new PaginatedList("/worlds");
-		
+
 		for (String name : worlds)
 		{
 			Text item = Texts.builder(name)
@@ -54,7 +55,7 @@ public class ListWorldExecutor implements CommandExecutor
 
 			pList.add(item);
 		}
-		
+
 		pList.setItemsPerPage(10);
 
 		TextBuilder header = Texts.builder();
@@ -65,7 +66,7 @@ public class ListWorldExecutor implements CommandExecutor
 		pList.setHeader(header.build());
 
 		src.sendMessage(pList.getPage(pageNo));
-		
+
 		return CommandResult.success();
 	}
 }

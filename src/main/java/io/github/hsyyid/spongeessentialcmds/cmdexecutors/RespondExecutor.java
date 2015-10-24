@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
+import io.github.hsyyid.spongeessentialcmds.EssentialCmds;
 import io.github.hsyyid.spongeessentialcmds.utils.Message;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
@@ -25,7 +25,7 @@ public class RespondExecutor implements CommandExecutor
 			Player recipient = null;
 			Player player = (Player) src;
 
-			for (Message m : SpongeEssentialCmds.recentlyMessaged)
+			for (Message m : EssentialCmds.recentlyMessaged)
 			{
 				if (m.getRecipient().getUniqueId().toString().equals(player.getUniqueId().toString()))
 				{
@@ -38,7 +38,7 @@ public class RespondExecutor implements CommandExecutor
 			{
 				String message = ctx.<String> getOne("message").get();
 
-				ArrayList<Player> socialSpies = (ArrayList<Player>) SpongeEssentialCmds.game.getServer().getOnlinePlayers().stream().filter(p -> SpongeEssentialCmds.socialSpies.contains(p.getUniqueId())).collect(Collectors.toList());
+				ArrayList<Player> socialSpies = (ArrayList<Player>) EssentialCmds.game.getServer().getOnlinePlayers().stream().filter(p -> EssentialCmds.socialSpies.contains(p.getUniqueId())).collect(Collectors.toList());
 
 				if (recipient.getUniqueId().toString().equals(player.getUniqueId().toString()))
 				{
@@ -51,7 +51,7 @@ public class RespondExecutor implements CommandExecutor
 
 				Message messageToRemove = null;
 
-				for (Message m : SpongeEssentialCmds.recentlyMessaged)
+				for (Message m : EssentialCmds.recentlyMessaged)
 				{
 					if (m.getRecipient().getUniqueId().equals(recipient.getUniqueId()))
 					{
@@ -62,11 +62,11 @@ public class RespondExecutor implements CommandExecutor
 
 				if (messageToRemove != null)
 				{
-					SpongeEssentialCmds.recentlyMessaged.remove(messageToRemove);
+					EssentialCmds.recentlyMessaged.remove(messageToRemove);
 				}
 
 				Message msg = new Message(player, recipient, message);
-				SpongeEssentialCmds.recentlyMessaged.add(msg);
+				EssentialCmds.recentlyMessaged.add(msg);
 
 				for (Player socialspy : socialSpies)
 				{

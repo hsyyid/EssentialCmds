@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
+import io.github.hsyyid.spongeessentialcmds.EssentialCmds;
 import io.github.hsyyid.spongeessentialcmds.events.TPAEvent;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.living.player.Player;
@@ -18,7 +18,7 @@ public class TPAExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Game game = SpongeEssentialCmds.game;
+		Game game = EssentialCmds.game;
 		Player recipient = ctx.<Player> getOne("player").get();
 
 		if (src instanceof Player)

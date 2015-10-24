@@ -1,6 +1,6 @@
 package io.github.hsyyid.spongeessentialcmds.listeners;
 
-import io.github.hsyyid.spongeessentialcmds.SpongeEssentialCmds;
+import io.github.hsyyid.spongeessentialcmds.EssentialCmds;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.block.tileentity.TileEntity;
 import org.spongepowered.api.data.key.Keys;
@@ -25,7 +25,7 @@ public class PlayerInteractListener
 		{
 			Player player = event.getCause().first(Player.class).get();
 
-			if(SpongeEssentialCmds.frozenPlayers.contains(player.getUniqueId()))
+			if(EssentialCmds.frozenPlayers.contains(player.getUniqueId()))
 			{
 				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot interact while frozen."));
 				event.setCancelled(true);
@@ -46,7 +46,7 @@ public class PlayerInteractListener
 					if (signData.isPresent())
 					{
 						SignData data = signData.get();
-						CommandService cmdService = SpongeEssentialCmds.game.getCommandDispatcher();
+						CommandService cmdService = EssentialCmds.game.getCommandDispatcher();
 						String line0 = Texts.toPlain(data.getValue(Keys.SIGN_LINES).get().get(0));
 						String line1 = Texts.toPlain(data.getValue(Keys.SIGN_LINES).get().get(1));
 						String command = "warp " + line1;
