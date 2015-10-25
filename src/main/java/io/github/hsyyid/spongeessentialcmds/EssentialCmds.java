@@ -12,6 +12,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteWarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteWorldExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.EnchantExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FeedExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FireballExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FlyExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.GamemodeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.GetPosExecutor;
@@ -38,6 +39,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.NickExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.PardonExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.PlayerFreezeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.PowertoolExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.RTPExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.RepairExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.RespondExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.SetHomeExecutor;
@@ -176,6 +178,11 @@ public class EssentialCmds
 			CommandSpec.builder().description(Texts.of("More Command")).permission("more.use")
 				.executor(new MoreExecutor()).build();
 		game.getCommandDispatcher().register(this, moreCommandSpec, "more", "stack");
+		
+		CommandSpec rtpCommandSpec =
+			CommandSpec.builder().description(Texts.of("RTP Command")).permission("rtp.use")
+				.executor(new RTPExecutor()).build();
+		game.getCommandDispatcher().register(this, rtpCommandSpec, "rtp", "randomtp");
 
 		CommandSpec butcherCommandSpec =
 			CommandSpec.builder().description(Texts.of("Butcher Command")).permission("butcher.use")
@@ -364,6 +371,12 @@ public class EssentialCmds
 				.executor(new LightningExecutor()).build();
 		game.getCommandDispatcher().register(this, lightningCommandSpec, "thor", "smite", "lightning");
 
+		CommandSpec fireballCommandSpec =
+			CommandSpec.builder().description(Texts.of("Fireball Command")).permission("fireball.use")
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))))
+				.executor(new FireballExecutor()).build();
+		game.getCommandDispatcher().register(this, fireballCommandSpec, "fireball", "ghast");
+		
 		CommandSpec sudoCommandSpec =
 			CommandSpec
 				.builder()
