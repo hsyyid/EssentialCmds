@@ -1,15 +1,15 @@
 package io.github.hsyyid.spongeessentialcmds.cmdexecutors;
 
-import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.util.blockray.BlockRay;
-import org.spongepowered.api.util.blockray.BlockRayHit;
-
+import com.flowpowered.math.vector.Vector3d;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.util.blockray.BlockRay;
+import org.spongepowered.api.util.blockray.BlockRayHit;
 import org.spongepowered.api.util.command.CommandException;
 import org.spongepowered.api.util.command.CommandResult;
 import org.spongepowered.api.util.command.CommandSource;
@@ -35,36 +35,26 @@ public class FireballExecutor implements CommandExecutor
 			{
 				Player player = (Player) src;
 				BlockRay<World> playerBlockRay = BlockRay.from(player).blockLimit(350).build();
-				
-				BlockRayHit<World> finalHitRay = null;
+
+				Location<World> spawnLocation = null;
+				int i = 0;
 
 				while (playerBlockRay.hasNext())
 				{
+					// TODO: Come up with a better way of making sure it doesn't hit the player.
+					i++;
+
 					BlockRayHit<World> currentHitRay = playerBlockRay.next();
 
-					if (player.getWorld().getBlockType(currentHitRay.getBlockPosition()).equals(BlockTypes.AIR))
+					if (spawnLocation == null && i > 5)
 					{
-						continue;
-					}
-					else
-					{
-						finalHitRay = currentHitRay;
+						spawnLocation = currentHitRay.getLocation();
 						break;
 					}
 				}
 
-				Location<World> fireballLocation = null;
-				
-				if (finalHitRay == null)
-				{
-					fireballLocation = player.getLocation();
-				}
-				else
-				{
-					fireballLocation = finalHitRay.getLocation();
-				}
-				
-				spawnEntity(fireballLocation, player);
+				Vector3d velocity = player.getTransform().getRotationAsQuaternion().getDirection();
+				spawnEntity(spawnLocation, velocity, player);
 				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Created Fireball!"));
 			}
 			else if (src instanceof ConsoleSource)
@@ -80,7 +70,9 @@ public class FireballExecutor implements CommandExecutor
 		{
 			Player player = optionalTarget.get();
 			Location<World> playerLocation = player.getLocation();
-			spawnEntity(playerLocation, src);
+
+			Vector3d velocity = player.getTransform().getRotationAsQuaternion().getDirection();
+			spawnEntity(playerLocation, velocity, src);
 			player.sendMessage(Texts.of(TextColors.GRAY, src.getName(), TextColors.GOLD, " has struck you with a fireball."));
 			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Struck " + player.getName() + " with fireball."));
 		}
@@ -88,12 +80,13 @@ public class FireballExecutor implements CommandExecutor
 		return CommandResult.success();
 	}
 
-	public void spawnEntity(Location<World> location, CommandSource src)
+	public void spawnEntity(Location<World> location, Vector3d velocity, CommandSource src)
 	{
 		Extent extent = location.getExtent();
 		Optional<Entity> optional = extent.createEntity(EntityTypes.FIREBALL, location.getPosition());
 
 		Entity fireball = optional.get();
+		fireball.offer(Keys.VELOCITY, velocity);
 		extent.spawnEntity(fireball, Cause.of(src));
 	}
 }

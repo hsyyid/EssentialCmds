@@ -10,6 +10,7 @@ import io.github.hsyyid.spongeessentialcmds.cmdexecutors.CreateWorldExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteHomeExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteWarpExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DeleteWorldExecutor;
+import io.github.hsyyid.spongeessentialcmds.cmdexecutors.DirectionExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.EnchantExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FeedExecutor;
 import io.github.hsyyid.spongeessentialcmds.cmdexecutors.FireballExecutor;
@@ -178,6 +179,11 @@ public class EssentialCmds
 			CommandSpec.builder().description(Texts.of("More Command")).permission("more.use")
 				.executor(new MoreExecutor()).build();
 		game.getCommandDispatcher().register(this, moreCommandSpec, "more", "stack");
+		
+		CommandSpec directionCommandSpec =
+			CommandSpec.builder().description(Texts.of("Direction Command")).permission("direction.use")
+				.executor(new DirectionExecutor()).build();
+		game.getCommandDispatcher().register(this, directionCommandSpec, "direction", "compass");
 		
 		CommandSpec rtpCommandSpec =
 			CommandSpec.builder().description(Texts.of("RTP Command")).permission("rtp.use")
