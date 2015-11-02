@@ -344,6 +344,67 @@ public class Utils
 		}
 	}
 	
+	public static String getLoginMessage()
+	{
+		ConfigurationNode valueNode = EssentialCmds.config.getNode("login", "message");
+
+		if (valueNode.getValue() != null)
+		{
+			return valueNode.getString();
+		}
+		else
+		{
+			setLoginMessage("");
+			return null;
+		}
+	}
+
+	public static void setLoginMessage(String value)
+	{
+		ConfigurationLoader<CommentedConfigurationNode> configManager = EssentialCmds.getConfigManager();
+		EssentialCmds.config.getNode("login", "message").setValue(value);
+
+		try
+		{
+			configManager.save(EssentialCmds.config);
+			configManager.load();
+		}
+		catch (IOException e)
+		{
+			System.out.println("[SpongeEssentialCmds]: Failed to update config.");
+		}
+	}
+	public static String getDisconnectMessage()
+	{
+		ConfigurationNode valueNode = EssentialCmds.config.getNode("disconnect", "message");
+
+		if (valueNode.getValue() != null)
+		{
+			return valueNode.getString();
+		}
+		else
+		{
+			setDisconnectMessage("");
+			return null;
+		}
+	}
+
+	public static void setDisconnectMessage(String value)
+	{
+		ConfigurationLoader<CommentedConfigurationNode> configManager = EssentialCmds.getConfigManager();
+		EssentialCmds.config.getNode("disconnect", "message").setValue(value);
+
+		try
+		{
+			configManager.save(EssentialCmds.config);
+			configManager.load();
+		}
+		catch (IOException e)
+		{
+			System.out.println("[SpongeEssentialCmds]: Failed to update config.");
+		}
+	}
+	
 	public static boolean unsafeEnchanmentsEnabled()
 	{
 		ConfigurationNode valueNode = EssentialCmds.config.getNode("unsafeenchantments", "enabled");

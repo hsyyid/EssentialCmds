@@ -1,15 +1,16 @@
 package io.github.hsyyid.essentialcmds.listeners;
 
+import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.utils.AFK;
 import io.github.hsyyid.essentialcmds.utils.Mail;
 import io.github.hsyyid.essentialcmds.utils.Utils;
-
-import io.github.hsyyid.essentialcmds.EssentialCmds;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.util.TextMessageException;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 public class PlayerJoinListener
 {
+	@SuppressWarnings("deprecation")
 	@Listener
 	public void onPlayerJoin(ClientConnectionEvent.Join event)
 	{
@@ -59,6 +61,28 @@ public class PlayerJoinListener
 			EssentialCmds.movementList.remove(afkToRemove);
 		}
 
+		String loginMessage = Utils.getLoginMessage();
+
+		if (loginMessage != null && !loginMessage.equals(""))
+		{
+			loginMessage = loginMessage.replaceAll("@p", player.getName());
+			Text newMessage = null;
+			
+			try
+			{
+				newMessage = Texts.legacy('&').from(loginMessage);
+			}
+			catch (TextMessageException e)
+			{
+				System.out.println("Error! A TextMessageException was caught when trying to format the login message!");
+			}
+			
+			if (newMessage != null)
+			{
+				event.setMessage(newMessage);
+			}
+		}
+		
 		// Not working in Sponge yet
 		// Subject subject = player.getContainingCollection().get(player.getIdentifier());
 		//

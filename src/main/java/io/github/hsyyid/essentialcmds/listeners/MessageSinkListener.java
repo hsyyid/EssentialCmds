@@ -137,6 +137,24 @@ public class MessageSinkListener
 							.build());
 					}
 				}
+				
+				String suffix = optionSubject.getOption("suffix").orElse("");
+
+				if (!suffix.equals(""))
+				{
+					suffix = suffix.replaceAll("&", "\u00A7");
+					original = original.replaceFirst(">", (suffix + ">"));
+
+					if (!(player.hasPermission("color.chat.use")))
+					{
+						event.setMessage(Texts.builder()
+							.append(Texts.of(original))
+							.onClick(event.getMessage().getClickAction().orElse(null))
+							.style(event.getMessage().getStyle())
+							.onHover(event.getMessage().getHoverAction().orElse(null))
+							.build());
+					}
+				}
 
 				String nick = optionSubject.getOption("nick").orElse("");
 

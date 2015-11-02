@@ -1,21 +1,6 @@
 package io.github.hsyyid.essentialcmds;
 
-import io.github.hsyyid.essentialcmds.utils.AFK;
-import io.github.hsyyid.essentialcmds.utils.Message;
-import io.github.hsyyid.essentialcmds.utils.Mute;
-import io.github.hsyyid.essentialcmds.utils.PendingInvitation;
-import io.github.hsyyid.essentialcmds.utils.Powertool;
-import io.github.hsyyid.essentialcmds.utils.Utils;
-
-import io.github.hsyyid.essentialcmds.listeners.MailListener;
-import io.github.hsyyid.essentialcmds.listeners.MessageSinkListener;
-import io.github.hsyyid.essentialcmds.listeners.PlayerClickListener;
-import io.github.hsyyid.essentialcmds.listeners.PlayerDeathListener;
-import io.github.hsyyid.essentialcmds.listeners.PlayerInteractListener;
-import io.github.hsyyid.essentialcmds.listeners.PlayerJoinListener;
-import io.github.hsyyid.essentialcmds.listeners.PlayerMoveListener;
-import io.github.hsyyid.essentialcmds.listeners.SignChangeListener;
-import io.github.hsyyid.essentialcmds.listeners.TPAListener;
+import com.google.inject.Inject;
 import io.github.hsyyid.essentialcmds.cmdexecutors.AFKExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.BackExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.BanExecutor;
@@ -79,7 +64,22 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.VanishExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.WarpExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.WeatherExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.WhoisExecutor;
-import com.google.inject.Inject;
+import io.github.hsyyid.essentialcmds.listeners.MailListener;
+import io.github.hsyyid.essentialcmds.listeners.MessageSinkListener;
+import io.github.hsyyid.essentialcmds.listeners.PlayerClickListener;
+import io.github.hsyyid.essentialcmds.listeners.PlayerDeathListener;
+import io.github.hsyyid.essentialcmds.listeners.PlayerDisconnectListener;
+import io.github.hsyyid.essentialcmds.listeners.PlayerInteractListener;
+import io.github.hsyyid.essentialcmds.listeners.PlayerJoinListener;
+import io.github.hsyyid.essentialcmds.listeners.PlayerMoveListener;
+import io.github.hsyyid.essentialcmds.listeners.SignChangeListener;
+import io.github.hsyyid.essentialcmds.listeners.TPAListener;
+import io.github.hsyyid.essentialcmds.utils.AFK;
+import io.github.hsyyid.essentialcmds.utils.Message;
+import io.github.hsyyid.essentialcmds.utils.Mute;
+import io.github.hsyyid.essentialcmds.utils.PendingInvitation;
+import io.github.hsyyid.essentialcmds.utils.Powertool;
+import io.github.hsyyid.essentialcmds.utils.Utils;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -101,7 +101,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-@Plugin(id = "EssentialCmds", name = "EssentialCmds", version = "4.7")
+@Plugin(id = "EssentialCmds", name = "EssentialCmds", version = "4.8")
 public class EssentialCmds
 {
 	public static Game game;
@@ -136,7 +136,7 @@ public class EssentialCmds
 	@Listener
 	public void onServerInit(GameInitializationEvent event)
 	{
-		getLogger().info("SpongeEssentialCmds loading...");
+		getLogger().info("EssentialCmds loading...");
 		game = event.getGame();
 		helper = game.getTeleportHelper();
 
@@ -161,8 +161,7 @@ public class EssentialCmds
 		{
 			getLogger().error("The default configuration could not be loaded or created!");
 		}
-		Utils.readMutes();
-
+		
 		Utils.readMutes();
 		Utils.startAFKService();
 
@@ -592,13 +591,14 @@ public class EssentialCmds
 		game.getEventManager().registerListeners(this, new PlayerDeathListener());
 		game.getEventManager().registerListeners(this, new TPAListener());
 		game.getEventManager().registerListeners(this, new MailListener());
+		game.getEventManager().registerListeners(this, new PlayerDisconnectListener());
 
 		getLogger().info("-----------------------------");
-		getLogger().info("SpongeEssentialCmds was made by HassanS6000!");
+		getLogger().info("EssentialCmds was made by HassanS6000!");
 		getLogger().info("Please post all errors on the Sponge Thread or on GitHub!");
 		getLogger().info("Have fun, and enjoy! :D");
 		getLogger().info("-----------------------------");
-		getLogger().info("SpongeEssentialCmds loaded!");
+		getLogger().info("EssentialCmds loaded!");
 	}
 
 	@Listener
