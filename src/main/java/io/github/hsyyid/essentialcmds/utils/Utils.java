@@ -1,9 +1,8 @@
 package io.github.hsyyid.essentialcmds.utils;
 
-import io.github.hsyyid.essentialcmds.EssentialCmds;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import io.github.hsyyid.essentialcmds.EssentialCmds;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -108,7 +107,7 @@ public class Utils
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void startAFKService()
 	{
 		SchedulerService scheduler = EssentialCmds.game.getScheduler();
@@ -306,7 +305,7 @@ public class Utils
 			System.out.println("[SpongeEssentialCmds]: Failed to update config.");
 		}
 	}
-	
+
 	public static String getLastTimePlayerJoined(UUID uuid)
 	{
 		try
@@ -327,7 +326,7 @@ public class Utils
 			return "";
 		}
 	}
-	
+
 	public static void setLastTimePlayerJoined(UUID uuid, String time)
 	{
 		ConfigurationLoader<CommentedConfigurationNode> configManager = EssentialCmds.getConfigManager();
@@ -343,7 +342,7 @@ public class Utils
 			System.out.println("[SpongeEssentialCmds]: Failed to update config.");
 		}
 	}
-	
+
 	public static String getLoginMessage()
 	{
 		ConfigurationNode valueNode = EssentialCmds.config.getNode("login", "message");
@@ -374,6 +373,7 @@ public class Utils
 			System.out.println("[SpongeEssentialCmds]: Failed to update config.");
 		}
 	}
+
 	public static String getDisconnectMessage()
 	{
 		ConfigurationNode valueNode = EssentialCmds.config.getNode("disconnect", "message");
@@ -404,7 +404,7 @@ public class Utils
 			System.out.println("[SpongeEssentialCmds]: Failed to update config.");
 		}
 	}
-	
+
 	public static boolean unsafeEnchanmentsEnabled()
 	{
 		ConfigurationNode valueNode = EssentialCmds.config.getNode("unsafeenchantments", "enabled");
@@ -588,6 +588,65 @@ public class Utils
 		catch (Exception e)
 		{
 			e.printStackTrace();
+		}
+	}
+
+	public static void addRule(String rule)
+	{
+		ConfigurationLoader<CommentedConfigurationNode> configManager = EssentialCmds.getConfigManager();
+		ConfigurationNode valueNode = EssentialCmds.config.getNode((Object[]) ("rules.rules").split("\\."));
+
+		if (valueNode.getString() != null)
+		{
+			String items = valueNode.getString();
+
+			if (!items.contains(rule + ","))
+			{
+				String formattedItem = (rule + ",");
+				valueNode.setValue(items + formattedItem);
+			}
+		}
+		else
+		{
+			valueNode.setValue(rule + ",");
+		}
+
+		try
+		{
+			configManager.save(EssentialCmds.config);
+			configManager.load();
+		}
+		catch (IOException e)
+		{
+			System.out.println("[EssentialCmds]: Failed to add rule to config!");
+		}
+	}
+
+	public static void removeRule(int ruleIndex)
+	{
+		ConfigurationLoader<CommentedConfigurationNode> configManager = EssentialCmds.getConfigManager();
+		ConfigurationNode valueNode = EssentialCmds.config.getNode((Object[]) ("rules.rules").split("\\."));
+
+		String ruleToRemove = Utils.getRules().get(ruleIndex);
+
+		if (valueNode.getString() != null && ruleToRemove != null)
+		{
+			String items = valueNode.getString();
+
+			if (items.contains(ruleToRemove + ","))
+			{
+				valueNode.setValue(items.replace(ruleToRemove + ",", ""));
+			}
+		}
+
+		try
+		{
+			configManager.save(EssentialCmds.config);
+			configManager.load();
+		}
+		catch (IOException e)
+		{
+			System.out.println("[EssentialCmds]: Failed to add rule to config!");
 		}
 	}
 
@@ -994,6 +1053,48 @@ public class Utils
 		return new Location<>(player.getWorld(), x, y, z);
 	}
 
+	public static ArrayList<String> getRules()
+	{
+		try
+		{
+			ConfigurationNode valueNode = EssentialCmds.config.getNode((Object[]) ("rules.rules").split("\\."));
+			String list = valueNode.getString();
+
+			ArrayList<String> rulesList = new ArrayList<>();
+			boolean finished = false;
+
+			int endIndex = list.indexOf(",");
+
+			if (endIndex != -1)
+			{
+				String substring = list.substring(0, endIndex);
+				rulesList.add(substring);
+
+				while (!finished)
+				{
+					int startIndex = endIndex;
+					endIndex = list.indexOf(",", startIndex + 1);
+
+					if (endIndex != -1)
+					{
+						String substrings = list.substring(startIndex + 1, endIndex);
+						rulesList.add(substrings);
+					}
+					else
+					{
+						finished = true;
+					}
+				}
+			}
+			
+			return rulesList;
+		}
+		catch (Exception e)
+		{
+			return new ArrayList<String>();
+		}
+	}
+
 	public static ArrayList<String> getHomes(UUID userName)
 	{
 		String playerName = userName.toString();
@@ -1015,7 +1116,7 @@ public class Utils
 			{
 				int startIndex = endIndex;
 				endIndex = list.indexOf(",", startIndex + 1);
-				
+
 				if (endIndex != -1)
 				{
 					String substrings = list.substring(startIndex + 1, endIndex);
@@ -1107,15 +1208,21 @@ public class Utils
 	public static UUID getWarpWorldUUID(String warpName)
 	{
 		ConfigurationNode valueNode = EssentialCmds.config.getNode((Object[]) ("warps." + warpName + ".world").split("\\."));
-		try {
+		try
+		{
 			UUID worlduuid = UUID.fromString(valueNode.getString());
 			return worlduuid;
-		} catch (IllegalArgumentException e) {
+		}
+		catch (IllegalArgumentException e)
+		{
 			Optional<WorldProperties> props = EssentialCmds.game.getServer().getWorldProperties(valueNode.getString());
-			if (props.isPresent()) {
-				if (props.get().isEnabled()) {
+			if (props.isPresent())
+			{
+				if (props.get().isEnabled())
+				{
 					Optional<World> world = EssentialCmds.game.getServer().loadWorld(valueNode.getString());
-					if (world.isPresent()) {
+					if (world.isPresent())
+					{
 						return world.get().getUniqueId();
 					}
 				}

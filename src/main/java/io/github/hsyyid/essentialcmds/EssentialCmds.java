@@ -2,6 +2,7 @@ package io.github.hsyyid.essentialcmds;
 
 import com.google.inject.Inject;
 import io.github.hsyyid.essentialcmds.cmdexecutors.AFKExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.AddRuleExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.BackExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.BanExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.BroadcastExecutor;
@@ -41,8 +42,10 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.PardonExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.PlayerFreezeExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.PowertoolExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.RTPExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.RemoveRuleExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.RepairExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.RespondExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.RuleExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.SetHomeExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.SetSpawnExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.SetWarpExecutor;
@@ -101,7 +104,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-@Plugin(id = "EssentialCmds", name = "EssentialCmds", version = "4.8")
+@Plugin(id = "EssentialCmds", name = "EssentialCmds", version = "4.9")
 public class EssentialCmds
 {
 	public static Game game;
@@ -170,6 +173,16 @@ public class EssentialCmds
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name")))).executor(new HomeExecutor()).build();
 		game.getCommandDispatcher().register(this, homeCommandSpec, "home");
 		
+		CommandSpec removeRuleCommandSpec =
+			CommandSpec.builder().description(Texts.of("Home Command")).permission("essentialcmds.rules.remove")
+				.arguments(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("rule number")))).executor(new RemoveRuleExecutor()).build();
+		game.getCommandDispatcher().register(this, removeRuleCommandSpec, "removerule", "delrule", "deleterule");
+		
+		CommandSpec addRuleCommandSpec =
+			CommandSpec.builder().description(Texts.of("Add Rule Command")).permission("essentialcmds.rules.add")
+				.arguments(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("rule")))).executor(new AddRuleExecutor()).build();
+		game.getCommandDispatcher().register(this, addRuleCommandSpec, "addrule");
+		
 		CommandSpec deleteWorldCommandSpec =
 			CommandSpec.builder().description(Texts.of("Delete World Command")).permission("essentialcmds.world.delete")
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("name")))).executor(new DeleteWorldExecutor()).build();
@@ -194,6 +207,11 @@ public class EssentialCmds
 			CommandSpec.builder().description(Texts.of("Butcher Command")).permission("essentialcmds.butcher.use")
 				.executor(new ButcherExecutor()).build();
 		game.getCommandDispatcher().register(this, butcherCommandSpec, "butcher");
+		
+		CommandSpec rulesCommandSpec =
+			CommandSpec.builder().description(Texts.of("Rules Command")).permission("essentialcmds.rules.use")
+				.executor(new RuleExecutor()).build();
+		game.getCommandDispatcher().register(this, rulesCommandSpec, "rules");
 
 		CommandSpec vanishCommandSpec =
 			CommandSpec.builder().description(Texts.of("Vanish Command")).permission("essentialcmds.vanish.use")
