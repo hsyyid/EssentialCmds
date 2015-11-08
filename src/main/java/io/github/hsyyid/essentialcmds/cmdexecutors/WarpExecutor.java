@@ -23,22 +23,32 @@ public class WarpExecutor implements CommandExecutor
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		String warpName = ctx.<String> getOne("warp name").get();
+
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
+
 			if (Utils.isWarpInConfig(warpName))
 			{
-				if (!Objects.equals(player.getWorld().getUniqueId(), Utils.getWarpWorldUUID(warpName)))
+				if (player.hasPermission("essentialcmds.warp." + warpName))
 				{
-					Vector3d position = new Vector3d(Utils.getWarpX(warpName), Utils.getWarpY(warpName), Utils.getWarpZ(warpName));
-					player.transferToWorld(Utils.getWarpWorldUUID(warpName), position);
-					src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
-					return CommandResult.success();
+					if (!Objects.equals(player.getWorld().getUniqueId(), Utils.getWarpWorldUUID(warpName)))
+					{
+						Vector3d position = new Vector3d(Utils.getWarpX(warpName), Utils.getWarpY(warpName), Utils.getWarpZ(warpName));
+						player.transferToWorld(Utils.getWarpWorldUUID(warpName), position);
+						src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
+						return CommandResult.success();
+					}
+					else
+					{
+						Location<World> warp = new Location<>(player.getWorld(), Utils.getWarpX(warpName), Utils.getWarpY(warpName), Utils.getWarpZ(warpName));
+						player.setLocation(warp);
+					}
 				}
 				else
 				{
-					Location<World> warp = new Location<>(player.getWorld(), Utils.getWarpX(warpName), Utils.getWarpY(warpName), Utils.getWarpZ(warpName));
-					player.setLocation(warp);
+					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to use this warp!"));
+					return CommandResult.success();
 				}
 			}
 			else
