@@ -3,6 +3,7 @@ package io.github.hsyyid.essentialcmds;
 import com.google.inject.Inject;
 import io.github.hsyyid.essentialcmds.cmdexecutors.AFKExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.AddRuleExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.AsConsoleExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.BackExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.BanExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.BroadcastExecutor;
@@ -574,7 +575,13 @@ public class EssentialCmds
 			CommandSpec.builder().description(Texts.of("Powertool Command")).permission("essentialcmds.powertool.use")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("command")))))
 				.executor(new PowertoolExecutor()).build();
-		game.getCommandDispatcher().register(this, powertoolCommandSpec, "essentialcmds.powertool");
+		game.getCommandDispatcher().register(this, powertoolCommandSpec, "powertool");
+		
+		CommandSpec asConsoleCommandSpec =
+			CommandSpec.builder().description(Texts.of("AsConsole Command")).permission("essentialcmds.asconsole.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("command"))))
+				.executor(new AsConsoleExecutor()).build();
+		game.getCommandDispatcher().register(this, asConsoleCommandSpec, "asConsole", "asconsole");
 
 		CommandSpec nickCommandSpec =
 			CommandSpec
