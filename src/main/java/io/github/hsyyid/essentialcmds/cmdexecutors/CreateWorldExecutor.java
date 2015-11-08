@@ -41,6 +41,14 @@ public class CreateWorldExecutor implements CommandExecutor
 				dimension = DimensionTypes.OVERWORLD;
 				generator = GeneratorTypes.OVERWORLD;
 				break;
+			case "flat":
+				dimension = DimensionTypes.OVERWORLD;
+				generator = GeneratorTypes.FLAT;
+				break;
+			case "superflat":
+				dimension = DimensionTypes.OVERWORLD;
+				generator = GeneratorTypes.FLAT;
+				break;
 			case "nether":
 				dimension = DimensionTypes.NETHER;
 				generator = GeneratorTypes.NETHER;
