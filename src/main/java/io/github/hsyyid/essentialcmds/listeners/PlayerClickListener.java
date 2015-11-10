@@ -18,7 +18,6 @@ public class PlayerClickListener
 		{
 			Player player = event.getCause().first(Player.class).get();
 			
-
 			if(EssentialCmds.frozenPlayers.contains(player.getUniqueId()))
 			{
 				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot click while frozen."));

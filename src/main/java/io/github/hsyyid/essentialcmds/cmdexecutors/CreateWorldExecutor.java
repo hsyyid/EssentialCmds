@@ -1,8 +1,6 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
-
-import org.spongepowered.api.world.difficulty.Difficulties;
 import org.spongepowered.api.entity.living.player.gamemode.GameMode;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.text.Texts;
@@ -17,6 +15,8 @@ import org.spongepowered.api.world.DimensionTypes;
 import org.spongepowered.api.world.GeneratorType;
 import org.spongepowered.api.world.GeneratorTypes;
 import org.spongepowered.api.world.World;
+import org.spongepowered.api.world.WorldBuilder;
+import org.spongepowered.api.world.difficulty.Difficulties;
 import org.spongepowered.api.world.difficulty.Difficulty;
 
 import java.util.Optional;
@@ -103,7 +103,7 @@ public class CreateWorldExecutor implements CommandExecutor
 
 		src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Beginning creation of world."));
 		
-		Optional<World> world = EssentialCmds.game.getRegistry().createWorldBuilder()
+		Optional<World> world = EssentialCmds.game.getRegistry().createBuilder(WorldBuilder.class)
 			.name(name)
 			.enabled(true)
 			.loadsOnStartup(true)

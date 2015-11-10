@@ -1,7 +1,6 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
-
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.RepresentedPlayerData;
 import org.spongepowered.api.data.type.SkullTypes;
@@ -34,7 +33,7 @@ public class SkullExecutor implements CommandExecutor
 				Player player = (Player) src;
 
 				// Create the Skull
-				ItemStackBuilder builder = EssentialCmds.game.getRegistry().createItemBuilder();
+				ItemStackBuilder builder = EssentialCmds.game.getRegistry().createBuilder(ItemStackBuilder.class);
 				ItemStack skullStack = builder.itemType(ItemTypes.SKULL).quantity(1).build();
 
 				// Set it to player skull type
@@ -67,7 +66,7 @@ public class SkullExecutor implements CommandExecutor
 				Player player = optionalTarget.get();
 
 				// Create the Skull
-				ItemStackBuilder builder = EssentialCmds.game.getRegistry().createItemBuilder();
+				ItemStackBuilder builder = EssentialCmds.game.getRegistry().createBuilder(ItemStackBuilder.class);
 				ItemStack skullStack = builder.itemType(ItemTypes.SKULL).quantity(1).build();
 
 				// Set it to player skull type

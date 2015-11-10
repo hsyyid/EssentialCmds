@@ -23,6 +23,13 @@ public class MailExecutor implements CommandExecutor
 		if (src instanceof Player)
 		{
 			Player p = (Player) src;
+			
+			if(p.getName().equalsIgnoreCase(playerName))
+			{
+				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot send mail to yourself!"));
+				return CommandResult.success();
+			}
+			
 			Game game = EssentialCmds.game;
 
 			MailSendEvent event = new MailSendEvent(p, playerName, message);
@@ -34,6 +41,7 @@ public class MailExecutor implements CommandExecutor
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be an in-game player to send mail!"));
 		}
+		
 		return CommandResult.success();
 	}
 }
