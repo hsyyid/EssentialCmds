@@ -1,5 +1,7 @@
 package io.github.hsyyid.essentialcmds;
 
+import io.github.hsyyid.essentialcmds.cmdexecutors.MobSpawnerExecutor;
+
 import com.google.inject.Inject;
 import io.github.hsyyid.essentialcmds.cmdexecutors.AFKExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.AddRuleExecutor;
@@ -105,7 +107,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-@Plugin(id = "EssentialCmds", name = "EssentialCmds", version = "4.9")
+@Plugin(id = "EssentialCmds", name = "EssentialCmds", version = "5.0")
 public class EssentialCmds
 {
 	public static Game game;
@@ -173,6 +175,11 @@ public class EssentialCmds
 			CommandSpec.builder().description(Texts.of("Home Command")).permission("essentialcmds.home.use")
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("home name")))).executor(new HomeExecutor()).build();
 		game.getCommandDispatcher().register(this, homeCommandSpec, "home");
+		
+		CommandSpec mobSpawnerCommandSpec =
+			CommandSpec.builder().description(Texts.of("Mob Spawner Command")).permission("essentialcmds.mobspawner.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("mob name")))).executor(new MobSpawnerExecutor()).build();
+		game.getCommandDispatcher().register(this, mobSpawnerCommandSpec, "spawner", "mobspawner");
 		
 		CommandSpec removeRuleCommandSpec =
 			CommandSpec.builder().description(Texts.of("Home Command")).permission("essentialcmds.rules.remove")
