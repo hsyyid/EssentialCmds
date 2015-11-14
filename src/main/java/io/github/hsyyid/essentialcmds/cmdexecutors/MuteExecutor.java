@@ -1,12 +1,11 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.utils.Mute;
 import io.github.hsyyid.essentialcmds.utils.Utils;
-
-import io.github.hsyyid.essentialcmds.EssentialCmds;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.service.scheduler.TaskBuilder;
+import org.spongepowered.api.service.scheduler.Task;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.command.CommandException;
@@ -64,7 +63,7 @@ public class MuteExecutor implements CommandExecutor
 
 			final Mute mute = new Mute(p.getUniqueId().toString());
 
-			TaskBuilder taskBuilder = game.getScheduler().createTaskBuilder();
+			Task.Builder taskBuilder = game.getScheduler().createTaskBuilder();
 			taskBuilder.execute(() -> EssentialCmds.muteList.remove(mute)).delay(time.get(), unit).name("EssentialCmds removes mute").submit(game.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
 
 			EssentialCmds.muteList.add(mute);

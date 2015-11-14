@@ -1,14 +1,12 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.EssentialCmds;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.EntityTypes;
-
-import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStackBuilder;
-import io.github.hsyyid.essentialcmds.EssentialCmds;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.command.CommandException;
@@ -133,7 +131,7 @@ public class MobSpawnerExecutor implements CommandExecutor
 					return CommandResult.success();
 			}
 			
-			ItemStackBuilder itemBuilder = EssentialCmds.game.getRegistry().createBuilder(ItemStackBuilder.class);
+			ItemStack.Builder itemBuilder = EssentialCmds.game.getRegistry().createBuilder(ItemStack.Builder.class);
 			ItemStack mobSpawnerStack  = itemBuilder.itemType(ItemTypes.MOB_SPAWNER).quantity(1).build();
 			mobSpawnerStack.offer(Keys.SPAWNABLE_ENTITY_TYPE, type);
 			player.setItemInHand(mobSpawnerStack);

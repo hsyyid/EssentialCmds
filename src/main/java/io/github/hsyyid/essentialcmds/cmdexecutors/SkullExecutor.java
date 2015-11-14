@@ -7,7 +7,6 @@ import org.spongepowered.api.data.type.SkullTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.ItemStackBuilder;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.command.CommandException;
@@ -33,7 +32,7 @@ public class SkullExecutor implements CommandExecutor
 				Player player = (Player) src;
 
 				// Create the Skull
-				ItemStackBuilder builder = EssentialCmds.game.getRegistry().createBuilder(ItemStackBuilder.class);
+				ItemStack.Builder builder = EssentialCmds.game.getRegistry().createBuilder(ItemStack.Builder.class);
 				ItemStack skullStack = builder.itemType(ItemTypes.SKULL).quantity(1).build();
 
 				// Set it to player skull type
@@ -66,7 +65,7 @@ public class SkullExecutor implements CommandExecutor
 				Player player = optionalTarget.get();
 
 				// Create the Skull
-				ItemStackBuilder builder = EssentialCmds.game.getRegistry().createBuilder(ItemStackBuilder.class);
+				ItemStack.Builder builder = EssentialCmds.game.getRegistry().createBuilder(ItemStack.Builder.class);
 				ItemStack skullStack = builder.itemType(ItemTypes.SKULL).quantity(1).build();
 
 				// Set it to player skull type

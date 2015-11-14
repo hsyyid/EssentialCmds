@@ -10,7 +10,7 @@ import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
 import org.spongepowered.api.data.value.mutable.Value;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.scheduler.SchedulerService;
-import org.spongepowered.api.service.scheduler.TaskBuilder;
+import org.spongepowered.api.service.scheduler.Task;
 import org.spongepowered.api.service.sql.SqlService;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
@@ -111,7 +111,7 @@ public class Utils
 	public static void startAFKService()
 	{
 		SchedulerService scheduler = EssentialCmds.game.getScheduler();
-		TaskBuilder taskBuilder = scheduler.createTaskBuilder();
+		Task.Builder taskBuilder = scheduler.createTaskBuilder();
 
 		taskBuilder.execute(() -> {
 			for (Player player : EssentialCmds.game.getServer().getOnlinePlayers())
