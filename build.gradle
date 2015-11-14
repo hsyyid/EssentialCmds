@@ -3,7 +3,7 @@ apply plugin: 'eclipse'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-version = '5.0'
+version = '5.1'
 group = "io.github.hsyyid"
 archivesBaseName = "EssentialCmds"
 

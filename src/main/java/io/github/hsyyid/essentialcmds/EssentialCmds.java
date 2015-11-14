@@ -107,7 +107,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-@Plugin(id = "EssentialCmds", name = "EssentialCmds", version = "5.0")
+@Plugin(id = "EssentialCmds", name = "EssentialCmds", version = "5.1")
 public class EssentialCmds
 {
 	public static Game game;
@@ -228,8 +228,12 @@ public class EssentialCmds
 
 		CommandSpec igniteCommandSpec =
 			CommandSpec.builder().description(Texts.of("Ignite Command")).permission("essentialcmds.ignite.use")
-				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))).executor(new IgniteExecutor()).build();
-		game.getCommandDispatcher().register(this, igniteCommandSpec, "ignite", "fire");
+				.arguments(GenericArguments.seq(
+					GenericArguments.onlyOne(GenericArguments.integer(Texts.of("ticks"))),
+					GenericArguments.optional(
+						GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))))
+				.executor(new IgniteExecutor()).build();
+		game.getCommandDispatcher().register(this, igniteCommandSpec, "burn", "ignite", "fire");
 
 		CommandSpec whoIsCommandSpec =
 			CommandSpec.builder().description(Texts.of("WhoIs Command")).permission("essentialcmds.whois.use")
