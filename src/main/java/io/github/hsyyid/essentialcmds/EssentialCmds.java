@@ -631,7 +631,7 @@ public class EssentialCmds
 		game.getEventManager().registerListeners(this, new PlayerDisconnectListener());
 
 		getLogger().info("-----------------------------");
-		getLogger().info("EssentialCmds was made by Clienthax with a little help from HassanS6000!");
+		getLogger().info("EssentialCmds was made by HassanS6000!");
 		getLogger().info("Please post all errors on the Sponge Thread or on GitHub!");
 		getLogger().info("Have fun, and enjoy! :D");
 		getLogger().info("-----------------------------");
