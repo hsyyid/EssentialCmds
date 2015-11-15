@@ -1,5 +1,6 @@
 package io.github.hsyyid.essentialcmds;
 
+import com.google.common.collect.Sets;
 import io.github.hsyyid.essentialcmds.cmdexecutors.MobSpawnerExecutor;
 
 import com.google.inject.Inject;
@@ -82,7 +83,6 @@ import io.github.hsyyid.essentialcmds.listeners.SignChangeListener;
 import io.github.hsyyid.essentialcmds.listeners.TPAListener;
 import io.github.hsyyid.essentialcmds.utils.AFK;
 import io.github.hsyyid.essentialcmds.utils.Message;
-import io.github.hsyyid.essentialcmds.utils.Mute;
 import io.github.hsyyid.essentialcmds.utils.PendingInvitation;
 import io.github.hsyyid.essentialcmds.utils.Powertool;
 import io.github.hsyyid.essentialcmds.utils.Utils;
@@ -105,6 +105,7 @@ import org.spongepowered.api.world.TeleportHelper;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.UUID;
 
 @Plugin(id = "EssentialCmds", name = "EssentialCmds", version = "5.1")
@@ -118,10 +119,10 @@ public class EssentialCmds
 	public static ArrayList<AFK> movementList = new ArrayList<>();
 	public static ArrayList<Player> recentlyJoined = new ArrayList<>();
 	public static ArrayList<Powertool> powertools = new ArrayList<>();
-	public static ArrayList<UUID> socialSpies = new ArrayList<>();
+	public static Set<UUID> socialSpies = Sets.newHashSet();
 	public static ArrayList<Message> recentlyMessaged = new ArrayList<>();
-	public static ArrayList<Mute> muteList = new ArrayList<>();
-	public static ArrayList<UUID> frozenPlayers = new ArrayList<>();
+	public static Set<UUID> muteList = Sets.newHashSet();
+	public static Set<UUID> frozenPlayers = Sets.newHashSet();
 
 	@Inject
 	private Logger logger;
@@ -630,7 +631,7 @@ public class EssentialCmds
 		game.getEventManager().registerListeners(this, new PlayerDisconnectListener());
 
 		getLogger().info("-----------------------------");
-		getLogger().info("EssentialCmds was made by HassanS6000!");
+		getLogger().info("EssentialCmds was made by Clienthax with a little help from HassanS6000!");
 		getLogger().info("Please post all errors on the Sponge Thread or on GitHub!");
 		getLogger().info("Have fun, and enjoy! :D");
 		getLogger().info("-----------------------------");

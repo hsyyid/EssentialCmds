@@ -1,7 +1,6 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
-import io.github.hsyyid.essentialcmds.utils.Mute;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.living.player.Player;
@@ -25,15 +24,6 @@ public class MuteExecutor implements CommandExecutor
 		Player p = ctx.<Player> getOne("player").get();
 		Optional<Long> time = ctx.<Long> getOne("time");
 		Optional<String> timeUnit = ctx.<String> getOne("time unit");
-
-		for (Mute mute : EssentialCmds.muteList)
-		{
-			if (mute.getUUID().equals(p.getUniqueId().toString()))
-			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "This player has already been muted."));
-				return CommandResult.success();
-			}
-		}
 
 		if (time.isPresent() && timeUnit.isPresent())
 		{
@@ -61,16 +51,15 @@ public class MuteExecutor implements CommandExecutor
 				return CommandResult.empty();
 			}
 
-			final Mute mute = new Mute(p.getUniqueId().toString());
-
 			Task.Builder taskBuilder = game.getScheduler().createTaskBuilder();
-			taskBuilder.execute(() -> EssentialCmds.muteList.remove(mute)).delay(time.get(), unit).name("EssentialCmds removes mute").submit(game.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
+			taskBuilder.execute(() -> EssentialCmds.muteList.remove(p.getUniqueId())).delay(time.get(), unit).name("EssentialCmds removes mute").submit(game
+					.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
 
-			EssentialCmds.muteList.add(mute);
+			EssentialCmds.muteList.add(p.getUniqueId());
 		}
 		else
 		{
-			EssentialCmds.muteList.add(new Mute(p.getUniqueId().toString()));
+			EssentialCmds.muteList.add(p.getUniqueId());
 		}
 
 		Utils.saveMutes();

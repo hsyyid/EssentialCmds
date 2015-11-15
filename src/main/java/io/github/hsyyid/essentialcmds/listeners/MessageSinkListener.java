@@ -1,6 +1,5 @@
 package io.github.hsyyid.essentialcmds.listeners;
 
-import io.github.hsyyid.essentialcmds.utils.Mute;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
@@ -17,6 +16,7 @@ import org.spongepowered.api.util.TextMessageException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.UUID;
 
 public class MessageSinkListener
 {
@@ -103,9 +103,9 @@ public class MessageSinkListener
 		{
 			Player player = event.getCause().first(Player.class).get();
 
-			for (Mute mute : EssentialCmds.muteList)
+			for (UUID mutedUUID : EssentialCmds.muteList)
 			{
-				if (mute.getUUID().equals(player.getUniqueId().toString()))
+				if (mutedUUID.equals(player.getUniqueId()))
 				{
 					player.sendMessage(Texts.of(TextColors.RED, "You have been muted."));
 					event.setCancelled(true);
