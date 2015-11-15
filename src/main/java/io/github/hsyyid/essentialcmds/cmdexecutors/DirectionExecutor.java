@@ -3,6 +3,7 @@ package io.github.hsyyid.essentialcmds.cmdexecutors;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.util.command.CommandException;
 import org.spongepowered.api.util.command.CommandResult;
 import org.spongepowered.api.util.command.CommandSource;
@@ -16,29 +17,8 @@ public class DirectionExecutor implements CommandExecutor
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			
-			String direction = "";
-			
-			direction = String.valueOf(player.getRotation().getMaxAxis()) + "," + String.valueOf(player.getRotation().getMinAxis());
-			
-//			if(player.getRotation().g)
-//			{
-//				direction = "Forward";
-//			}
-//			else if(player.getRotation().equals(Vector3d.RIGHT))
-//			{
-//				direction = "Right";
-//			}
-//			else if(player.getRotation().equals(Vector3d.UP))
-//			{
-//				direction = "Up";
-//			}
-//			else
-//			{
-//				direction = "NaN";
-//			}
-			
-			player.sendMessage(Texts.of(TextColors.GOLD, "You are facing: ", TextColors.GRAY, direction));
+			// Credit to kenzierocks for the following line. =D
+			player.sendMessage(Texts.of(TextColors.GOLD, "You are facing: ", TextColors.GRAY, Direction.getClosest(player.getTransform().getRotationAsQuaternion().getDirection()).toString()));
 		}
 		else
 		{
