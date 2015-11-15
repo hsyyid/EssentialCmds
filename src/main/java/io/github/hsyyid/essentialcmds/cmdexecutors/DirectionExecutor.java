@@ -22,8 +22,9 @@ public class DirectionExecutor implements CommandExecutor
 		}
 		else
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be an in-game player to send mail!"));
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be an in-game player to use /direction!"));
 		}
+		
 		return CommandResult.success();
 	}
 }
