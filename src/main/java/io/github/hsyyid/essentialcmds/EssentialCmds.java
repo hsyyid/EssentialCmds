@@ -1,8 +1,7 @@
 package io.github.hsyyid.essentialcmds;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import io.github.hsyyid.essentialcmds.cmdexecutors.MobSpawnerExecutor;
-
 import com.google.inject.Inject;
 import io.github.hsyyid.essentialcmds.cmdexecutors.AFKExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.AddRuleExecutor;
@@ -38,6 +37,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.MailListExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.MailReadExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.MessageExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.MobSpawnExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.MobSpawnerExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.MoreExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.MotdExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.MuteExecutor;
@@ -104,7 +104,7 @@ import org.spongepowered.api.world.TeleportHelper;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -115,12 +115,12 @@ public class EssentialCmds
 	public static ConfigurationNode config;
 	public static ConfigurationLoader<CommentedConfigurationNode> configurationManager;
 	public static TeleportHelper helper;
-	public static ArrayList<PendingInvitation> pendingInvites = new ArrayList<>();
-	public static ArrayList<AFK> movementList = new ArrayList<>();
-	public static ArrayList<Player> recentlyJoined = new ArrayList<>();
-	public static ArrayList<Powertool> powertools = new ArrayList<>();
+	public static List<PendingInvitation> pendingInvites = Lists.newArrayList();
+	public static List<AFK> movementList = Lists.newArrayList();
+	public static List<Player> recentlyJoined = Lists.newArrayList();
+	public static List<Powertool> powertools = Lists.newArrayList();
 	public static Set<UUID> socialSpies = Sets.newHashSet();
-	public static ArrayList<Message> recentlyMessaged = new ArrayList<>();
+	public static List<Message> recentlyMessaged = Lists.newArrayList();
 	public static Set<UUID> muteList = Sets.newHashSet();
 	public static Set<UUID> frozenPlayers = Sets.newHashSet();
 
