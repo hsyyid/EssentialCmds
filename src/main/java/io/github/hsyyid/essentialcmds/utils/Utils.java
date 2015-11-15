@@ -1,5 +1,6 @@
 package io.github.hsyyid.essentialcmds.utils;
 
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.hsyyid.essentialcmds.EssentialCmds;
@@ -34,6 +35,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -68,9 +70,9 @@ public class Utils
 					"(UUID TEXT PRIMARY KEY     NOT NULL)";
 				execute(executeString, datasource);
 
-				for (Mute mute : EssentialCmds.muteList)
+				for (UUID mute : EssentialCmds.muteList)
 				{
-					String UUID = mute.getUUID();
+					String UUID = mute.toString();
 
 					executeString = "INSERT INTO MUTES (UUID) " +
 						"VALUES ('" + UUID + "');";
@@ -89,9 +91,9 @@ public class Utils
 					"(UUID TEXT PRIMARY KEY     NOT NULL)";
 				stmt.executeUpdate(sql);
 
-				for (Mute mute : EssentialCmds.muteList)
+				for (UUID mute : EssentialCmds.muteList)
 				{
-					String UUID = mute.getUUID();
+					String UUID = mute.toString();
 
 					sql = "INSERT INTO MUTES (UUID) " +
 						"VALUES ('" + UUID + "');";
@@ -550,12 +552,12 @@ public class Utils
 
 				DatabaseMetaData metadata = datasource.getConnection().getMetaData();
 				ResultSet rs = metadata.getTables(null, null, "Mutes", null);
-				ArrayList<Mute> muteList = new ArrayList<>();
+				Set<UUID> muteList = Sets.newHashSet();
 
 				while (rs.next())
 				{
-					String UUID = rs.getString("uuid");
-					muteList.add(new Mute(UUID));
+					String uuid = rs.getString("uuid");
+					muteList.add(UUID.fromString(uuid));
 				}
 
 				EssentialCmds.muteList = muteList;
@@ -570,12 +572,12 @@ public class Utils
 				c.setAutoCommit(false);
 				stmt = c.createStatement();
 				ResultSet rs = stmt.executeQuery("SELECT * FROM MUTES;");
-				ArrayList<Mute> muteList = new ArrayList<>();
+				Set<UUID> muteList = Sets.newHashSet();
 
 				while (rs.next())
 				{
-					String UUID = rs.getString("uuid");
-					muteList.add(new Mute(UUID));
+					String uuid = rs.getString("uuid");
+					muteList.add(UUID.fromString(uuid));
 				}
 
 				EssentialCmds.muteList = muteList;
