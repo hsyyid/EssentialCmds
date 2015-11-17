@@ -62,7 +62,7 @@ public class MuteExecutor implements CommandExecutor
 			EssentialCmds.muteList.add(p.getUniqueId());
 		}
 
-		Utils.saveMutes();
+		Utils.addMute(p.getUniqueId());
 
 		src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player muted."));
 

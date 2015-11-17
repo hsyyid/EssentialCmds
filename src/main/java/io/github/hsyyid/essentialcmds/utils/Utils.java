@@ -45,7 +45,7 @@ public class Utils
 {
 	private static Gson gson = new GsonBuilder().create();
 
-	public static void saveMutes()
+	public static void addMute(UUID playerUUID)
 	{
 		Connection c;
 		Statement stmt;
@@ -63,42 +63,76 @@ public class Utils
 
 				DataSource datasource = sql.getDataSource("jdbc:mysql://" + host + ":" + port + "/" + database + "?user=" + username + "&password=" + password);
 
-				String executeString = ("DROP TABLE IF EXISTS MUTES");
-				execute(executeString, datasource);
-
-				executeString = "CREATE TABLE MUTES " +
+				String executeString = "CREATE TABLE IF NOT EXISTS MUTES " +
 					"(UUID TEXT PRIMARY KEY     NOT NULL)";
 				execute(executeString, datasource);
 
-				for (UUID mute : EssentialCmds.muteList)
-				{
-					String UUID = mute.toString();
-
-					executeString = "INSERT INTO MUTES (UUID) " +
-						"VALUES ('" + UUID + "');";
-					execute(executeString, datasource);
-				}
+				executeString = "INSERT INTO MUTES (UUID) " +
+					"VALUES ('" + playerUUID.toString() + "');";
+				execute(executeString, datasource);
 			}
 			else
 			{
 				Class.forName("org.sqlite.JDBC");
 				c = DriverManager.getConnection("jdbc:sqlite:Mutes.db");
 				stmt = c.createStatement();
-				String sql = ("DROP TABLE IF EXISTS MUTES");
-				stmt.executeUpdate(sql);
 
-				sql = "CREATE TABLE MUTES " +
+				String sql = "CREATE TABLE IF NOT EXISTS MUTES " +
 					"(UUID TEXT PRIMARY KEY     NOT NULL)";
 				stmt.executeUpdate(sql);
 
-				for (UUID mute : EssentialCmds.muteList)
-				{
-					String UUID = mute.toString();
+				sql = "INSERT INTO MUTES (UUID) " +
+					"VALUES ('" + playerUUID.toString() + "');";
+				stmt.executeUpdate(sql);
 
-					sql = "INSERT INTO MUTES (UUID) " +
-						"VALUES ('" + UUID + "');";
-					stmt.executeUpdate(sql);
-				}
+				stmt.close();
+				c.close();
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public static void removeMute(UUID playerUUID)
+	{
+		Connection c;
+		Statement stmt;
+
+		try
+		{
+			if (Utils.useMySQL())
+			{
+				SqlService sql = EssentialCmds.game.getServiceManager().provide(SqlService.class).get();
+				String host = Utils.getMySQLHost();
+				String port = String.valueOf(Utils.getMySQLPort());
+				String username = Utils.getMySQLUsername();
+				String password = Utils.getMySQLPassword();
+				String database = Utils.getMySQLDatabase();
+
+				DataSource datasource = sql.getDataSource("jdbc:mysql://" + host + ":" + port + "/" + database + "?user=" + username + "&password=" + password);
+
+				String executeString = "CREATE TABLE IF NOT EXISTS MUTES " +
+					"(UUID TEXT PRIMARY KEY     NOT NULL)";
+				execute(executeString, datasource);
+
+				executeString = "INSERT INTO MUTES (UUID) " +
+					"VALUES ('" + playerUUID.toString() + "');";
+				execute(executeString, datasource);
+			}
+			else
+			{
+				Class.forName("org.sqlite.JDBC");
+				c = DriverManager.getConnection("jdbc:sqlite:Mutes.db");
+				stmt = c.createStatement();
+
+				String sql = "CREATE TABLE IF NOT EXISTS MUTES " +
+					"(UUID TEXT PRIMARY KEY     NOT NULL)";
+				stmt.executeUpdate(sql);
+
+				sql = "DELETE FROM MUTES WHERE UUID='" + playerUUID.toString() + "';";
+				stmt.executeUpdate(sql);
 
 				stmt.close();
 				c.close();
@@ -159,7 +193,7 @@ public class Utils
 				}
 			}
 		}).interval(1, TimeUnit.SECONDS).name("EssentialCmds - AFK")
-			.submit(EssentialCmds.game.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
+		.submit(EssentialCmds.game.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
 	}
 
 	public static String getMySQLPort()
@@ -1088,7 +1122,7 @@ public class Utils
 					}
 				}
 			}
-			
+
 			return rulesList;
 		}
 		catch (Exception e)

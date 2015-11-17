@@ -94,7 +94,6 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
-import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.config.DefaultConfig;
 import org.spongepowered.api.text.Texts;
@@ -636,12 +635,6 @@ public class EssentialCmds
 		getLogger().info("Have fun, and enjoy! :D");
 		getLogger().info("-----------------------------");
 		getLogger().info("EssentialCmds loaded!");
-	}
-
-	@Listener
-	public void onServerStop(GameStoppingServerEvent event)
-	{
-		Utils.saveMutes();
 	}
 
 	public static ConfigurationLoader<CommentedConfigurationNode> getConfigManager()

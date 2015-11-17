@@ -26,7 +26,7 @@ public class UnmuteExecutor implements CommandExecutor
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "This player is not muted."));
 		}
 
-		Utils.saveMutes();
+		Utils.removeMute(p.getUniqueId());
 
 		return CommandResult.success();
 	}
