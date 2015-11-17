@@ -468,7 +468,7 @@ public class EssentialCmds
 
 		CommandSpec tpWorldSpec =
 			CommandSpec.builder().description(Texts.of("TP World Command")).permission("essentialcmds.tpworld.use")
-				.arguments(GenericArguments.seq(GenericArguments.string(Texts.of("name")),
+				.arguments(GenericArguments.seq(GenericArguments.remainingJoinedStrings(Texts.of("name")),
 					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))))
 				.executor(new TeleportWorldExecutor())
 				.build();
@@ -578,8 +578,8 @@ public class EssentialCmds
 		CommandSpec speedCommandSpec =
 			CommandSpec.builder().description(Texts.of("Speed Command")).permission("essentialcmds.speed.use")
 				.arguments(GenericArguments.seq(
-					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))),
-					GenericArguments.onlyOne(GenericArguments.integer(Texts.of("speed")))))
+					GenericArguments.onlyOne(GenericArguments.integer(Texts.of("speed"))),
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))))
 				.executor(new SpeedExecutor()).build();
 		game.getCommandDispatcher().register(this, speedCommandSpec, "speed");
 
