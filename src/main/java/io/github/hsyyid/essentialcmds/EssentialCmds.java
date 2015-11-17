@@ -107,7 +107,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-@Plugin(id = "EssentialCmds", name = "EssentialCmds", version = "5.1")
+@Plugin(id = "EssentialCmds", name = "EssentialCmds", version = "5.2")
 public class EssentialCmds
 {
 	public static Game game;
