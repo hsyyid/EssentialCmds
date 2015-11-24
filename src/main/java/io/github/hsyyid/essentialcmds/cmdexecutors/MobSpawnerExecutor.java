@@ -1,7 +1,7 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
-import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.manipulator.mutable.MobSpawnerData;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.player.Player;
@@ -16,6 +16,8 @@ import org.spongepowered.api.util.command.args.CommandContext;
 import org.spongepowered.api.util.command.source.CommandBlockSource;
 import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
+
+import java.util.Optional;
 
 public class MobSpawnerExecutor implements CommandExecutor
 {
@@ -130,12 +132,23 @@ public class MobSpawnerExecutor implements CommandExecutor
 					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The mob you inputed was not recognized."));
 					return CommandResult.success();
 			}
-			
+
 			ItemStack.Builder itemBuilder = EssentialCmds.game.getRegistry().createBuilder(ItemStack.Builder.class);
-			ItemStack mobSpawnerStack  = itemBuilder.itemType(ItemTypes.MOB_SPAWNER).quantity(1).build();
-			mobSpawnerStack.offer(Keys.SPAWNABLE_ENTITY_TYPE, type);
-			player.setItemInHand(mobSpawnerStack);
-			player.sendMessage(Texts.of(TextColors.GREEN, "Success!", TextColors.YELLOW, "Spaned mob spawner."));
+			ItemStack mobSpawnerStack = itemBuilder.itemType(ItemTypes.MOB_SPAWNER).quantity(1).build();
+			Optional<MobSpawnerData> optionalMobSpawnerData = mobSpawnerStack.getOrCreate(MobSpawnerData.class);
+
+			if (optionalMobSpawnerData.isPresent())
+			{
+				MobSpawnerData mobSpawnerData = optionalMobSpawnerData.get();
+				mobSpawnerData = mobSpawnerData.set(mobSpawnerData.nextEntityToSpawn().set(type, null));
+				mobSpawnerStack.offer(mobSpawnerData);
+				player.setItemInHand(mobSpawnerStack);
+				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Spawned mob spawner."));
+			}
+			else
+			{
+				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Could not apply mob spawner data."));
+			}
 		}
 		else if (src instanceof ConsoleSource)
 		{

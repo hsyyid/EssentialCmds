@@ -1,7 +1,6 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.utils.Utils;
-
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
@@ -12,6 +11,8 @@ import org.spongepowered.api.util.command.args.CommandContext;
 import org.spongepowered.api.util.command.source.CommandBlockSource;
 import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
 public class BackExecutor implements CommandExecutor
 {
@@ -20,9 +21,20 @@ public class BackExecutor implements CommandExecutor
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
+
 			if (Utils.isLastDeathInConfig(player))
 			{
-				player.setLocation(Utils.lastDeath(player));
+				Location<World> location = Utils.lastDeath(player);
+				
+				if (player.getLocation().getExtent().getUniqueId().equals(location.getExtent().getUniqueId()))
+				{
+					player.setLocation(location);
+				}
+				else
+				{
+					player.transferToWorld(location.getExtent().getUniqueId(), location.getPosition());
+				}
+				
 				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Last Location."));
 			}
 			else

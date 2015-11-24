@@ -63,12 +63,10 @@ public class Utils
 
 				DataSource datasource = sql.getDataSource("jdbc:mysql://" + host + ":" + port + "/" + database + "?user=" + username + "&password=" + password);
 
-				String executeString = "CREATE TABLE IF NOT EXISTS MUTES " +
-					"(UUID TEXT PRIMARY KEY     NOT NULL)";
+				String executeString = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID TEXT PRIMARY KEY     NOT NULL)";
 				execute(executeString, datasource);
 
-				executeString = "INSERT INTO MUTES (UUID) " +
-					"VALUES ('" + playerUUID.toString() + "');";
+				executeString = "INSERT INTO MUTES (UUID) " + "VALUES ('" + playerUUID.toString() + "');";
 				execute(executeString, datasource);
 			}
 			else
@@ -77,12 +75,10 @@ public class Utils
 				c = DriverManager.getConnection("jdbc:sqlite:Mutes.db");
 				stmt = c.createStatement();
 
-				String sql = "CREATE TABLE IF NOT EXISTS MUTES " +
-					"(UUID TEXT PRIMARY KEY     NOT NULL)";
+				String sql = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID TEXT PRIMARY KEY     NOT NULL)";
 				stmt.executeUpdate(sql);
 
-				sql = "INSERT INTO MUTES (UUID) " +
-					"VALUES ('" + playerUUID.toString() + "');";
+				sql = "INSERT INTO MUTES (UUID) " + "VALUES ('" + playerUUID.toString() + "');";
 				stmt.executeUpdate(sql);
 
 				stmt.close();
@@ -94,7 +90,7 @@ public class Utils
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void removeMute(UUID playerUUID)
 	{
 		Connection c;
@@ -113,12 +109,10 @@ public class Utils
 
 				DataSource datasource = sql.getDataSource("jdbc:mysql://" + host + ":" + port + "/" + database + "?user=" + username + "&password=" + password);
 
-				String executeString = "CREATE TABLE IF NOT EXISTS MUTES " +
-					"(UUID TEXT PRIMARY KEY     NOT NULL)";
+				String executeString = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID TEXT PRIMARY KEY     NOT NULL)";
 				execute(executeString, datasource);
 
-				executeString = "INSERT INTO MUTES (UUID) " +
-					"VALUES ('" + playerUUID.toString() + "');";
+				executeString = "INSERT INTO MUTES (UUID) " + "VALUES ('" + playerUUID.toString() + "');";
 				execute(executeString, datasource);
 			}
 			else
@@ -127,8 +121,7 @@ public class Utils
 				c = DriverManager.getConnection("jdbc:sqlite:Mutes.db");
 				stmt = c.createStatement();
 
-				String sql = "CREATE TABLE IF NOT EXISTS MUTES " +
-					"(UUID TEXT PRIMARY KEY     NOT NULL)";
+				String sql = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID TEXT PRIMARY KEY     NOT NULL)";
 				stmt.executeUpdate(sql);
 
 				sql = "DELETE FROM MUTES WHERE UUID='" + playerUUID.toString() + "';";
@@ -192,8 +185,7 @@ public class Utils
 					}
 				}
 			}
-		}).interval(1, TimeUnit.SECONDS).name("EssentialCmds - AFK")
-		.submit(EssentialCmds.game.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
+		}).interval(1, TimeUnit.SECONDS).name("EssentialCmds - AFK").submit(EssentialCmds.game.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
 	}
 
 	public static String getMySQLPort()
@@ -1064,6 +1056,7 @@ public class Utils
 		EssentialCmds.config.getNode("back", "users", playerName, "lastDeath", "X").setValue(playerLocation.getX());
 		EssentialCmds.config.getNode("back", "users", playerName, "lastDeath", "Y").setValue(playerLocation.getY());
 		EssentialCmds.config.getNode("back", "users", playerName, "lastDeath", "Z").setValue(playerLocation.getZ());
+		EssentialCmds.config.getNode("back", "users", playerName, "lastDeath", "worldUUID").setValue(playerLocation.getExtent().getUniqueId().toString());
 
 		try
 		{
@@ -1078,15 +1071,28 @@ public class Utils
 
 	public static Location<World> lastDeath(Player player)
 	{
-		String playerName = player.getUniqueId().toString();
-		ConfigurationNode xNode = EssentialCmds.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.X").split("\\."));
-		double x = xNode.getDouble();
-		ConfigurationNode yNode = EssentialCmds.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Y").split("\\."));
-		double y = yNode.getDouble();
-		ConfigurationNode zNode = EssentialCmds.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Z").split("\\."));
-		double z = zNode.getDouble();
+		try
+		{
+			String playerName = player.getUniqueId().toString();
+			ConfigurationNode xNode = EssentialCmds.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.X").split("\\."));
+			double x = xNode.getDouble();
+			ConfigurationNode yNode = EssentialCmds.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Y").split("\\."));
+			double y = yNode.getDouble();
+			ConfigurationNode zNode = EssentialCmds.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Z").split("\\."));
+			double z = zNode.getDouble();
+			ConfigurationNode worldNode = EssentialCmds.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.worldUUID").split("\\."));
+			UUID worldUUID = UUID.fromString(worldNode.getString());
+			Optional<World> world = EssentialCmds.game.getServer().getWorld(worldUUID);
 
-		return new Location<>(player.getWorld(), x, y, z);
+			if (world.isPresent())
+				return new Location<World>(world.get(), x, y, z);
+			else
+				return null;
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
 	}
 
 	public static ArrayList<String> getRules()
@@ -1324,9 +1330,6 @@ public class Utils
 
 	public static boolean isLastDeathInConfig(Player player)
 	{
-		String userName = player.getUniqueId().toString();
-		ConfigurationNode valueNode = EssentialCmds.config.getNode((Object[]) ("back.users." + userName + ".lastDeath.X").split("\\."));
-		Object inConfig = valueNode.getValue();
-		return inConfig != null;
+		return Utils.lastDeath(player) != null;
 	}
 }
