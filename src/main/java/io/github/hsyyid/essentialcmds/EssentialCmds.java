@@ -65,6 +65,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.TPAHereExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.TPHereExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.TeleportPosExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.TeleportWorldExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.ThruExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.TimeExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.UnmuteExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.VanishExecutor;
@@ -107,7 +108,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-@Plugin(id = "EssentialCmds", name = "EssentialCmds", version = "5.2")
+@Plugin(id = "EssentialCmds", name = "EssentialCmds", version = "5.3")
 public class EssentialCmds
 {
 	public static Game game;
@@ -200,6 +201,11 @@ public class EssentialCmds
 			CommandSpec.builder().description(Texts.of("More Command")).permission("essentialcmds.more.use")
 				.executor(new MoreExecutor()).build();
 		game.getCommandDispatcher().register(this, moreCommandSpec, "more", "stack");
+		
+		CommandSpec thruCommandSpec =
+			CommandSpec.builder().description(Texts.of("Thru Command")).permission("essentialcmds.thru.use")
+				.executor(new ThruExecutor()).build();
+		game.getCommandDispatcher().register(this, thruCommandSpec, "through", "thru");
 		
 		CommandSpec directionCommandSpec =
 			CommandSpec.builder().description(Texts.of("Direction Command")).permission("essentialcmds.direction.use")
