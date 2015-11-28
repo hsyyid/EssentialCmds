@@ -8,6 +8,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.AddRuleExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.AsConsoleExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.BackExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.BanExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.BlockInfoExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.BroadcastExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.ButcherExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.CreateWorldExecutor;
@@ -25,6 +26,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.HatExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.HealExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.HomeExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.IgniteExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.ItemInfoExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.JumpExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.KickExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.KillExecutor;
@@ -108,7 +110,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-@Plugin(id = "EssentialCmds", name = "EssentialCmds", version = "5.3")
+@Plugin(id = "EssentialCmds", name = "EssentialCmds", version = "5.4")
 public class EssentialCmds
 {
 	public static Game game;
@@ -211,6 +213,16 @@ public class EssentialCmds
 			CommandSpec.builder().description(Texts.of("Direction Command")).permission("essentialcmds.direction.use")
 				.executor(new DirectionExecutor()).build();
 		game.getCommandDispatcher().register(this, directionCommandSpec, "direction", "compass");
+		
+		CommandSpec itemInfoCommandSpec =
+			CommandSpec.builder().description(Texts.of("ItemInfo Command")).permission("essentialcmds.iteminfo.use")
+				.executor(new ItemInfoExecutor()).build();
+		game.getCommandDispatcher().register(this, itemInfoCommandSpec, "iteminfo");
+		
+		CommandSpec blockInfoCommandSpec =
+			CommandSpec.builder().description(Texts.of("BlockInfo Command")).permission("essentialcmds.blockinfo.use")
+				.executor(new BlockInfoExecutor()).build();
+		game.getCommandDispatcher().register(this, blockInfoCommandSpec, "blockinfo");
 		
 		CommandSpec rtpCommandSpec =
 			CommandSpec.builder().description(Texts.of("RTP Command")).permission("essentialcmds.rtp.use")
