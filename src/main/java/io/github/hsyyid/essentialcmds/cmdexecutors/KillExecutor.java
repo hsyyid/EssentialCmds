@@ -1,7 +1,7 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.utils.Utils;
-
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.entity.HealthData;
 import org.spongepowered.api.data.value.mutable.Value;
 import org.spongepowered.api.entity.living.player.Player;
@@ -23,10 +23,7 @@ public class KillExecutor implements CommandExecutor
 
 		if (p.isPresent())
 		{
-			HealthData data = p.get().getHealthData();
-			Value<Double> newHealth = data.health().set(0d);
-			data.set(newHealth);
-			p.get().offer(data);
+			p.get().offer(Keys.HEALTH, 0d);
 			Utils.setLastDeathLocation(p.get().getUniqueId(), p.get().getLocation());
 			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Killed player " + p.get().getName()));
 			p.get().sendMessage(Texts.of(TextColors.RED, "You have been killed by " + src.getName()));
@@ -36,10 +33,7 @@ public class KillExecutor implements CommandExecutor
 			if (src instanceof Player)
 			{
 				Player player = (Player) src;
-				HealthData data = player.getHealthData();
-				Value<Double> newHealth = data.health().set(0d);
-				data.set(newHealth);
-				player.offer(data);
+				player.offer(Keys.HEALTH, 0d);
 				Utils.setLastDeathLocation(player.getUniqueId(), player.getLocation());
 				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Killed yourself."));
 			}

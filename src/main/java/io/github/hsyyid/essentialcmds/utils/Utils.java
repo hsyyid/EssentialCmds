@@ -112,7 +112,7 @@ public class Utils
 				String executeString = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID TEXT PRIMARY KEY     NOT NULL)";
 				execute(executeString, datasource);
 
-				executeString = "INSERT INTO MUTES (UUID) " + "VALUES ('" + playerUUID.toString() + "');";
+				executeString = "DELETE FROM MUTES WHERE UUID='" + playerUUID.toString() + "';";
 				execute(executeString, datasource);
 			}
 			else
