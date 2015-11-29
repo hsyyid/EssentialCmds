@@ -34,6 +34,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.LightningExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.ListHomeExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.ListWarpExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.ListWorldExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.LoadWorldExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.MailExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.MailListExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.MailReadExecutor;
@@ -454,6 +455,15 @@ public class EssentialCmds
 						GenericArguments.onlyOne(GenericArguments.string(Texts.of("difficulty")))))
 				.executor(new CreateWorldExecutor()).build();
 		game.getCommandDispatcher().register(this, createWorldCommandSpec, "createworld");
+		
+		CommandSpec loadWorldCommandSpec =
+			CommandSpec
+				.builder()
+				.description(Texts.of("Load World Command"))
+				.permission("essentialcmds.world.load")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("name"))))
+				.executor(new LoadWorldExecutor()).build();
+		game.getCommandDispatcher().register(this, loadWorldCommandSpec, "loadworld", "importworld");
 
 		CommandSpec afkCommandSpec =
 			CommandSpec.builder().description(Texts.of("AFK Command")).permission("essentialcmds.afk.use").executor(new AFKExecutor()).build();
@@ -619,8 +629,8 @@ public class EssentialCmds
 				.permission("essentialcmds.nick.use")
 				.arguments(
 					GenericArguments.seq(
-						GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("nick"))),
-						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))))
+						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game))),
+						GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("nick")))))
 				.executor(new NickExecutor()).build();
 		game.getCommandDispatcher().register(this, nickCommandSpec, "nick");
 

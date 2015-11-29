@@ -22,7 +22,7 @@ public class NickExecutor implements CommandExecutor
 		String nick = ctx.<String> getOne("nick").get();
 		nick = nick.replace("&", "\u00A7");
 
-		if(!target.isPresent())
+		if (!target.isPresent())
 		{
 			if (src instanceof Player)
 			{
@@ -48,18 +48,24 @@ public class NickExecutor implements CommandExecutor
 		}
 		else
 		{
-			Player player = target.get();
-
-			Subject subject = player.getContainingCollection().get(player.getIdentifier());
-
-			if (subject instanceof OptionSubject)
+			if (src.hasPermission("essentialcmds.nick.others"))
 			{
-				OptionSubject optionSubject = (OptionSubject) subject;
-				optionSubject.getTransientSubjectData().setOption(player.getActiveContexts(), "nick", nick);
+				Player player = target.get();
+				Subject subject = player.getContainingCollection().get(player.getIdentifier());
+
+				if (subject instanceof OptionSubject)
+				{
+					OptionSubject optionSubject = (OptionSubject) subject;
+					optionSubject.getTransientSubjectData().setOption(player.getActiveContexts(), "nick", nick);
+				}
+				else
+				{
+					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Your server doesn't currently support /nick!"));
+				}
 			}
 			else
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Your server doesn't currently support /nick!"));
+				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to make changes to other player's nicknames.!"));
 			}
 		}
 
