@@ -1,5 +1,6 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Texts;
@@ -22,6 +23,7 @@ public class ItemInfoExecutor implements CommandExecutor
 			{
 				ItemStack itemInHand = player.getItemInHand().get();
 				player.sendMessage(Texts.of(TextColors.GOLD, "The ID of the item in your hand is: ", TextColors.GRAY, itemInHand.getItem().getName()));
+				player.sendMessage(Texts.of(TextColors.GOLD, "The meta of the item in your hand is: ", TextColors.GRAY, itemInHand.toContainer().get(new DataQuery("UnsafeDamage")).get().toString()));
 			}
 			else
 			{
