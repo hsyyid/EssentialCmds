@@ -66,6 +66,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.TPADenyExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.TPAExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.TPAHereExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.TPHereExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.TeleportExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.TeleportPosExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.TeleportWorldExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.ThruExecutor;
@@ -111,7 +112,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-@Plugin(id = "EssentialCmds", name = "EssentialCmds", version = "5.4")
+@Plugin(id = "EssentialCmds", name = "EssentialCmds", version = "5.5")
 public class EssentialCmds
 {
 	public static Game game;
@@ -398,6 +399,17 @@ public class EssentialCmds
 					GenericArguments.onlyOne(GenericArguments.integer(Texts.of("y"))),
 					GenericArguments.onlyOne(GenericArguments.integer(Texts.of("z")))).executor(new TeleportPosExecutor()).build();
 		game.getCommandDispatcher().register(this, teleportPosCommandSpec, "tppos", "teleportpos", "teleportposition");
+		
+		CommandSpec teleportCommandSpec =
+			CommandSpec
+				.builder()
+				.description(Texts.of("Teleport Command"))
+				.permission("essentialcmds.teleport.use")
+				.arguments(GenericArguments.seq(
+					GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)),
+						GenericArguments.optional(GenericArguments.player(Texts.of("target"), game))))
+				.executor(new TeleportExecutor()).build();
+		game.getCommandDispatcher().register(this, teleportCommandSpec, "tp", "teleport");
 
 		CommandSpec kickCommandSpec =
 			CommandSpec
