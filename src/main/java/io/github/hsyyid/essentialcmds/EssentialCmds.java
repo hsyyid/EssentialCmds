@@ -249,8 +249,7 @@ public class EssentialCmds
 			CommandSpec.builder().description(Texts.of("Ignite Command")).permission("essentialcmds.ignite.use")
 				.arguments(GenericArguments.seq(
 					GenericArguments.onlyOne(GenericArguments.integer(Texts.of("ticks"))),
-					GenericArguments.optional(
-						GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))))
+						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))))
 				.executor(new IgniteExecutor()).build();
 		game.getCommandDispatcher().register(this, igniteCommandSpec, "burn", "ignite", "fire");
 
@@ -346,7 +345,7 @@ public class EssentialCmds
 				.description(Texts.of("Weather Command"))
 				.permission("essentialcmds.weather.use")
 				.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.string(Texts.of("weather")))),
-					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Texts.of("duration")))))
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("duration")))))
 				.executor(new WeatherExecutor()).build();
 		game.getCommandDispatcher().register(this, weatherCommandSpec, "weather");
 

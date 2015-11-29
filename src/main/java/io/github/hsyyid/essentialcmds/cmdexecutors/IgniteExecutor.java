@@ -26,12 +26,8 @@ public class IgniteExecutor implements CommandExecutor
 			if (src instanceof Player)
 			{
 				Player player = (Player) src;
-
-				if (player.get(Keys.FIRE_TICKS).isPresent())
-				{
-					player.offer(Keys.FIRE_TICKS, ticks);
-					player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "You are now on fire."));
-				}
+				player.offer(Keys.FIRE_TICKS, ticks);
+				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "You are now on fire."));
 			}
 			else if (src instanceof ConsoleSource)
 			{
@@ -45,13 +41,9 @@ public class IgniteExecutor implements CommandExecutor
 		else if (target.isPresent() && src.hasPermission("ignite.others"))
 		{
 			Player player = target.get();
-
-			if (player.get(Keys.FIRE_TICKS).isPresent())
-			{
-				player.offer(Keys.FIRE_TICKS, ticks);
-				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set player on fire."));
-				player.sendMessage(Texts.of(TextColors.GOLD, src.getName(), TextColors.RED, " has set you on fire."));
-			}
+			player.offer(Keys.FIRE_TICKS, ticks);
+			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set player on fire."));
+			player.sendMessage(Texts.of(TextColors.GOLD, src.getName(), TextColors.RED, " has set you on fire."));
 		}
 
 		return CommandResult.success();
