@@ -23,7 +23,7 @@ public class TeleportExecutor implements CommandExecutor
 			if (src.hasPermission("teleport.others"))
 			{
 				target.get().setLocation(player.getLocation());
-				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported player " + target.get().getName() + " to "  + player.getName()));
+				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported player " + target.get().getName() + " to " + player.getName()));
 				target.get().sendMessage(Texts.of(TextColors.GOLD, "You have been teleported to " + player.getName() + " by " + src.getName()));
 			}
 			else

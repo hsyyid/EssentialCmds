@@ -17,6 +17,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.DeleteWarpExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.DeleteWorldExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.DirectionExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.EnchantExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.EntityInfoExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.FeedExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.FireballExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.FlyExecutor;
@@ -225,6 +226,11 @@ public class EssentialCmds
 			CommandSpec.builder().description(Texts.of("BlockInfo Command")).permission("essentialcmds.blockinfo.use")
 				.executor(new BlockInfoExecutor()).build();
 		game.getCommandDispatcher().register(this, blockInfoCommandSpec, "blockinfo");
+		
+		CommandSpec entityInfoCommandSpec =
+			CommandSpec.builder().description(Texts.of("EntityInfo Command")).permission("essentialcmds.entityinfo.use")
+				.executor(new EntityInfoExecutor()).build();
+		game.getCommandDispatcher().register(this, entityInfoCommandSpec, "entityinfo");
 		
 		CommandSpec rtpCommandSpec =
 			CommandSpec.builder().description(Texts.of("RTP Command")).permission("essentialcmds.rtp.use")
