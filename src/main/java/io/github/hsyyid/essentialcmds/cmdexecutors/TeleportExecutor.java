@@ -36,7 +36,7 @@ public class TeleportExecutor implements CommandExecutor
 			if (src instanceof Player)
 			{
 				Player targ = (Player) src;
-				targ.setLocation(targ.getLocation());
+				targ.setLocation(player.getLocation());
 				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to player " + player.getName()));
 			}
 			else
