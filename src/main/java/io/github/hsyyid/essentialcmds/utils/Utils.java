@@ -71,7 +71,15 @@ public class Utils
 			}
 			else
 			{
-				Class.forName("org.sqlite.JDBC");
+				try
+				{
+					Class.forName("org.sqlite.JDBC");
+				}
+				catch (ClassNotFoundException exception)
+				{
+					System.out.println("[EssentialCmds]: You do not have ANY database software installed! Mutes will not work or be saved until this is fixed.");
+				}
+
 				c = DriverManager.getConnection("jdbc:sqlite:Mutes.db");
 				stmt = c.createStatement();
 
@@ -117,7 +125,15 @@ public class Utils
 			}
 			else
 			{
-				Class.forName("org.sqlite.JDBC");
+				try
+				{
+					Class.forName("org.sqlite.JDBC");
+				}
+				catch (ClassNotFoundException exception)
+				{
+					System.out.println("[EssentialCmds]: You do not have ANY database software installed! Mutes will not work or be saved until this is fixed.");
+				}
+				
 				c = DriverManager.getConnection("jdbc:sqlite:Mutes.db");
 				stmt = c.createStatement();
 
@@ -576,6 +592,9 @@ public class Utils
 
 				DataSource datasource = sql.getDataSource("jdbc:mysql://" + host + ":" + port + "/" + database + "?user=" + username + "&password=" + password);
 
+				String executeString = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID TEXT PRIMARY KEY  NOT NULL)";
+				execute(executeString, datasource);
+				
 				DatabaseMetaData metadata = datasource.getConnection().getMetaData();
 				ResultSet rs = metadata.getTables(null, null, "Mutes", null);
 				Set<UUID> muteList = Sets.newHashSet();
@@ -593,10 +612,23 @@ public class Utils
 			{
 				Connection c;
 				Statement stmt;
-				Class.forName("org.sqlite.JDBC");
+				
+				try
+				{
+					Class.forName("org.sqlite.JDBC");
+				}
+				catch (ClassNotFoundException exception)
+				{
+					System.out.println("[EssentialCmds]: You do not have ANY database software installed! Mutes will not work or be saved until this is fixed.");
+				}
+				
 				c = DriverManager.getConnection("jdbc:sqlite:Mutes.db");
 				c.setAutoCommit(false);
 				stmt = c.createStatement();
+				
+				String sql = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID TEXT PRIMARY KEY     NOT NULL)";
+				stmt.executeUpdate(sql);
+				
 				ResultSet rs = stmt.executeQuery("SELECT * FROM MUTES;");
 				Set<UUID> muteList = Sets.newHashSet();
 

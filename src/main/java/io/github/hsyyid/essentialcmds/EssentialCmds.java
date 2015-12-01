@@ -113,7 +113,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-@Plugin(id = "EssentialCmds", name = "EssentialCmds", version = "5.5")
+@Plugin(id = "EssentialCmds", name = "EssentialCmds", version = "5.6")
 public class EssentialCmds
 {
 	public static Game game;

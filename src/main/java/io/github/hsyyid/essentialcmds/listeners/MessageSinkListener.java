@@ -127,7 +127,7 @@ public class MessageSinkListener
 					prefix = prefix.replaceAll("&", "\u00A7");
 					original = original.replaceFirst("<", ("<" + prefix + " "));
 
-					if (!(player.hasPermission("color.chat.use")))
+					if (!(player.hasPermission("essentialcmds.color.chat.use")))
 					{
 						event.setMessage(Texts.builder()
 							.append(Texts.of(original))
@@ -145,7 +145,7 @@ public class MessageSinkListener
 					suffix = suffix.replaceAll("&", "\u00A7");
 					original = original.replaceFirst(">", (suffix + ">"));
 
-					if (!(player.hasPermission("color.chat.use")))
+					if (!(player.hasPermission("essentialcmds.color.chat.use")))
 					{
 						event.setMessage(Texts.builder()
 							.append(Texts.of(original))
@@ -173,7 +173,7 @@ public class MessageSinkListener
 			original = original.replaceFirst("<", Utils.getFirstChatCharReplacement());
 			original = original.replaceFirst(">", "\u00A7f" + Utils.getLastChatCharReplacement());
 
-			if (!(player.hasPermission("color.chat.use")))
+			if (!(player.hasPermission("essentialcmds.color.chat.use")))
 			{
 				event.setMessage(Texts.builder()
 					.append(Texts.of(original))
@@ -183,7 +183,7 @@ public class MessageSinkListener
 					.build());
 			}
 
-			if (player.hasPermission("color.chat.use"))
+			if (player.hasPermission("essentialcmds.color.chat.use"))
 			{
 				try
 				{
