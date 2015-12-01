@@ -52,18 +52,14 @@ public class MuteExecutor implements CommandExecutor
 			}
 
 			Task.Builder taskBuilder = game.getScheduler().createTaskBuilder();
-			taskBuilder.execute(() -> EssentialCmds.muteList.remove(p.getUniqueId())).delay(time.get(), unit).name("EssentialCmds removes mute").submit(game
-					.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
-
-			EssentialCmds.muteList.add(p.getUniqueId());
-		}
-		else
-		{
-			EssentialCmds.muteList.add(p.getUniqueId());
+			taskBuilder.execute(() -> {
+				if (EssentialCmds.muteList.contains(p.getUniqueId()))
+					EssentialCmds.muteList.remove(p.getUniqueId());
+			}).interval(time.get(), unit).name("EssentialCmds - Remove previous mutes").submit(EssentialCmds.game.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
 		}
 
+		EssentialCmds.muteList.add(p.getUniqueId());
 		Utils.addMute(p.getUniqueId());
-
 		src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player muted."));
 
 		return CommandResult.success();

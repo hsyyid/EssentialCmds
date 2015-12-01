@@ -1,15 +1,15 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.util.blockray.BlockRay;
-import org.spongepowered.api.util.blockray.BlockRayHit;
-
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.util.blockray.BlockRay;
+import org.spongepowered.api.util.blockray.BlockRayHit;
 import org.spongepowered.api.util.command.CommandException;
 import org.spongepowered.api.util.command.CommandResult;
 import org.spongepowered.api.util.command.CommandSource;
@@ -34,8 +34,8 @@ public class LightningExecutor implements CommandExecutor
 			if (src instanceof Player)
 			{
 				Player player = (Player) src;
+
 				BlockRay<World> playerBlockRay = BlockRay.from(player).blockLimit(350).build();
-				
 				BlockRayHit<World> finalHitRay = null;
 
 				while (playerBlockRay.hasNext())
@@ -54,7 +54,7 @@ public class LightningExecutor implements CommandExecutor
 				}
 
 				Location<World> lightningLocation = null;
-				
+
 				if (finalHitRay == null)
 				{
 					lightningLocation = player.getLocation();
@@ -63,7 +63,7 @@ public class LightningExecutor implements CommandExecutor
 				{
 					lightningLocation = finalHitRay.getLocation();
 				}
-				
+
 				spawnEntity(lightningLocation);
 				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Created Lightning Strike!"));
 			}
@@ -92,7 +92,6 @@ public class LightningExecutor implements CommandExecutor
 	{
 		Extent extent = location.getExtent();
 		Optional<Entity> optional = extent.createEntity(EntityTypes.LIGHTNING, location.getPosition());
-
 		Entity lightning = optional.get();
 		extent.spawnEntity(lightning, Cause.empty());
 	}
