@@ -1,5 +1,5 @@
-Contributing to Essence Sponge
-==============================
+Contributing to EssentialCmds
+=============================
 
 ## Code Style ##
 * Line endings
