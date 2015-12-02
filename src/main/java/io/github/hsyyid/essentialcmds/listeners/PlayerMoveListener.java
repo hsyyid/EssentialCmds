@@ -29,9 +29,10 @@ public class PlayerMoveListener
 			{
 				EssentialCmds.recentlyJoined.remove(player);
 				AFK removeAFK = null;
+				
 				for (AFK a : EssentialCmds.movementList)
 				{
-					if (a.getPlayer() == a.getPlayer())
+					if (player.getUniqueId() == a.getPlayer().getUniqueId())
 					{
 						removeAFK = a;
 						break;
@@ -46,9 +47,10 @@ public class PlayerMoveListener
 			{
 				AFK afk = new AFK(player, System.currentTimeMillis());
 				AFK removeAFK = null;
+				
 				for (AFK a : EssentialCmds.movementList)
 				{
-					if (a.getPlayer() == a.getPlayer())
+					if (player.getUniqueId() == a.getPlayer().getUniqueId())
 					{
 						removeAFK = a;
 						break;
@@ -62,14 +64,11 @@ public class PlayerMoveListener
 						for (Player p : EssentialCmds.game.getServer().getOnlinePlayers())
 						{
 							p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is no longer AFK."));
-						}
-						EssentialCmds.movementList.remove(removeAFK);
+						}	
 					}
-					else if (!removeAFK.getAFK())
-					{
-						EssentialCmds.movementList.remove(removeAFK);
-						EssentialCmds.movementList.add(afk);
-					}
+					
+					EssentialCmds.movementList.remove(removeAFK);
+					EssentialCmds.movementList.add(afk);
 				}
 				else
 				{
