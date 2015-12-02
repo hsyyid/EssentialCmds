@@ -4,7 +4,7 @@ EssentialCmds
 **Currently not stable and under heavy development**
 
 A minecraft plugin for Sponge platforms.
-Contains many essential commands, features and a lot useful APIs.
+Contains many essential commands, features and other useful goodies.
 
 
 ## Links ##
