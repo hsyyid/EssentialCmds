@@ -1,11 +1,19 @@
-apply plugin: 'java'
-apply plugin: 'eclipse'
+plugins {
+    id 'java'
+    id 'eclipse'
+    id 'idea'
+    id 'maven'
+    id "com.github.hierynomus.license" version "0.12.1"
+}
+
+group = "io.github.hsyyid"
+archivesBaseName = "EssentialCmds"
+version = '5.6'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-version = '5.6'
-group = "io.github.hsyyid"
-archivesBaseName = "EssentialCmds"
+
+defaultTasks 'licenseFormat'
 
 jar {
     manifest {
@@ -35,5 +43,35 @@ uploadArchives {
        flatDir {
            dirs 'repos'
        }
+    }
+}
+
+license {
+    //the project name to use
+    ext.name = project.name
+    ext.owner = project.owner
+    ext.inceptionYear = project.inceptionYear
+    ext.currentYear = project.currentYear
+
+    //for usage of these values see this: https://github.com/hierynomus/license-gradle-plugin#variable-substitution
+
+    //files to exclude from formatting (anything that is a .info file and assets in this example)
+    exclude "**/*.info"
+    exclude "assets/**"
+
+    //the file that contains the header
+    header file('HEADER.txt')
+
+    //the source sets to apply the license to
+    //this should be enough for you, it covers all the projects source sets
+    sourceSets = project.sourceSets
+
+    ignoreFailures false
+    strictCheck true
+
+    //what style your comment should be
+    mapping {
+        //in this case it's the following: /* and then continuing with stars.
+        java = 'SLASHSTAR_STYLE'
     }
 }
