@@ -22,35 +22,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.hsyyid.essentialcmds.utils;
+package io.github.hsyyid.essentialcmds;
 
-import org.spongepowered.api.entity.living.player.Player;
+/**
+ * General plugin info
+ */
+public abstract class PluginInfo {
 
-public class Message
-{
-	private Player sender;
-	private Player recipient;
-	private String message;
-
-	public Message(Player sender, Player recipient, String message)
-	{
-		this.sender = sender;
-		this.recipient = recipient;
-		this.message = message;
-	}
-
-	public Player getSender()
-	{
-		return sender;
-	}
-
-	public Player getRecipient()
-	{
-		return recipient;
-	}
-
-	public String getMessage()
-	{
-		return message;
-	}
+    public static final String ID = "EssentialCmds";
+    public static final String NAME = "EssentialCmds";
+    public static final String VERSION = "5.6";
+    public static final String DEPENDENCIES = "";
 }
