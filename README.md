@@ -64,9 +64,9 @@ We use [Gradle] for Essence Sponge.
 In order to build Essence Sponge you simply need to run the `gradle` command.
 You can find the compiled JAR file in `./build/libs` labeled similarly to 'EssentialCmds-x.x.jar'.
 
-[Source]: https://github.com/kinggoesgaming/Foundations
-[Wiki]: https://github.com/kinggoesgaming/Foundations/wiki
-[Issues]: https://github.com/kinggoesgaming/Foundations/issues
+[Source]: https://github.com/hsyyid/EssentialCmds
+[Wiki]: https://github.com/hsyyid/EssentialCmds/wiki
+[Issues]: https://github.com/hsyyid/EssentialCmds/issues
 [Website]: http://negafinity.com
 [MIT License]: https://tldrlegal.com/license/mit-license
 [Java]: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
