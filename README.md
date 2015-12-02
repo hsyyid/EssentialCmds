@@ -62,7 +62,7 @@ Windows systems in place of any 'gradle' command.
 We use [Gradle] for Essence Sponge.
 
 In order to build Essence Sponge you simply need to run the `gradle` command.
-You can find the compiled JAR file in `./build/libs` labeled similarly to 'Foundations-x.x-SNAPSHOT.jar'.
+You can find the compiled JAR file in `./build/libs` labeled similarly to 'EssentialCmds-x.x.jar'.
 
 [Source]: https://github.com/kinggoesgaming/Foundations
 [Wiki]: https://github.com/kinggoesgaming/Foundations/wiki
