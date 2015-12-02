@@ -13,5 +13,7 @@ public interface Configurable {
 
     void save();
 
+    void populate();
+
     CommentedConfigurationNode get();
 }
