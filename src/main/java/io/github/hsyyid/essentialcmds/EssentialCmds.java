@@ -59,6 +59,9 @@ import static io.github.hsyyid.essentialcmds.PluginInfo.*;
 @Plugin(id = ID, name = NAME, version = VERSION)
 public class EssentialCmds {
 
+	private EssentialCmds() {}
+	private static EssentialCmds essentialCmds = new EssentialCmds();
+
 	public static Game game;
 	public static ConfigurationNode config;
 	public static ConfigurationLoader<CommentedConfigurationNode> configurationManager;
@@ -86,6 +89,10 @@ public class EssentialCmds {
 	@Inject
 	@DefaultConfig(sharedRoot = false)
 	private ConfigurationLoader<CommentedConfigurationNode> confManager;
+
+	public static EssentialCmds getEssentialCmds() {
+		return essentialCmds;
+	}
 
 	@Listener
 	public void onPreInitialization(GamePreInitializationEvent event) {
