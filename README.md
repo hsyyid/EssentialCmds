@@ -67,7 +67,7 @@ You can find the compiled JAR file in `./build/libs` labeled similarly to 'Essen
 [Source]: https://github.com/hsyyid/EssentialCmds
 [Wiki]: https://github.com/hsyyid/EssentialCmds/wiki
 [Issues]: https://github.com/hsyyid/EssentialCmds/issues
-[Website]: http://negafinity.com
+[Website]: http://essentialcmds.negafinity.com
 [MIT License]: https://tldrlegal.com/license/mit-license
 [Java]: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 [rules]: Contributors.md
