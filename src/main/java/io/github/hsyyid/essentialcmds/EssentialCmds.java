@@ -60,7 +60,7 @@ import static io.github.hsyyid.essentialcmds.PluginInfo.*;
 public class EssentialCmds {
 
 	private EssentialCmds() {}
-	private static EssentialCmds essentialCmds = new EssentialCmds();
+	private static EssentialCmds essentialCmds;
 
 	public static TeleportHelper helper;
 	public static List<PendingInvitation> pendingInvites = Lists.newArrayList();
@@ -96,6 +96,7 @@ public class EssentialCmds {
 
 	@Listener
 	public void onPreInitialization(GamePreInitializationEvent event) {
+		essentialCmds = this;
 		getLogger().info(ID + " loading...");
 
 		// Create Config Directory for EssentialCmds
