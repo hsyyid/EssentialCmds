@@ -24,12 +24,9 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.api.util.config.Configs;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.commented.CommentedConfigurationNode;
-import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
@@ -43,11 +40,10 @@ import org.spongepowered.api.util.command.spec.CommandExecutor;
 
 public class DeleteWarpExecutor implements CommandExecutor
 {
-
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		ConfigurationLoader<CommentedConfigurationNode> configManager = EssentialCmds.getConfigManager();
 		String warpName = ctx.<String> getOne("warp name").get();
+		
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;

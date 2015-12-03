@@ -30,14 +30,16 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 /**
  * Utility class to get all the config classes from one place
  */
-public abstract class Configs {
+public abstract class Configs
+{
+	public static CommentedConfigurationNode getConfig()
+	{
+		return Config.getConfig().get();
+	}
 
-    public static CommentedConfigurationNode getConfig() {
-        return Config.getConfig().get();
-    }
-
-    public static void saveConfig() {
-        Config.getConfig().save();
-        return;
-    }
+	public static void saveConfig()
+	{
+		Config.getConfig().save();
+		return;
+	}
 }
