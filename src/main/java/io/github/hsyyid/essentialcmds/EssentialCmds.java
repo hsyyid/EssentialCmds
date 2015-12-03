@@ -31,7 +31,6 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.*;
 import io.github.hsyyid.essentialcmds.listeners.*;
 import io.github.hsyyid.essentialcmds.managers.config.Config;
 import io.github.hsyyid.essentialcmds.utils.*;
-import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
@@ -63,9 +62,6 @@ public class EssentialCmds {
 	private EssentialCmds() {}
 	private static EssentialCmds essentialCmds = new EssentialCmds();
 
-
-	public static ConfigurationNode config;
-	public static ConfigurationLoader<CommentedConfigurationNode> configurationManager;
 	public static TeleportHelper helper;
 	public static List<PendingInvitation> pendingInvites = Lists.newArrayList();
 	public static List<AFK> movementList = Lists.newArrayList();
@@ -118,28 +114,6 @@ public class EssentialCmds {
 	@Listener
 	public void onServerInit(GameInitializationEvent event) {
 		helper = getGame().getTeleportHelper();
-
-		// Config File
-		try
-		{
-			if (!Files.exists(dConfig))
-			{
-				Files.createFile(dConfig);
-				config = confManager.load();
-				config.getNode("afk", "timer").setValue(30000);
-				config.getNode("afk", "kick", "use").setValue(false);
-				config.getNode("afk", "kick", "timer").setValue(30000);
-				config.getNode("joinmsg").setValue("&4Welcome!");
-				confManager.save(config);
-			}
-
-			configurationManager = confManager;
-			config = confManager.load();
-		}
-		catch (IOException exception)
-		{
-			getLogger().error("The default configuration could not be loaded or created!");
-		}
 		
 		Utils.readMutes();
 		Utils.startAFKService();
@@ -649,11 +623,6 @@ public class EssentialCmds {
 		getLogger().info("Have fun, and enjoy! :D");
 		getLogger().info("-----------------------------");
 		getLogger().info("EssentialCmds loaded!");
-	}
-
-	public static ConfigurationLoader<CommentedConfigurationNode> getConfigManager()
-	{
-		return configurationManager;
 	}
 
 	public Path getConfigDir() {

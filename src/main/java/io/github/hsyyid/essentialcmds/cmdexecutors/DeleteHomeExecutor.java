@@ -24,6 +24,7 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.api.util.config.Configs;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
@@ -55,7 +56,7 @@ public class DeleteHomeExecutor implements CommandExecutor
 			Player player = (Player) src;
 			if (Utils.inConfig(player.getUniqueId(), homeName))
 			{
-				ConfigurationNode homeNode = EssentialCmds.config.getNode((Object[]) ("home.users." + player.getUniqueId() + ".homes").split("\\."));
+				ConfigurationNode homeNode = Configs.getConfig().getNode((Object[]) ("home.users." + player.getUniqueId() + ".homes").split("\\."));
 
 				// Get Value of Home Node
 				String homes = homeNode.getString();
@@ -65,24 +66,15 @@ public class DeleteHomeExecutor implements CommandExecutor
 				homeNode.setValue(newVal);
 
 				// Save CONFIG
-				try
-				{
-					configManager.save(EssentialCmds.config);
-					configManager.load();
-				}
-				catch (IOException e)
-				{
-					System.out.println("[Home]: Failed to delete home " + homeName);
-					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The home was not deleted successfully!"));
-				}
+				Configs.saveConfig();
 				// Get Item Node
-				ConfigurationNode itemNode = EssentialCmds.config.getNode((Object[]) ("home.users." + player.getUniqueId() + ".").split("\\."));
+				ConfigurationNode itemNode = Configs.getConfig().getNode((Object[]) ("home.users." + player.getUniqueId() + ".").split("\\."));
 				itemNode.removeChild(homeName);
 
 				// save config
 				try
 				{
-					configManager.save(EssentialCmds.config);
+					configManager.save(Configs.getConfig());
 					configManager.load();
 				}
 				catch (IOException e)
