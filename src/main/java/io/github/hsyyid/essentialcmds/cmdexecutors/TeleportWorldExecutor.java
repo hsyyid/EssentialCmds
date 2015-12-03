@@ -24,8 +24,7 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.EssentialCmds;
-
+import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
@@ -39,8 +38,12 @@ import org.spongepowered.api.world.World;
 
 import java.util.Optional;
 
+import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
+
 public class TeleportWorldExecutor implements CommandExecutor
 {
+
+	private Game game = getEssentialCmds().getGame();
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		Optional<Player> optPlayer = ctx.<Player> getOne("player");
@@ -52,7 +55,7 @@ public class TeleportWorldExecutor implements CommandExecutor
 			{
 				Player player = (Player) src;
 
-				Optional<World> optWorld = EssentialCmds.game.getServer().getWorld(name);
+				Optional<World> optWorld = game.getServer().getWorld(name);
 
 				if (optWorld.isPresent())
 				{
@@ -74,7 +77,7 @@ public class TeleportWorldExecutor implements CommandExecutor
 		{
 			Player player = optPlayer.get();
 
-			Optional<World> optWorld = EssentialCmds.game.getServer().getWorld(name);
+			Optional<World> optWorld = game.getServer().getWorld(name);
 
 			if (optWorld.isPresent())
 			{

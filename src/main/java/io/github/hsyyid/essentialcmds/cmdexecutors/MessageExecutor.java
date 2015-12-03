@@ -48,7 +48,7 @@ public class MessageExecutor implements CommandExecutor
 		Player recipient = ctx.<Player> getOne("recipient").get();
 		String message = ctx.<String> getOne("message").get();
 
-		ArrayList<Player> socialSpies = (ArrayList<Player>) EssentialCmds.game.getServer().getOnlinePlayers().stream().filter(player -> EssentialCmds.socialSpies.contains(player.getUniqueId())).collect(Collectors.toList());
+		ArrayList<Player> socialSpies = (ArrayList<Player>) EssentialCmds.getEssentialCmds().getGame().getServer().getOnlinePlayers().stream().filter(player -> EssentialCmds.socialSpies.contains(player.getUniqueId())).collect(Collectors.toList());
 
 		if (recipient.equals(src))
 		{

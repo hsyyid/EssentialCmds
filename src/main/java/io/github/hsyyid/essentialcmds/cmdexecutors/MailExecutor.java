@@ -54,7 +54,7 @@ public class MailExecutor implements CommandExecutor
 				return CommandResult.success();
 			}
 			
-			Game game = EssentialCmds.game;
+			Game game = EssentialCmds.getEssentialCmds().getGame();
 
 			MailSendEvent event = new MailSendEvent(p, playerName, message);
 			game.getEventManager().post(event);

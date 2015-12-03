@@ -24,7 +24,7 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.EssentialCmds;
+import org.spongepowered.api.Game;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.RepresentedPlayerData;
 import org.spongepowered.api.data.type.SkullTypes;
@@ -43,8 +43,13 @@ import org.spongepowered.api.util.command.spec.CommandExecutor;
 
 import java.util.Optional;
 
+import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
+
 public class SkullExecutor implements CommandExecutor
 {
+
+	private Game game = getEssentialCmds().getGame();
+
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		Optional<Player> optionalTarget = ctx.<Player> getOne("player");
@@ -56,7 +61,7 @@ public class SkullExecutor implements CommandExecutor
 				Player player = (Player) src;
 
 				// Create the Skull
-				ItemStack.Builder builder = EssentialCmds.game.getRegistry().createBuilder(ItemStack.Builder.class);
+				ItemStack.Builder builder = game.getRegistry().createBuilder(ItemStack.Builder.class);
 				ItemStack skullStack = builder.itemType(ItemTypes.SKULL).quantity(1).build();
 
 				// Set it to player skull type
@@ -89,7 +94,7 @@ public class SkullExecutor implements CommandExecutor
 				Player player = optionalTarget.get();
 
 				// Create the Skull
-				ItemStack.Builder builder = EssentialCmds.game.getRegistry().createBuilder(ItemStack.Builder.class);
+				ItemStack.Builder builder = game.getRegistry().createBuilder(ItemStack.Builder.class);
 				ItemStack skullStack = builder.itemType(ItemTypes.SKULL).quantity(1).build();
 
 				// Set it to player skull type

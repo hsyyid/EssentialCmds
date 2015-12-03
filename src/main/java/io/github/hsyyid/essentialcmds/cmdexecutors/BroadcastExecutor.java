@@ -45,7 +45,7 @@ public class BroadcastExecutor implements CommandExecutor
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		String message = ctx.<String> getOne("message").get();
-		Game game = EssentialCmds.game;
+		Game game = EssentialCmds.getEssentialCmds().getGame();
 		Server server = game.getServer();
 
 		try

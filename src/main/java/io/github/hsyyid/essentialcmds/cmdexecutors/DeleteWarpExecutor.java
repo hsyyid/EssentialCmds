@@ -24,9 +24,9 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.utils.Utils;
-
 import io.github.hsyyid.essentialcmds.EssentialCmds;
+import io.github.hsyyid.essentialcmds.api.util.config.Configs;
+import io.github.hsyyid.essentialcmds.utils.Utils;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -41,8 +41,6 @@ import org.spongepowered.api.util.command.source.CommandBlockSource;
 import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
-import java.io.IOException;
-
 public class DeleteWarpExecutor implements CommandExecutor
 {
 
@@ -55,7 +53,7 @@ public class DeleteWarpExecutor implements CommandExecutor
 			Player player = (Player) src;
 			if (Utils.isWarpInConfig(warpName))
 			{
-				ConfigurationNode warpNode = EssentialCmds.config.getNode((Object[]) ("warps.warps").split("\\."));
+				ConfigurationNode warpNode = Configs.getConfig().getNode((Object[]) ("warps.warps").split("\\."));
 
 				// Get Value of Warp Node
 				String warps = warpNode.getString();
@@ -65,31 +63,14 @@ public class DeleteWarpExecutor implements CommandExecutor
 				warpNode.setValue(newVal);
 
 				// Save CONFIG
-				try
-				{
-					configManager.save(EssentialCmds.config);
-					configManager.load();
-				}
-				catch (IOException e)
-				{
-					System.out.println("[Home]: Failed to delete warp " + warpName);
-					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The warp was not deleted successfully!"));
-				}
+				Configs.saveConfig();
+
 				// Get Item Node
-				ConfigurationNode itemNode = EssentialCmds.config.getNode((Object[]) ("home.users." + player.getUniqueId() + ".").split("\\."));
+				ConfigurationNode itemNode = Configs.getConfig().getNode((Object[]) ("home.users." + player.getUniqueId() + ".").split("\\."));
 				itemNode.removeChild(warpName);
 
 				// save config
-				try
-				{
-					configManager.save(EssentialCmds.config);
-					configManager.load();
-				}
-				catch (IOException e)
-				{
-					System.out.println("[Home]: Failed to remove home " + warpName);
-					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The warp was not deleted successfully!"));
-				}
+				Configs.saveConfig();
 				src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Deleted warp " + warpName));
 			}
 			else

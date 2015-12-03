@@ -71,7 +71,7 @@ public class PlayerInteractListener
 					if (signData.isPresent())
 					{
 						SignData data = signData.get();
-						CommandService cmdService = EssentialCmds.game.getCommandDispatcher();
+						CommandService cmdService = event.getGame().getCommandDispatcher();
 						String line0 = Texts.toPlain(data.getValue(Keys.SIGN_LINES).get().get(0));
 						String line1 = Texts.toPlain(data.getValue(Keys.SIGN_LINES).get().get(1));
 						String command = "warp " + line1;

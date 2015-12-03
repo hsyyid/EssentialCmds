@@ -25,8 +25,6 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.events.TPAEvent;
-
-import io.github.hsyyid.essentialcmds.EssentialCmds;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
@@ -39,11 +37,15 @@ import org.spongepowered.api.util.command.source.CommandBlockSource;
 import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
+import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
+
 public class TPAExecutor implements CommandExecutor
 {
+
+	private Game game = getEssentialCmds().getGame();
+
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Game game = EssentialCmds.game;
 		Player recipient = ctx.<Player> getOne("player").get();
 
 		if (src instanceof Player)

@@ -24,8 +24,6 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.EssentialCmds;
-
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.command.CommandService;
@@ -39,9 +37,11 @@ import org.spongepowered.api.util.command.source.CommandBlockSource;
 import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
+import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
+
 public class SudoExecutor implements CommandExecutor
 {
-	Game game = EssentialCmds.game;
+	Game game = getEssentialCmds().getGame();
 
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{

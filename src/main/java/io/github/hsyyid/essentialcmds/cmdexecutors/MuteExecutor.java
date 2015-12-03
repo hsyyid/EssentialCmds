@@ -44,7 +44,7 @@ public class MuteExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Game game = EssentialCmds.game;
+		Game game = EssentialCmds.getEssentialCmds().getGame();
 		Player p = ctx.<Player> getOne("player").get();
 		Optional<Long> time = ctx.<Long> getOne("time");
 		Optional<String> timeUnit = ctx.<String> getOne("time unit");
@@ -79,7 +79,7 @@ public class MuteExecutor implements CommandExecutor
 			taskBuilder.execute(() -> {
 				if (EssentialCmds.muteList.contains(p.getUniqueId()))
 					EssentialCmds.muteList.remove(p.getUniqueId());
-			}).interval(time.get(), unit).name("EssentialCmds - Remove previous mutes").submit(EssentialCmds.game.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
+			}).interval(time.get(), unit).name("EssentialCmds - Remove previous mutes").submit(game.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
 		}
 
 		EssentialCmds.muteList.add(p.getUniqueId());

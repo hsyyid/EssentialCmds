@@ -30,6 +30,7 @@ import io.github.hsyyid.essentialcmds.events.TPAEvent;
 import io.github.hsyyid.essentialcmds.events.TPAHereAcceptEvent;
 import io.github.hsyyid.essentialcmds.events.TPAHereEvent;
 import io.github.hsyyid.essentialcmds.utils.PendingInvitation;
+import org.spongepowered.api.Game;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.service.scheduler.SchedulerService;
 import org.spongepowered.api.service.scheduler.Task;
@@ -38,8 +39,12 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.concurrent.TimeUnit;
 
+import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
+
 public class TPAListener
 {
+
+	private Game game = getEssentialCmds().getGame();
 	@Listener
 	public void tpaEventHandler(TPAEvent event)
 	{
@@ -53,7 +58,7 @@ public class TPAListener
 		EssentialCmds.pendingInvites.add(invite);
 
 		// Removes Invite after 10 Seconds
-		SchedulerService scheduler = EssentialCmds.game.getScheduler();
+		SchedulerService scheduler = game.getScheduler();
 		Task.Builder taskBuilder = scheduler.createTaskBuilder();
 
 		taskBuilder.execute(() -> {
@@ -62,7 +67,7 @@ public class TPAListener
 				EssentialCmds.pendingInvites.remove(invite);
 			}
 		}).delay(10, TimeUnit.SECONDS).name("EssentialCmds - Remove Pending Invite")
-			.submit(EssentialCmds.game.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
+			.submit(game.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
 	}
 	
 	@Listener
@@ -95,7 +100,7 @@ public class TPAListener
 		EssentialCmds.pendingInvites.add(invite);
 
 		// Removes Invite after 10 Seconds
-		SchedulerService scheduler = EssentialCmds.game.getScheduler();
+		SchedulerService scheduler = game.getScheduler();
 		Task.Builder taskBuilder = scheduler.createTaskBuilder();
 
 		taskBuilder.execute(() -> {
@@ -104,6 +109,6 @@ public class TPAListener
 				EssentialCmds.pendingInvites.remove(invite);
 			}
 		}).delay(10, TimeUnit.SECONDS).name("EssentialCmds - Remove Pending Invite")
-			.submit(EssentialCmds.game.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
+			.submit(game.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
 	}
 }

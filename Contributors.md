@@ -1,5 +1,5 @@
 Contributing to EssentialCmds
-==============================
+=============================
 
 ## Code Style ##
 * Line endings

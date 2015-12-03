@@ -127,7 +127,7 @@ public class CreateWorldExecutor implements CommandExecutor
 
 		src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Beginning creation of world."));
 		
-		Optional<World> world = EssentialCmds.game.getRegistry().createBuilder(WorldBuilder.class)
+		Optional<World> world = EssentialCmds.getEssentialCmds().getGame().getRegistry().createBuilder(WorldBuilder.class)
 			.name(name)
 			.enabled(true)
 			.loadsOnStartup(true)

@@ -157,7 +157,7 @@ public class MobSpawnerExecutor implements CommandExecutor
 					return CommandResult.success();
 			}
 
-			ItemStack.Builder itemBuilder = EssentialCmds.game.getRegistry().createBuilder(ItemStack.Builder.class);
+			ItemStack.Builder itemBuilder = EssentialCmds.getEssentialCmds().getGame().getRegistry().createBuilder(ItemStack.Builder.class);
 			ItemStack mobSpawnerStack = itemBuilder.itemType(ItemTypes.MOB_SPAWNER).quantity(1).build();
 			Optional<MobSpawnerData> optionalMobSpawnerData = mobSpawnerStack.getOrCreate(MobSpawnerData.class);
 

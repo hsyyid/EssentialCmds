@@ -22,31 +22,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.hsyyid.essentialcmds.cmdexecutors;
+package io.github.hsyyid.essentialcmds.api.util.config;
 
-import org.spongepowered.api.Game;
-import org.spongepowered.api.Server;
-import org.spongepowered.api.text.Texts;
-import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.util.command.CommandException;
-import org.spongepowered.api.util.command.CommandResult;
-import org.spongepowered.api.util.command.CommandSource;
-import org.spongepowered.api.util.command.args.CommandContext;
-import org.spongepowered.api.util.command.spec.CommandExecutor;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 
-import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
+/**
+ * Template used for all config files
+ */
+public interface Configurable {
 
-public class PardonExecutor implements CommandExecutor
-{
-	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
-	{
-		Game game = getEssentialCmds().getGame();
-		Server server = game.getServer();
-		String player = ctx.<String> getOne("player").get();
+    void setup();
 
-		game.getCommandDispatcher().process(server.getConsole(), "minecraft:pardon " + player);
-		src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player unbanned."));
+    void load();
 
-		return CommandResult.success();
-	}
+    void save();
+
+    void populate();
+
+    CommentedConfigurationNode get();
 }

@@ -33,8 +33,8 @@ import org.spongepowered.api.event.entity.DisplaceEntityEvent;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
-public class PlayerMoveListener
-{
+public class PlayerMoveListener {
+
 	@Listener
 	public void onPlayerMove(DisplaceEntityEvent event)
 	{
@@ -85,7 +85,7 @@ public class PlayerMoveListener
 				{
 					if (removeAFK.getAFK())
 					{
-						for (Player p : EssentialCmds.game.getServer().getOnlinePlayers())
+						for (Player p : event.getGame().getServer().getOnlinePlayers())
 						{
 							p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is no longer AFK."));
 						}	

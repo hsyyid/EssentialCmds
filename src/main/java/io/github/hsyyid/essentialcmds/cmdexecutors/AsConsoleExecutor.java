@@ -36,7 +36,7 @@ public class AsConsoleExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Game game = EssentialCmds.game;
+		Game game = EssentialCmds.getEssentialCmds().getGame();
 		String command = ctx.<String> getOne("command").get();
 		game.getCommandDispatcher().process(game.getServer().getConsole().getCommandSource().get(), command);
 		return CommandResult.success();

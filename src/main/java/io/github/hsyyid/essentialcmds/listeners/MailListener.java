@@ -24,25 +24,29 @@
  */
 package io.github.hsyyid.essentialcmds.listeners;
 
-import io.github.hsyyid.essentialcmds.utils.Utils;
-
 import io.github.hsyyid.essentialcmds.events.MailSendEvent;
-import io.github.hsyyid.essentialcmds.EssentialCmds;
+import io.github.hsyyid.essentialcmds.utils.Utils;
+import org.spongepowered.api.Game;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
+import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
+
 public class MailListener
 {
+
+	private Game game = getEssentialCmds().getGame();
+
 	@Listener
 	public void onMailSend(MailSendEvent event)
 	{
 		String recipientName = event.getRecipientName();
 
-		if (EssentialCmds.game.getServer().getPlayer(recipientName).isPresent())
+		if (game.getServer().getPlayer(recipientName).isPresent())
 		{
 			Utils.addMail(event.getSender().getName(), recipientName, event.getMessage());
-			EssentialCmds.game.getServer()
+			game.getServer()
 				.getPlayer(recipientName)
 				.get()
 				.sendMessage(

@@ -40,7 +40,7 @@ public class MotdExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Game game = EssentialCmds.game;
+		Game game = EssentialCmds.getEssentialCmds().getGame();
 		Server server = game.getServer();
 		src.sendMessage(Texts.of(TextColors.GOLD, "[MOTD]: ", server.getMotd()));
 		return CommandResult.success();
