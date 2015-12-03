@@ -31,6 +31,7 @@ import io.github.hsyyid.essentialcmds.EssentialCmds;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import org.spongepowered.api.Game;
 import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
 import org.spongepowered.api.data.value.mutable.Value;
 import org.spongepowered.api.entity.living.player.Player;
@@ -43,6 +44,7 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.storage.WorldProperties;
 
+import javax.sql.DataSource;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -50,24 +52,17 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.sql.*;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import javax.sql.DataSource;
+import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
 
 public class Utils
 {
 	private static Gson gson = new GsonBuilder().create();
+
+	private static Game game = getEssentialCmds().getGame();
 
 	public static void addMute(UUID playerUUID)
 	{
@@ -78,7 +73,7 @@ public class Utils
 		{
 			if (Utils.useMySQL())
 			{
-				SqlService sql = EssentialCmds.game.getServiceManager().provide(SqlService.class).get();
+				SqlService sql = game.getServiceManager().provide(SqlService.class).get();
 				String host = Utils.getMySQLHost();
 				String port = String.valueOf(Utils.getMySQLPort());
 				String username = Utils.getMySQLUsername();
@@ -132,7 +127,7 @@ public class Utils
 		{
 			if (Utils.useMySQL())
 			{
-				SqlService sql = EssentialCmds.game.getServiceManager().provide(SqlService.class).get();
+				SqlService sql = game.getServiceManager().provide(SqlService.class).get();
 				String host = Utils.getMySQLHost();
 				String port = String.valueOf(Utils.getMySQLPort());
 				String username = Utils.getMySQLUsername();
@@ -179,17 +174,17 @@ public class Utils
 
 	public static void startAFKService()
 	{
-		SchedulerService scheduler = EssentialCmds.game.getScheduler();
+		SchedulerService scheduler = game.getScheduler();
 		Task.Builder taskBuilder = scheduler.createTaskBuilder();
 
 		taskBuilder.execute(() -> {
-			for (Player player : EssentialCmds.game.getServer().getOnlinePlayers())
+			for (Player player : game.getServer().getOnlinePlayers())
 			{
 				for (AFK afk : EssentialCmds.movementList)
 				{
 					if (afk.getPlayer().getUniqueId().equals(player.getUniqueId()) && ((System.currentTimeMillis() - afk.lastMovementTime) > Utils.getAFK()) && !afk.getMessaged())
 					{
-						for (Player p : EssentialCmds.game.getServer().getOnlinePlayers())
+						for (Player p : game.getServer().getOnlinePlayers())
 						{
 							p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is now AFK."));
 							Optional<FoodData> data = p.get(FoodData.class);
@@ -225,7 +220,7 @@ public class Utils
 					}
 				}
 			}
-		}).interval(1, TimeUnit.SECONDS).name("EssentialCmds - AFK").submit(EssentialCmds.game.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
+		}).interval(1, TimeUnit.SECONDS).name("EssentialCmds - AFK").submit(game.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
 	}
 
 	public static String getMySQLPort()
@@ -607,7 +602,7 @@ public class Utils
 		{
 			if (Utils.useMySQL())
 			{
-				SqlService sql = EssentialCmds.game.getServiceManager().provide(SqlService.class).get();
+				SqlService sql = game.getServiceManager().provide(SqlService.class).get();
 				String host = Utils.getMySQLHost();
 				String port = String.valueOf(Utils.getMySQLPort());
 				String username = Utils.getMySQLUsername();
@@ -1138,7 +1133,7 @@ public class Utils
 			double z = zNode.getDouble();
 			ConfigurationNode worldNode = EssentialCmds.config.getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.worldUUID").split("\\."));
 			UUID worldUUID = UUID.fromString(worldNode.getString());
-			Optional<World> world = EssentialCmds.game.getServer().getWorld(worldUUID);
+			Optional<World> world = game.getServer().getWorld(worldUUID);
 
 			if (world.isPresent())
 				return new Location<World>(world.get(), x, y, z);
@@ -1313,12 +1308,12 @@ public class Utils
 		}
 		catch (IllegalArgumentException e)
 		{
-			Optional<WorldProperties> props = EssentialCmds.game.getServer().getWorldProperties(valueNode.getString());
+			Optional<WorldProperties> props = game.getServer().getWorldProperties(valueNode.getString());
 			if (props.isPresent())
 			{
 				if (props.get().isEnabled())
 				{
-					Optional<World> world = EssentialCmds.game.getServer().loadWorld(valueNode.getString());
+					Optional<World> world = game.getServer().loadWorld(valueNode.getString());
 					if (world.isPresent())
 					{
 						return world.get().getUniqueId();

@@ -27,6 +27,7 @@ package io.github.hsyyid.essentialcmds.cmdexecutors;
 import io.github.hsyyid.essentialcmds.utils.Message;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
+import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
@@ -41,8 +42,13 @@ import org.spongepowered.api.util.command.spec.CommandExecutor;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
+
 public class RespondExecutor implements CommandExecutor
 {
+
+	private Game game = getEssentialCmds().getGame();
+
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		if (src instanceof Player)
@@ -63,7 +69,7 @@ public class RespondExecutor implements CommandExecutor
 			{
 				String message = ctx.<String> getOne("message").get();
 
-				ArrayList<Player> socialSpies = (ArrayList<Player>) EssentialCmds.game.getServer().getOnlinePlayers().stream().filter(p -> EssentialCmds.socialSpies.contains(p.getUniqueId())).collect(Collectors.toList());
+				ArrayList<Player> socialSpies = (ArrayList<Player>) game.getServer().getOnlinePlayers().stream().filter(p -> EssentialCmds.socialSpies.contains(p.getUniqueId())).collect(Collectors.toList());
 
 				if (recipient.getUniqueId().toString().equals(player.getUniqueId().toString()))
 				{

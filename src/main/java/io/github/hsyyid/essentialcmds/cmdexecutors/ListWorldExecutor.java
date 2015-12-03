@@ -42,18 +42,13 @@ import org.spongepowered.api.world.World;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ListWorldExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		ArrayList<String> worlds = new ArrayList<>();
-
-		for (World world : EssentialCmds.game.getServer().getWorlds())
-		{
-			if (world.getProperties().isEnabled())
-				worlds.add(world.getName());
-		}
+		ArrayList<String> worlds = EssentialCmds.getEssentialCmds().getGame().getServer().getWorlds().stream().filter(world -> world.getProperties().isEnabled()).map(World::getName).collect(Collectors.toCollection(ArrayList::new));
 
 		Optional<Integer> optionalPageNo = ctx.<Integer> getOne("page no");
 		int pageNo;

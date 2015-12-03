@@ -39,7 +39,7 @@ public class LoadWorldExecutor implements CommandExecutor
 	{
 		String name = ctx.<String> getOne("name").get();
 
-		if (EssentialCmds.game.getServer().loadWorld(name).isPresent())
+		if (EssentialCmds.getEssentialCmds().getGame().getServer().loadWorld(name).isPresent())
 		{
 			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "World ", TextColors.GRAY, name, TextColors.GOLD, " has been imported."));
 		}

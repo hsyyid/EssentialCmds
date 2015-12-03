@@ -41,12 +41,14 @@ import org.spongepowered.api.util.command.source.CommandBlockSource;
 import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
+import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
+
 public class TPAAcceptExecutor implements CommandExecutor
 {
+	private Game game = getEssentialCmds().getGame();
+
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Game game = EssentialCmds.game;
-
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;

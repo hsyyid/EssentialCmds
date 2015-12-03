@@ -25,11 +25,10 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.utils.Utils;
-
-import io.github.hsyyid.essentialcmds.EssentialCmds;
+import org.spongepowered.api.Game;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.service.permission.option.OptionSubject;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.command.CommandException;
@@ -40,15 +39,15 @@ import org.spongepowered.api.util.command.spec.CommandExecutor;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Optional;
-import java.util.TimeZone;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+
+import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
 
 public class WhoisExecutor implements CommandExecutor
 {
+	private static Game game = getEssentialCmds().getGame();
+
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		Optional<Player> optPlayer = ctx.<Player> getOne("player");
@@ -59,7 +58,7 @@ public class WhoisExecutor implements CommandExecutor
 			Player player = optPlayer.get();
 			src.sendMessage(Texts.of(TextColors.GOLD, "Real Name: ", TextColors.GRAY, player.getName()));
 			src.sendMessage(Texts.of(TextColors.GOLD, "UUID: ", TextColors.GRAY, player.getUniqueId().toString()));
-			if (EssentialCmds.game.getServer().getPlayer(player.getUniqueId()).isPresent())
+			if (game.getServer().getPlayer(player.getUniqueId()).isPresent())
 				src.sendMessage(Texts.of(TextColors.GOLD, "Current Ontime: ", TextColors.GRAY, getCurrentOnTime(player.getUniqueId())));
 			else
 				src.sendMessage(Texts.of(TextColors.GOLD, "Last Time Online: ", TextColors.GRAY, Utils.getLastTimePlayerJoined(player.getUniqueId())));
@@ -67,14 +66,14 @@ public class WhoisExecutor implements CommandExecutor
 		}
 		else if (optPlayerName.isPresent())
 		{
-			Optional<Player> optionalPlayer = EssentialCmds.game.getServer().getPlayer(optPlayerName.get());
+			Optional<Player> optionalPlayer = game.getServer().getPlayer(optPlayerName.get());
 
 			if (optionalPlayer.isPresent())
 			{
 				Player player = optionalPlayer.get();
 				src.sendMessage(Texts.of(TextColors.GOLD, "Real Name: ", TextColors.GRAY, player.getName()));
 				src.sendMessage(Texts.of(TextColors.GOLD, "UUID: ", TextColors.GRAY, player.getUniqueId().toString()));
-				if (EssentialCmds.game.getServer().getPlayer(player.getUniqueId()).isPresent())
+				if (game.getServer().getPlayer(player.getUniqueId()).isPresent())
 					src.sendMessage(Texts.of(TextColors.GOLD, "Current Ontime: ", TextColors.GRAY, getCurrentOnTime(player.getUniqueId())));
 				else
 					src.sendMessage(Texts.of(TextColors.GOLD, "Last Time Online: ", TextColors.GRAY, Utils.getLastTimePlayerJoined(player.getUniqueId())));
@@ -84,7 +83,7 @@ public class WhoisExecutor implements CommandExecutor
 			{
 				Player foundPlayer = null;
 
-				for (Player player : EssentialCmds.game.getServer().getOnlinePlayers())
+				for (Player player : game.getServer().getOnlinePlayers())
 				{
 					Subject subject = player.getContainingCollection().get(player.getIdentifier());
 
@@ -117,7 +116,7 @@ public class WhoisExecutor implements CommandExecutor
 					Player player = foundPlayer;
 					src.sendMessage(Texts.of(TextColors.GOLD, "Real Name: ", TextColors.GRAY, player.getName()));
 					src.sendMessage(Texts.of(TextColors.GOLD, "UUID: ", TextColors.GRAY, player.getUniqueId().toString()));
-					if (EssentialCmds.game.getServer().getPlayer(player.getUniqueId()).isPresent())
+					if (game.getServer().getPlayer(player.getUniqueId()).isPresent())
 						src.sendMessage(Texts.of(TextColors.GOLD, "Current Ontime: ", TextColors.GRAY, getCurrentOnTime(player.getUniqueId())));
 					else
 						src.sendMessage(Texts.of(TextColors.GOLD, "Last Time Online: ", TextColors.GRAY, Utils.getLastTimePlayerJoined(player.getUniqueId())));

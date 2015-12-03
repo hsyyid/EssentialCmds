@@ -43,7 +43,7 @@ public class ButcherExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Game game = EssentialCmds.game;
+		Game game = EssentialCmds.getEssentialCmds().getGame();
 
 		if (src instanceof Player)
 		{

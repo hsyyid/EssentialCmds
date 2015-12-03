@@ -65,7 +65,7 @@ public class PlayerClickListener
 
 			if (foundTool != null)
 			{
-				EssentialCmds.game.getCommandDispatcher().process(player, foundTool.getCommand());
+				event.getGame().getCommandDispatcher().process(player, foundTool.getCommand());
 			}
 		}
 	}

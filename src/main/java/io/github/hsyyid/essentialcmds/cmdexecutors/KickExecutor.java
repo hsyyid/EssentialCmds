@@ -45,7 +45,7 @@ public class KickExecutor implements CommandExecutor
 	@SuppressWarnings("deprecation")
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Game game = EssentialCmds.game;
+		Game game = EssentialCmds.getEssentialCmds().getGame();
 		Server server = game.getServer();
 		Player player = ctx.<Player> getOne("player").get();
 		String reason = ctx.<String> getOne("reason").get();
