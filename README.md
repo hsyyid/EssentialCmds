@@ -4,7 +4,7 @@ EssentialCmds
 **Currently not stable and under heavy development**
 
 A minecraft plugin for Sponge platforms.
-Contains many essential commands, features and a lot useful APIs.
+Contains many essential commands, features and other useful goodies.
 
 
 ## Links ##
@@ -59,15 +59,15 @@ The following steps will update your clone with the official repo.
 __Note:__ If you do not have [Gradle] installed then use ./gradlew for Unix systems or Git Bash and gradlew.bat for
 Windows systems in place of any 'gradle' command.
 
-We use [Gradle] for Essence Sponge.
+We use [Gradle] for EssentialCmds.
 
-In order to build Essence Sponge you simply need to run the `gradle` command.
+In order to build EssentialCmds you simply need to run the `gradle` command.
 You can find the compiled JAR file in `./build/libs` labeled similarly to 'EssentialCmds-x.x.jar'.
 
 [Source]: https://github.com/hsyyid/EssentialCmds
 [Wiki]: https://github.com/hsyyid/EssentialCmds/wiki
 [Issues]: https://github.com/hsyyid/EssentialCmds/issues
-[Website]: http://negafinity.com
+[Website]: http://essentialcmds.negafinity.com
 [MIT License]: https://tldrlegal.com/license/mit-license
 [Java]: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 [rules]: Contributors.md
