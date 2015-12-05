@@ -24,6 +24,8 @@
  */
 package io.github.hsyyid.essentialcmds.listeners;
 
+import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
+
 import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.events.TPAAcceptEvent;
 import io.github.hsyyid.essentialcmds.events.TPAEvent;
@@ -32,14 +34,12 @@ import io.github.hsyyid.essentialcmds.events.TPAHereEvent;
 import io.github.hsyyid.essentialcmds.utils.PendingInvitation;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.service.scheduler.SchedulerService;
-import org.spongepowered.api.service.scheduler.Task;
+import org.spongepowered.api.scheduler.Scheduler;
+import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.concurrent.TimeUnit;
-
-import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
 
 public class TPAListener
 {
@@ -58,7 +58,7 @@ public class TPAListener
 		EssentialCmds.pendingInvites.add(invite);
 
 		// Removes Invite after 10 Seconds
-		SchedulerService scheduler = game.getScheduler();
+		Scheduler scheduler = game.getScheduler();
 		Task.Builder taskBuilder = scheduler.createTaskBuilder();
 
 		taskBuilder.execute(() -> {
@@ -100,7 +100,7 @@ public class TPAListener
 		EssentialCmds.pendingInvites.add(invite);
 
 		// Removes Invite after 10 Seconds
-		SchedulerService scheduler = game.getScheduler();
+		Scheduler scheduler = game.getScheduler();
 		Task.Builder taskBuilder = scheduler.createTaskBuilder();
 
 		taskBuilder.execute(() -> {

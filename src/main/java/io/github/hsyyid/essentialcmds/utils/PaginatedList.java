@@ -24,13 +24,13 @@
  */
 package io.github.hsyyid.essentialcmds.utils;
 
+import org.spongepowered.api.command.CommandMessageFormatting;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.TextBuilder;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.util.command.CommandMessageFormatting;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -26,11 +26,11 @@ package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
 import org.spongepowered.api.Game;
-import org.spongepowered.api.util.command.CommandException;
-import org.spongepowered.api.util.command.CommandResult;
-import org.spongepowered.api.util.command.CommandSource;
-import org.spongepowered.api.util.command.args.CommandContext;
-import org.spongepowered.api.util.command.spec.CommandExecutor;
+import org.spongepowered.api.command.CommandException;
+import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.spec.CommandExecutor;
 
 public class AsConsoleExecutor implements CommandExecutor
 {
@@ -38,7 +38,7 @@ public class AsConsoleExecutor implements CommandExecutor
 	{
 		Game game = EssentialCmds.getEssentialCmds().getGame();
 		String command = ctx.<String> getOne("command").get();
-		game.getCommandDispatcher().process(game.getServer().getConsole().getCommandSource().get(), command);
+		game.getCommandManager().process(game.getServer().getConsole().getCommandSource().get(), command);
 		return CommandResult.success();
 	}
 }
