@@ -67,7 +67,7 @@ public class TPAListener
 				EssentialCmds.pendingInvites.remove(invite);
 			}
 		}).delay(10, TimeUnit.SECONDS).name("EssentialCmds - Remove Pending Invite")
-			.submit(game.getPluginManager().getPlugin("EssentialCmds").get());
+			.submit(game.getPluginManager().getPlugin("EssentialCmds").get().getInstance().get());
 	}
 	
 	@Listener

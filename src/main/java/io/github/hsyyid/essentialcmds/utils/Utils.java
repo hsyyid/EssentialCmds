@@ -236,7 +236,7 @@ public class Utils
 					}
 				}
 			}
-		}).interval(1, TimeUnit.SECONDS).name("EssentialCmds - AFK").submit(game.getPluginManager().getPlugin("EssentialCmds").get());
+		}).interval(1, TimeUnit.SECONDS).name("EssentialCmds - AFK").submit(game.getPluginManager().getPlugin("EssentialCmds").get().getInstance().get());
 	}
 
 	public static String getMySQLPort()
