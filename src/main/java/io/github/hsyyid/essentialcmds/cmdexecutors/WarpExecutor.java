@@ -40,20 +40,65 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public class WarpExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		String warpName = ctx.<String> getOne("warp name").get();
+		Optional<Player> optionalPlayer = ctx.<Player> getOne("player");
 
-		if (src instanceof Player)
+		if (!optionalPlayer.isPresent())
 		{
-			Player player = (Player) src;
+			if (src instanceof Player)
+			{
+				Player player = (Player) src;
+
+				if (Utils.isWarpInConfig(warpName))
+				{
+					if (player.hasPermission("essentialcmds.warp." + warpName))
+					{
+						if (!Objects.equals(player.getWorld().getUniqueId(), Utils.getWarpWorldUUID(warpName)))
+						{
+							Vector3d position = new Vector3d(Utils.getWarpX(warpName), Utils.getWarpY(warpName), Utils.getWarpZ(warpName));
+							player.transferToWorld(Utils.getWarpWorldUUID(warpName), position);
+							src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
+							return CommandResult.success();
+						}
+						else
+						{
+							Location<World> warp = new Location<>(player.getWorld(), Utils.getWarpX(warpName), Utils.getWarpY(warpName), Utils.getWarpZ(warpName));
+							player.setLocation(warp);
+						}
+					}
+					else
+					{
+						src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to use this warp!"));
+						return CommandResult.success();
+					}
+				}
+				else
+				{
+					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Warp " + warpName + " does not exist!"));
+				}
+			}
+			else if (src instanceof ConsoleSource)
+			{
+				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /warp!"));
+			}
+			else if (src instanceof CommandBlockSource)
+			{
+				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /warp!"));
+			}
+		}
+		else
+		{
+			Player player = optionalPlayer.get();
 
 			if (Utils.isWarpInConfig(warpName))
 			{
-				if (player.hasPermission("essentialcmds.warp." + warpName))
+				if (src.hasPermission("essentialcmds.warp." + warpName))
 				{
 					if (!Objects.equals(player.getWorld().getUniqueId(), Utils.getWarpWorldUUID(warpName)))
 					{
@@ -79,14 +124,7 @@ public class WarpExecutor implements CommandExecutor
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Warp " + warpName + " does not exist!"));
 			}
 		}
-		else if (src instanceof ConsoleSource)
-		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /warp!"));
-		}
-		else if (src instanceof CommandBlockSource)
-		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /warp!"));
-		}
+
 		return CommandResult.success();
 	}
 }

@@ -400,7 +400,6 @@ public class Utils
 
 	public static void setLastTimePlayerJoined(UUID uuid, String time)
 	{
-
 		Configs.getConfig().getNode("player", uuid.toString(), "time").setValue(time);
 
 		Configs.saveConfig();
