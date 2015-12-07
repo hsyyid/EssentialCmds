@@ -54,17 +54,18 @@ public class PlayerMoveListener
 				EssentialCmds.recentlyJoined.remove(player);
 				AFK removeAFK = null;
 
-				for (AFK a : EssentialCmds.movementList)
+				for (AFK a : EssentialCmds.afkList)
 				{
-					if (player.getUniqueId() == a.getPlayer().getUniqueId())
+					if (player.getUniqueId().equals(a.getPlayer().getUniqueId()))
 					{
 						removeAFK = a;
 						break;
 					}
 				}
+
 				if (removeAFK != null)
 				{
-					EssentialCmds.movementList.remove(removeAFK);
+					EssentialCmds.afkList.remove(removeAFK);
 				}
 			}
 			else
@@ -72,9 +73,9 @@ public class PlayerMoveListener
 				AFK afk = new AFK(player, System.currentTimeMillis());
 				AFK removeAFK = null;
 
-				for (AFK a : EssentialCmds.movementList)
+				for (AFK a : EssentialCmds.afkList)
 				{
-					if (player.getUniqueId() == a.getPlayer().getUniqueId())
+					if (player.getUniqueId().equals(a.getPlayer().getUniqueId()))
 					{
 						removeAFK = a;
 						break;
@@ -85,19 +86,16 @@ public class PlayerMoveListener
 				{
 					if (removeAFK.getAFK())
 					{
-						for (Player p : event.getGame().getServer().getOnlinePlayers())
+						for (Player p : EssentialCmds.getEssentialCmds().getGame().getServer().getOnlinePlayers())
 						{
 							p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is no longer AFK."));
 						}
 					}
 
-					EssentialCmds.movementList.remove(removeAFK);
-					EssentialCmds.movementList.add(afk);
+					EssentialCmds.afkList.remove(removeAFK);
 				}
-				else
-				{
-					EssentialCmds.movementList.add(afk);
-				}
+
+				EssentialCmds.afkList.add(afk);
 			}
 		}
 	}

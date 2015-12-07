@@ -152,7 +152,7 @@ public class EssentialCmds
 
 	public static TeleportHelper helper;
 	public static List<PendingInvitation> pendingInvites = Lists.newArrayList();
-	public static List<AFK> movementList = Lists.newArrayList();
+	public static List<AFK> afkList = Lists.newArrayList();
 	public static List<Player> recentlyJoined = Lists.newArrayList();
 	public static List<Powertool> powertools = Lists.newArrayList();
 	public static Set<UUID> socialSpies = Sets.newHashSet();

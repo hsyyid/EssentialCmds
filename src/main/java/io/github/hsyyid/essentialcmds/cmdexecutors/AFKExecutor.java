@@ -48,7 +48,7 @@ public class AFKExecutor implements CommandExecutor
 
 			AFK playerAFK = null;
 
-			for (AFK afk : EssentialCmds.movementList)
+			for (AFK afk : EssentialCmds.afkList)
 			{
 				if (afk.getPlayer().getUniqueId().equals(player.getUniqueId()))
 				{
@@ -59,13 +59,13 @@ public class AFKExecutor implements CommandExecutor
 
 			if (playerAFK != null)
 			{
-				EssentialCmds.movementList.remove(playerAFK);
+				EssentialCmds.afkList.remove(playerAFK);
 			}
 
 			int afkTime = (int) Utils.getAFK();
 			long afkTimer = afkTime + 1000;
 			AFK afk = new AFK(player, afkTimer);
-			EssentialCmds.movementList.add(afk);
+			EssentialCmds.afkList.add(afk);
 		}
 		else if (src instanceof ConsoleSource)
 		{

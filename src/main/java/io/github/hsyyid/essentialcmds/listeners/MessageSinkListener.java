@@ -24,6 +24,7 @@
  */
 package io.github.hsyyid.essentialcmds.listeners;
 
+import io.github.hsyyid.essentialcmds.utils.AFK;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
@@ -127,6 +128,55 @@ public class MessageSinkListener
 		{
 			Player player = event.getCause().first(Player.class).get();
 
+			if (EssentialCmds.recentlyJoined.contains(player))
+			{
+				EssentialCmds.recentlyJoined.remove(player);
+				AFK removeAFK = null;
+
+				for (AFK a : EssentialCmds.afkList)
+				{
+					if (player.getUniqueId().equals(a.getPlayer().getUniqueId()))
+					{
+						removeAFK = a;
+						break;
+					}
+				}
+
+				if (removeAFK != null)
+				{
+					EssentialCmds.afkList.remove(removeAFK);
+				}
+			}
+			else
+			{
+				AFK afk = new AFK(player, System.currentTimeMillis());
+				AFK removeAFK = null;
+
+				for (AFK a : EssentialCmds.afkList)
+				{
+					if (player.getUniqueId().equals(a.getPlayer().getUniqueId()))
+					{
+						removeAFK = a;
+						break;
+					}
+				}
+
+				if (removeAFK != null)
+				{
+					if (removeAFK.getAFK())
+					{
+						for (Player p : EssentialCmds.getEssentialCmds().getGame().getServer().getOnlinePlayers())
+						{
+							p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is no longer AFK."));
+						}
+					}
+
+					EssentialCmds.afkList.remove(removeAFK);
+				}
+
+				EssentialCmds.afkList.add(afk);
+			}
+			
 			for (UUID mutedUUID : EssentialCmds.muteList)
 			{
 				if (mutedUUID.equals(player.getUniqueId()))

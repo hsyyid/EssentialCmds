@@ -168,7 +168,7 @@ public class Utils
 				{
 					System.out.println("[EssentialCmds]: You do not have ANY database software installed! Mutes will not work or be saved until this is fixed.");
 				}
-				
+
 				c = DriverManager.getConnection("jdbc:sqlite:Mutes.db");
 				stmt = c.createStatement();
 
@@ -196,42 +196,49 @@ public class Utils
 		taskBuilder.execute(() -> {
 			for (Player player : game.getServer().getOnlinePlayers())
 			{
-				for (AFK afk : EssentialCmds.movementList)
+				if(player.hasPermission("essentialcmds.afk.exempt"))
 				{
-					if (afk.getPlayer().getUniqueId().equals(player.getUniqueId()) && ((System.currentTimeMillis() - afk.lastMovementTime) > Utils.getAFK()) && !afk.getMessaged())
+					for (AFK afk : EssentialCmds.afkList)
 					{
-						for (Player p : game.getServer().getOnlinePlayers())
+						if (afk.getPlayer().getUniqueId().equals(player.getUniqueId()) && ((System.currentTimeMillis() - afk.lastMovementTime) > Utils.getAFK()) && !afk.getMessaged())
 						{
-							p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is now AFK."));
+							for (Player p : game.getServer().getOnlinePlayers())
+							{
+								p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is now AFK."));
+								Optional<FoodData> data = p.get(FoodData.class);
+
+								if (data.isPresent())
+								{
+									FoodData food = data.get();
+									afk.setFood(food.foodLevel().get());
+								}
+							}
+
+							afk.setMessaged(true);
+							afk.setAFK(true);
+						}
+
+						if (afk.getAFK())
+						{
+							Player p = afk.getPlayer();
 							Optional<FoodData> data = p.get(FoodData.class);
+
 							if (data.isPresent())
 							{
 								FoodData food = data.get();
-								afk.setFood(food.foodLevel().get());
-							}
-						}
-						afk.setMessaged(true);
-						afk.setAFK(true);
-					}
 
-					if (afk.getAFK())
-					{
-						Player p = afk.getPlayer();
-						Optional<FoodData> data = p.get(FoodData.class);
-						if (data.isPresent())
-						{
-							FoodData food = data.get();
-							if (food.foodLevel().get() < afk.getFood())
+								if (food.foodLevel().get() < afk.getFood())
+								{
+									Value<Integer> foodLevel = food.foodLevel().set(afk.getFood());
+									food.set(foodLevel);
+									p.offer(food);
+								}
+							}
+
+							if (!(p.hasPermission("essentialcmds.afk.kick.false")) && Utils.getAFKKick() && afk.getLastMovementTime() >= Utils.getAFKKickTimer())
 							{
-								Value<Integer> foodLevel = food.foodLevel().set(afk.getFood());
-								food.set(foodLevel);
-								p.offer(food);
+								p.kick(Texts.of(TextColors.GOLD, "Kicked for being AFK too long."));
 							}
-						}
-
-						if (!(p.hasPermission("afk.kick.false")) && Utils.getAFKKick() && afk.getLastMovementTime() >= Utils.getAFKKickTimer())
-						{
-							p.kick(Texts.of(TextColors.GOLD, "Kicked for being AFK too long."));
 						}
 					}
 				}
@@ -542,7 +549,7 @@ public class Utils
 
 				String executeString = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID TEXT PRIMARY KEY  NOT NULL)";
 				execute(executeString, datasource);
-				
+
 				DatabaseMetaData metadata = datasource.getConnection().getMetaData();
 				ResultSet rs = metadata.getTables(null, null, "Mutes", null);
 				Set<UUID> muteList = Sets.newHashSet();
@@ -560,7 +567,7 @@ public class Utils
 			{
 				Connection c;
 				Statement stmt;
-				
+
 				try
 				{
 					Class.forName("org.sqlite.JDBC");
@@ -569,14 +576,14 @@ public class Utils
 				{
 					System.out.println("[EssentialCmds]: You do not have ANY database software installed! Mutes will not work or be saved until this is fixed.");
 				}
-				
+
 				c = DriverManager.getConnection("jdbc:sqlite:Mutes.db");
 				c.setAutoCommit(false);
 				stmt = c.createStatement();
-				
+
 				String sql = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID TEXT PRIMARY KEY     NOT NULL)";
 				stmt.executeUpdate(sql);
-				
+
 				ResultSet rs = stmt.executeQuery("SELECT * FROM MUTES;");
 				Set<UUID> muteList = Sets.newHashSet();
 

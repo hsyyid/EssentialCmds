@@ -71,7 +71,7 @@ public class PlayerJoinListener
 
 		AFK afkToRemove = null;
 
-		for (AFK afk : EssentialCmds.movementList)
+		for (AFK afk : EssentialCmds.afkList)
 		{
 			if (afk.getPlayer().equals(player))
 			{
@@ -82,7 +82,7 @@ public class PlayerJoinListener
 
 		if (afkToRemove != null)
 		{
-			EssentialCmds.movementList.remove(afkToRemove);
+			EssentialCmds.afkList.remove(afkToRemove);
 		}
 
 		String loginMessage = Utils.getLoginMessage();
