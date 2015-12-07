@@ -98,7 +98,7 @@ public class WarpExecutor implements CommandExecutor
 
 			if (Utils.isWarpInConfig(warpName))
 			{
-				if (src.hasPermission("essentialcmds.warp." + warpName))
+				if (src.hasPermission("essentialcmds.warp." + warpName) && src.hasPermission("essentialcmds.warp.others"))
 				{
 					if (!Objects.equals(player.getWorld().getUniqueId(), Utils.getWarpWorldUUID(warpName)))
 					{
