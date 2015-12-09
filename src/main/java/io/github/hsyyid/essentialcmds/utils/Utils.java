@@ -196,7 +196,7 @@ public class Utils
 		taskBuilder.execute(() -> {
 			for (Player player : game.getServer().getOnlinePlayers())
 			{
-				if(player.hasPermission("essentialcmds.afk.exempt"))
+				if(!player.hasPermission("essentialcmds.afk.exempt"))
 				{
 					for (AFK afk : EssentialCmds.afkList)
 					{
