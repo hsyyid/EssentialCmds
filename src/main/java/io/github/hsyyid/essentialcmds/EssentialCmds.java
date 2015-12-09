@@ -64,6 +64,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.ListHomeExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.ListWarpExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.ListWorldExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.LoadWorldExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.LockWeatherExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.MailExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.MailListExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.MailReadExecutor;
@@ -115,6 +116,7 @@ import io.github.hsyyid.essentialcmds.listeners.PlayerJoinListener;
 import io.github.hsyyid.essentialcmds.listeners.PlayerMoveListener;
 import io.github.hsyyid.essentialcmds.listeners.SignChangeListener;
 import io.github.hsyyid.essentialcmds.listeners.TPAListener;
+import io.github.hsyyid.essentialcmds.listeners.WeatherChangeListener;
 import io.github.hsyyid.essentialcmds.managers.config.Config;
 import io.github.hsyyid.essentialcmds.utils.AFK;
 import io.github.hsyyid.essentialcmds.utils.Message;
@@ -159,6 +161,7 @@ public class EssentialCmds
 	public static List<Message> recentlyMessaged = Lists.newArrayList();
 	public static Set<UUID> muteList = Sets.newHashSet();
 	public static Set<UUID> frozenPlayers = Sets.newHashSet();
+	public static Set<UUID> lockedWeatherWorlds = Sets.newHashSet();
 
 	@Inject
 	private Logger logger;
@@ -313,6 +316,14 @@ public class EssentialCmds
 			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame()))))
 			.executor(new GetPosExecutor()).build();
 		getGame().getCommandManager().register(this, getPosCommandSpec, "getpos");
+		
+		CommandSpec lockWeatherCommandSpec =
+			CommandSpec.builder()
+				.description(Texts.of("LockWeather Command"))
+				.permission("essentialcmds.lockweather.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("name"))))
+				.executor(new LockWeatherExecutor()).build();
+		getGame().getCommandManager().register(this, lockWeatherCommandSpec, "lockweather", "killweather");
 
 		CommandSpec gamemodeCommandSpec =
 			CommandSpec
@@ -708,6 +719,7 @@ public class EssentialCmds
 		getGame().getEventManager().registerListeners(this, new TPAListener());
 		getGame().getEventManager().registerListeners(this, new MailListener());
 		getGame().getEventManager().registerListeners(this, new PlayerDisconnectListener());
+		getGame().getEventManager().registerListeners(this, new WeatherChangeListener());
 
 		getLogger().info("-----------------------------");
 		getLogger().info("EssentialCmds was made by HassanS6000!");

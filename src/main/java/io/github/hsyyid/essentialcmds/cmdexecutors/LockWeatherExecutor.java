@@ -26,70 +26,47 @@ package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
 
+import io.github.hsyyid.essentialcmds.EssentialCmds;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.util.Optional;
 
-public class TeleportWorldExecutor implements CommandExecutor
+public class LockWeatherExecutor implements CommandExecutor
 {
 	private Game game = getEssentialCmds().getGame();
-	
+
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Optional<Player> optPlayer = ctx.<Player> getOne("player");
 		String name = ctx.<String> getOne("name").get();
 
-		if (!optPlayer.isPresent())
+		Optional<World> optWorld = game.getServer().getWorld(name);
+
+		if (optWorld.isPresent())
 		{
-			if (src instanceof Player)
+			World world = optWorld.get();
+
+			if (EssentialCmds.lockedWeatherWorlds.contains(world.getUniqueId()))
 			{
-				Player player = (Player) src;
-
-				Optional<World> optWorld = game.getServer().getWorld(name);
-
-				if (optWorld.isPresent())
-				{
-					Location<World> spawnLocation = optWorld.get().getSpawnLocation();
-					player.transferToWorld(name, spawnLocation.getPosition());
-					src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to world."));
-				}
-				else
-				{
-					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "World specified does not exist!"));
-				}
+				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Un-locked weather in world: " + world.getName()));
+				EssentialCmds.lockedWeatherWorlds.remove(world.getUniqueId());
 			}
 			else
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot teleport, you are not a player!"));
+				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Locked weather in world: " + world.getName()));
+				EssentialCmds.lockedWeatherWorlds.add(world.getUniqueId());
 			}
 		}
 		else
 		{
-			Player player = optPlayer.get();
-
-			Optional<World> optWorld = game.getServer().getWorld(name);
-
-			if (optWorld.isPresent())
-			{
-				Location<World> spawnLocation = optWorld.get().getSpawnLocation();
-				player.transferToWorld(name, spawnLocation.getPosition());
-				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported player to world."));
-				player.sendMessage(Texts.of(TextColors.GOLD, src.getName(), TextColors.GRAY, " has teleported you to this world."));
-			}
-			else
-			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "World specified does not exist!"));
-			}
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "World specified does not exist!"));
 		}
 
 		return CommandResult.success();
