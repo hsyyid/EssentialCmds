@@ -31,6 +31,6 @@ public abstract class PluginInfo {
 
     public static final String ID = "EssentialCmds";
     public static final String NAME = "EssentialCmds";
-    public static final String VERSION = "5.9";
+    public static final String VERSION = "@project.version@";
     public static final String DEPENDENCIES = "";
 }

@@ -4,11 +4,14 @@ plugins {
     id 'idea'
     id 'maven'
     id "com.github.hierynomus.license" version "0.12.1"
+    id 'net.ellune.blossom' version '1.0.1'
 }
 
 group = "io.github.hsyyid"
 archivesBaseName = "EssentialCmds"
 version = '5.9'
+
+apply plugin: 'net.ellune.blossom'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -23,7 +26,8 @@ jar {
 }
 
 repositories {
-    mavenCentral()
+//    mavenCentral()
+    jcenter()
     maven {
         name 'Sponge maven repo'
         url 'http://repo.spongepowered.org/maven'
@@ -74,4 +78,14 @@ license {
         //in this case it's the following: /* and then continuing with stars.
         java = 'SLASHSTAR_STYLE'
     }
+}
+
+def getGitHash() {
+    def process = 'git rev-parse --short HEAD'.execute()
+    process.waitFor()
+    return '-' + (process.exitValue() ? 'unknown' : process.text.trim())
+}
+
+blossom {
+    replaceToken '@project.version@', project.version + getGitHash(), 'src/main/java/io/github/hsyyid/essentialcmds/PluginInfo.java'
 }
