@@ -8,7 +8,7 @@ plugins {
 
 group = "io.github.hsyyid"
 archivesBaseName = "EssentialCmds"
-version = '5.8'
+version = '5.9'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
