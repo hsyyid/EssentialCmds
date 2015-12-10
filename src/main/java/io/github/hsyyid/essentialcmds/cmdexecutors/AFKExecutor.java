@@ -62,9 +62,9 @@ public class AFKExecutor implements CommandExecutor
 				EssentialCmds.afkList.remove(playerAFK);
 			}
 
-			int afkTime = (int) Utils.getAFK();
-			long afkTimer = afkTime + 1000;
-			AFK afk = new AFK(player, afkTimer);
+			int timeBeforeAFK = (int) Utils.getAFK();
+			long timeToSet = System.currentTimeMillis() + 1000 + timeBeforeAFK;
+			AFK afk = new AFK(player, timeToSet);
 			EssentialCmds.afkList.add(afk);
 		}
 		else if (src instanceof ConsoleSource)

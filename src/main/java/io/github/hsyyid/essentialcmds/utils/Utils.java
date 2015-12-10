@@ -200,7 +200,8 @@ public class Utils
 				{
 					for (AFK afk : EssentialCmds.afkList)
 					{
-						if (afk.getPlayer().getUniqueId().equals(player.getUniqueId()) && ((System.currentTimeMillis() - afk.lastMovementTime) > Utils.getAFK()) && !afk.getMessaged())
+						if (afk.getPlayer().getUniqueId().equals(player.getUniqueId()) && 
+							((System.currentTimeMillis() - afk.lastMovementTime) > Utils.getAFK()) && !afk.getMessaged())
 						{
 							for (Player p : game.getServer().getOnlinePlayers())
 							{

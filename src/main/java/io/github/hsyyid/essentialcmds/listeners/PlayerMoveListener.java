@@ -52,6 +52,7 @@ public class PlayerMoveListener
 			if (EssentialCmds.recentlyJoined.contains(player))
 			{
 				EssentialCmds.recentlyJoined.remove(player);
+				
 				AFK removeAFK = null;
 
 				for (AFK a : EssentialCmds.afkList)
@@ -70,7 +71,6 @@ public class PlayerMoveListener
 			}
 			else
 			{
-				AFK afk = new AFK(player, System.currentTimeMillis());
 				AFK removeAFK = null;
 
 				for (AFK a : EssentialCmds.afkList)
@@ -95,6 +95,7 @@ public class PlayerMoveListener
 					EssentialCmds.afkList.remove(removeAFK);
 				}
 
+				AFK afk = new AFK(player, System.currentTimeMillis());
 				EssentialCmds.afkList.add(afk);
 			}
 		}

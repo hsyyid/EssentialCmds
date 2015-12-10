@@ -69,6 +69,7 @@ public class PlayerJoinListener
 
 		EssentialCmds.recentlyJoined.add(event.getTargetEntity());
 
+		//Remove previous AFK, so player does not join as AFK.
 		AFK afkToRemove = null;
 
 		for (AFK afk : EssentialCmds.afkList)
