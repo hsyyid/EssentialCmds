@@ -110,7 +110,7 @@ public class ConfigManager {
     public Optional<Object> getValue(CommentedConfigurationNode node) {
         if (checkNull(node))
             return Optional.empty();
-        Optional.of(node.getValue());
+        return Optional.of(node.getValue());
     }
 
     private boolean checkNull(CommentedConfigurationNode node) {
