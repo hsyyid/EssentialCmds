@@ -25,14 +25,14 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.api.util.config.Configs;
+import io.github.hsyyid.essentialcmds.api.util.config.Configurable;
+import io.github.hsyyid.essentialcmds.managers.config.Config;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.source.CommandBlockSource;
-import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
@@ -43,40 +43,36 @@ public class DeleteHomeExecutor implements CommandExecutor
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		String homeName = ctx.<String> getOne("home name").get();
+		Configurable config = Config.getConfig();
 		
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
 			if (Utils.inConfig(player.getUniqueId(), homeName))
 			{
-				ConfigurationNode homeNode = Configs.getConfig().getNode((Object[]) ("home.users." + player.getUniqueId() + ".homes").split("\\."));
+				ConfigurationNode homeNode = Configs.getConfig(config).getNode("home", "users", player.getUniqueId(), "homes");
 
 				// Get Value of Home Node
 				String homes = homeNode.getString();
 				String newVal = homes.replace(homeName + ",", "");
 				
-				homeNode.setValue(newVal);
-				Configs.saveConfig();
-				
-				ConfigurationNode itemNode = Configs.getConfig().getNode((Object[]) ("home.users." + player.getUniqueId() + ".").split("\\."));
-				itemNode.removeChild(homeName);
-				Configs.saveConfig();
+				Configs.setValue(config, homeNode.getPath(), newVal);
+
+				Configs.removeChild(config, new Object[]{"home", "users", player.getUniqueId()}, homeName);
 				
 				src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Deleted home " + homeName));
+
+				return CommandResult.success();
 			}
 			else
 			{
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "This home doesn't exist!"));
+				return CommandResult.empty();
 			}
 		}
-		else if (src instanceof ConsoleSource)
-		{
+		else {
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /delhome!"));
+			return CommandResult.success();
 		}
-		else if (src instanceof CommandBlockSource)
-		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /delhome!"));
-		}
-		return CommandResult.success();
 	}
 }
