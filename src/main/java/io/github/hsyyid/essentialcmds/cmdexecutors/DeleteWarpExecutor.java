@@ -24,15 +24,17 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.api.util.config.ConfigManager;
 import io.github.hsyyid.essentialcmds.api.util.config.Configs;
+import io.github.hsyyid.essentialcmds.api.util.config.Configurable;
+import io.github.hsyyid.essentialcmds.managers.config.Config;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.source.CommandBlockSource;
-import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
@@ -43,45 +45,35 @@ public class DeleteWarpExecutor implements CommandExecutor
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		String warpName = ctx.<String> getOne("warp name").get();
+		Configurable config = Config.getConfig();
 		
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
 			if (Utils.isWarpInConfig(warpName))
 			{
-				ConfigurationNode warpNode = Configs.getConfig().getNode((Object[]) ("warps.warps").split("\\."));
+				ConfigurationNode warpNode = Configs.getConfig(config).getNode("warps", "warps");
 
 				// Get Value of Warp Node
-				String warps = warpNode.getString();
+				String warps = new ConfigManager().getString((CommentedConfigurationNode) warpNode).get();
 
 				// Remove Warp
 				String newVal = warps.replace(warpName + ",", "");
-				warpNode.setValue(newVal);
+				Configs.setValue(config, new Object[] {"warps", "warps"}, newVal);
 
-				// Save CONFIG
-				Configs.saveConfig();
-
-				// Get Item Node
-				ConfigurationNode itemNode = Configs.getConfig().getNode((Object[]) ("home.users." + player.getUniqueId() + ".").split("\\."));
-				itemNode.removeChild(warpName);
-
-				// save config
-				Configs.saveConfig();
 				src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Deleted warp " + warpName));
+				return CommandResult.success();
 			}
 			else
 			{
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "This warp doesn't exist!"));
+				return CommandResult.empty();
 			}
 		}
-		else if (src instanceof ConsoleSource)
+		else
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /delwarp!"));
+			return CommandResult.empty();
 		}
-		else if (src instanceof CommandBlockSource)
-		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /delwarp!"));
-		}
-		return CommandResult.success();
 	}
 }

@@ -107,10 +107,16 @@ public class ConfigManager {
         return Optional.of(node.getString());
     }
 
+    /**
+     * Get Object {@link Optional} value for CommentedConfigurationNode if it is not null; Otherwise return Optional#empty.
+     *
+     * @param node The node for which the Object value is needed
+     * @return Optional#empty if null or Optional#of(Object) if not
+     */
     public Optional<Object> getValue(CommentedConfigurationNode node) {
         if (checkNull(node))
             return Optional.empty();
-        Optional.of(node.getValue());
+        return Optional.of(node.getValue());
     }
 
     private boolean checkNull(CommentedConfigurationNode node) {
