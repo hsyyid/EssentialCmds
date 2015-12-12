@@ -52,7 +52,7 @@ public class DeleteWarpExecutor implements CommandExecutor
 			Player player = (Player) src;
 			if (Utils.isWarpInConfig(warpName))
 			{
-				ConfigurationNode warpNode = Configs.getConfig().getNode("warps", "warps");
+				ConfigurationNode warpNode = Configs.getConfig(config).getNode("warps", "warps");
 
 				// Get Value of Warp Node
 				String warps = new ConfigManager().getString((CommentedConfigurationNode) warpNode).get();
