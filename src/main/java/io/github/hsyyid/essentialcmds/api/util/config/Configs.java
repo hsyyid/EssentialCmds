@@ -56,4 +56,9 @@ public final class Configs
 		config.get().getNode(nodePath).setValue(value);
 		config.save();
 	}
+
+	public static void removeChild(Configurable config, Object[] nodePath, Object child) {
+		config.get().getNode(nodePath).removeChild(child);
+		config.save();
+	}
 }
