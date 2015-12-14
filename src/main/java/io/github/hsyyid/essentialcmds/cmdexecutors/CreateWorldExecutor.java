@@ -78,8 +78,8 @@ public class CreateWorldExecutor implements CommandExecutor
 				generator = GeneratorTypes.NETHER;
 				break;
 			case "end":
-				dimension = DimensionTypes.END;
-				generator = GeneratorTypes.END;
+				dimension = DimensionTypes.THE_END;
+				generator = GeneratorTypes.THE_END;
 				break;
 			default:
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Environment specified not found."));
