@@ -34,11 +34,13 @@ public final class Configs
 {
 	private Configs() {}
 
+	@Deprecated
 	public static CommentedConfigurationNode getConfig()
 	{
 		return Config.getConfig().get();
 	}
 
+	@Deprecated
 	public static void saveConfig()
 	{
 		Config.getConfig().save();
