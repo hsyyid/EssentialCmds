@@ -379,7 +379,6 @@ public class Utils
 
 	public static void setUseMySQL(boolean value)
 	{
-
 		Configs.getConfig().getNode("mysql", "use").setValue(value);
 
 		Configs.saveConfig();
@@ -430,7 +429,6 @@ public class Utils
 
 	public static void setLoginMessage(String value)
 	{
-
 		Configs.getConfig().getNode("login", "message").setValue(value);
 
 		Configs.saveConfig();
@@ -453,7 +451,6 @@ public class Utils
 
 	public static void setDisconnectMessage(String value)
 	{
-
 		Configs.getConfig().getNode("disconnect", "message").setValue(value);
 
 		Configs.saveConfig();
@@ -476,17 +473,13 @@ public class Utils
 
 	public static void setUnsafeEnchanmentsEnabled(boolean value)
 	{
-
 		Configs.getConfig().getNode("unsafeenchantments", "enabled").setValue(value);
-
-		Configs.getConfig().getNode("mysql", "port").setValue(value);
 
 		Configs.saveConfig();
 	}
 
 	public static void setSQLDatabase(String value)
 	{
-
 		Configs.getConfig().getNode("mysql", "database").setValue(value);
 
 		Configs.saveConfig();
@@ -494,7 +487,6 @@ public class Utils
 
 	public static void setSQLHost(String value)
 	{
-
 		Configs.getConfig().getNode("mysql", "host").setValue(value);
 
 		Configs.saveConfig();
@@ -502,7 +494,6 @@ public class Utils
 
 	public static void setSQLPass(String value)
 	{
-
 		Configs.getConfig().getNode("mysql", "password").setValue(value);
 
 		Configs.saveConfig();
@@ -510,7 +501,6 @@ public class Utils
 
 	public static void setSQLUsername(String value)
 	{
-
 		Configs.getConfig().getNode("mysql", "username").setValue(value);
 
 		Configs.saveConfig();
@@ -854,6 +844,7 @@ public class Utils
 	public static double getAFK()
 	{
 		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("afk.timer").split("\\."));
+		
 		if (valueNode.getDouble() != 0)
 		{
 			return valueNode.getDouble();
@@ -861,8 +852,7 @@ public class Utils
 		else
 		{
 			Utils.setAFK(30000);
-			ConfigurationNode valNode = Configs.getConfig().getNode((Object[]) ("afk.timer").split("\\."));
-			return valNode.getDouble();
+			return 30000;
 		}
 	}
 

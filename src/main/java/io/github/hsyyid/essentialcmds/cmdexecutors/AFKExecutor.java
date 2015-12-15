@@ -63,7 +63,7 @@ public class AFKExecutor implements CommandExecutor
 			}
 
 			int timeBeforeAFK = (int) Utils.getAFK();
-			long timeToSet = System.currentTimeMillis() + 1000 + timeBeforeAFK;
+			long timeToSet = System.currentTimeMillis() + timeBeforeAFK + 1000;
 			AFK afk = new AFK(player, timeToSet);
 			EssentialCmds.afkList.add(afk);
 		}
