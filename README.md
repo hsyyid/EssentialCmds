@@ -29,7 +29,7 @@ Do read through it if you do plan on contributing.
 The following steps will ensure your project is cloned properly
 
 1. `git clone git@github.com:hsyyid/EssentialCmds.git`
-2. `cd Foundations`
+2. `cd EssentialCmds`
 
 ## Development Environment ##
 __Note:__ If you do not have [Gradle] installed then use ./gradlew for Unix systems or Git Bash and gradlew.bat for

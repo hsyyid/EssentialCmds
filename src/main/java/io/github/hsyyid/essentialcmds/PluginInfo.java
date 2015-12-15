@@ -27,10 +27,10 @@ package io.github.hsyyid.essentialcmds;
 /**
  * General plugin info
  */
-public abstract class PluginInfo {
-
-    public static final String ID = "EssentialCmds";
-    public static final String NAME = "EssentialCmds";
-    public static final String VERSION = "@project.version@";
-    public static final String DEPENDENCIES = "";
+public abstract class PluginInfo
+{
+	public static final String ID = "EssentialCmds";
+	public static final String NAME = "EssentialCmds";
+	public static final String VERSION = "@project.version@";
+	public static final String DEPENDENCIES = "";
 }
