@@ -207,6 +207,8 @@ public class Utils
 									afk.setFood(food.foodLevel().get());
 								}
 							}
+							afk.setMessaged(true);
+							afk.setAFK(true);
 						}
 
 						if (afk.getAFK())
