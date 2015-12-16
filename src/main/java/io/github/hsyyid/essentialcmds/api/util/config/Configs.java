@@ -24,7 +24,6 @@
  */
 package io.github.hsyyid.essentialcmds.api.util.config;
 
-import io.github.hsyyid.essentialcmds.managers.config.Config;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 
 /**
@@ -33,18 +32,6 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 public final class Configs
 {
 	private Configs() {}
-
-	@Deprecated
-	public static CommentedConfigurationNode getConfig()
-	{
-		return Config.getConfig().get();
-	}
-
-	@Deprecated
-	public static void saveConfig()
-	{
-		Config.getConfig().save();
-	}
 
 	public static CommentedConfigurationNode getConfig(Configurable config) {
 		return config.get();
