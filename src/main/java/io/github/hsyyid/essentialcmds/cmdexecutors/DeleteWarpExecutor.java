@@ -25,6 +25,7 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.api.util.config.Configs;
+import io.github.hsyyid.essentialcmds.managers.config.Config;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.command.CommandException;
@@ -43,17 +44,15 @@ public class DeleteWarpExecutor implements CommandExecutor
 
 		if (Utils.isWarpInConfig(warpName))
 		{
-			ConfigurationNode warpNode = Configs.getConfig().getNode((Object[]) ("warps.warps").split("\\."));
+			ConfigurationNode warpNode = Configs.getConfig(Config.getConfig()).getNode("warps", "warps");
 
 			// Get Value of Warp Node
 			String warps = warpNode.getString();
 
 			// Remove Warp
 			String newVal = warps.replace(warpName + ",", "");
-			warpNode.setValue(newVal);
+			Configs.setValue(Config.getConfig(), new java.lang.Object[]{"warps", "warps"}, newVal);
 
-			// Save CONFIG
-			Configs.saveConfig();
 			src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Deleted warp " + warpName));
 		}
 		else

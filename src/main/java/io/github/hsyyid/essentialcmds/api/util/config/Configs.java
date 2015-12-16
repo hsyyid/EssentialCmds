@@ -24,22 +24,30 @@
  */
 package io.github.hsyyid.essentialcmds.api.util.config;
 
-import io.github.hsyyid.essentialcmds.managers.config.Config;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 
 /**
  * Utility class to get all the config classes from one place
  */
-public abstract class Configs
+public final class Configs
 {
-	public static CommentedConfigurationNode getConfig()
-	{
-		return Config.getConfig().get();
+	private Configs() {}
+
+	public static CommentedConfigurationNode getConfig(Configurable config) {
+		return config.get();
 	}
 
-	public static void saveConfig()
-	{
-		Config.getConfig().save();
-		return;
+	public static void saveConfig(Configurable config) {
+		config.save();
+	}
+
+	public static void setValue(Configurable config, Object[] nodePath, Object value) {
+		config.get().getNode(nodePath).setValue(value);
+		config.save();
+	}
+
+	public static void removeChild(Configurable config, Object[] nodePath, Object child) {
+		config.get().getNode(nodePath).removeChild(child);
+		config.save();
 	}
 }

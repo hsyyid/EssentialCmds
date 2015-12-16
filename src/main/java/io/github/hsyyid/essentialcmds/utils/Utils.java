@@ -24,15 +24,18 @@
  */
 package io.github.hsyyid.essentialcmds.utils;
 
-import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
-
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.hsyyid.essentialcmds.EssentialCmds;
+import io.github.hsyyid.essentialcmds.api.util.config.ConfigManager;
 import io.github.hsyyid.essentialcmds.api.util.config.Configs;
+import io.github.hsyyid.essentialcmds.api.util.config.Configurable;
+import io.github.hsyyid.essentialcmds.managers.config.Config;
 import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
 import org.spongepowered.api.data.value.mutable.Value;
 import org.spongepowered.api.entity.living.player.Player;
@@ -45,6 +48,7 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.storage.WorldProperties;
 
+import javax.sql.DataSource;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -52,32 +56,21 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.sql.*;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
-
-import javax.sql.DataSource;
 
 public class Utils
 {
 	private static Gson gson = new GsonBuilder().create();
 
-	private static Game game = getEssentialCmds().getGame();
+	private static Game game = Sponge.getGame();
+	private static Configurable config = Config.getConfig();
+	private static ConfigManager configManager = new ConfigManager();
 
 	public static void setSQLPort(String value)
 	{
-		Configs.getConfig().getNode("mysql", "port").setValue(value);
-
-		Configs.saveConfig();
+		Configs.setValue(config, new Object[]{"mysql", "port"}, value);
 	}
 
 	public static void addMute(UUID playerUUID)
@@ -90,11 +83,11 @@ public class Utils
 			if (Utils.useMySQL())
 			{
 				SqlService sql = game.getServiceManager().provide(SqlService.class).get();
-				String host = Utils.getMySQLHost();
-				String port = String.valueOf(Utils.getMySQLPort());
-				String username = Utils.getMySQLUsername();
-				String password = Utils.getMySQLPassword();
-				String database = Utils.getMySQLDatabase();
+				String host = getMySQLHost();
+				String port = getMySQLPort();
+				String username = getMySQLUsername();
+				String password = getMySQLPassword();
+				String database = getMySQLDatabase();
 
 				DataSource datasource = sql.getDataSource("jdbc:mysql://" + host + ":" + port + "/" + database + "?user=" + username + "&password=" + password);
 
@@ -144,11 +137,11 @@ public class Utils
 			if (Utils.useMySQL())
 			{
 				SqlService sql = game.getServiceManager().provide(SqlService.class).get();
-				String host = Utils.getMySQLHost();
-				String port = String.valueOf(Utils.getMySQLPort());
-				String username = Utils.getMySQLUsername();
-				String password = Utils.getMySQLPassword();
-				String database = Utils.getMySQLDatabase();
+				String host = getMySQLHost();
+				String port = getMySQLPort();
+				String username = getMySQLUsername();
+				String password = getMySQLPassword();
+				String database = getMySQLDatabase();
 
 				DataSource datasource = sql.getDataSource("jdbc:mysql://" + host + ":" + port + "/" + database + "?user=" + username + "&password=" + password);
 
@@ -214,7 +207,6 @@ public class Utils
 									afk.setFood(food.foodLevel().get());
 								}
 							}
-
 							afk.setMessaged(true);
 							afk.setAFK(true);
 						}
@@ -249,261 +241,136 @@ public class Utils
 
 	public static String getMySQLPort()
 	{
-		try
-		{
-			ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("mysql.port").split("\\."));
-
-			if (valueNode.getValue() != null)
-			{
-				return valueNode.getString();
-			}
-			else
-			{
-				setSQLPort("8080");
-				return "";
-			}
-		}
-		catch (Exception e)
-		{
-			setSQLPort("8080");
-			return "";
-		}
+		CommentedConfigurationNode node = Configs.getConfig(config).getNode("mysql", "port");
+		if (configManager.getString(node).isPresent())
+			return node.getString();
+		setSQLPort("8080");
+		return "8080";
 	}
 
 	public static String getMySQLDatabase()
 	{
-		try
-		{
-			ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("mysql.database").split("\\."));
-
-			if (valueNode.getValue() != null)
-			{
-				return valueNode.getString();
-			}
-			else
-			{
-				setSQLDatabase("Mutes");
-				return "";
-			}
-		}
-		catch (Exception e)
-		{
-			setSQLDatabase("Mutes");
-			return "";
-		}
+		CommentedConfigurationNode node = Configs.getConfig(config).getNode("mysql", "database");
+		if (configManager.getString(node).isPresent())
+			return node.getString();
+		setSQLDatabase("Mutes");
+		return "Mutes";
 	}
 
 	public static String getMySQLPassword()
 	{
-		try
-		{
-			ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("mysql.password").split("\\."));
-
-			if (valueNode.getValue() != null)
-			{
-				return valueNode.getString();
-			}
-			else
-			{
-				setSQLPass("cat");
-				return "";
-			}
-		}
-		catch (Exception e)
-		{
-			setSQLPass("cats");
-			return "";
-		}
+		CommentedConfigurationNode node = Configs.getConfig(config).getNode("mysql", "password");
+		if (configManager.getString(node).isPresent())
+			return node.getString();
+		setSQLPass("cat");
+		return "cat";
 	}
 
 	public static String getMySQLUsername()
 	{
-		try
-		{
-			ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("mysql.username").split("\\."));
-
-			if (valueNode.getValue() != null)
-			{
-				return valueNode.getString();
-			}
-			else
-			{
-				setSQLUsername("HassanS6000");
-				return "";
-			}
-		}
-		catch (Exception e)
-		{
-			setSQLUsername("HassanS6000");
-			return "";
-		}
+		CommentedConfigurationNode node = Configs.getConfig(config).getNode("mysql", "username");
+		if (configManager.getString(node).isPresent())
+			return node.getString();
+		setSQLUsername("HassanS6000");
+		return "HassanS6000";
 	}
 
 	public static String getMySQLHost()
 	{
-		try
-		{
-			ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("mysql.host").split("\\."));
-
-			if (valueNode.getValue() != null)
-			{
-				return valueNode.getString();
-			}
-			else
-			{
-				setSQLHost("null");
-				return "";
-			}
-		}
-		catch (Exception e)
-		{
-			setSQLHost("null");
-			return "";
-		}
+		CommentedConfigurationNode node = Configs.getConfig(config).getNode("mysql", "host");
+		if (configManager.getString(node).isPresent())
+			return node.getString();
+		setSQLHost("");
+		return "";
 	}
 
 	public static boolean useMySQL()
 	{
-		ConfigurationNode valueNode = Configs.getConfig().getNode("mysql", "use");
-
-		if (valueNode.getValue() != null)
-		{
-			return valueNode.getBoolean();
-		}
-		else
-		{
-			setUseMySQL(false);
-			return false;
-		}
+		CommentedConfigurationNode node = Configs.getConfig(config).getNode("mysql", "use");
+		if (configManager.getBoolean(node).isPresent())
+			return node.getBoolean();
+		setUseMySQL(false);
+		return false;
 	}
 
 	public static void setUseMySQL(boolean value)
 	{
-		Configs.getConfig().getNode("mysql", "use").setValue(value);
-
-		Configs.saveConfig();
+		Configs.setValue(config, new Object[]{"mysql", "use"}, value);
 	}
 
 	public static String getLastTimePlayerJoined(UUID uuid)
 	{
-		try
-		{
-			ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("player." + uuid.toString() + ".time").split("\\."));
-
-			if (valueNode.getValue() != null)
-			{
-				return valueNode.getString();
-			}
-			else
-			{
-				return "";
-			}
-		}
-		catch (Exception e)
-		{
-			return "";
-		}
+		CommentedConfigurationNode node = Configs.getConfig(config).getNode("player", uuid.toString(), "time");
+		if (configManager.getString(node).isPresent())
+			return node.getString();
+		return "";
 	}
 
 	public static void setLastTimePlayerJoined(UUID uuid, String time)
 	{
-		Configs.getConfig().getNode("player", uuid.toString(), "time").setValue(time);
-
-		Configs.saveConfig();
+		Configs.setValue(config, new Object[]{"player", uuid.toString(), "time"}, time);
 	}
 
 	public static String getLoginMessage()
 	{
-		ConfigurationNode valueNode = Configs.getConfig().getNode("login", "message");
-
-		if (valueNode.getValue() != null)
-		{
-			return valueNode.getString();
-		}
-		else
-		{
-			setLoginMessage("");
-			return null;
-		}
+		CommentedConfigurationNode node = Configs.getConfig(config).getNode("login", "message");
+		if (configManager.getString(node).isPresent())
+			return node.getString();
+		setLoginMessage("");
+		return "";
 	}
 
 	public static void setLoginMessage(String value)
 	{
-		Configs.getConfig().getNode("login", "message").setValue(value);
-
-		Configs.saveConfig();
+		Configs.setValue(config, new Object[]{"login", "message"}, value);
 	}
 
 	public static String getDisconnectMessage()
 	{
-		ConfigurationNode valueNode = Configs.getConfig().getNode("disconnect", "message");
-
-		if (valueNode.getValue() != null)
-		{
-			return valueNode.getString();
-		}
-		else
-		{
-			setDisconnectMessage("");
-			return null;
-		}
+		CommentedConfigurationNode node = Configs.getConfig(config).getNode("disconnected", "message");
+		if (configManager.getString(node).isPresent())
+			return node.getString();
+		setDisconnectMessage("");
+		return "";
 	}
 
 	public static void setDisconnectMessage(String value)
 	{
-		Configs.getConfig().getNode("disconnect", "message").setValue(value);
-
-		Configs.saveConfig();
+		Configs.setValue(config, new Object[]{"disconnect", "message"}, value);
 	}
 
 	public static boolean unsafeEnchanmentsEnabled()
 	{
-		ConfigurationNode valueNode = Configs.getConfig().getNode("unsafeenchantments", "enabled");
-
-		if (valueNode.getValue() != null)
-		{
-			return valueNode.getBoolean();
-		}
-		else
-		{
-			setUnsafeEnchanmentsEnabled(false);
-			return false;
-		}
+		CommentedConfigurationNode node = Configs.getConfig(config).getNode("unsafeenchantments", "enabled");
+		if (configManager.getBoolean(node).isPresent())
+			return node.getBoolean();
+		setUnsafeEnchanmentsEnabled(false);
+		return false;
 	}
 
 	public static void setUnsafeEnchanmentsEnabled(boolean value)
 	{
-		Configs.getConfig().getNode("unsafeenchantments", "enabled").setValue(value);
-
-		Configs.saveConfig();
+		Configs.setValue(config, new Object[]{"unsafeenchantments", "enabled"}, value);
 	}
 
 	public static void setSQLDatabase(String value)
 	{
-		Configs.getConfig().getNode("mysql", "database").setValue(value);
-
-		Configs.saveConfig();
+		Configs.setValue(config, new Object[]{"mysql", "database"}, value);
 	}
 
 	public static void setSQLHost(String value)
 	{
-		Configs.getConfig().getNode("mysql", "host").setValue(value);
-
-		Configs.saveConfig();
+		Configs.setValue(config, new Object[]{"mysql", "host"}, value);
 	}
 
 	public static void setSQLPass(String value)
 	{
-		Configs.getConfig().getNode("mysql", "password").setValue(value);
-
-		Configs.saveConfig();
+		Configs.setValue(config, new Object[] {"mysql", "password"}, value);
 	}
 
 	public static void setSQLUsername(String value)
 	{
-		Configs.getConfig().getNode("mysql", "username").setValue(value);
-
-		Configs.saveConfig();
+		Configs.setValue(config, new Object[]{"mysql", "username"}, value);
 	}
 
 	public static void execute(String execute, DataSource datasource)
@@ -530,11 +397,11 @@ public class Utils
 			if (Utils.useMySQL())
 			{
 				SqlService sql = game.getServiceManager().provide(SqlService.class).get();
-				String host = Utils.getMySQLHost();
-				String port = String.valueOf(Utils.getMySQLPort());
-				String username = Utils.getMySQLUsername();
-				String password = Utils.getMySQLPassword();
-				String database = Utils.getMySQLDatabase();
+				String host = getMySQLHost();
+				String port = getMySQLPort();
+				String username = getMySQLUsername();
+				String password = getMySQLPassword();
+				String database = getMySQLDatabase();
 
 				DataSource datasource = sql.getDataSource("jdbc:mysql://" + host + ":" + port + "/" + database + "?user=" + username + "&password=" + password);
 
@@ -599,71 +466,45 @@ public class Utils
 
 	public static void addRule(String rule)
 	{
-
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("rules.rules").split("\\."));
-
-		if (valueNode.getString() != null)
-		{
-			String items = valueNode.getString();
-
-			if (!items.contains(rule + ","))
-			{
-				String formattedItem = (rule + ",");
-				valueNode.setValue(items + formattedItem);
-			}
+		CommentedConfigurationNode node = Configs.getConfig(config).getNode("rules", "rules");
+		String formattedItem = (rule + ",");
+		if (configManager.getString(node).isPresent()) {
+			String items = node.getString();
+			if (!items.contains(formattedItem))
+				Configs.setValue(config, node.getPath(), items + formattedItem);
+			return;
 		}
-		else
-		{
-			valueNode.setValue(rule + ",");
-		}
-
-		Configs.saveConfig();
+		Configs.setValue(config, node.getPath(), formattedItem);
 	}
 
 	public static void removeRule(int ruleIndex)
 	{
-
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("rules.rules").split("\\."));
-
-		String ruleToRemove = Utils.getRules().get(ruleIndex);
-
-		if (valueNode.getString() != null && ruleToRemove != null)
-		{
-			String items = valueNode.getString();
-
-			if (items.contains(ruleToRemove + ","))
-			{
-				valueNode.setValue(items.replace(ruleToRemove + ",", ""));
-			}
+		CommentedConfigurationNode node = Configs.getConfig(config).getNode("rules", "rules");
+		String ruleToRemove = getRules().get(ruleIndex);
+		if (configManager.getString(node).isPresent() && ruleToRemove != null) {
+			String items = node.getString();
+			Configs.setValue(config, node.getPath(), items.replace(ruleToRemove + ",", ""));
 		}
-
-		Configs.saveConfig();
 	}
 
 	public static void setHome(UUID userName, Location<World> playerLocation, String worldName, String homeName)
 	{
 		String playerName = userName.toString();
 
-		Configs.getConfig().getNode("home", "users", playerName, homeName, "world").setValue(worldName);
-		Configs.getConfig().getNode("home", "users", playerName, homeName, "X").setValue(playerLocation.getX());
-		Configs.getConfig().getNode("home", "users", playerName, homeName, "Y").setValue(playerLocation.getY());
-		Configs.getConfig().getNode("home", "users", playerName, homeName, "Z").setValue(playerLocation.getZ());
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("home.users." + playerName + "." + "homes").split("\\."));
-		if (valueNode.getString() != null)
-		{
-			String items = valueNode.getString();
-			if (!items.contains(homeName + ","))
-			{
-				String formattedItem = (homeName + ",");
-				valueNode.setValue(items + formattedItem);
-			}
-		}
-		else
-		{
-			valueNode.setValue(homeName + ",");
-		}
+		Configs.getConfig(config).getNode("home", "users", playerName, homeName, "world").setValue(worldName);
+		Configs.getConfig(config).getNode("home", "users", playerName, homeName, "X").setValue(playerLocation.getX());
+		Configs.getConfig(config).getNode("home", "users", playerName, homeName, "Y").setValue(playerLocation.getY());
+		Configs.getConfig(config).getNode("home", "users", playerName, homeName, "Z").setValue(playerLocation.getZ());
 
-		Configs.saveConfig();
+		CommentedConfigurationNode node = Configs.getConfig(config).getNode("home", "users", playerName, "homes");
+		String formattedItem = (homeName + ",");
+		if (configManager.getString(node).isPresent()) {
+			String items = node.getString();
+			if (!items.contains(formattedItem))
+				Configs.setValue(config, node.getPath(), items + formattedItem);
+			return;
+		}
+		Configs.setValue(config, node.getPath(), formattedItem);
 	}
 
 	public static ArrayList<Mail> getMail()
@@ -777,11 +618,17 @@ public class Utils
 	public static void setWarp(Location<World> playerLocation, String warpName)
 	{
 
-		Configs.getConfig().getNode("warps", warpName, "world").setValue(playerLocation.getExtent().getUniqueId().toString());
-		Configs.getConfig().getNode("warps", warpName, "X").setValue(playerLocation.getX());
-		Configs.getConfig().getNode("warps", warpName, "Y").setValue(playerLocation.getY());
-		Configs.getConfig().getNode("warps", warpName, "Z").setValue(playerLocation.getZ());
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("warps.warps").split("\\."));
+		Configs.getConfig(config).getNode("warps", warpName, "world").setValue(playerLocation.getExtent().getUniqueId().toString());
+		Configs.getConfig(config).getNode("warps", warpName, "X").setValue(playerLocation.getX());
+		Configs.getConfig(config).getNode("warps", warpName, "Y").setValue(playerLocation.getY());
+		Configs.getConfig(config).getNode("warps", warpName, "Z").setValue(playerLocation.getZ());
+		Configs.saveConfig(config);
+
+		CommentedConfigurationNode node = Configs.getConfig(config).getNode("warps", "warps");
+		if (configManager.getString(node).isPresent()) {
+			String items = node.getString();
+		}
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode((Object[]) ("warps.warps").split("\\."));
 		if (valueNode.getString() != null)
 		{
 			String items = valueNode.getString();
@@ -796,12 +643,12 @@ public class Utils
 			valueNode.setValue(warpName + ",");
 		}
 
-		Configs.saveConfig();
+		Configs.saveConfig(config);
 	}
 
 	public static String getJoinMsg()
 	{
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("joinmsg").split("\\."));
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode((Object[]) ("joinmsg").split("\\."));
 		if (valueNode.getValue() != null)
 		{
 			return valueNode.getString();
@@ -815,7 +662,7 @@ public class Utils
 
 	public static String getFirstChatCharReplacement()
 	{
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("chat.firstcharacter").split("\\."));
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode((Object[]) ("chat.firstcharacter").split("\\."));
 		if (valueNode.getValue() != null)
 		{
 			return valueNode.getString();
@@ -829,7 +676,7 @@ public class Utils
 
 	public static String getLastChatCharReplacement()
 	{
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("chat.lastcharacter").split("\\."));
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode((Object[]) ("chat.lastcharacter").split("\\."));
 		if (valueNode.getValue() != null)
 		{
 			return valueNode.getString();
@@ -843,8 +690,7 @@ public class Utils
 
 	public static double getAFK()
 	{
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("afk.timer").split("\\."));
-		
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode((Object[]) ("afk.timer").split("\\."));
 		if (valueNode.getDouble() != 0)
 		{
 			return valueNode.getDouble();
@@ -852,13 +698,14 @@ public class Utils
 		else
 		{
 			Utils.setAFK(30000);
-			return 30000;
+			ConfigurationNode valNode = Configs.getConfig(config).getNode((Object[]) ("afk.timer").split("\\."));
+			return valNode.getDouble();
 		}
 	}
 
 	public static boolean getAFKKick()
 	{
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("afk.kick.use").split("\\."));
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode((Object[]) ("afk.kick.use").split("\\."));
 
 		if (valueNode.getValue() != null)
 		{
@@ -873,7 +720,7 @@ public class Utils
 
 	public static double getAFKKickTimer()
 	{
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("afk.kick.timer").split("\\."));
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode((Object[]) ("afk.kick.timer").split("\\."));
 
 		if (valueNode.getValue() != null)
 		{
@@ -882,7 +729,7 @@ public class Utils
 		else
 		{
 			Utils.setAFKKickTimer(30000);
-			ConfigurationNode valNode = Configs.getConfig().getNode((Object[]) ("afk.timer").split("\\."));
+			ConfigurationNode valNode = Configs.getConfig(config).getNode((Object[]) ("afk.timer").split("\\."));
 			return valNode.getDouble();
 		}
 	}
@@ -890,67 +737,67 @@ public class Utils
 	public static void setSpawn(Location<World> playerLocation, String worldName)
 	{
 
-		Configs.getConfig().getNode("spawn", "X").setValue(playerLocation.getX());
-		Configs.getConfig().getNode("spawn", "Y").setValue(playerLocation.getY());
-		Configs.getConfig().getNode("spawn", "Z").setValue(playerLocation.getZ());
-		Configs.getConfig().getNode("spawn", "world").setValue(worldName);
+		Configs.getConfig(config).getNode("spawn", "X").setValue(playerLocation.getX());
+		Configs.getConfig(config).getNode("spawn", "Y").setValue(playerLocation.getY());
+		Configs.getConfig(config).getNode("spawn", "Z").setValue(playerLocation.getZ());
+		Configs.getConfig(config).getNode("spawn", "world").setValue(worldName);
 
-		Configs.saveConfig();
+		Configs.saveConfig(config);
 	}
 
 	public static void setJoinMsg(String msg)
 	{
 
-		Configs.getConfig().getNode("joinmsg").setValue(msg);
+		Configs.getConfig(config).getNode("joinmsg").setValue(msg);
 
-		Configs.saveConfig();
+		Configs.saveConfig(config);
 	}
 
 	public static void setFirstChatCharReplacement(String replacement)
 	{
 
-		Configs.getConfig().getNode("chat", "firstcharacter").setValue(replacement);
-		Configs.saveConfig();
+		Configs.getConfig(config).getNode("chat", "firstcharacter").setValue(replacement);
+		Configs.saveConfig(config);
 	}
 
 	public static void setLastChatCharReplacement(String replacement)
 	{
 
-		Configs.getConfig().getNode("chat", "lastcharacter").setValue(replacement);
-		Configs.saveConfig();
+		Configs.getConfig(config).getNode("chat", "lastcharacter").setValue(replacement);
+		Configs.saveConfig(config);
 	}
 
 	public static void setAFK(double length)
 	{
 
-		Configs.getConfig().getNode("afk", "timer").setValue(length);
-		Configs.saveConfig();
+		Configs.getConfig(config).getNode("afk", "timer").setValue(length);
+		Configs.saveConfig(config);
 	}
 
 	public static void setAFKKick(boolean val)
 	{
 
-		Configs.getConfig().getNode("afk", "kick", "use").setValue(val);
-		Configs.saveConfig();
+		Configs.getConfig(config).getNode("afk", "kick", "use").setValue(val);
+		Configs.saveConfig(config);
 	}
 
 	public static void setAFKKickTimer(double length)
 	{
 
-		Configs.getConfig().getNode("afk", "kick", "timer").setValue(length);
-		Configs.saveConfig();
+		Configs.getConfig(config).getNode("afk", "kick", "timer").setValue(length);
+		Configs.saveConfig(config);
 	}
 
 	public static void setLastDeathLocation(UUID userName, Location<World> playerLocation)
 	{
 		String playerName = userName.toString();
 
-		Configs.getConfig().getNode("back", "users", playerName, "lastDeath", "X").setValue(playerLocation.getX());
-		Configs.getConfig().getNode("back", "users", playerName, "lastDeath", "Y").setValue(playerLocation.getY());
-		Configs.getConfig().getNode("back", "users", playerName, "lastDeath", "Z").setValue(playerLocation.getZ());
-		Configs.getConfig().getNode("back", "users", playerName, "lastDeath", "worldUUID").setValue(playerLocation.getExtent().getUniqueId().toString());
+		Configs.getConfig(config).getNode("back", "users", playerName, "lastDeath", "X").setValue(playerLocation.getX());
+		Configs.getConfig(config).getNode("back", "users", playerName, "lastDeath", "Y").setValue(playerLocation.getY());
+		Configs.getConfig(config).getNode("back", "users", playerName, "lastDeath", "Z").setValue(playerLocation.getZ());
+		Configs.getConfig(config).getNode("back", "users", playerName, "lastDeath", "worldUUID").setValue(playerLocation.getExtent().getUniqueId().toString());
 
-		Configs.saveConfig();
+		Configs.saveConfig(config);
 	}
 
 	public static Location<World> lastDeath(Player player)
@@ -958,18 +805,18 @@ public class Utils
 		try
 		{
 			String playerName = player.getUniqueId().toString();
-			ConfigurationNode xNode = Configs.getConfig().getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.X").split("\\."));
+			ConfigurationNode xNode = Configs.getConfig(config).getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.X").split("\\."));
 			double x = xNode.getDouble();
-			ConfigurationNode yNode = Configs.getConfig().getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Y").split("\\."));
+			ConfigurationNode yNode = Configs.getConfig(config).getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Y").split("\\."));
 			double y = yNode.getDouble();
-			ConfigurationNode zNode = Configs.getConfig().getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Z").split("\\."));
+			ConfigurationNode zNode = Configs.getConfig(config).getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Z").split("\\."));
 			double z = zNode.getDouble();
-			ConfigurationNode worldNode = Configs.getConfig().getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.worldUUID").split("\\."));
+			ConfigurationNode worldNode = Configs.getConfig(config).getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.worldUUID").split("\\."));
 			UUID worldUUID = UUID.fromString(worldNode.getString());
 			Optional<World> world = game.getServer().getWorld(worldUUID);
 
 			if (world.isPresent())
-				return new Location<World>(world.get(), x, y, z);
+				return new Location<>(world.get(), x, y, z);
 			else
 				return null;
 		}
@@ -983,7 +830,7 @@ public class Utils
 	{
 		try
 		{
-			ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("rules.rules").split("\\."));
+			ConfigurationNode valueNode = Configs.getConfig(config).getNode((Object[]) ("rules.rules").split("\\."));
 			String list = valueNode.getString();
 
 			ArrayList<String> rulesList = new ArrayList<>();
@@ -1017,14 +864,14 @@ public class Utils
 		}
 		catch (Exception e)
 		{
-			return new ArrayList<String>();
+			return new ArrayList<>();
 		}
 	}
 
 	public static ArrayList<String> getHomes(UUID userName)
 	{
 		String playerName = userName.toString();
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("home.users." + playerName + "." + "homes").split("\\."));
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode("home", "users", playerName, "homes");
 		String list = valueNode.getString();
 
 		ArrayList<String> homeList = new ArrayList<>();
@@ -1060,7 +907,7 @@ public class Utils
 
 	public static ArrayList<String> getWarps()
 	{
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("warps.warps").split("\\."));
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode("warps", "warps");
 		String list = valueNode.getString();
 
 		ArrayList<String> warpList = new ArrayList<>();
@@ -1100,78 +947,67 @@ public class Utils
 	public static double getX(UUID playerName, String homeName)
 	{
 		String userName = playerName.toString();
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("home.users." + userName + "." + homeName + ".X").split("\\."));
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode("home", "users", userName, homeName, "X");
 		return valueNode.getDouble();
 	}
 
 	public static String getHomeWorldName(UUID playerName, String homeName)
 	{
 		String userName = playerName.toString();
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("home.users." + userName + "." + homeName + ".world").split("\\."));
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode("home", "users", userName, homeName, "world");
 		return valueNode.getString();
 	}
 
 	public static double getY(UUID playerName, String homeName)
 	{
 		String userName = playerName.toString();
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("home.users." + userName + "." + homeName + ".Y").split("\\."));
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode("home", "users", userName, homeName, "Y");
 		return valueNode.getDouble();
 	}
 
 	public static double getZ(UUID playerName, String homeName)
 	{
 		String userName = playerName.toString();
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("home.users." + userName + "." + homeName + ".Z").split("\\."));
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode("home", "users", userName, homeName, "Z");
 		return valueNode.getDouble();
 	}
 
 	public static double getWarpX(String warpName)
 	{
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("warps." + warpName + ".X").split("\\."));
-		return valueNode.getDouble();
+		CommentedConfigurationNode node = Configs.getConfig(config).getNode("warps", warpName, "X");
+		return node.getDouble();
 	}
 
 	public static UUID getWarpWorldUUID(String warpName)
 	{
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("warps." + warpName + ".world").split("\\."));
-		try
-		{
-			UUID worlduuid = UUID.fromString(valueNode.getString());
-			return worlduuid;
-		}
-		catch (IllegalArgumentException e)
-		{
-			Optional<WorldProperties> props = game.getServer().getWorldProperties(valueNode.getString());
-			if (props.isPresent())
-			{
-				if (props.get().isEnabled())
-				{
-					Optional<World> world = game.getServer().loadWorld(valueNode.getString());
-					if (world.isPresent())
-					{
-						return world.get().getUniqueId();
-					}
-				}
+		CommentedConfigurationNode node = Configs.getConfig(config).getNode("warps", warpName, "world");
+		if (configManager.getString(node).isPresent())
+			return UUID.fromString(node.getString());
+		Optional<WorldProperties> properties = game.getServer().getWorldProperties(node.getString());
+		if (properties.isPresent())
+			if (properties.get().isEnabled()) {
+				Optional<World> world = game.getServer().loadWorld(node.getString());
+				if (world.isPresent())
+					return world.get().getUniqueId();
 			}
-		}
 		throw new IllegalArgumentException();
 	}
 
 	public static String getSpawnWorldName()
 	{
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("spawn.world").split("\\."));
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode("spawn", "world");
 		return valueNode.getString();
 	}
 
 	public static double getWarpY(String warpName)
 	{
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("warps." + warpName + ".Y").split("\\."));
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode("warps", warpName, "y");
 		return valueNode.getDouble();
 	}
 
 	public static double getWarpZ(String warpName)
 	{
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("warps." + warpName + ".Z").split("\\."));
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode("warps", warpName, "z");
 		return valueNode.getDouble();
 	}
 
@@ -1179,35 +1015,40 @@ public class Utils
 	public static boolean inConfig(UUID playerName, String homeName)
 	{
 		String userName = playerName.toString();
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("home.users." + userName + "." + homeName + ".X").split("\\."));
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode("home", "users", userName, homeName, "X");
 		Object inConfig = valueNode.getValue();
 		return inConfig != null;
 	}
 
 	public static boolean isWarpInConfig(String warpName)
 	{
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("warps." + warpName + ".X").split("\\."));
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode("warps", warpName, "X");
 		Object inConfig = valueNode.getValue();
 		return inConfig != null;
 	}
 
 	public static boolean isSpawnInConfig()
 	{
-		ConfigurationNode valueNode = Configs.getConfig().getNode((Object[]) ("spawn.X").split("\\."));
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode("spawn", "X");
 		Object inConfig = valueNode.getValue();
 		return inConfig != null;
 	}
 
 	public static Location<World> getSpawn(Player player)
 	{
-		ConfigurationNode xNode = Configs.getConfig().getNode((Object[]) ("spawn.X").split("\\."));
-		double x = xNode.getDouble();
+		double x = 0, y = 0, z = 0;
+		CommentedConfigurationNode xNode = Configs.getConfig(config).getNode("spawn", "X");
+		if (configManager.getDouble(xNode).isPresent()) {
+			x = xNode.getDouble();
+		}
 
-		ConfigurationNode yNode = Configs.getConfig().getNode((Object[]) ("spawn.Y").split("\\."));
-		double y = yNode.getDouble();
+		CommentedConfigurationNode yNode = Configs.getConfig(config).getNode("spawn", "Y");
+		if (configManager.getDouble(yNode).isPresent())
+			y = yNode.getDouble();
 
-		ConfigurationNode zNode = Configs.getConfig().getNode((Object[]) ("spawn.Z").split("\\."));
-		double z = zNode.getDouble();
+		CommentedConfigurationNode zNode = Configs.getConfig(config).getNode("spawn", "Z");
+		if (configManager.getDouble(yNode).isPresent())
+			z = yNode.getDouble();
 
 		return new Location<>(player.getWorld(), x, y, z);
 	}
