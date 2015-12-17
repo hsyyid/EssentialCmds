@@ -70,7 +70,7 @@ public class Utils
 
 	public static void setSQLPort(String value)
 	{
-		Configs.setValue(config, new Object[]{"mysql", "port"}, value);
+		Configs.setValue(config, new Object[] { "mysql", "port" }, value);
 	}
 
 	public static void addMute(UUID playerUUID)
@@ -189,12 +189,11 @@ public class Utils
 		taskBuilder.execute(() -> {
 			for (Player player : game.getServer().getOnlinePlayers())
 			{
-				if(!player.hasPermission("essentialcmds.afk.exempt"))
+				if (!player.hasPermission("essentialcmds.afk.exempt"))
 				{
 					for (AFK afk : EssentialCmds.afkList)
 					{
-						if (afk.getPlayer().getUniqueId().equals(player.getUniqueId()) && 
-							((System.currentTimeMillis() - afk.lastMovementTime) > Utils.getAFK()) && !afk.getMessaged())
+						if (afk.getPlayer().getUniqueId().equals(player.getUniqueId()) && ((System.currentTimeMillis() - afk.lastMovementTime) > Utils.getAFK()) && !afk.getMessaged())
 						{
 							for (Player p : game.getServer().getOnlinePlayers())
 							{
@@ -295,7 +294,7 @@ public class Utils
 
 	public static void setUseMySQL(boolean value)
 	{
-		Configs.setValue(config, new Object[]{"mysql", "use"}, value);
+		Configs.setValue(config, new Object[] { "mysql", "use" }, value);
 	}
 
 	public static String getLastTimePlayerJoined(UUID uuid)
@@ -308,7 +307,7 @@ public class Utils
 
 	public static void setLastTimePlayerJoined(UUID uuid, String time)
 	{
-		Configs.setValue(config, new Object[]{"player", uuid.toString(), "time"}, time);
+		Configs.setValue(config, new Object[] { "player", uuid.toString(), "time" }, time);
 	}
 
 	public static String getLoginMessage()
@@ -322,7 +321,7 @@ public class Utils
 
 	public static void setLoginMessage(String value)
 	{
-		Configs.setValue(config, new Object[]{"login", "message"}, value);
+		Configs.setValue(config, new Object[] { "login", "message" }, value);
 	}
 
 	public static String getDisconnectMessage()
@@ -336,7 +335,7 @@ public class Utils
 
 	public static void setDisconnectMessage(String value)
 	{
-		Configs.setValue(config, new Object[]{"disconnect", "message"}, value);
+		Configs.setValue(config, new Object[] { "disconnect", "message" }, value);
 	}
 
 	public static boolean unsafeEnchanmentsEnabled()
@@ -350,27 +349,27 @@ public class Utils
 
 	public static void setUnsafeEnchanmentsEnabled(boolean value)
 	{
-		Configs.setValue(config, new Object[]{"unsafeenchantments", "enabled"}, value);
+		Configs.setValue(config, new Object[] { "unsafeenchantments", "enabled" }, value);
 	}
 
 	public static void setSQLDatabase(String value)
 	{
-		Configs.setValue(config, new Object[]{"mysql", "database"}, value);
+		Configs.setValue(config, new Object[] { "mysql", "database" }, value);
 	}
 
 	public static void setSQLHost(String value)
 	{
-		Configs.setValue(config, new Object[]{"mysql", "host"}, value);
+		Configs.setValue(config, new Object[] { "mysql", "host" }, value);
 	}
 
 	public static void setSQLPass(String value)
 	{
-		Configs.setValue(config, new Object[] {"mysql", "password"}, value);
+		Configs.setValue(config, new Object[] { "mysql", "password" }, value);
 	}
 
 	public static void setSQLUsername(String value)
 	{
-		Configs.setValue(config, new Object[]{"mysql", "username"}, value);
+		Configs.setValue(config, new Object[] { "mysql", "username" }, value);
 	}
 
 	public static void execute(String execute, DataSource datasource)
@@ -468,7 +467,8 @@ public class Utils
 	{
 		CommentedConfigurationNode node = Configs.getConfig(config).getNode("rules", "rules");
 		String formattedItem = (rule + ",");
-		if (configManager.getString(node).isPresent()) {
+		if (configManager.getString(node).isPresent())
+		{
 			String items = node.getString();
 			if (!items.contains(formattedItem))
 				Configs.setValue(config, node.getPath(), items + formattedItem);
@@ -481,7 +481,8 @@ public class Utils
 	{
 		CommentedConfigurationNode node = Configs.getConfig(config).getNode("rules", "rules");
 		String ruleToRemove = getRules().get(ruleIndex);
-		if (configManager.getString(node).isPresent() && ruleToRemove != null) {
+		if (configManager.getString(node).isPresent() && ruleToRemove != null)
+		{
 			String items = node.getString();
 			Configs.setValue(config, node.getPath(), items.replace(ruleToRemove + ",", ""));
 		}
@@ -492,13 +493,14 @@ public class Utils
 		String playerName = userName.toString();
 
 		Configs.getConfig(config).getNode("home", "users", playerName, homeName, "world").setValue(worldName);
-		Configs.getConfig(config).getNode("home", "users", playerName, homeName, "X").setValue(playerLocation.getBlockX());
+		Configs.getConfig(config).getNode("home", "users", playerName, homeName, "X").setValue(playerLocation.getX());
 		Configs.getConfig(config).getNode("home", "users", playerName, homeName, "Y").setValue(playerLocation.getY());
 		Configs.getConfig(config).getNode("home", "users", playerName, homeName, "Z").setValue(playerLocation.getZ());
 
 		CommentedConfigurationNode node = Configs.getConfig(config).getNode("home", "users", playerName, "homes");
 		String formattedItem = (homeName + ",");
-		if (configManager.getString(node).isPresent()) {
+		if (configManager.getString(node).isPresent())
+		{
 			String items = node.getString();
 			if (!items.contains(formattedItem))
 				Configs.setValue(config, node.getPath(), items + formattedItem);
@@ -626,11 +628,14 @@ public class Utils
 
 		CommentedConfigurationNode node = Configs.getConfig(config).getNode("warps", "warps");
 		String format = warpName + ",";
-		if (configManager.getString(node).isPresent()) {
+		if (configManager.getString(node).isPresent())
+		{
 			String items = node.getString();
 			if (!items.contains(format))
 				Configs.setValue(config, node.getPath(), items + format);
-		} else {
+		}
+		else
+		{
 			Configs.setValue(config, node.getPath(), format);
 		}
 	}
@@ -974,7 +979,8 @@ public class Utils
 			return UUID.fromString(node.getString());
 		Optional<WorldProperties> properties = game.getServer().getWorldProperties(node.getString());
 		if (properties.isPresent())
-			if (properties.get().isEnabled()) {
+			if (properties.get().isEnabled())
+			{
 				Optional<World> world = game.getServer().loadWorld(node.getString());
 				if (world.isPresent())
 					return world.get().getUniqueId();
@@ -1027,7 +1033,8 @@ public class Utils
 	{
 		double x = 0, y = 0, z = 0;
 		CommentedConfigurationNode xNode = Configs.getConfig(config).getNode("spawn", "X");
-		if (configManager.getDouble(xNode).isPresent()) {
+		if (configManager.getDouble(xNode).isPresent())
+		{
 			x = xNode.getDouble();
 		}
 
