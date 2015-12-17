@@ -1036,8 +1036,8 @@ public class Utils
 			y = yNode.getDouble();
 
 		CommentedConfigurationNode zNode = Configs.getConfig(config).getNode("spawn", "Z");
-		if (configManager.getDouble(yNode).isPresent())
-			z = yNode.getDouble();
+		if (configManager.getDouble(zNode).isPresent())
+			z = zNode.getDouble();
 
 		return new Location<>(player.getWorld(), x, y, z);
 	}
