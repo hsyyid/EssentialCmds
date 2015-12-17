@@ -492,7 +492,7 @@ public class Utils
 		String playerName = userName.toString();
 
 		Configs.getConfig(config).getNode("home", "users", playerName, homeName, "world").setValue(worldName);
-		Configs.getConfig(config).getNode("home", "users", playerName, homeName, "X").setValue(playerLocation.getX());
+		Configs.getConfig(config).getNode("home", "users", playerName, homeName, "X").setValue(playerLocation.getBlockX());
 		Configs.getConfig(config).getNode("home", "users", playerName, homeName, "Y").setValue(playerLocation.getY());
 		Configs.getConfig(config).getNode("home", "users", playerName, homeName, "Z").setValue(playerLocation.getZ());
 
@@ -619,31 +619,20 @@ public class Utils
 	{
 
 		Configs.getConfig(config).getNode("warps", warpName, "world").setValue(playerLocation.getExtent().getUniqueId().toString());
-		Configs.getConfig(config).getNode("warps", warpName, "X").setValue(playerLocation.getX());
-		Configs.getConfig(config).getNode("warps", warpName, "Y").setValue(playerLocation.getY());
-		Configs.getConfig(config).getNode("warps", warpName, "Z").setValue(playerLocation.getZ());
+		Configs.getConfig(config).getNode("warps", warpName, "X").setValue(playerLocation.getBlockX());
+		Configs.getConfig(config).getNode("warps", warpName, "Y").setValue(playerLocation.getBlockY());
+		Configs.getConfig(config).getNode("warps", warpName, "Z").setValue(playerLocation.getBlockZ());
 		Configs.saveConfig(config);
 
 		CommentedConfigurationNode node = Configs.getConfig(config).getNode("warps", "warps");
+		String format = warpName + ",";
 		if (configManager.getString(node).isPresent()) {
 			String items = node.getString();
+			if (!items.contains(format))
+				Configs.setValue(config, node.getPath(), items + format);
+		} else {
+			Configs.setValue(config, node.getPath(), format);
 		}
-		ConfigurationNode valueNode = Configs.getConfig(config).getNode((Object[]) ("warps.warps").split("\\."));
-		if (valueNode.getString() != null)
-		{
-			String items = valueNode.getString();
-			if (!items.contains(warpName + ","))
-			{
-				String formattedItem = (warpName + ",");
-				valueNode.setValue(items + formattedItem);
-			}
-		}
-		else
-		{
-			valueNode.setValue(warpName + ",");
-		}
-
-		Configs.saveConfig(config);
 	}
 
 	public static String getJoinMsg()
@@ -737,9 +726,9 @@ public class Utils
 	public static void setSpawn(Location<World> playerLocation, String worldName)
 	{
 
-		Configs.getConfig(config).getNode("spawn", "X").setValue(playerLocation.getX());
-		Configs.getConfig(config).getNode("spawn", "Y").setValue(playerLocation.getY());
-		Configs.getConfig(config).getNode("spawn", "Z").setValue(playerLocation.getZ());
+		Configs.getConfig(config).getNode("spawn", "X").setValue(playerLocation.getBlockX());
+		Configs.getConfig(config).getNode("spawn", "Y").setValue(playerLocation.getBlockY());
+		Configs.getConfig(config).getNode("spawn", "Z").setValue(playerLocation.getBlockZ());
 		Configs.getConfig(config).getNode("spawn", "world").setValue(worldName);
 
 		Configs.saveConfig(config);
@@ -1001,13 +990,13 @@ public class Utils
 
 	public static double getWarpY(String warpName)
 	{
-		ConfigurationNode valueNode = Configs.getConfig(config).getNode("warps", warpName, "y");
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode("warps", warpName, "Y");
 		return valueNode.getDouble();
 	}
 
 	public static double getWarpZ(String warpName)
 	{
-		ConfigurationNode valueNode = Configs.getConfig(config).getNode("warps", warpName, "z");
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode("warps", warpName, "Z");
 		return valueNode.getDouble();
 	}
 
