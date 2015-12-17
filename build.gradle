@@ -9,7 +9,7 @@ plugins {
 
 group = "io.github.hsyyid"
 archivesBaseName = "EssentialCmds"
-version = '5.9'
+version = '6.0'
 
 apply plugin: 'net.ellune.blossom'
 
@@ -26,7 +26,6 @@ jar {
 }
 
 repositories {
-//    mavenCentral()
     jcenter()
     maven {
         name 'Sponge maven repo'
