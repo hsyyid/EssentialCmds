@@ -127,6 +127,7 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
@@ -165,9 +166,6 @@ public class EssentialCmds
 
 	@Inject
 	private Logger logger;
-
-	@Inject
-	private Game game;
 
 	@Inject
 	@ConfigDir(sharedRoot = false)
@@ -622,7 +620,7 @@ public class EssentialCmds
 			CommandSpec.builder().description(Texts.of("Warp Command")).permission("essentialcmds.warp.use")
 			.arguments(GenericArguments.seq(
 				GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name"))),
-					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), game)))))
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame())))))
 			.executor(new WarpExecutor()).build();
 		getGame().getCommandManager().register(this, warpCommandSpec, "warp");
 
@@ -738,7 +736,7 @@ public class EssentialCmds
 	}
 
 	public Game getGame() {
-		return game;
+		return Sponge.getGame();
 	}
 
 }
