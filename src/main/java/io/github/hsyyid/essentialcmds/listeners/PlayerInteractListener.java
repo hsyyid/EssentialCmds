@@ -25,6 +25,7 @@
 package io.github.hsyyid.essentialcmds.listeners;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.block.tileentity.TileEntity;
 import org.spongepowered.api.command.CommandManager;
@@ -70,7 +71,7 @@ public class PlayerInteractListener
 					if (signData.isPresent())
 					{
 						SignData data = signData.get();
-						CommandManager cmdService = event.getGame().getCommandManager();
+						CommandManager cmdService = Sponge.getGame().getCommandManager();
 						String line0 = Texts.toPlain(data.getValue(Keys.SIGN_LINES).get().get(0));
 						String line1 = Texts.toPlain(data.getValue(Keys.SIGN_LINES).get().get(1));
 						String command = "warp " + line1;

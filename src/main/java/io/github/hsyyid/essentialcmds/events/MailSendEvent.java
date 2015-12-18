@@ -28,7 +28,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.impl.AbstractEvent;
 
-public class MailSendEvent extends AbstractEvent implements Cancellable
+public abstract class MailSendEvent extends AbstractEvent implements Cancellable
 {
 	private boolean cancelled = false;
 

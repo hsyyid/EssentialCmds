@@ -26,6 +26,7 @@ package io.github.hsyyid.essentialcmds.listeners;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.utils.Powertool;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.action.InteractEvent;
@@ -41,14 +42,14 @@ public class PlayerClickListener
 		if (event.getCause().first(Player.class).isPresent())
 		{
 			Player player = event.getCause().first(Player.class).get();
-			
-			if(EssentialCmds.frozenPlayers.contains(player.getUniqueId()))
+
+			if (EssentialCmds.frozenPlayers.contains(player.getUniqueId()))
 			{
 				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot click while frozen."));
 				event.setCancelled(true);
 				return;
 			}
-			
+
 			Powertool foundTool = null;
 
 			for (Powertool powertool : EssentialCmds.powertools)
@@ -65,19 +66,19 @@ public class PlayerClickListener
 
 			if (foundTool != null)
 			{
-				event.getGame().getCommandManager().process(player, foundTool.getCommand());
+				Sponge.getGame().getCommandManager().process(player, foundTool.getCommand());
 			}
 		}
 	}
-	
+
 	@Listener
 	public void onPlayerClickEntity(InteractEntityEvent event)
 	{
 		if (event.getCause().first(Player.class).isPresent())
 		{
 			Player player = event.getCause().first(Player.class).get();
-			
-			if(EssentialCmds.frozenPlayers.contains(player.getUniqueId()))
+
+			if (EssentialCmds.frozenPlayers.contains(player.getUniqueId()))
 			{
 				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot interact with entities while frozen."));
 				event.setCancelled(true);
