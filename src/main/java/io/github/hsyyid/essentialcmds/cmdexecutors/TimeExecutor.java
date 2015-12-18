@@ -42,6 +42,7 @@ public class TimeExecutor implements CommandExecutor
 		Optional<String> timeString = ctx.<String> getOne("time");
 		Optional<Integer> timeTicks = ctx.<Integer> getOne("ticks");
 
+		System.out.println("Time Ticks: " + timeTicks.isPresent() + " Time String: " + timeString.isPresent());
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;

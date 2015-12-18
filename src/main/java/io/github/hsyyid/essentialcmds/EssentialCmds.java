@@ -369,8 +369,8 @@ public class EssentialCmds
 			.permission("essentialcmds.time.set")
 			.arguments(
 				GenericArguments.firstParsing(
-					GenericArguments.string(Texts.of("time")), 
-					GenericArguments.integer(Texts.of("ticks"))))
+					GenericArguments.integer(Texts.of("ticks")), 
+					GenericArguments.string(Texts.of("time"))))
 			.executor(new TimeExecutor()).build();
 		getGame().getCommandManager().register(this, timeCommandSpec, "time");
 
