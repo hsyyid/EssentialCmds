@@ -48,8 +48,8 @@ public class Warps implements Configurable {
         return warps;
     }
 
-    private Path warpsDirectory = Paths.get(EssentialCmds.getEssentialCmds().getConfigDir() + "/warps/");
-    private Path warpsFile = Paths.get(warpsDirectory + "warps.conf");
+    private Path warpsDirectory = Paths.get(EssentialCmds.getEssentialCmds().getConfigDir() + "/warps");
+    private Path warpsFile = Paths.get(warpsDirectory + "/warps.conf");
     private ConfigurationLoader<CommentedConfigurationNode> warpsLoader = HoconConfigurationLoader.builder().setPath(warpsFile).build();
     private CommentedConfigurationNode warpsNode;
 
