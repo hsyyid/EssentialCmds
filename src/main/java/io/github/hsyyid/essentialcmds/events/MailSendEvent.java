@@ -24,11 +24,13 @@
  */
 package io.github.hsyyid.essentialcmds.events;
 
+import io.github.hsyyid.essentialcmds.EssentialCmds;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Cancellable;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.impl.AbstractEvent;
 
-public abstract class MailSendEvent extends AbstractEvent implements Cancellable
+public class MailSendEvent extends AbstractEvent implements Cancellable
 {
 	private boolean cancelled = false;
 
@@ -66,5 +68,11 @@ public abstract class MailSendEvent extends AbstractEvent implements Cancellable
 		this.sender = sender;
 		this.recipientName = recipientName;
 		this.message = message;
+	}
+
+	@Override
+	public Cause getCause()
+	{
+		return Cause.of(EssentialCmds.getEssentialCmds());
 	}
 }

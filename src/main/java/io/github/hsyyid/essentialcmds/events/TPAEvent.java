@@ -24,8 +24,10 @@
  */
 package io.github.hsyyid.essentialcmds.events;
 
+import io.github.hsyyid.essentialcmds.EssentialCmds;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Cancellable;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.impl.AbstractEvent;
 
 public class TPAEvent extends AbstractEvent implements Cancellable
@@ -59,5 +61,11 @@ public class TPAEvent extends AbstractEvent implements Cancellable
 	{
 		this.sender = sender;
 		this.recipient = recipient;
+	}
+	
+	@Override
+	public Cause getCause()
+	{
+		return Cause.of(EssentialCmds.getEssentialCmds());
 	}
 }
