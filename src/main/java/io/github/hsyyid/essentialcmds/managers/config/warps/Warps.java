@@ -42,24 +42,36 @@ public class Warps implements Configurable {
         if (!Files.exists(warpsFile))
             try {
                 Files.createFile(warpsFile);
+                load();
+                populate();
+                save();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        load();
     }
 
     @Override
     public void load() {
-
+        try {
+            warpsNode = warpsLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void save() {
-
+        try {
+            warpsLoader.save(warpsNode);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void populate() {
-
+        get().getNode("version").setValue(1);
     }
 
     @Override

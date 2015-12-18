@@ -30,6 +30,7 @@ import com.google.inject.Inject;
 import io.github.hsyyid.essentialcmds.cmdexecutors.*;
 import io.github.hsyyid.essentialcmds.listeners.*;
 import io.github.hsyyid.essentialcmds.managers.config.Config;
+import io.github.hsyyid.essentialcmds.managers.config.warps.Warps;
 import io.github.hsyyid.essentialcmds.utils.*;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
@@ -98,6 +99,9 @@ public class EssentialCmds
 
 		// Create config.conf
 		Config.getConfig().setup();
+
+		// Create warps.conf
+		Warps.getWarps().setup();
 	}
 
 	@Listener
