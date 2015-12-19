@@ -105,3 +105,5 @@ gradle-app.setting
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
 
+# /plans/ holds planning material where we can plan out how configs and other files are gonna look like before we write down its code
+/plans/
