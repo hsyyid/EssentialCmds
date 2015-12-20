@@ -30,7 +30,7 @@ import com.google.inject.Inject;
 import io.github.hsyyid.essentialcmds.cmdexecutors.*;
 import io.github.hsyyid.essentialcmds.listeners.*;
 import io.github.hsyyid.essentialcmds.managers.config.Config;
-import io.github.hsyyid.essentialcmds.managers.config.warps.Warps;
+import io.github.hsyyid.essentialcmds.managers.config.Warps;
 import io.github.hsyyid.essentialcmds.utils.*;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
@@ -519,13 +519,13 @@ public class EssentialCmds
 			.build();
 		getGame().getCommandManager().register(this, deleteHomeCommandSpec, "deletehome", "delhome");
 
-		CommandSpec warpCommandSpec =
+		CommandSpec esswarpCommandSpec =
 			CommandSpec.builder().description(Texts.of("Warp Command")).permission("essentialcmds.warp.use")
 			.arguments(GenericArguments.seq(
 				GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name"))),
 					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame())))))
-			.executor(new WarpExecutor()).build();
-		getGame().getCommandManager().register(this, warpCommandSpec, "warp");
+			.executor(new EssWarpExecutor()).build();
+		getGame().getCommandManager().register(this, esswarpCommandSpec, "esswarp");
 
 		CommandSpec listWarpCommandSpec =
 			CommandSpec.builder().description(Texts.of("List Warps Command")).permission("essentialcmds.warps.list")
