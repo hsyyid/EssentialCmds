@@ -533,16 +533,16 @@ public class EssentialCmds
 			.executor(new ListWarpExecutor()).build();
 		getGame().getCommandManager().register(this, listWarpCommandSpec, "warps");
 
-		CommandSpec setWarpCommandSpec =
+		CommandSpec esssetWarpCommandSpec =
 			CommandSpec.builder().description(Texts.of("Set Warp Command")).permission("essentialcmds.warp.set")
-			.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name")))).executor(new SetWarpExecutor()).build();
-		getGame().getCommandManager().register(this, setWarpCommandSpec, "setwarp");
+			.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name")))).executor(new EssSetWarpExecutor()).build();
+		getGame().getCommandManager().register(this, esssetWarpCommandSpec, "esssetwarp");
 
-		CommandSpec deleteWarpCommandSpec =
+		CommandSpec essdeleteWarpCommandSpec =
 			CommandSpec.builder().description(Texts.of("Delete Warp Command")).permission("essentialcmds.warp.delete")
-			.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name")))).executor(new DeleteWarpExecutor())
+			.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name")))).executor(new EssDeleteWarpExecutor())
 			.build();
-		getGame().getCommandManager().register(this, deleteWarpCommandSpec, "deletewarp", "delwarp");
+		getGame().getCommandManager().register(this, essdeleteWarpCommandSpec, "deletewarp", "delwarp");
 
 		CommandSpec feedCommandSpec =
 			CommandSpec.builder().description(Texts.of("Feed Command")).permission("essentialcmds.feed.use")

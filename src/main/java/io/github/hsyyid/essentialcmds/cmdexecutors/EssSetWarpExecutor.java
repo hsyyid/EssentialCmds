@@ -24,40 +24,37 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.api.util.config.Configs;
-import io.github.hsyyid.essentialcmds.managers.config.Config;
 import io.github.hsyyid.essentialcmds.utils.Utils;
-import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.source.CommandBlockSource;
+import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
-public class DeleteWarpExecutor implements CommandExecutor
+public class EssSetWarpExecutor implements CommandExecutor
 {
+
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		String warpName = ctx.<String> getOne("warp name").get();
-
-		if (Utils.isWarpInConfig(warpName))
+		if (src instanceof Player)
 		{
-			ConfigurationNode warpNode = Configs.getConfig(Config.getConfig()).getNode("warps", "warps");
-
-			// Get Value of Warp Node
-			String warps = warpNode.getString();
-
-			// Remove Warp
-			String newVal = warps.replace(warpName + ",", "");
-			Configs.setValue(Config.getConfig(), new java.lang.Object[]{"warps", "warps"}, newVal);
-
-			src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Deleted warp " + warpName));
+			Player player = (Player) src;
+			Utils.setWarp(player.getLocation(), warpName);
+			src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Warp set."));
 		}
-		else
+		else if (src instanceof ConsoleSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "This warp doesn't exist!"));
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /setwarp!"));
+		}
+		else if (src instanceof CommandBlockSource)
+		{
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /setwarp!"));
 		}
 
 		return CommandResult.success();
