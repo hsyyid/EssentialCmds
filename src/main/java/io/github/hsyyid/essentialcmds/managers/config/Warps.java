@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.hsyyid.essentialcmds.managers.config.warps;
+package io.github.hsyyid.essentialcmds.managers.config;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.api.util.config.Configurable;
@@ -48,20 +48,13 @@ public class Warps implements Configurable {
         return warps;
     }
 
-    private Path warpsDirectory = Paths.get(EssentialCmds.getEssentialCmds().getConfigDir() + "/warps");
-    private Path warpsFile = Paths.get(warpsDirectory + "/warps.conf");
+    private Path warpsFile = Paths.get(EssentialCmds.getEssentialCmds().getConfigDir() + "/warps.conf");
     private ConfigurationLoader<CommentedConfigurationNode> warpsLoader = HoconConfigurationLoader.builder().setPath(warpsFile).build();
     private CommentedConfigurationNode warpsNode;
 
 
     @Override
     public void setup() {
-        if (!Files.exists(warpsDirectory))
-            try {
-                Files.createDirectories(warpsDirectory);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
         if (!Files.exists(warpsFile))
             try {
