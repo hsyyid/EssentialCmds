@@ -33,8 +33,13 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.service.ban.BanService;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.util.ban.Ban;
+import org.spongepowered.api.util.ban.BanType;
+import org.spongepowered.api.util.ban.BanTypes;
 
 import java.util.Optional;
 
@@ -43,20 +48,21 @@ public class BanExecutor implements CommandExecutor
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		Game game = EssentialCmds.getEssentialCmds().getGame();
-		Server server = game.getServer();
-		Player player = ctx.<Player> getOne("player").get();
-		Optional<String> reason = ctx.<String> getOne("reason");
+		User player = ctx.<User> getOne("player").get();
+		String reason = ctx.<String> getOne("reason").orElse("The BanHammer has spoken!");
 
-		if (reason.isPresent())
-		{
-			game.getCommandManager().process(server.getConsole(), "minecraft:ban " + player.getName() + " " + reason.get());
-		}
-		else
-		{
-			game.getCommandManager().process(server.getConsole(), "minecraft:ban " + player.getName() + " " + "The BanHammer has Spoken!");
+		BanService srv = game.getServiceManager().provide(BanService.class).get();
+		if (srv.isBanned(player.getProfile())) {
+			src.sendMessage(Texts.of(TextColors.RED, "That player has already been banned."));
+			return CommandResult.empty();
 		}
 
-		src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player banned."));
+		srv.addBan(Ban.builder().type(BanTypes.PROFILE).source(src).profile(player.getProfile()).reason(Texts.of(reason)).build());
+		if (player.isOnline()) {
+			player.getPlayer().get().kick(Texts.of(TextColors.RED, "You have been banned for: " + reason));
+		}
+
+		src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, player.getName() + " has been banned."));
 		return CommandResult.success();
 	}
 }
