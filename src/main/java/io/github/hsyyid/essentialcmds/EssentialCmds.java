@@ -106,6 +106,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.VanishExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.WarpExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.WeatherExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.WhoisExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.argumentparsers.UserParser;
 import io.github.hsyyid.essentialcmds.listeners.MailListener;
 import io.github.hsyyid.essentialcmds.listeners.MessageSinkListener;
 import io.github.hsyyid.essentialcmds.listeners.PlayerClickListener;
@@ -425,14 +426,14 @@ public class EssentialCmds
 			.description(Texts.of("Ban Command"))
 			.permission("essentialcmds.ban.use")
 			.arguments(
-				GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"))), GenericArguments
+				GenericArguments.seq(GenericArguments.onlyOne(new UserParser(Texts.of("player"))), GenericArguments
 					.optional(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("reason"))))))
 			.executor(new BanExecutor()).build();
 		getGame().getCommandManager().register(this, banCommandSpec, "ban");
 
 		CommandSpec pardonCommandSpec =
 			CommandSpec.builder().description(Texts.of("Unban Command")).permission("essentialcmds.unban.use")
-			.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("player")))).executor(new PardonExecutor()).build();
+			.arguments(GenericArguments.onlyOne(new UserParser(Texts.of("player")))).executor(new PardonExecutor()).build();
 		getGame().getCommandManager().register(this, pardonCommandSpec, "unban", "pardon");
 
 		CommandSpec teleportPosCommandSpec =
