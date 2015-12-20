@@ -50,15 +50,14 @@ public class DeleteHomeExecutor implements CommandExecutor
 			Player player = (Player) src;
 			if (Utils.inConfig(player.getUniqueId(), homeName))
 			{
-				ConfigurationNode homeNode = Configs.getConfig(config).getNode("home", "users", player.getUniqueId(), "homes");
+				ConfigurationNode homeNode = Configs.getConfig(config).getNode("home", "users", player.getUniqueId().toString(), "homes");
 
 				// Get Value of Home Node
 				String homes = homeNode.getString();
 				String newVal = homes.replace(homeName + ",", "");
 				
 				Configs.setValue(config, homeNode.getPath(), newVal);
-
-				Configs.removeChild(config, new Object[]{"home", "users", player.getUniqueId()}, homeName);
+				Configs.removeChild(config, new Object[]{"home", "users", player.getUniqueId().toString()}, homeName);
 				
 				src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Deleted home " + homeName));
 
