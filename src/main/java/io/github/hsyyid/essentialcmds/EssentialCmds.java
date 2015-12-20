@@ -28,6 +28,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import io.github.hsyyid.essentialcmds.cmdexecutors.*;
+import io.github.hsyyid.essentialcmds.cmdexecutors.warp.WarpExecutor;
 import io.github.hsyyid.essentialcmds.listeners.*;
 import io.github.hsyyid.essentialcmds.managers.config.Config;
 import io.github.hsyyid.essentialcmds.managers.config.Warps;
@@ -609,6 +610,14 @@ public class EssentialCmds
 					GenericArguments.onlyOne(GenericArguments.optional(GenericArguments.string(Texts.of("time unit"))))))
 			.executor(new MuteExecutor()).build();
 		getGame().getCommandManager().register(this, muteCommandSpec, "mute");
+
+		CommandSpec warpCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Teleports player to a predefined location."))
+				.permission("essentialcmds.warp.use")
+				.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warpName")))),
+						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), Sponge.getGame()))))
+				.executor(new WarpExecutor()).build();
+		getGame().getCommandManager().register(this, warpCommandSpec, "warp");
 
 		getGame().getEventManager().registerListeners(this, new SignChangeListener());
 		getGame().getEventManager().registerListeners(this, new PlayerJoinListener());
