@@ -46,6 +46,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.DeleteWorldExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.DirectionExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.EnchantExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.EntityInfoExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.EssentialCmdsExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.FeedExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.FireballExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.FlyExecutor;
@@ -79,6 +80,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.PardonExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.PlayerFreezeExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.PowertoolExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.RTPExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.ReloadExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.RemoveRuleExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.RepairExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.RespondExecutor;
@@ -144,6 +146,8 @@ import org.spongepowered.api.world.TeleportHelper;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -208,6 +212,21 @@ public class EssentialCmds
 
 		Utils.readMutes();
 		Utils.startAFKService();
+		
+		HashMap<List<String>, CommandSpec> subcommands  = new HashMap<List<String>, CommandSpec>();
+
+		subcommands.put(Arrays.asList("reload"), CommandSpec.builder()
+			.description(Texts.of("Reload Command"))
+			.permission("essentialcmds.reload.use")
+			.executor(new ReloadExecutor())
+			.build());
+		
+		CommandSpec essentialCmdsCommandSpec = CommandSpec.builder()
+			.description(Texts.of("EssentialCmds Command"))
+			.children(subcommands)
+			.executor(new EssentialCmdsExecutor())
+			.build();
+		getGame().getCommandManager().register(this, essentialCmdsCommandSpec, "essentialcmds", "essentialcmd");
 
 		CommandSpec homeCommandSpec =
 			CommandSpec.builder().description(Texts.of("Home Command")).permission("essentialcmds.home.use")
