@@ -184,38 +184,38 @@ public class EssentialCmds
 
 		CommandSpec vanishCommandSpec =
 			CommandSpec.builder().description(Texts.of("Vanish Command")).permission("essentialcmds.vanish.use")
-			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame())))).executor(new VanishExecutor()).build();
+			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"))))).executor(new VanishExecutor()).build();
 		getGame().getCommandManager().register(this, vanishCommandSpec, "vanish");
 
 		CommandSpec igniteCommandSpec =
 			CommandSpec.builder().description(Texts.of("Ignite Command")).permission("essentialcmds.ignite.use")
 			.arguments(GenericArguments.seq(
 				GenericArguments.onlyOne(GenericArguments.integer(Texts.of("ticks"))),
-				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame())))))
+				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"))))))
 			.executor(new IgniteExecutor()).build();
 		getGame().getCommandManager().register(this, igniteCommandSpec, "burn", "ignite", "fire");
 
 		CommandSpec whoIsCommandSpec =
 			CommandSpec.builder().description(Texts.of("WhoIs Command")).permission("essentialcmds.whois.use")
 			.arguments(
-				GenericArguments.firstParsing(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame())),
-					GenericArguments.onlyOne(GenericArguments.string(Texts.of("player name")))))
+				GenericArguments.firstParsing(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player")))),
+					GenericArguments.onlyOne(GenericArguments.string(Texts.of("player name"))))
 			.executor(new WhoisExecutor()).build();
 		getGame().getCommandManager().register(this, whoIsCommandSpec, "whois", "realname", "seen");
 
 		CommandSpec playerFreezeCommandSpec =
 			CommandSpec.builder().description(Texts.of("Player Freeze Command")).permission("essentialcmds.playerfreeze.use")
-			.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame()))).executor(new PlayerFreezeExecutor()).build();
+			.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player")))).executor(new PlayerFreezeExecutor()).build();
 		getGame().getCommandManager().register(this, playerFreezeCommandSpec, "playerfreeze", "freezeplayer");
 
 		CommandSpec skullCommandSpec =
 			CommandSpec.builder().description(Texts.of("Skull Command")).permission("essentialcmds.skull.use")
-			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame())))).executor(new SkullExecutor()).build();
+			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"))))).executor(new SkullExecutor()).build();
 		getGame().getCommandManager().register(this, skullCommandSpec, "skull", "playerskull", "head");
 
 		CommandSpec getPosCommandSpec =
 			CommandSpec.builder().description(Texts.of("GetPos Command")).permission("essentialcmds.getpos.use")
-			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame()))))
+			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player")))))
 			.executor(new GetPosExecutor()).build();
 		getGame().getCommandManager().register(this, getPosCommandSpec, "getpos");
 		
@@ -234,7 +234,7 @@ public class EssentialCmds
 			.permission("essentialcmds.gamemode.use")
 			.arguments(
 				GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.string(Texts.of("gamemode"))),
-					GenericArguments.onlyOne(GenericArguments.optional(GenericArguments.player(Texts.of("player"), getGame())))))
+					GenericArguments.onlyOne(GenericArguments.optional(GenericArguments.player(Texts.of("player"))))))
 			.executor(new GamemodeExecutor()).build();
 		getGame().getCommandManager().register(this, gamemodeCommandSpec, "gamemode", "gm");
 
@@ -329,7 +329,7 @@ public class EssentialCmds
 			.description(Texts.of("Ban Command"))
 			.permission("essentialcmds.ban.use")
 			.arguments(
-				GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame())), GenericArguments
+				GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"))), GenericArguments
 					.optional(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("reason"))))))
 			.executor(new BanExecutor()).build();
 		getGame().getCommandManager().register(this, banCommandSpec, "ban");
@@ -345,8 +345,7 @@ public class EssentialCmds
 			.description(Texts.of("Teleport Position Command"))
 			.permission("essentialcmds.teleport.pos.use")
 			.arguments(
-				GenericArguments.seq(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"),
-					getGame())))), GenericArguments.onlyOne(GenericArguments.integer(Texts.of("x"))),
+				GenericArguments.seq(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"))))), GenericArguments.onlyOne(GenericArguments.integer(Texts.of("x"))),
 				GenericArguments.onlyOne(GenericArguments.integer(Texts.of("y"))),
 				GenericArguments.onlyOne(GenericArguments.integer(Texts.of("z")))).executor(new TeleportPosExecutor()).build();
 		getGame().getCommandManager().register(this, teleportPosCommandSpec, "tppos", "teleportpos", "teleportposition");
@@ -357,8 +356,8 @@ public class EssentialCmds
 			.description(Texts.of("Teleport Command"))
 			.permission("essentialcmds.teleport.use")
 			.arguments(GenericArguments.seq(
-				GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame())),
-				GenericArguments.optional(GenericArguments.player(Texts.of("target"), getGame()))))
+				GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"))),
+				GenericArguments.optional(GenericArguments.player(Texts.of("target")))))
 			.executor(new TeleportExecutor()).build();
 		getGame().getCommandManager().register(this, teleportCommandSpec, "tp", "teleport");
 
@@ -367,7 +366,7 @@ public class EssentialCmds
 			.builder()
 			.description(Texts.of("Kick Command"))
 			.permission("essentialcmds.kick.use")
-			.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame()))),
+			.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player")))),
 				GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("reason")))).executor(new KickExecutor())
 			.build();
 		getGame().getCommandManager().register(this, kickCommandSpec, "kick");
@@ -377,20 +376,20 @@ public class EssentialCmds
 			.builder()
 			.description(Texts.of("Message Command"))
 			.permission("essentialcmds.message.use")
-			.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Texts.of("recipient"), getGame()))),
+			.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Texts.of("recipient")))),
 				GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("message"))))
 			.executor(new MessageExecutor()).build();
 		getGame().getCommandManager().register(this, messageCommandSpec, "message", "m", "msg", "tell");
 
 		CommandSpec lightningCommandSpec =
 			CommandSpec.builder().description(Texts.of("Lightning Command")).permission("essentialcmds.lightning.use")
-			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame()))))
+			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player")))))
 			.executor(new LightningExecutor()).build();
 		getGame().getCommandManager().register(this, lightningCommandSpec, "thor", "smite", "lightning");
 
 		CommandSpec fireballCommandSpec =
 			CommandSpec.builder().description(Texts.of("Fireball Command")).permission("essentialcmds.fireball.use")
-			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame()))))
+			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player")))))
 			.executor(new FireballExecutor()).build();
 		getGame().getCommandManager().register(this, fireballCommandSpec, "fireball", "ghast");
 
@@ -400,8 +399,8 @@ public class EssentialCmds
 			.description(Texts.of("Sudo Command"))
 			.permission("essentialcmds.sudo.use")
 			.arguments(
-				GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame())),
-					GenericArguments.remainingJoinedStrings(Texts.of("command")))).executor(new SudoExecutor()).build();
+				GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player")))),
+					GenericArguments.remainingJoinedStrings(Texts.of("command"))).executor(new SudoExecutor()).build();
 		getGame().getCommandManager().register(this, sudoCommandSpec, "sudo");
 
 		CommandSpec createWorldCommandSpec =
@@ -446,26 +445,26 @@ public class EssentialCmds
 
 		CommandSpec tpaCommandSpec =
 			CommandSpec.builder().description(Texts.of("TPA Command")).permission("essentialcmds.tpa.use")
-			.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame()))).executor(new TPAExecutor()).build();
+			.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player")))).executor(new TPAExecutor()).build();
 		getGame().getCommandManager().register(this, tpaCommandSpec, "tpa");
 
 		CommandSpec tpaHereCommandSpec =
 			CommandSpec.builder().description(Texts.of("TPA Here Command")).permission("essentialcmds.tpahere.use")
-			.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame()))).executor(new TPAHereExecutor())
+			.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player")))).executor(new TPAHereExecutor())
 			.build();
 		getGame().getCommandManager().register(this, tpaHereCommandSpec, "tpahere");
 
 		CommandSpec tpWorldSpec =
 			CommandSpec.builder().description(Texts.of("TP World Command")).permission("essentialcmds.tpworld.use")
 			.arguments(GenericArguments.seq(GenericArguments.string(Texts.of("name")),
-				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame())))))
+				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"))))))
 			.executor(new TeleportWorldExecutor())
 			.build();
 		getGame().getCommandManager().register(this, tpWorldSpec, "tpworld");
 
 		CommandSpec tpHereCommandSpec =
 			CommandSpec.builder().description(Texts.of("TP Here Command")).permission("essentialcmds.tphere.use")
-			.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame()))).executor(new TPHereExecutor())
+			.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player")))).executor(new TPHereExecutor())
 			.build();
 		getGame().getCommandManager().register(this, tpHereCommandSpec, "tphere");
 
@@ -487,7 +486,7 @@ public class EssentialCmds
 
 		CommandSpec healCommandSpec =
 			CommandSpec.builder().description(Texts.of("Heal Command")).permission("essentialcmds.heal.use")
-			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame()))))
+			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player")))))
 			.executor(new HealExecutor()).build();
 		getGame().getCommandManager().register(this, healCommandSpec, "heal");
 
@@ -505,7 +504,7 @@ public class EssentialCmds
 
 		CommandSpec flyCommandSpec =
 			CommandSpec.builder().description(Texts.of("Fly Command")).permission("essentialcmds.fly.use")
-			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("palyer"), getGame()))))
+			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("palyer")))))
 			.executor(new FlyExecutor()).build();
 		getGame().getCommandManager().register(this, flyCommandSpec, "fly");
 
@@ -524,7 +523,7 @@ public class EssentialCmds
 			CommandSpec.builder().description(Texts.of("Warp Command")).permission("essentialcmds.warp.use")
 			.arguments(GenericArguments.seq(
 				GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name"))),
-					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame())))))
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"))))))
 			.executor(new EssWarpExecutor()).build();
 		getGame().getCommandManager().register(this, esswarpCommandSpec, "esswarp");
 
@@ -547,19 +546,19 @@ public class EssentialCmds
 
 		CommandSpec feedCommandSpec =
 			CommandSpec.builder().description(Texts.of("Feed Command")).permission("essentialcmds.feed.use")
-			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame()))))
+			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player")))))
 			.executor(new FeedExecutor()).build();
 		getGame().getCommandManager().register(this, feedCommandSpec, "feed");
 
 		CommandSpec unmuteCommnadSpec =
 			CommandSpec.builder().description(Texts.of("Unmute Command")).permission("essentialcmds.unmute.use")
-			.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame()))).executor(new UnmuteExecutor())
+			.arguments(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player")))).executor(new UnmuteExecutor())
 			.build();
 		getGame().getCommandManager().register(this, unmuteCommnadSpec, "unmute");
 
 		CommandSpec killCommandSpec =
 			CommandSpec.builder().description(Texts.of("Kill Command")).permission("essentialcmds.kill.use")
-			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame()))))
+			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player")))))
 			.executor(new KillExecutor()).build();
 		getGame().getCommandManager().register(this, killCommandSpec, "kill");
 
@@ -571,7 +570,7 @@ public class EssentialCmds
 			CommandSpec.builder().description(Texts.of("Speed Command")).permission("essentialcmds.speed.use")
 			.arguments(GenericArguments.seq(
 				GenericArguments.onlyOne(GenericArguments.integer(Texts.of("speed"))),
-				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame())))))
+				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"))))))
 			.executor(new SpeedExecutor()).build();
 		getGame().getCommandManager().register(this, speedCommandSpec, "speed");
 
@@ -594,7 +593,7 @@ public class EssentialCmds
 			.permission("essentialcmds.nick.use")
 			.arguments(
 				GenericArguments.seq(
-					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame()))),
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player")))),
 					GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("nick")))))
 			.executor(new NickExecutor()).build();
 		getGame().getCommandManager().register(this, nickCommandSpec, "nick");
@@ -605,7 +604,7 @@ public class EssentialCmds
 			.description(Texts.of("Mute Command"))
 			.permission("essentialcmds.mute.use")
 			.arguments(
-				GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), getGame())),
+				GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"))),
 					GenericArguments.onlyOne(GenericArguments.optional(GenericArguments.integer(Texts.of("time")))),
 					GenericArguments.onlyOne(GenericArguments.optional(GenericArguments.string(Texts.of("time unit"))))))
 			.executor(new MuteExecutor()).build();
@@ -615,7 +614,7 @@ public class EssentialCmds
 				.description(Texts.of("Teleports player to a predefined location."))
 				.permission("essentialcmds.warp.use")
 				.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warpName")))),
-						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"), Sponge.getGame()))))
+						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player")))))
 				.executor(new WarpExecutor()).build();
 		getGame().getCommandManager().register(this, warpCommandSpec, "warp");
 
