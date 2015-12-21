@@ -32,6 +32,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.argumentparsers.UserParser;
 import io.github.hsyyid.essentialcmds.cmdexecutors.warp.WarpExecutor;
 import io.github.hsyyid.essentialcmds.listeners.*;
 import io.github.hsyyid.essentialcmds.managers.config.Config;
+import io.github.hsyyid.essentialcmds.managers.config.Warps;
 import io.github.hsyyid.essentialcmds.utils.*;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -111,6 +112,7 @@ public class EssentialCmds
 
 		// Create config.conf
 		Config.getConfig().setup();
+		Warps.getWarps().setup();
 	}
 
 	@Listener
@@ -612,10 +614,9 @@ public class EssentialCmds
 			.builder()
 			.description(Texts.of("Mute Command"))
 			.permission("essentialcmds.mute.use")
-			.arguments(
-				GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"))),
-					GenericArguments.onlyOne(GenericArguments.optional(GenericArguments.integer(Texts.of("time")))),
-					GenericArguments.onlyOne(GenericArguments.optional(GenericArguments.string(Texts.of("time unit"))))))
+			.arguments(GenericArguments.seq(
+					GenericArguments.onlyOne(GenericArguments.string(Texts.of("warpName"))),
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"))))))
 			.executor(new MuteExecutor()).build();
 		getGame().getCommandManager().register(this, muteCommandSpec, "mute");
 
