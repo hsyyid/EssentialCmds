@@ -42,7 +42,7 @@ import org.spongepowered.api.world.World;
 import java.util.Objects;
 import java.util.Optional;
 
-public class WarpExecutor implements CommandExecutor
+public class EssWarpExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
