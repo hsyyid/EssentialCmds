@@ -24,15 +24,15 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
-
+import io.github.hsyyid.essentialcmds.EssentialCmds;
 import org.spongepowered.api.Game;
-import org.spongepowered.api.Server;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.service.ban.BanService;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
@@ -40,13 +40,17 @@ public class PardonExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Game game = getEssentialCmds().getGame();
-		Server server = game.getServer();
-		String player = ctx.<String> getOne("player").get();
+		Game game = EssentialCmds.getEssentialCmds().getGame();
+		User player = ctx.<User> getOne("player").get();
 
-		game.getCommandManager().process(server.getConsole(), "minecraft:pardon " + player);
-		src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player unbanned."));
+		BanService srv = game.getServiceManager().provide(BanService.class).get();
+		if (!srv.isBanned(player.getProfile())) {
+			src.sendMessage(Texts.of(TextColors.RED, "That player is not currently banned."));
+			return CommandResult.empty();
+		}
 
+		srv.removeBan(srv.getBanFor(player.getProfile()).get());
+		src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, player.getName() + " has been unbanned."));
 		return CommandResult.success();
 	}
 }

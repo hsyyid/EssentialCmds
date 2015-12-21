@@ -50,21 +50,20 @@ public class PlayerInteractListener
 		{
 			Player player = event.getCause().first(Player.class).get();
 
-			if(EssentialCmds.frozenPlayers.contains(player.getUniqueId()))
+			if (EssentialCmds.frozenPlayers.contains(player.getUniqueId()))
 			{
 				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot interact while frozen."));
 				event.setCancelled(true);
 				return;
 			}
-			
+
 			Location<World> location = event.getTargetBlock().getLocation().get();
 
 			if (location.getTileEntity().isPresent() && location.getTileEntity().get() != null && location.getTileEntity().get().getType() != null)
 			{
 				TileEntity clickedEntity = location.getTileEntity().get();
 
-				if (event.getTargetBlock().getState().getType().equals(BlockTypes.STANDING_SIGN)
-					|| event.getTargetBlock().getState().getType().equals(BlockTypes.WALL_SIGN))
+				if (event.getTargetBlock().getState().getType().equals(BlockTypes.STANDING_SIGN) || event.getTargetBlock().getState().getType().equals(BlockTypes.WALL_SIGN))
 				{
 					Optional<SignData> signData = clickedEntity.getOrCreate(SignData.class);
 
@@ -78,14 +77,13 @@ public class PlayerInteractListener
 
 						if (line0.equals("[Warp]"))
 						{
-							if (player.hasPermission("warps.use.sign"))
+							if (player.hasPermission("essentialcmds.warps.use.sign"))
 							{
 								cmdService.process(player, command);
 							}
 							else
 							{
-								player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED,
-									"You do not have permission to use Warp Signs!"));
+								player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to use Warp Signs!"));
 							}
 						}
 					}

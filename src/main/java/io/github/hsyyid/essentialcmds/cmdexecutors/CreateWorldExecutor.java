@@ -25,6 +25,7 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -39,9 +40,10 @@ import org.spongepowered.api.world.DimensionTypes;
 import org.spongepowered.api.world.GeneratorType;
 import org.spongepowered.api.world.GeneratorTypes;
 import org.spongepowered.api.world.World;
-import org.spongepowered.api.world.WorldBuilder;
+import org.spongepowered.api.world.WorldCreationSettings;
 import org.spongepowered.api.world.difficulty.Difficulties;
 import org.spongepowered.api.world.difficulty.Difficulty;
+import org.spongepowered.api.world.storage.WorldProperties;
 
 import java.util.Optional;
 
@@ -126,25 +128,36 @@ public class CreateWorldExecutor implements CommandExecutor
 		}
 
 		src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Beginning creation of world."));
-		
-		Optional<World> world = EssentialCmds.getEssentialCmds().getGame().getRegistry().createBuilder(WorldBuilder.class)
+
+		WorldCreationSettings worldSettings = EssentialCmds.getEssentialCmds().getGame().getRegistry().createBuilder(WorldCreationSettings.Builder.class)
 			.name(name)
 			.enabled(true)
 			.loadsOnStartup(true)
 			.keepsSpawnLoaded(true)
-			.dimensionType(dimension)
+			.dimension(dimension)
 			.generator(generator)
 			.gameMode(gamemode)
 			.build();
 
-		if (world.isPresent())
+		Optional<WorldProperties> worldProperties = Sponge.getGame().getServer().createWorldProperties(worldSettings);
+
+		if (worldProperties.isPresent())
 		{
-			world.get().getProperties().setDifficulty(difficulty);
-			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "World ", TextColors.GRAY, name, TextColors.GOLD, " has been created."));
+			Optional<World> world = Sponge.getGame().getServer().loadWorld(worldProperties.get());
+
+			if(world.isPresent())
+			{
+				world.get().getProperties().setDifficulty(difficulty);
+				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "World ", TextColors.GRAY, name, TextColors.GOLD, " has been created."));
+			}
+			else
+			{
+				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The world could not be created."));
+			}
 		}
 		else
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The world could not be created."));
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The world properties could not be created."));
 		}
 
 		return CommandResult.success();
