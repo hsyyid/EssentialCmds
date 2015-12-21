@@ -24,106 +24,15 @@
  */
 package io.github.hsyyid.essentialcmds;
 
-import static io.github.hsyyid.essentialcmds.PluginInfo.ID;
-import static io.github.hsyyid.essentialcmds.PluginInfo.NAME;
-import static io.github.hsyyid.essentialcmds.PluginInfo.VERSION;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
-import io.github.hsyyid.essentialcmds.cmdexecutors.AFKExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.AddRuleExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.AsConsoleExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.BackExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.BanExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.BlockInfoExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.BroadcastExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.ButcherExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.CreateWorldExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.DeleteHomeExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.DeleteWarpExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.DeleteWorldExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.DirectionExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.EnchantExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.EntityInfoExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.FeedExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.FireballExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.FlyExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.GamemodeExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.GetPosExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.HatExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.HealExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.HomeExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.IgniteExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.ItemInfoExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.JumpExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.KickExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.KillExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.LightningExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.ListHomeExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.ListWarpExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.ListWorldExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.LoadWorldExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.LockWeatherExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.MailExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.MailListExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.MailReadExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.MessageExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.MobSpawnExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.MobSpawnerExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.MoreExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.MotdExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.MuteExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.NickExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.PardonExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.PlayerFreezeExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.PowertoolExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.RTPExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.RemoveRuleExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.RepairExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.RespondExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.RuleExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.SetHomeExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.SetSpawnExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.SetWarpExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.SkullExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.SocialSpyExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.SpawnExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.SpeedExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.SudoExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.TPAAcceptExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.TPADenyExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.TPAExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.TPAHereExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.TPHereExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.TeleportExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.TeleportPosExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.TeleportWorldExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.ThruExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.TimeExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.UnmuteExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.VanishExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.WarpExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.WeatherExecutor;
-import io.github.hsyyid.essentialcmds.cmdexecutors.WhoisExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.*;
 import io.github.hsyyid.essentialcmds.cmdexecutors.argumentparsers.UserParser;
-import io.github.hsyyid.essentialcmds.listeners.MailListener;
-import io.github.hsyyid.essentialcmds.listeners.MessageSinkListener;
-import io.github.hsyyid.essentialcmds.listeners.PlayerClickListener;
-import io.github.hsyyid.essentialcmds.listeners.PlayerDeathListener;
-import io.github.hsyyid.essentialcmds.listeners.PlayerDisconnectListener;
-import io.github.hsyyid.essentialcmds.listeners.PlayerInteractListener;
-import io.github.hsyyid.essentialcmds.listeners.PlayerJoinListener;
-import io.github.hsyyid.essentialcmds.listeners.PlayerMoveListener;
-import io.github.hsyyid.essentialcmds.listeners.SignChangeListener;
-import io.github.hsyyid.essentialcmds.listeners.TPAListener;
-import io.github.hsyyid.essentialcmds.listeners.WeatherChangeListener;
+import io.github.hsyyid.essentialcmds.cmdexecutors.warp.WarpExecutor;
+import io.github.hsyyid.essentialcmds.listeners.*;
 import io.github.hsyyid.essentialcmds.managers.config.Config;
-import io.github.hsyyid.essentialcmds.utils.AFK;
-import io.github.hsyyid.essentialcmds.utils.Message;
-import io.github.hsyyid.essentialcmds.utils.PendingInvitation;
-import io.github.hsyyid.essentialcmds.utils.Powertool;
-import io.github.hsyyid.essentialcmds.utils.Utils;
+import io.github.hsyyid.essentialcmds.utils.*;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
@@ -147,6 +56,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import static io.github.hsyyid.essentialcmds.PluginInfo.*;
 
 @Plugin(id = ID, name = NAME, version = VERSION)
 public class EssentialCmds 
@@ -617,13 +528,13 @@ public class EssentialCmds
 			.build();
 		getGame().getCommandManager().register(this, deleteHomeCommandSpec, "deletehome", "delhome");
 
-		CommandSpec warpCommandSpec =
+		CommandSpec esswarpCommandSpec =
 			CommandSpec.builder().description(Texts.of("Warp Command")).permission("essentialcmds.warp.use")
 			.arguments(GenericArguments.seq(
 				GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name"))),
 					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"))))))
-			.executor(new WarpExecutor()).build();
-		getGame().getCommandManager().register(this, warpCommandSpec, "warp");
+			.executor(new EssWarpExecutor()).build();
+		getGame().getCommandManager().register(this, esswarpCommandSpec, "esswarp");
 
 		CommandSpec listWarpCommandSpec =
 			CommandSpec.builder().description(Texts.of("List Warps Command")).permission("essentialcmds.warps.list")
@@ -633,12 +544,12 @@ public class EssentialCmds
 
 		CommandSpec setWarpCommandSpec =
 			CommandSpec.builder().description(Texts.of("Set Warp Command")).permission("essentialcmds.warp.set")
-			.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name")))).executor(new SetWarpExecutor()).build();
+			.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name")))).executor(new EssSetWarpExecutor()).build();
 		getGame().getCommandManager().register(this, setWarpCommandSpec, "setwarp");
 
 		CommandSpec deleteWarpCommandSpec =
 			CommandSpec.builder().description(Texts.of("Delete Warp Command")).permission("essentialcmds.warp.delete")
-			.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name")))).executor(new DeleteWarpExecutor())
+			.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("warp name")))).executor(new EssDeleteWarpExecutor())
 			.build();
 		getGame().getCommandManager().register(this, deleteWarpCommandSpec, "deletewarp", "delwarp");
 
@@ -707,6 +618,15 @@ public class EssentialCmds
 					GenericArguments.onlyOne(GenericArguments.optional(GenericArguments.string(Texts.of("time unit"))))))
 			.executor(new MuteExecutor()).build();
 		getGame().getCommandManager().register(this, muteCommandSpec, "mute");
+
+		CommandSpec warpCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Teleports a player to a predefined \"Warp\" location"))
+				.permission("essentialcmds.warp.use")
+				.arguments(GenericArguments.seq(
+						GenericArguments.onlyOne(GenericArguments.string(Texts.of("warpName"))),
+						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"))))))
+				.executor(new WarpExecutor()).build();
+		getGame().getCommandManager().register(this, warpCommandSpec, "warp");
 
 		getGame().getEventManager().registerListeners(this, new SignChangeListener());
 		getGame().getEventManager().registerListeners(this, new PlayerJoinListener());
