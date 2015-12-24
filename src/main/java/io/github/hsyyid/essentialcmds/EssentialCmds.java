@@ -758,13 +758,13 @@ public class EssentialCmds
 		
 		worldSubCommands.put(Arrays.asList("setspawn"), CommandSpec.builder()
 			.description(Texts.of("Set World Spawn Command"))
-			.permission("essentailcmds.world.spawn.set")
+			.permission("essentialcmds.world.spawn.set")
 			.executor(new SetWorldSpawnExecutor())
 			.build());
 		
 		worldSubCommands.put(Arrays.asList("spawn"), CommandSpec.builder()
 			.description(Texts.of("World Spawn Command"))
-			.permission("essentailcmds.world.spawn.use")
+			.permission("essentialcmds.world.spawn.use")
 			.executor(new WorldSpawnExecutor())
 			.build());
 		
