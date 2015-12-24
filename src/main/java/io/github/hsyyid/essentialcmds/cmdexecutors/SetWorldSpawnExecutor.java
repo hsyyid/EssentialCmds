@@ -24,7 +24,6 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -36,24 +35,23 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
-public class SetSpawnExecutor implements CommandExecutor
+public class SetWorldSpawnExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			Utils.setSpawn(player.getLocation(), player.getWorld().getName());
 			player.getWorld().getProperties().setSpawnPosition(player.getLocation().getBlockPosition());
-			src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Spawn set."));
+			src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "World spawn set."));
 		}
 		else if (src instanceof ConsoleSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /setspawn!"));
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /world setspawn!"));
 		}
 		else if (src instanceof CommandBlockSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /setspawn!"));
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /world setspawn!"));
 		}
 
 		return CommandResult.success();

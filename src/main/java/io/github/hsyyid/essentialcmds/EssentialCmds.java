@@ -91,6 +91,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.RuleExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.SetHomeExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.SetSpawnExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.SetWarpExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.SetWorldSpawnExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.SkullExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.SocialSpyExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.SpawnExecutor;
@@ -111,6 +112,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.VanishExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.WarpExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.WeatherExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.WhoisExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.WorldSpawnExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.argumentparsers.UserParser;
 import io.github.hsyyid.essentialcmds.listeners.InventoryListener;
 import io.github.hsyyid.essentialcmds.listeners.MailListener;
@@ -751,6 +753,43 @@ public class EssentialCmds
 				.children(blacklistSubcommands)
 				.build();
 		getGame().getCommandManager().register(this, blackListCommandSpec, "blacklist", "bl");
+		
+		HashMap<List<String>, CommandSpec> worldSubCommands = new HashMap<List<String>, CommandSpec>();
+		
+		worldSubCommands.put(Arrays.asList("setspawn"), CommandSpec.builder()
+			.description(Texts.of("Set World Spawn Command"))
+			.permission("essentailcmds.world.spawn.set")
+			.executor(new SetWorldSpawnExecutor())
+			.build());
+		
+		worldSubCommands.put(Arrays.asList("spawn"), CommandSpec.builder()
+			.description(Texts.of("World Spawn Command"))
+			.permission("essentailcmds.world.spawn.use")
+			.executor(new WorldSpawnExecutor())
+			.build());
+		
+		worldSubCommands.put(Arrays.asList("list"), CommandSpec.builder()
+			.description(Texts.of("List World Command"))
+			.permission("essentialcmds.worlds.list")
+			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Texts.of("page no")))))
+			.executor(new ListWorldExecutor())
+			.build());
+		
+		worldSubCommands.put(Arrays.asList("tp", "teleport"), CommandSpec.builder()
+			.description(Texts.of("Teleport World Command"))
+			.permission("essentialcmds.tpworld.use")
+			.arguments(GenericArguments.seq(GenericArguments.string(Texts.of("name")),
+				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Texts.of("player"))))))
+			.executor(new TeleportWorldExecutor())
+			.build());
+		
+		CommandSpec worldCommandSpec =
+			CommandSpec.builder()
+				.description(Texts.of("World Command"))
+				.permission("essentialcmds.world.use")
+				.children(worldSubCommands)
+				.build();
+		getGame().getCommandManager().register(this, worldCommandSpec, "world");
 
 		getGame().getEventManager().registerListeners(this, new SignChangeListener());
 		getGame().getEventManager().registerListeners(this, new PlayerJoinListener());

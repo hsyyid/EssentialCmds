@@ -24,38 +24,34 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.utils.Utils;
+import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.source.CommandBlockSource;
-import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
-public class SetSpawnExecutor implements CommandExecutor
+public class WorldSpawnExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			Utils.setSpawn(player.getLocation(), player.getWorld().getName());
-			player.getWorld().getProperties().setSpawnPosition(player.getLocation().getBlockPosition());
-			src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Spawn set."));
+			Vector3i spawnPos = player.getWorld().getProperties().getSpawnPosition();
+			player.setLocation(new Location<World>(player.getWorld(), spawnPos.getX(), spawnPos.getY(), spawnPos.getZ()));
+			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to world spawn."));
 		}
-		else if (src instanceof ConsoleSource)
+		else
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /setspawn!"));
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot teleport, you are not a player!"));
 		}
-		else if (src instanceof CommandBlockSource)
-		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /setspawn!"));
-		}
-
+		
 		return CommandResult.success();
 	}
 }

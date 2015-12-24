@@ -43,7 +43,6 @@ import java.util.Objects;
 
 public class SpawnExecutor implements CommandExecutor
 {
-
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		if (src instanceof Player)
