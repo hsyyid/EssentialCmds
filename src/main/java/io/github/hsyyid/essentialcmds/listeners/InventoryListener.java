@@ -25,9 +25,12 @@
 package io.github.hsyyid.essentialcmds.listeners;
 
 import io.github.hsyyid.essentialcmds.utils.Utils;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.transaction.SlotTransaction;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
@@ -46,6 +49,7 @@ public class InventoryListener
 				if (Utils.getBlacklistItems().contains(transaction.getFinal().createStack().getItem().getId()))
 				{
 					player.sendMessage(Texts.of(TextColors.RED, "The item ", TextColors.GRAY, transaction.getFinal().createStack().getItem().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
+					transaction.setCustom(Sponge.getRegistry().createBuilder(ItemStack.Builder.class).itemType(ItemTypes.DIRT).quantity(1).build());
 				}
 			}
 		}
@@ -63,6 +67,7 @@ public class InventoryListener
 				if (Utils.getBlacklistItems().contains(transaction.getFinal().createStack().getItem().getId()))
 				{
 					player.sendMessage(Texts.of(TextColors.RED, "The item ", TextColors.GRAY, transaction.getFinal().createStack().getItem().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
+					transaction.setCustom(Sponge.getRegistry().createBuilder(ItemStack.Builder.class).itemType(ItemTypes.DIRT).quantity(1).build());
 				}
 			}
 		}
