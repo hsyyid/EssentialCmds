@@ -656,6 +656,7 @@ public class Utils
 
 		CommentedConfigurationNode node = Configs.getConfig(config).getNode("warps", "warps");
 		String format = warpName + ",";
+		
 		if (configManager.getString(node).isPresent())
 		{
 			String items = node.getString();
