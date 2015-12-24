@@ -45,13 +45,13 @@ public class TPAListener
 {
 
 	private Game game = getEssentialCmds().getGame();
+
 	@Listener
 	public void tpaEventHandler(TPAEvent event)
 	{
 		String senderName = event.getSender().getName();
-		event.getRecipient().sendMessage(
-			Texts.of(TextColors.BLUE, "TPA Request From: ", TextColors.GOLD, senderName + ".", TextColors.RED,
-				" You have 10 seconds to do /tpaccept to accept the request"));
+		event.getRecipient().sendMessage(Texts.of(TextColors.BLUE, "TPA Request From: ", 
+			TextColors.GOLD, senderName + ".", TextColors.RED, " You have 10 seconds to do /tpaccept to accept the request"));
 
 		// Adds Invite to List
 		final PendingInvitation invite = new PendingInvitation(event.getSender(), event.getRecipient());
@@ -66,10 +66,9 @@ public class TPAListener
 			{
 				EssentialCmds.pendingInvites.remove(invite);
 			}
-		}).delay(10, TimeUnit.SECONDS).name("EssentialCmds - Remove Pending Invite")
-			.submit(game.getPluginManager().getPlugin("EssentialCmds").get().getInstance().get());
+		}).delay(10, TimeUnit.SECONDS).name("EssentialCmds - Remove Pending Invite").submit(game.getPluginManager().getPlugin("EssentialCmds").get().getInstance().get());
 	}
-	
+
 	@Listener
 	public void tpaAcceptEventHandler(TPAAcceptEvent event)
 	{
@@ -90,9 +89,7 @@ public class TPAListener
 	public void tpaHereEventHandler(TPAHereEvent event)
 	{
 		String senderName = event.getSender().getName();
-		event.getRecipient().sendMessage(
-			Texts.of(TextColors.BLUE, senderName, TextColors.GOLD, " has requested for you to teleport to them.", TextColors.RED,
-				" You have 10 seconds to do /tpaccept to accept the request"));
+		event.getRecipient().sendMessage(Texts.of(TextColors.BLUE, senderName, TextColors.GOLD, " has requested for you to teleport to them.", TextColors.RED, " You have 10 seconds to do /tpaccept to accept the request"));
 
 		// Adds Invite to List
 		final PendingInvitation invite = new PendingInvitation(event.getSender(), event.getRecipient());
@@ -108,7 +105,6 @@ public class TPAListener
 			{
 				EssentialCmds.pendingInvites.remove(invite);
 			}
-		}).delay(10, TimeUnit.SECONDS).name("EssentialCmds - Remove Pending Invite")
-			.submit(game.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
+		}).delay(10, TimeUnit.SECONDS).name("EssentialCmds - Remove Pending Invite").submit(game.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
 	}
 }

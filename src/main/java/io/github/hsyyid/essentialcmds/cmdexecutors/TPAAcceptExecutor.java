@@ -53,18 +53,21 @@ public class TPAAcceptExecutor implements CommandExecutor
 			Player player = (Player) src;
 			Player sender = null;
 			boolean tpaHere = false;
+			PendingInvitation foundInvitation = null;
 
 			for (PendingInvitation invitation : EssentialCmds.pendingInvites)
 			{
 				if (!invitation.isTPAHere && invitation.recipient == player)
 				{
 					sender = invitation.sender;
+					foundInvitation = invitation;
 					break;
 				}
 				else if (invitation.isTPAHere && invitation.recipient == player)
 				{
 					tpaHere = true;
 					sender = invitation.sender;
+					foundInvitation = invitation;
 					break;
 				}
 			}
@@ -83,6 +86,9 @@ public class TPAAcceptExecutor implements CommandExecutor
 			{
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Pending TPA request not found!"));
 			}
+
+			if (foundInvitation != null)
+				EssentialCmds.pendingInvites.remove(foundInvitation);
 		}
 		else if (src instanceof ConsoleSource)
 		{

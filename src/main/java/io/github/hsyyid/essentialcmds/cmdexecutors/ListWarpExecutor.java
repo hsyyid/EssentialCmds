@@ -51,34 +51,19 @@ public class ListWarpExecutor implements CommandExecutor
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			ArrayList<String> warps;
-
-			try
-			{
-				warps = Utils.getWarps();
-			}
-			catch (NullPointerException e)
+			ArrayList<String> warps = Utils.getWarps();
+			
+			if (warps.size() == 0)
 			{
 				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "No warps set!"));
 				return CommandResult.success();
 			}
 
 			Optional<Integer> arguments = ctx.<Integer> getOne("page no");
-
-			int pgNo;
-
-			if (arguments.isPresent())
-			{
-				pgNo = arguments.get();
-			}
-			else
-			{
-				pgNo = 1;
-			}
+			int pgNo = arguments.orElse(1);
 
 			if (warps.size() > 0)
 			{
-				// Add List
 				PaginatedList pList = new PaginatedList("/warps");
 				for (String name : warps)
 				{
@@ -99,7 +84,7 @@ public class ListWarpExecutor implements CommandExecutor
 				header.append(Texts.of(TextColors.GREEN, "------------"));
 
 				pList.setHeader(header.build());
-				// Send List
+				
 				src.sendMessage(pList.getPage(pgNo));
 			}
 			else

@@ -51,7 +51,7 @@ public class ItemInfoExecutor implements CommandExecutor
 			}
 			else
 			{
-				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must hold an item ."));
+				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must hold an item."));
 			}
 		}
 		else

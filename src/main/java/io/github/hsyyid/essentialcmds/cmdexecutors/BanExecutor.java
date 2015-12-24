@@ -47,13 +47,17 @@ public class BanExecutor implements CommandExecutor
 		String reason = ctx.<String> getOne("reason").orElse("The BanHammer has spoken!");
 
 		BanService srv = game.getServiceManager().provide(BanService.class).get();
-		if (srv.isBanned(player.getProfile())) {
+		
+		if (srv.isBanned(player.getProfile()))
+		{
 			src.sendMessage(Texts.of(TextColors.RED, "That player has already been banned."));
 			return CommandResult.empty();
 		}
 
 		srv.addBan(Ban.builder().type(BanTypes.PROFILE).source(src).profile(player.getProfile()).reason(Texts.of(reason)).build());
-		if (player.isOnline()) {
+		
+		if (player.isOnline())
+		{
 			player.getPlayer().get().kick(Texts.of(TextColors.RED, "You have been banned for: " + reason));
 		}
 

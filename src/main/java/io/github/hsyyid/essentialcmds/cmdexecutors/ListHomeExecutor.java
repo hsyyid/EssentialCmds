@@ -52,40 +52,22 @@ public class ListHomeExecutor implements CommandExecutor
 		{
 			Player player = (Player) src;
 
-			ArrayList<String> homes;
-			try
-			{
-				homes = Utils.getHomes(player.getUniqueId());
-			}
-			catch (NullPointerException e)
+			ArrayList<String> homes = Utils.getHomes(player.getUniqueId());
+
+			if (homes.size() == 0)
 			{
 				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must first set a home to list your homes!"));
 				return CommandResult.success();
 			}
 
 			Optional<Integer> arguments = ctx.<Integer> getOne("page no");
-
-			int pgNo;
-
-			if (arguments.isPresent())
-			{
-				pgNo = arguments.get();
-			}
-			else
-			{
-				pgNo = 1;
-			}
+			int pgNo = arguments.orElse(1);
 
 			// Add List
 			PaginatedList pList = new PaginatedList("/homes");
 			for (String name : homes)
 			{
-				Text item = Texts.builder(name)
-					.onClick(TextActions.runCommand("/home " + name))
-					.onHover(TextActions.showText(Texts.of(TextColors.WHITE, "Teleport to home ", TextColors.GOLD, name)))
-					.color(TextColors.DARK_AQUA)
-					.style(TextStyles.UNDERLINE)
-					.build();
+				Text item = Texts.builder(name).onClick(TextActions.runCommand("/home " + name)).onHover(TextActions.showText(Texts.of(TextColors.WHITE, "Teleport to home ", TextColors.GOLD, name))).color(TextColors.DARK_AQUA).style(TextStyles.UNDERLINE).build();
 
 				pList.add(item);
 			}

@@ -36,6 +36,9 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.AddRuleExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.AsConsoleExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.BackExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.BanExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.BlacklistAddExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.BlacklistListExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.BlacklistRemoveExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.BlockInfoExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.BroadcastExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.ButcherExecutor;
@@ -109,6 +112,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.WarpExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.WeatherExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.WhoisExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.argumentparsers.UserParser;
+import io.github.hsyyid.essentialcmds.listeners.InventoryListener;
 import io.github.hsyyid.essentialcmds.listeners.MailListener;
 import io.github.hsyyid.essentialcmds.listeners.MessageSinkListener;
 import io.github.hsyyid.essentialcmds.listeners.PlayerClickListener;
@@ -126,15 +130,12 @@ import io.github.hsyyid.essentialcmds.utils.Message;
 import io.github.hsyyid.essentialcmds.utils.PendingInvitation;
 import io.github.hsyyid.essentialcmds.utils.Powertool;
 import io.github.hsyyid.essentialcmds.utils.Utils;
-import ninja.leaping.configurate.commented.CommentedConfigurationNode;
-import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
-import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
@@ -175,14 +176,6 @@ public class EssentialCmds
 	@Inject
 	@ConfigDir(sharedRoot = false)
 	private Path configDir;
-
-	@Inject
-	@DefaultConfig(sharedRoot = false)
-	private Path dConfig;
-
-	@Inject
-	@DefaultConfig(sharedRoot = false)
-	private ConfigurationLoader<CommentedConfigurationNode> confManager;
 
 	public static EssentialCmds getEssentialCmds() {
 		return essentialCmds;
@@ -695,7 +688,7 @@ public class EssentialCmds
 			CommandSpec.builder().description(Texts.of("Powertool Command")).permission("essentialcmds.powertool.use")
 			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("command")))))
 			.executor(new PowertoolExecutor()).build();
-		getGame().getCommandManager().register(this, powertoolCommandSpec, "powertool");
+		getGame().getCommandManager().register(this, powertoolCommandSpec, "powertool", "pt");
 
 		CommandSpec asConsoleCommandSpec =
 			CommandSpec.builder().description(Texts.of("AsConsole Command")).permission("essentialcmds.asconsole.use")
@@ -726,6 +719,38 @@ public class EssentialCmds
 					GenericArguments.onlyOne(GenericArguments.optional(GenericArguments.string(Texts.of("time unit"))))))
 			.executor(new MuteExecutor()).build();
 		getGame().getCommandManager().register(this, muteCommandSpec, "mute");
+		
+		HashMap<List<String>, CommandSpec> blacklistSubcommands = new HashMap<List<String>, CommandSpec>();
+
+		blacklistSubcommands.put(Arrays.asList("add"), CommandSpec.builder()
+			.description(Texts.of("Add Blacklist Command"))
+			.permission("essentialcmds.blacklist.add")
+			.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("item id"))))
+			.executor(new BlacklistAddExecutor())
+			.build());
+		
+		blacklistSubcommands.put(Arrays.asList("remove"), CommandSpec.builder()
+			.description(Texts.of("Remove Blacklist Command"))
+			.permission("essentailcmds.blacklist.remove")
+			.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("item id"))))
+			.executor(new BlacklistRemoveExecutor())
+			.build());
+		
+		blacklistSubcommands.put(Arrays.asList("list"), CommandSpec.builder()
+			.description(Texts.of("List Blacklist Command"))
+			.permission("essentailcmds.blacklist.list")
+			.arguments(GenericArguments.optional(
+				GenericArguments.onlyOne(GenericArguments.integer(Texts.of("page no")))))
+			.executor(new BlacklistListExecutor())
+			.build());
+		
+		CommandSpec blackListCommandSpec =
+			CommandSpec.builder()
+				.description(Texts.of("Blacklist Command"))
+				.permission("essentialcmds.blacklist.use")
+				.children(blacklistSubcommands)
+				.build();
+		getGame().getCommandManager().register(this, blackListCommandSpec, "blacklist", "bl");
 
 		getGame().getEventManager().registerListeners(this, new SignChangeListener());
 		getGame().getEventManager().registerListeners(this, new PlayerJoinListener());
@@ -738,6 +763,7 @@ public class EssentialCmds
 		getGame().getEventManager().registerListeners(this, new MailListener());
 		getGame().getEventManager().registerListeners(this, new PlayerDisconnectListener());
 		getGame().getEventManager().registerListeners(this, new WeatherChangeListener());
+		getGame().getEventManager().registerListeners(this, new InventoryListener());
 
 		getLogger().info("-----------------------------");
 		getLogger().info("EssentialCmds was made by HassanS6000!");

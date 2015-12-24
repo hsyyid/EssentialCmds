@@ -24,55 +24,79 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.api.util.config.Configs;
-import io.github.hsyyid.essentialcmds.api.util.config.Configurable;
-import io.github.hsyyid.essentialcmds.managers.config.Config;
+import io.github.hsyyid.essentialcmds.utils.PaginatedList;
 import io.github.hsyyid.essentialcmds.utils.Utils;
-import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.source.CommandBlockSource;
+import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.TextBuilder;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
 
-public class DeleteHomeExecutor implements CommandExecutor
+import java.util.List;
+import java.util.Optional;
+
+public class BlacklistListExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		String homeName = ctx.<String> getOne("home name").get();
-		Configurable config = Config.getConfig();
-
+		Optional<Integer> arguments = ctx.<Integer> getOne("page no");
+		
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			if (Utils.inConfig(player.getUniqueId(), homeName))
+			List<String> blacklistItems = Utils.getBlacklistItems();
+			
+			if(blacklistItems.size() == 0)
 			{
-				ConfigurationNode homeNode = Configs.getConfig(config).getNode("home", "users", player.getUniqueId().toString(), "homes");
-
-				// Get Value of Home Node
-				String homes = homeNode.getString();
-				String newVal = homes.replace(homeName + ",", "");
-
-				Configs.setValue(config, homeNode.getPath(), newVal);
-				Configs.removeChild(config, new Object[] { "home", "users", player.getUniqueId().toString() }, homeName);
-
-				src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Deleted home " + homeName));
-
+				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "There are no blacklisted items!"));
 				return CommandResult.success();
 			}
-			else
+
+			int pgNo = arguments.orElse(1);
+			
+			PaginatedList pList = new PaginatedList("/blacklist list");
+			
+			for (String name : blacklistItems)
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "This home doesn't exist!"));
-				return CommandResult.empty();
+				Text item = Texts.builder(name)
+					.color(TextColors.DARK_AQUA)
+					.style(TextStyles.UNDERLINE)
+					.build();
+
+				pList.add(item);
 			}
+			
+			pList.setItemsPerPage(10);
+			
+			TextBuilder header = Texts.builder();
+			header.append(Texts.of(TextColors.GREEN, "------------"));
+			header.append(Texts.of(TextColors.GREEN, " Showing Blacklist page " + pgNo + " of " + pList.getTotalPages() + " "));
+			header.append(Texts.of(TextColors.GREEN, "------------"));
+			
+			pList.setHeader(header.build());
+			
+			if(pgNo > pList.getTotalPages())
+				pgNo = 1;
+				
+			src.sendMessage(pList.getPage(pgNo));
 		}
-		else
+		else if (src instanceof ConsoleSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /delhome!"));
-			return CommandResult.success();
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /blacklist list!"));
 		}
+		else if (src instanceof CommandBlockSource)
+		{
+			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /blacklist list!"));
+		}
+
+		return CommandResult.success();
 	}
 }

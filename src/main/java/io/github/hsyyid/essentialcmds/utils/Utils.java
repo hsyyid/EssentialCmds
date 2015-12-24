@@ -24,6 +24,7 @@
  */
 package io.github.hsyyid.essentialcmds.utils;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -499,6 +500,7 @@ public class Utils
 
 		CommentedConfigurationNode node = Configs.getConfig(config).getNode("home", "users", playerName, "homes");
 		String formattedItem = (homeName + ",");
+
 		if (configManager.getString(node).isPresent())
 		{
 			String items = node.getString();
@@ -506,7 +508,33 @@ public class Utils
 				Configs.setValue(config, node.getPath(), items + formattedItem);
 			return;
 		}
+
 		Configs.setValue(config, node.getPath(), formattedItem);
+	}
+
+	public static void addBlacklistItem(String itemId)
+	{
+		CommentedConfigurationNode node = Configs.getConfig(config).getNode("essentialcmds", "items", "blacklist");
+		String formattedItem = (itemId + ",");
+
+		if (configManager.getString(node).isPresent())
+		{
+			String items = node.getString();
+			Configs.setValue(config, node.getPath(), items + formattedItem);
+			return;
+		}
+		
+		Configs.setValue(config, node.getPath(), formattedItem);
+	}
+
+	public static void removeBlacklistItem(String itemId)
+	{
+		ConfigurationNode blacklistNode = Configs.getConfig(config).getNode("essentialcmds", "items", "blacklist");
+
+		String blacklist = blacklistNode.getString();
+		String newValue = blacklist.replace(itemId + ",", "");
+
+		Configs.setValue(config, blacklistNode.getPath(), newValue);
 	}
 
 	public static ArrayList<Mail> getMail()
@@ -862,10 +890,56 @@ public class Utils
 		}
 	}
 
+	public static List<String> getBlacklistItems()
+	{
+		ConfigurationNode valueNode = Configs.getConfig(config).getNode("essentialcmds", "items", "blacklist");
+
+		if (valueNode.getValue() == null || valueNode.getString().length() == 0)
+		{
+			return Lists.newArrayList();
+		}
+
+		String list = valueNode.getString();
+
+		List<String> itemList = Lists.newArrayList();
+		boolean finished = false;
+		int endIndex = list.indexOf(",");
+
+		if (endIndex != -1)
+		{
+			String substring = list.substring(0, endIndex);
+			itemList.add(substring);
+
+			while (!finished)
+			{
+				int startIndex = endIndex;
+				endIndex = list.indexOf(",", startIndex + 1);
+
+				if (endIndex != -1)
+				{
+					String substrings = list.substring(startIndex + 1, endIndex);
+					itemList.add(substrings);
+				}
+				else
+				{
+					finished = true;
+				}
+			}
+		}
+
+		return itemList;
+	}
+
 	public static ArrayList<String> getHomes(UUID userName)
 	{
 		String playerName = userName.toString();
 		ConfigurationNode valueNode = Configs.getConfig(config).getNode("home", "users", playerName, "homes");
+		
+		if(valueNode.getValue() == null)
+		{
+			return Lists.newArrayList();
+		}
+		
 		String list = valueNode.getString();
 
 		ArrayList<String> homeList = new ArrayList<>();
@@ -902,6 +976,12 @@ public class Utils
 	public static ArrayList<String> getWarps()
 	{
 		ConfigurationNode valueNode = Configs.getConfig(config).getNode("warps", "warps");
+		
+		if(valueNode.getValue() == null)
+		{
+			return Lists.newArrayList();
+		}
+		
 		String list = valueNode.getString();
 
 		ArrayList<String> warpList = new ArrayList<>();

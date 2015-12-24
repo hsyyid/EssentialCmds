@@ -46,9 +46,9 @@ public class TeleportExecutor implements CommandExecutor
 		{
 			if (src.hasPermission("teleport.others"))
 			{
-				target.get().setLocation(player.getLocation());
-				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported player " + target.get().getName() + " to " + player.getName()));
-				target.get().sendMessage(Texts.of(TextColors.GOLD, "You have been teleported to " + player.getName() + " by " + src.getName()));
+				player.setLocation(target.get().getLocation());
+				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported player " + player.getName() + " to " + target.get().getName()));
+				player.sendMessage(Texts.of(TextColors.GOLD, "You have been teleported to " + target.get().getName() + " by " + src.getName()));
 			}
 			else
 			{
@@ -61,7 +61,7 @@ public class TeleportExecutor implements CommandExecutor
 			{
 				Player targ = (Player) src;
 				targ.setLocation(player.getLocation());
-				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to player " + player.getName()));
+				targ.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to player " + player.getName()));
 			}
 			else
 			{

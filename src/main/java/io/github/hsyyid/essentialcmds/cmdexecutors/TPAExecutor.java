@@ -41,7 +41,6 @@ import org.spongepowered.api.text.format.TextColors;
 
 public class TPAExecutor implements CommandExecutor
 {
-
 	private Game game = getEssentialCmds().getGame();
 
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
@@ -51,6 +50,7 @@ public class TPAExecutor implements CommandExecutor
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
+			
 			if (recipient == player)
 			{
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot teleport to yourself!"));
@@ -68,6 +68,7 @@ public class TPAExecutor implements CommandExecutor
 		{
 			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tpa!"));
 		}
+		
 		return CommandResult.success();
 	}
 }

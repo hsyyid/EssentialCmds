@@ -50,16 +50,7 @@ public class ListWorldExecutor implements CommandExecutor
 		ArrayList<String> worlds = EssentialCmds.getEssentialCmds().getGame().getServer().getWorlds().stream().filter(world -> world.getProperties().isEnabled()).map(World::getName).collect(Collectors.toCollection(ArrayList::new));
 
 		Optional<Integer> optionalPageNo = ctx.<Integer> getOne("page no");
-		int pageNo;
-
-		if (optionalPageNo.isPresent())
-		{
-			pageNo = optionalPageNo.get();
-		}
-		else
-		{
-			pageNo = 1;
-		}
+		int pageNo = optionalPageNo.orElse(1);
 
 		PaginatedList pList = new PaginatedList("/worlds");
 
