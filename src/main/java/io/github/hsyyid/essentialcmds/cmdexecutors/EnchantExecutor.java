@@ -41,111 +41,171 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.util.Optional;
+
 public class EnchantExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
+		Optional<Player> target = ctx.<Player> getOne("target");
 		String enchantmentName = ctx.<String> getOne("enchantment").get();
 		int level = ctx.<Integer> getOne("level").get();
 
-		if (src instanceof Player)
+		Enchantment enchantment = null;
+
+		switch (enchantmentName.toLowerCase())
 		{
-			Player player = (Player) src;
+			case "aqua affinity":
+				enchantment = Enchantments.AQUA_AFFINITY;
+				break;
+			case "bane of arthropods":
+				enchantment = Enchantments.BANE_OF_ARTHROPODS;
+				break;
+			case "blast protection":
+				enchantment = Enchantments.BLAST_PROTECTION;
+				break;
+			case "depth strider":
+				enchantment = Enchantments.DEPTH_STRIDER;
+				break;
+			case "efficiency":
+				enchantment = Enchantments.EFFICIENCY;
+				break;
+			case "feather falling":
+				enchantment = Enchantments.FEATHER_FALLING;
+				break;
+			case "fire aspect":
+				enchantment = Enchantments.FIRE_ASPECT;
+				break;
+			case "fire protection":
+				enchantment = Enchantments.FIRE_PROTECTION;
+				break;
+			case "flame":
+				enchantment = Enchantments.FLAME;
+				break;
+			case "fortune":
+				enchantment = Enchantments.FORTUNE;
+				break;
+			case "infinity":
+				enchantment = Enchantments.INFINITY;
+				break;
+			case "knockback":
+				enchantment = Enchantments.KNOCKBACK;
+				break;
+			case "looting":
+				enchantment = Enchantments.LOOTING;
+				break;
+			case "luck of the sea":
+				enchantment = Enchantments.LUCK_OF_THE_SEA;
+				break;
+			case "lure":
+				enchantment = Enchantments.LURE;
+				break;
+			case "power":
+				enchantment = Enchantments.POWER;
+				break;
+			case "projectile protection":
+				enchantment = Enchantments.PROJECTILE_PROTECTION;
+				break;
+			case "protection":
+				enchantment = Enchantments.PROTECTION;
+				break;
+			case "punch":
+				enchantment = Enchantments.PUNCH;
+				break;
+			case "respiration":
+				enchantment = Enchantments.RESPIRATION;
+				break;
+			case "sharpness":
+				enchantment = Enchantments.SHARPNESS;
+				break;
+			case "silk touch":
+				enchantment = Enchantments.SILK_TOUCH;
+				break;
+			case "smite":
+				enchantment = Enchantments.SMITE;
+				break;
+			case "thorns":
+				enchantment = Enchantments.THORNS;
+				break;
+			case "unbreaking":
+				enchantment = Enchantments.UNBREAKING;
+				break;
+			default:
+				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment specified not found!"));
+				return CommandResult.success();
+		}
 
-			Enchantment enchantment = null;
-
-			switch (enchantmentName.toLowerCase())
+		if (!Utils.unsafeEnchanmentsEnabled())
+		{
+			if (enchantment.getMaximumLevel() < level)
 			{
-				case "aqua affinity":
-					enchantment = Enchantments.AQUA_AFFINITY;
-					break;
-				case "bane of arthropods":
-					enchantment = Enchantments.BANE_OF_ARTHROPODS;
-					break;
-				case "blast protection":
-					enchantment = Enchantments.BLAST_PROTECTION;
-					break;
-				case "depth strider":
-					enchantment = Enchantments.DEPTH_STRIDER;
-					break;
-				case "efficiency":
-					enchantment = Enchantments.EFFICIENCY;
-					break;
-				case "feather falling":
-					enchantment = Enchantments.FEATHER_FALLING;
-					break;
-				case "fire aspect":
-					enchantment = Enchantments.FIRE_ASPECT;
-					break;
-				case "fire protection":
-					enchantment = Enchantments.FIRE_PROTECTION;
-					break;
-				case "flame":
-					enchantment = Enchantments.FLAME;
-					break;
-				case "fortune":
-					enchantment = Enchantments.FORTUNE;
-					break;
-				case "infinity":
-					enchantment = Enchantments.INFINITY;
-					break;
-				case "knockback":
-					enchantment = Enchantments.KNOCKBACK;
-					break;
-				case "looting":
-					enchantment = Enchantments.LOOTING;
-					break;
-				case "luck of the sea":
-					enchantment = Enchantments.LUCK_OF_THE_SEA;
-					break;
-				case "lure":
-					enchantment = Enchantments.LURE;
-					break;
-				case "power":
-					enchantment = Enchantments.POWER;
-					break;
-				case "projectile protection":
-					enchantment = Enchantments.PROJECTILE_PROTECTION;
-					break;
-				case "protection":
-					enchantment = Enchantments.PROTECTION;
-					break;
-				case "punch":
-					enchantment = Enchantments.PUNCH;
-					break;
-				case "respiration":
-					enchantment = Enchantments.RESPIRATION;
-					break;
-				case "sharpness":
-					enchantment = Enchantments.SHARPNESS;
-					break;
-				case "silk touch":
-					enchantment = Enchantments.SILK_TOUCH;
-					break;
-				case "smite":
-					enchantment = Enchantments.SMITE;
-					break;
-				case "thorns":
-					enchantment = Enchantments.THORNS;
-					break;
-				case "unbreaking":
-					enchantment = Enchantments.UNBREAKING;
-					break;
-				default:
-					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment specified not found!"));
-					return CommandResult.success();
+				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment level too high!"));
+				return CommandResult.success();
 			}
 
-			if (!Utils.unsafeEnchanmentsEnabled())
+		}
+
+		if (!target.isPresent())
+		{
+			if (src instanceof Player)
 			{
-				if (enchantment.getMaximumLevel() < level)
+				Player player = (Player) src;
+
+				if (player.getItemInHand().isPresent())
 				{
-					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment level too high!"));
-					return CommandResult.success();
+					ItemStack itemInHand = player.getItemInHand().get();
+
+					if (!enchantment.canBeAppliedToStack(itemInHand))
+					{
+						src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment cannot be applied to this item!"));
+						return CommandResult.success();
+					}
+
+					EnchantmentData enchantmentData = itemInHand.getOrCreate(EnchantmentData.class).get();
+					ItemEnchantment itemEnchantment = new ItemEnchantment(enchantment, level);
+					ItemEnchantment sameEnchantment = null;
+
+					for (ItemEnchantment ench : enchantmentData.enchantments())
+					{
+						if (ench.getEnchantment().getId().equals(enchantment.getId()))
+						{
+							sameEnchantment = ench;
+							break;
+						}
+					}
+
+					if (sameEnchantment == null)
+					{
+						enchantmentData.set(enchantmentData.enchantments().add(itemEnchantment));
+					}
+					else
+					{
+						enchantmentData.set(enchantmentData.enchantments().remove(sameEnchantment));
+						enchantmentData.set(enchantmentData.enchantments().add(itemEnchantment));
+					}
+
+					itemInHand.offer(enchantmentData);
+					player.setItemInHand(itemInHand);
+					player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Enchanted item(s) in your hand."));
 				}
-
+				else
+				{
+					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be holding something to enchant!"));
+				}
 			}
-
+			else if (src instanceof ConsoleSource)
+			{
+				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /enchant!"));
+			}
+			else if (src instanceof CommandBlockSource)
+			{
+				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /enchant!"));
+			}
+		}
+		else
+		{
+			Player player = target.get();
+			
 			if (player.getItemInHand().isPresent())
 			{
 				ItemStack itemInHand = player.getItemInHand().get();
@@ -187,14 +247,6 @@ public class EnchantExecutor implements CommandExecutor
 			{
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be holding something to enchant!"));
 			}
-		}
-		else if (src instanceof ConsoleSource)
-		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /enchant!"));
-		}
-		else if (src instanceof CommandBlockSource)
-		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /enchant!"));
 		}
 
 		return CommandResult.success();

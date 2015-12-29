@@ -429,6 +429,7 @@ public class EssentialCmds
 			.description(Texts.of("Enchant Command"))
 			.permission("essentialcmds.enchant.use")
 			.arguments(GenericArguments.seq(
+				GenericArguments.optional(GenericArguments.player(Texts.of("target"))),
 				GenericArguments.onlyOne(GenericArguments.integer(Texts.of("level")))),
 				GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Texts.of("enchantment"))))
 			.executor(new EnchantExecutor()).build();
