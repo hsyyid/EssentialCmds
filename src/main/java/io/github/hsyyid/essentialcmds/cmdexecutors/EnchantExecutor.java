@@ -202,10 +202,10 @@ public class EnchantExecutor implements CommandExecutor
 				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /enchant!"));
 			}
 		}
-		else
+		else if (target.isPresent() && src.hasPermission("essentialcmds.enchant.others"))
 		{
 			Player player = target.get();
-			
+
 			if (player.getItemInHand().isPresent())
 			{
 				ItemStack itemInHand = player.getItemInHand().get();
