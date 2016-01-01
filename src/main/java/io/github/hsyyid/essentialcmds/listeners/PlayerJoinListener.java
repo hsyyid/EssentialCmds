@@ -43,7 +43,6 @@ import java.util.stream.Collectors;
 
 public class PlayerJoinListener
 {
-	@SuppressWarnings("deprecation")
 	@Listener
 	public void onPlayerJoin(ClientConnectionEvent.Join event)
 	{
