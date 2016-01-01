@@ -7,7 +7,7 @@ jdk:
   - oraclejdk8
 
 env: GRADLE_OPTS="-Xms1g -Xmx3g"
-script: ./gradlew build
+script: gradle build
 
 notifications:
   email: false
