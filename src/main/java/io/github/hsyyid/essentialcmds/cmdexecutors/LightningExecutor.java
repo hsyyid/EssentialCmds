@@ -36,7 +36,7 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.blockray.BlockRay;
 import org.spongepowered.api.util.blockray.BlockRayHit;
@@ -88,15 +88,15 @@ public class LightningExecutor implements CommandExecutor
 				}
 
 				spawnEntity(lightningLocation);
-				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Created Lightning Strike!"));
+				player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Created Lightning Strike!"));
 			}
 			else if (src instanceof ConsoleSource)
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /lightning!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /lightning!"));
 			}
 			else if (src instanceof CommandBlockSource)
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /lightning!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /lightning!"));
 			}
 		}
 		else
@@ -104,8 +104,8 @@ public class LightningExecutor implements CommandExecutor
 			Player player = optionalTarget.get();
 			Location<World> playerLocation = player.getLocation();
 			spawnEntity(playerLocation);
-			player.sendMessage(Texts.of(TextColors.GRAY, src.getName(), TextColors.GOLD, " has struck you with lightning."));
-			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Struck " + player.getName() + " with lightning."));
+			player.sendMessage(Text.of(TextColors.GRAY, src.getName(), TextColors.GOLD, " has struck you with lightning."));
+			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Struck " + player.getName() + " with lightning."));
 		}
 
 		return CommandResult.success();

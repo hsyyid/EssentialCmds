@@ -34,7 +34,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scheduler.Task;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
@@ -71,7 +71,7 @@ public class MuteExecutor implements CommandExecutor
 			}
 			else
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! Invalid time unit."));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! Invalid time unit."));
 				return CommandResult.empty();
 			}
 
@@ -84,7 +84,7 @@ public class MuteExecutor implements CommandExecutor
 
 		EssentialCmds.muteList.add(p.getUniqueId());
 		Utils.addMute(p.getUniqueId());
-		src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player muted."));
+		src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player muted."));
 
 		return CommandResult.success();
 	}

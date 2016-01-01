@@ -31,7 +31,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.action.InteractEvent;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class PlayerClickListener
@@ -45,7 +45,7 @@ public class PlayerClickListener
 
 			if (EssentialCmds.frozenPlayers.contains(player.getUniqueId()))
 			{
-				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot click while frozen."));
+				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot click while frozen."));
 				event.setCancelled(true);
 				return;
 			}
@@ -80,7 +80,7 @@ public class PlayerClickListener
 
 			if (EssentialCmds.frozenPlayers.contains(player.getUniqueId()))
 			{
-				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot interact with entities while frozen."));
+				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot interact with entities while frozen."));
 				event.setCancelled(true);
 				return;
 			}

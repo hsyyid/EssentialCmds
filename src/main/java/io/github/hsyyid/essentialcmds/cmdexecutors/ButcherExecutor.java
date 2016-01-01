@@ -34,7 +34,7 @@ import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.monster.Monster;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.World;
 
@@ -58,7 +58,7 @@ public class ButcherExecutor implements CommandExecutor
 				}
 			}
 			
-			player.sendMessage(Texts.of(TextColors.LIGHT_PURPLE, "Butchered " + butcheredEntities + " entities."));
+			player.sendMessage(Text.of(TextColors.LIGHT_PURPLE, "Butchered " + butcheredEntities + " entities."));
 		}
 		else
 		{
@@ -76,7 +76,7 @@ public class ButcherExecutor implements CommandExecutor
 				}
 			}
 			
-			src.sendMessage(Texts.of(TextColors.LIGHT_PURPLE, "Butchered " + butcheredEntities + " entities."));
+			src.sendMessage(Text.of(TextColors.LIGHT_PURPLE, "Butchered " + butcheredEntities + " entities."));
 		}
 
 		return CommandResult.success();

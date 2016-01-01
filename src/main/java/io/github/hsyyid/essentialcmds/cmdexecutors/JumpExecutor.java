@@ -33,7 +33,7 @@ import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.blockray.BlockRay;
 import org.spongepowered.api.util.blockray.BlockRayHit;
@@ -69,27 +69,27 @@ public class JumpExecutor implements CommandExecutor
 
 			if (finalHitRay == null)
 			{
-				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Could not find the block you're looking at within range!"));
+				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Could not find the block you're looking at within range!"));
 			}
 			else
 			{
 				if (player.setLocationSafely(finalHitRay.getLocation()))
 				{
-					player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Jumped to the block you were looking at."));
+					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Jumped to the block you were looking at."));
 				}
 				else
 				{
-					player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Couldn't safely put you where you are looking."));
+					player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Couldn't safely put you where you are looking."));
 				}
 			}
 		}
 		else if (src instanceof ConsoleSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /jump!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /jump!"));
 		}
 		else if (src instanceof CommandBlockSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /jump!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /jump!"));
 		}
 
 		return CommandResult.success();

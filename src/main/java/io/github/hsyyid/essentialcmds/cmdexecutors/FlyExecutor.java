@@ -33,7 +33,7 @@ import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
@@ -58,22 +58,22 @@ public class FlyExecutor implements CommandExecutor
 					{
 						player.offer(Keys.IS_FLYING, false);
 						player.offer(Keys.CAN_FLY, !canFly);
-						player.sendMessage(Texts.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "off."));
+						player.sendMessage(Text.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "off."));
 					}
 					else
 					{
 						player.offer(Keys.CAN_FLY, !canFly);
-						player.sendMessage(Texts.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "on."));
+						player.sendMessage(Text.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "on."));
 					}
 				}
 			}
 			else if (src instanceof ConsoleSource)
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /fly!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /fly!"));
 			}
 			else if (src instanceof CommandBlockSource)
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /fly!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /fly!"));
 			}
 		}
 		else if (src.hasPermission("fly.others"))
@@ -87,19 +87,19 @@ public class FlyExecutor implements CommandExecutor
 
 				if (canFly)
 				{
-					src.sendMessage(Texts.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "off."));
-					player.sendMessage(Texts.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "off."));
+					src.sendMessage(Text.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "off."));
+					player.sendMessage(Text.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "off."));
 				}
 				else
 				{
-					src.sendMessage(Texts.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "on."));
-					player.sendMessage(Texts.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "on."));
+					src.sendMessage(Text.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "on."));
+					player.sendMessage(Text.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "on."));
 				}
 			}
 		}
 		else
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to change others ability to fly."));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to change others ability to fly."));
 		}
 
 		return CommandResult.success();

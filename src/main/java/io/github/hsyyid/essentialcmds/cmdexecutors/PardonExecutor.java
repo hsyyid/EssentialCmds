@@ -33,7 +33,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.service.ban.BanService;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class PardonExecutor implements CommandExecutor
@@ -45,12 +45,12 @@ public class PardonExecutor implements CommandExecutor
 
 		BanService srv = game.getServiceManager().provide(BanService.class).get();
 		if (!srv.isBanned(player.getProfile())) {
-			src.sendMessage(Texts.of(TextColors.RED, "That player is not currently banned."));
+			src.sendMessage(Text.of(TextColors.RED, "That player is not currently banned."));
 			return CommandResult.empty();
 		}
 
 		srv.removeBan(srv.getBanFor(player.getProfile()).get());
-		src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, player.getName() + " has been unbanned."));
+		src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, player.getName() + " has been unbanned."));
 		return CommandResult.success();
 	}
 }

@@ -34,7 +34,7 @@ import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
@@ -74,7 +74,7 @@ public class PowertoolExecutor implements CommandExecutor
 						EssentialCmds.powertools.add(powertool);
 					}
 
-					player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully bound command ", TextColors.BLUE, command, TextColors.YELLOW, " to ", TextColors.RED, player.getItemInHand().get().getItem().getName(), TextColors.YELLOW, "!"));
+					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully bound command ", TextColors.BLUE, command, TextColors.YELLOW, " to ", TextColors.RED, player.getItemInHand().get().getItem().getName(), TextColors.YELLOW, "!"));
 				}
 				else
 				{
@@ -91,27 +91,27 @@ public class PowertoolExecutor implements CommandExecutor
 					if (powertoolToRemove != null)
 					{
 						EssentialCmds.powertools.remove(powertoolToRemove);
-						player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Removed command from this powertool!"));
+						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Removed command from this powertool!"));
 					}
 					else
 					{
-						player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "There is no command assigned to this!"));
+						player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "There is no command assigned to this!"));
 					}
 				}
 			}
 			else
 			{
-				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be holding something to use /powertool!"));
+				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be holding something to use /powertool!"));
 			}
 
 		}
 		else if (src instanceof ConsoleSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /powertool!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /powertool!"));
 		}
 		else if (src instanceof CommandBlockSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /powertool!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /powertool!"));
 		}
 		return CommandResult.success();
 	}

@@ -33,7 +33,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -61,16 +61,16 @@ public class TeleportWorldExecutor implements CommandExecutor
 				{
 					Location<World> spawnLocation = optWorld.get().getSpawnLocation();
 					player.transferToWorld(name, spawnLocation.getPosition());
-					src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to world."));
+					src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to world."));
 				}
 				else
 				{
-					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "World specified does not exist!"));
+					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "World specified does not exist!"));
 				}
 			}
 			else
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot teleport, you are not a player!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot teleport, you are not a player!"));
 			}
 		}
 		else
@@ -83,12 +83,12 @@ public class TeleportWorldExecutor implements CommandExecutor
 			{
 				Location<World> spawnLocation = optWorld.get().getSpawnLocation();
 				player.transferToWorld(name, spawnLocation.getPosition());
-				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported player to world."));
-				player.sendMessage(Texts.of(TextColors.GOLD, src.getName(), TextColors.GRAY, " has teleported you to this world."));
+				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported player to world."));
+				player.sendMessage(Text.of(TextColors.GOLD, src.getName(), TextColors.GRAY, " has teleported you to this world."));
 			}
 			else
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "World specified does not exist!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "World specified does not exist!"));
 			}
 		}
 

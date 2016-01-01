@@ -32,7 +32,7 @@ import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class SetWorldSpawnExecutor implements CommandExecutor
@@ -43,15 +43,15 @@ public class SetWorldSpawnExecutor implements CommandExecutor
 		{
 			Player player = (Player) src;
 			player.getWorld().getProperties().setSpawnPosition(player.getLocation().getBlockPosition());
-			src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "World spawn set."));
+			src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "World spawn set."));
 		}
 		else if (src instanceof ConsoleSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /world setspawn!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /world setspawn!"));
 		}
 		else if (src instanceof CommandBlockSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /world setspawn!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /world setspawn!"));
 		}
 
 		return CommandResult.success();

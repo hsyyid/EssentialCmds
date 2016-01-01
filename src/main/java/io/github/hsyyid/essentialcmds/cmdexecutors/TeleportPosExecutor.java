@@ -30,7 +30,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 
@@ -50,8 +50,8 @@ public class TeleportPosExecutor implements CommandExecutor
 			if (src.hasPermission("teleport.pos.others"))
 			{
 				p.get().setLocation(new Location<>(p.get().getWorld(), x, y, z));
-				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported player " + p.get().getName() + " to " + x + "," + y + "," + z + "."));
-				p.get().sendMessage(Texts.of(TextColors.GOLD, "You have been teleported by " + src.getName()));
+				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported player " + p.get().getName() + " to " + x + "," + y + "," + z + "."));
+				p.get().sendMessage(Text.of(TextColors.GOLD, "You have been teleported by " + src.getName()));
 			}
 		}
 		else
@@ -60,11 +60,11 @@ public class TeleportPosExecutor implements CommandExecutor
 			{
 				Player player = (Player) src;
 				player.setLocation(new Location<>(player.getWorld(), x, y, z));
-				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to coords."));
+				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to coords."));
 			}
 			else
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot teleport, you are not a player!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot teleport, you are not a player!"));
 			}
 		}
 

@@ -30,7 +30,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
@@ -47,12 +47,12 @@ public class TeleportExecutor implements CommandExecutor
 			if (src.hasPermission("teleport.others"))
 			{
 				player.setLocation(target.get().getLocation());
-				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported player " + player.getName() + " to " + target.get().getName()));
-				player.sendMessage(Texts.of(TextColors.GOLD, "You have been teleported to " + target.get().getName() + " by " + src.getName()));
+				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported player " + player.getName() + " to " + target.get().getName()));
+				player.sendMessage(Text.of(TextColors.GOLD, "You have been teleported to " + target.get().getName() + " by " + src.getName()));
 			}
 			else
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to teleport other players."));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to teleport other players."));
 			}
 		}
 		else
@@ -61,11 +61,11 @@ public class TeleportExecutor implements CommandExecutor
 			{
 				Player targ = (Player) src;
 				targ.setLocation(player.getLocation());
-				targ.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to player " + player.getName()));
+				targ.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to player " + player.getName()));
 			}
 			else
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot teleport, you are not a player!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot teleport, you are not a player!"));
 			}
 		}
 

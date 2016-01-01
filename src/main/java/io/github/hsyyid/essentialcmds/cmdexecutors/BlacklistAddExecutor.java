@@ -30,7 +30,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class BlacklistAddExecutor implements CommandExecutor
@@ -42,11 +42,11 @@ public class BlacklistAddExecutor implements CommandExecutor
 		if (!Utils.getBlacklistItems().contains(itemId))
 		{
 			Utils.addBlacklistItem(itemId);
-			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, itemId + " has been blacklisted."));
+			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, itemId + " has been blacklisted."));
 		}
 		else
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, itemId + " has already been blacklisted."));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, itemId + " has already been blacklisted."));
 		}
 
 		return CommandResult.success();

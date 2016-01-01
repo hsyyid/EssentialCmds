@@ -30,7 +30,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class RuleExecutor implements CommandExecutor
 		
 		for(String rule : rules)
 		{
-			src.sendMessage(Texts.of(TextColors.GRAY, (rules.indexOf(rule) + 1) + ". ", TextColors.GOLD, rule));
+			src.sendMessage(Text.of(TextColors.GRAY, (rules.indexOf(rule) + 1) + ". ", TextColors.GOLD, rule));
 		}
 
 		return CommandResult.success();

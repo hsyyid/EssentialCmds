@@ -33,7 +33,7 @@ import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class SocialSpyExecutor implements CommandExecutor
@@ -47,21 +47,21 @@ public class SocialSpyExecutor implements CommandExecutor
 			if (EssentialCmds.socialSpies.contains(player.getUniqueId()))
 			{
 				EssentialCmds.socialSpies.remove(player.getUniqueId());
-				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.RED, "Toggled social spy off!"));
+				player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.RED, "Toggled social spy off!"));
 			}
 			else
 			{
 				EssentialCmds.socialSpies.add(player.getUniqueId());
-				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "Toggled social spy on!"));
+				player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "Toggled social spy on!"));
 			}
 		}
 		else if (src instanceof ConsoleSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /socialspy!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /socialspy!"));
 		}
 		else if (src instanceof CommandBlockSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /socialspy!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /socialspy!"));
 		}
 		return CommandResult.success();
 	}

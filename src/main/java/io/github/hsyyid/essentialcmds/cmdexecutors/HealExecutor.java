@@ -33,7 +33,7 @@ import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
@@ -53,26 +53,26 @@ public class HealExecutor implements CommandExecutor
 			{
 				Player recipient = p.get();
 				recipient.offer(Keys.HEALTH, player.get(Keys.MAX_HEALTH).get());
-				recipient.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "You've been healed by " + player.getName()));
-				src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "You've healed " + recipient.getName()));
+				recipient.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "You've been healed by " + player.getName()));
+				src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "You've healed " + recipient.getName()));
 			}
 			else if (p.isPresent())
 			{
-				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to heal other players!"));
+				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to heal other players!"));
 			}
 			else
 			{
 				player.offer(Keys.HEALTH, player.get(Keys.MAX_HEALTH).get());
-				src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "You've been healed."));
+				src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "You've been healed."));
 			}
 		}
 		else if (src instanceof ConsoleSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /heal!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /heal!"));
 		}
 		else if (src instanceof CommandBlockSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /heal!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /heal!"));
 		}
 
 		return CommandResult.success();

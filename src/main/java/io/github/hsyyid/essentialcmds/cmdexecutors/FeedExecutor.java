@@ -34,7 +34,7 @@ import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
@@ -58,8 +58,8 @@ public class FeedExecutor implements CommandExecutor
 				{
 					FoodData newData = foodData.get().set(Keys.FOOD_LEVEL, 20);
 					recipient.offer(newData);
-					player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Fed " + recipient.getName()));
-					recipient.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "You have been fed by " + player.getName()));
+					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Fed " + recipient.getName()));
+					recipient.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "You have been fed by " + player.getName()));
 				}
 				else
 				{
@@ -68,7 +68,7 @@ public class FeedExecutor implements CommandExecutor
 			}
 			else if (p.isPresent())
 			{
-				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to feed other players!"));
+				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to feed other players!"));
 			}
 			else
 			{
@@ -78,7 +78,7 @@ public class FeedExecutor implements CommandExecutor
 				{
 					FoodData newData = foodData.get().set(Keys.FOOD_LEVEL, 20);
 					player.offer(newData);
-					player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "You have been fed."));
+					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "You have been fed."));
 				}
 				else
 				{
@@ -88,11 +88,11 @@ public class FeedExecutor implements CommandExecutor
 		}
 		else if (src instanceof ConsoleSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /feed!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /feed!"));
 		}
 		else if (src instanceof CommandBlockSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /feed!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /feed!"));
 		}
 
 		return CommandResult.success();

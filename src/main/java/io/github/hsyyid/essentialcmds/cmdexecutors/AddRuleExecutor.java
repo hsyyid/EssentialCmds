@@ -30,7 +30,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class AddRuleExecutor implements CommandExecutor
@@ -39,7 +39,7 @@ public class AddRuleExecutor implements CommandExecutor
 	{
 		String rule = ctx.<String> getOne("rule").get();
 		Utils.addRule(rule);
-		src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Added rule."));
+		src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Added rule."));
 		return CommandResult.success();
 	}
 }

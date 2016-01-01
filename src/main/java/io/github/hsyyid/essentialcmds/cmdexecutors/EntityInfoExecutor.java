@@ -33,7 +33,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.blockray.BlockRay;
 import org.spongepowered.api.util.blockray.BlockRayHit;
@@ -80,21 +80,21 @@ public class EntityInfoExecutor implements CommandExecutor
 
 				if (entityFound != null)
 				{
-					player.sendMessage(Texts.of(TextColors.GOLD, "The name of the entity you're looking at is: ", TextColors.GRAY, entityFound.getType().getName()));
+					player.sendMessage(Text.of(TextColors.GOLD, "The name of the entity you're looking at is: ", TextColors.GRAY, entityFound.getType().getName()));
 				}
 				else
 				{
-					player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "No entity found!"));
+					player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "No entity found!"));
 				}
 			}
 			else
 			{
-				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You're not looking at any block within range."));
+				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You're not looking at any block within range."));
 			}
 		}
 		else
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be an in-game player to use this command."));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be an in-game player to use this command."));
 		}
 
 		return CommandResult.success();

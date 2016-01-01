@@ -43,7 +43,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scheduler.Scheduler;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.sql.SqlService;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -198,7 +198,7 @@ public class Utils
 						{
 							for (Player p : game.getServer().getOnlinePlayers())
 							{
-								p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is now AFK."));
+								p.sendMessage(Text.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is now AFK."));
 								Optional<FoodData> data = p.get(FoodData.class);
 
 								if (data.isPresent())
@@ -230,7 +230,7 @@ public class Utils
 
 							if (!(p.hasPermission("essentialcmds.afk.kick.false")) && Utils.getAFKKick() && afk.getLastMovementTime() >= Utils.getAFKKickTimer())
 							{
-								p.kick(Texts.of(TextColors.GOLD, "Kicked for being AFK too long."));
+								p.kick(Text.of(TextColors.GOLD, "Kicked for being AFK too long."));
 							}
 						}
 					}

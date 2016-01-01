@@ -30,7 +30,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.Direction;
 
@@ -42,11 +42,11 @@ public class DirectionExecutor implements CommandExecutor
 		{
 			Player player = (Player) src;
 			// Credit to kenzierocks for the following line. =D
-			player.sendMessage(Texts.of(TextColors.GOLD, "You are facing: ", TextColors.GRAY, Direction.getClosest(player.getTransform().getRotationAsQuaternion().getDirection()).toString()));
+			player.sendMessage(Text.of(TextColors.GOLD, "You are facing: ", TextColors.GRAY, Direction.getClosest(player.getTransform().getRotationAsQuaternion().getDirection()).toString()));
 		}
 		else
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be an in-game player to use /direction!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be an in-game player to use /direction!"));
 		}
 		
 		return CommandResult.success();

@@ -32,7 +32,7 @@ import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class TPHereExecutor implements CommandExecutor
@@ -46,23 +46,23 @@ public class TPHereExecutor implements CommandExecutor
 			Player player = (Player) src;
 			if (recipient == player)
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot teleport to yourself!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot teleport to yourself!"));
 			}
 			else
 			{
-				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.WHITE, recipient.getName() + " has been teleported to your location!"));
-				recipient.sendMessage(Texts.of(TextColors.GREEN, player.getName(), TextColors.WHITE, " has teleported you to their location!"));
+				player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.WHITE, recipient.getName() + " has been teleported to your location!"));
+				recipient.sendMessage(Text.of(TextColors.GREEN, player.getName(), TextColors.WHITE, " has teleported you to their location!"));
 				recipient.setLocation(player.getLocation());
 			}
 
 		}
 		else if (src instanceof ConsoleSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tphere!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tphere!"));
 		}
 		else if (src instanceof CommandBlockSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tphere!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tphere!"));
 		}
 		
 		return CommandResult.success();

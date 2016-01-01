@@ -33,7 +33,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class DeleteWarpExecutor implements CommandExecutor
@@ -53,11 +53,11 @@ public class DeleteWarpExecutor implements CommandExecutor
 			String newVal = warps.replace(warpName + ",", "");
 			Configs.setValue(Config.getConfig(), new java.lang.Object[]{"warps", "warps"}, newVal);
 
-			src.sendMessage(Texts.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Deleted warp " + warpName));
+			src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Deleted warp " + warpName));
 		}
 		else
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "This warp doesn't exist!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "This warp doesn't exist!"));
 		}
 
 		return CommandResult.success();

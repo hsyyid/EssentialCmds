@@ -35,8 +35,6 @@ import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.TextBuilder;
-import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
 
@@ -56,7 +54,7 @@ public class BlacklistListExecutor implements CommandExecutor
 			
 			if(blacklistItems.size() == 0)
 			{
-				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "There are no blacklisted items!"));
+				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "There are no blacklisted items!"));
 				return CommandResult.success();
 			}
 
@@ -66,7 +64,7 @@ public class BlacklistListExecutor implements CommandExecutor
 			
 			for (String name : blacklistItems)
 			{
-				Text item = Texts.builder(name)
+				Text item = Text.builder(name)
 					.color(TextColors.DARK_AQUA)
 					.style(TextStyles.UNDERLINE)
 					.build();
@@ -76,10 +74,10 @@ public class BlacklistListExecutor implements CommandExecutor
 			
 			pList.setItemsPerPage(10);
 			
-			TextBuilder header = Texts.builder();
-			header.append(Texts.of(TextColors.GREEN, "------------"));
-			header.append(Texts.of(TextColors.GREEN, " Showing Blacklist page " + pgNo + " of " + pList.getTotalPages() + " "));
-			header.append(Texts.of(TextColors.GREEN, "------------"));
+			Text.Builder header = Text.builder();
+			header.append(Text.of(TextColors.GREEN, "------------"));
+			header.append(Text.of(TextColors.GREEN, " Showing Blacklist page " + pgNo + " of " + pList.getTotalPages() + " "));
+			header.append(Text.of(TextColors.GREEN, "------------"));
 			
 			pList.setHeader(header.build());
 			
@@ -90,11 +88,11 @@ public class BlacklistListExecutor implements CommandExecutor
 		}
 		else if (src instanceof ConsoleSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /blacklist list!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /blacklist list!"));
 		}
 		else if (src instanceof CommandBlockSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /blacklist list!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /blacklist list!"));
 		}
 
 		return CommandResult.success();

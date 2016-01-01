@@ -33,7 +33,7 @@ import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
@@ -53,38 +53,38 @@ public class VanishExecutor implements CommandExecutor
 				if (player.get(Keys.INVISIBLE).isPresent() && !player.get(Keys.INVISIBLE).get())
 				{
 					player.offer(Keys.INVISIBLE, true);
-					player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "You are now invisible."));
+					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "You are now invisible."));
 				}
 				else if (player.get(Keys.INVISIBLE).isPresent() && player.get(Keys.INVISIBLE).get())
 				{
 					player.offer(Keys.INVISIBLE, false);
-					player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "You are now visible."));
+					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "You are now visible."));
 				}
 			}
 			else if (src instanceof ConsoleSource)
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /vanish!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /vanish!"));
 			}
 			else if (src instanceof CommandBlockSource)
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /vanish!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /vanish!"));
 			}
 		}
-		else if (target.isPresent() && src.hasPermission("vanish.others"))
+		else if (target.isPresent() && src.hasPermission("essentialcmds.vanish.others"))
 		{
 			Player player = target.get();
 
 			if (player.get(Keys.INVISIBLE).isPresent() && !player.get(Keys.INVISIBLE).get())
 			{
 				player.offer(Keys.INVISIBLE, true);
-				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set player invisible."));
-				player.sendMessage(Texts.of(TextColors.GOLD, src.getName(), " has set you ", TextColors.GRAY, "invisible."));
+				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set player invisible."));
+				player.sendMessage(Text.of(TextColors.GOLD, src.getName(), " has set you ", TextColors.GRAY, "invisible."));
 			}
 			else if (player.get(Keys.INVISIBLE).isPresent() && player.get(Keys.INVISIBLE).get())
 			{
 				player.offer(Keys.INVISIBLE, false);
-				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set player visible."));
-				player.sendMessage(Texts.of(TextColors.GOLD, src.getName(), " has set you ", TextColors.GRAY, "visible."));
+				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set player visible."));
+				player.sendMessage(Text.of(TextColors.GOLD, src.getName(), " has set you ", TextColors.GRAY, "visible."));
 			}
 		}
 

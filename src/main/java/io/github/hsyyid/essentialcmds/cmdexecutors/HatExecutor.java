@@ -31,7 +31,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 
 import java.util.Optional;
 
@@ -64,7 +64,7 @@ public class HatExecutor implements CommandExecutor
 			}
 			else
 			{
-				player.sendMessage(Texts.of("No item selected in hotbar."));
+				player.sendMessage(Text.of("No item selected in hotbar."));
 				return CommandResult.empty();
 			}
 		}

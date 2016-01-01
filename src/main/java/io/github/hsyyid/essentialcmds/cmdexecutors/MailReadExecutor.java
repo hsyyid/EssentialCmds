@@ -34,7 +34,7 @@ import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class MailReadExecutor implements CommandExecutor
 
 			if (myMail.isEmpty())
 			{
-				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You have no new mail!"));
+				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You have no new mail!"));
 				return CommandResult.success();
 			}
 
@@ -63,21 +63,21 @@ public class MailReadExecutor implements CommandExecutor
 			{
 				Mail m = myMail.get(number);
 				Utils.removeMail(m);
-				player.sendMessage(Texts.of(TextColors.GOLD, "[Mail]: Message from ", TextColors.WHITE, m.getSenderName() + ": ", TextColors.GRAY, m.getMessage()));
+				player.sendMessage(Text.of(TextColors.GOLD, "[Mail]: Message from ", TextColors.WHITE, m.getSenderName() + ": ", TextColors.GRAY, m.getMessage()));
 			}
 			catch (Exception e)
 			{
-				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "That mail does not exist!"));
+				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "That mail does not exist!"));
 			}
 
 		}
 		else if (src instanceof ConsoleSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /readmail!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /readmail!"));
 		}
 		else if (src instanceof CommandBlockSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /readmail!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /readmail!"));
 		}
 		return CommandResult.success();
 	}

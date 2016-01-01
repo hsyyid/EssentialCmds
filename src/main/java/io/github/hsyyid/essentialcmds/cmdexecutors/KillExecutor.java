@@ -32,7 +32,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
@@ -47,8 +47,8 @@ public class KillExecutor implements CommandExecutor
 		{
 			p.get().offer(Keys.HEALTH, 0d);
 			Utils.setLastDeathLocation(p.get().getUniqueId(), p.get().getLocation());
-			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Killed player " + p.get().getName()));
-			p.get().sendMessage(Texts.of(TextColors.RED, "You have been killed by " + src.getName()));
+			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Killed player " + p.get().getName()));
+			p.get().sendMessage(Text.of(TextColors.RED, "You have been killed by " + src.getName()));
 		}
 		else
 		{
@@ -57,11 +57,11 @@ public class KillExecutor implements CommandExecutor
 				Player player = (Player) src;
 				player.offer(Keys.HEALTH, 0d);
 				Utils.setLastDeathLocation(player.getUniqueId(), player.getLocation());
-				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Killed yourself."));
+				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Killed yourself."));
 			}
 			else
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot kill yourself, you are not a player!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot kill yourself, you are not a player!"));
 			}
 		}
 

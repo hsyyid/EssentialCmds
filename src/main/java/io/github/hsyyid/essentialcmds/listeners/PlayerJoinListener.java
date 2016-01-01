@@ -32,9 +32,8 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.util.TextMessageException;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,21 +54,18 @@ public class PlayerJoinListener
 		Utils.setLastTimePlayerJoined(player.getUniqueId(), format.format(cal.getTime()));
 
 		String message = Utils.getJoinMsg().replaceAll("&", "\u00A7");
-		player.sendMessage(Texts.of(message));
+		player.sendMessage(Text.of(message));
 
-		ArrayList<Mail> newMail =
-			(ArrayList<Mail>) Utils.getMail().stream().filter(mail -> mail.getRecipientName().equals(player.getName()))
-				.collect(Collectors.toList());
+		ArrayList<Mail> newMail = (ArrayList<Mail>) Utils.getMail().stream().filter(mail -> mail.getRecipientName().equals(player.getName())).collect(Collectors.toList());
 
 		if (newMail.size() > 0)
 		{
-			player.sendMessage(Texts.of(TextColors.GOLD, "[Mail]: ", TextColors.GRAY, "While you were away, you received new mail to view it do ",
-				TextColors.RED, "/listmail"));
+			player.sendMessage(Text.of(TextColors.GOLD, "[Mail]: ", TextColors.GRAY, "While you were away, you received new mail to view it do ", TextColors.RED, "/listmail"));
 		}
 
 		EssentialCmds.recentlyJoined.add(event.getTargetEntity());
 
-		//Remove previous AFK, so player does not join as AFK.
+		// Remove previous AFK, so player does not join as AFK.
 		AFK afkToRemove = null;
 
 		for (AFK afk : EssentialCmds.afkList)
@@ -91,23 +87,10 @@ public class PlayerJoinListener
 		if (loginMessage != null && !loginMessage.equals(""))
 		{
 			loginMessage = loginMessage.replaceAll("@p", player.getName());
-			Text newMessage = null;
-			
-			try
-			{
-				newMessage = Texts.legacy('&').from(loginMessage);
-			}
-			catch (TextMessageException e)
-			{
-				System.out.println("Error! A TextMessageException was caught when trying to format the login message!");
-			}
-			
-			if (newMessage != null)
-			{
-				event.setMessage(newMessage);
-			}
+			Text newMessage = TextSerializers.formattingCode('&').deserialize(loginMessage);
+			event.setMessage(newMessage);
 		}
-		
+
 		// Not working in Sponge yet
 		// Subject subject = player.getContainingCollection().get(player.getIdentifier());
 		//
@@ -119,7 +102,7 @@ public class PlayerJoinListener
 		//
 		// try
 		// {
-		// textPrefix = Texts.legacy('&').from(prefix + " ");
+		// textPrefix = Text.legacy('&').from(prefix + " ");
 		// }
 		// catch (TextMessageException e)
 		// {
@@ -131,11 +114,11 @@ public class PlayerJoinListener
 		//
 		// if (name.isPresent())
 		// {
-		// data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, name.get()));
+		// data.set(Keys.DISPLAY_NAME, Text.of(textPrefix, name.get()));
 		// }
 		// else
 		// {
-		// data.set(Keys.DISPLAY_NAME, Texts.of(textPrefix, player.getName()));
+		// data.set(Keys.DISPLAY_NAME, Text.of(textPrefix, player.getName()));
 		// }
 		//
 		// player.offer(data);

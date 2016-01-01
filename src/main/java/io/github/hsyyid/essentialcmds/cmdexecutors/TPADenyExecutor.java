@@ -34,7 +34,7 @@ import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class TPADenyExecutor implements CommandExecutor
@@ -60,22 +60,22 @@ public class TPADenyExecutor implements CommandExecutor
 
 			if (cancel != null && sender != null)
 			{
-				sender.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Your TPA Request was Denied by " + player.getName() + "!"));
+				sender.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Your TPA Request was Denied by " + player.getName() + "!"));
 				EssentialCmds.pendingInvites.remove(cancel);
-				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.WHITE, "TPA Request Denied."));
+				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.WHITE, "TPA Request Denied."));
 			}
 			else
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Pending TPA request not found!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Pending TPA request not found!"));
 			}
 		}
 		else if (src instanceof ConsoleSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tpadeny!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tpadeny!"));
 		}
 		else if (src instanceof CommandBlockSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tpadeny!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tpadeny!"));
 		}
 		return CommandResult.success();
 	}

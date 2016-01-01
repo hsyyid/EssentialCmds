@@ -34,7 +34,7 @@ import org.spongepowered.api.data.manipulator.mutable.tileentity.SignData;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.InteractBlockEvent;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -52,7 +52,7 @@ public class PlayerInteractListener
 
 			if (EssentialCmds.frozenPlayers.contains(player.getUniqueId()))
 			{
-				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot interact while frozen."));
+				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot interact while frozen."));
 				event.setCancelled(true);
 				return;
 			}
@@ -71,8 +71,8 @@ public class PlayerInteractListener
 					{
 						SignData data = signData.get();
 						CommandManager cmdService = Sponge.getGame().getCommandManager();
-						String line0 = Texts.toPlain(data.getValue(Keys.SIGN_LINES).get().get(0));
-						String line1 = Texts.toPlain(data.getValue(Keys.SIGN_LINES).get().get(1));
+						String line0 = data.getValue(Keys.SIGN_LINES).get().get(0).toPlain();
+						String line1 = data.getValue(Keys.SIGN_LINES).get().get(1).toPlain();
 						String command = "warp " + line1;
 
 						if (line0.equals("[Warp]"))
@@ -83,7 +83,7 @@ public class PlayerInteractListener
 							}
 							else
 							{
-								player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to use Warp Signs!"));
+								player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to use Warp Signs!"));
 							}
 						}
 					}

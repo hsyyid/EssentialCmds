@@ -34,14 +34,11 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.util.TextMessageException;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 public class KickExecutor implements CommandExecutor
 {
-
-	@SuppressWarnings("deprecation")
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		Game game = EssentialCmds.getEssentialCmds().getGame();
@@ -51,37 +48,22 @@ public class KickExecutor implements CommandExecutor
 
 		if (server.getPlayer(player.getUniqueId()).isPresent())
 		{
-			try
+			Text reas = TextSerializers.formattingCode('&').deserialize(reason);
+			Text kickMessage = Text.of(TextColors.GOLD, src.getName() + " kicked " + player.getName() + " for ", TextColors.RED);
+			Text finalKickMessage = Text.builder().append(kickMessage).append(reas).build();
+
+			for (Player p : server.getOnlinePlayers())
 			{
-				Text reas = Texts.legacy('&').from(reason);
-				Text kickMessage = Texts.of(TextColors.GOLD, src.getName() + " kicked " + player.getName() + " for ", TextColors.RED);
-				Text finalKickMessage = Texts.builder().append(kickMessage).append(reas).build();
-
-				for (Player p : server.getOnlinePlayers())
-				{
-					p.sendMessage(finalKickMessage);
-				}
-
-				player.kick(reas);
-			}
-			catch (TextMessageException e)
-			{
-				Text kickMessage = Texts.of(TextColors.GOLD, src.getName() + " kicked " + player.getName() + " for ", TextColors.RED);
-				Text finalKickMessage = Texts.builder().append(kickMessage).append(Texts.of(reason)).build();
-
-				for (Player p : server.getOnlinePlayers())
-				{
-					p.sendMessage(finalKickMessage);
-				}
-
-				player.kick(Texts.of(reason));
+				p.sendMessage(finalKickMessage);
 			}
 
-			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player kicked."));
+			player.kick(reas);
+
+			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player kicked."));
 		}
 		else
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Player doesn't appear to be online!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Player doesn't appear to be online!"));
 		}
 
 		return CommandResult.success();

@@ -39,7 +39,7 @@ import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class TPAAcceptExecutor implements CommandExecutor
@@ -75,16 +75,16 @@ public class TPAAcceptExecutor implements CommandExecutor
 			if (sender != null && !tpaHere)
 			{
 				game.getEventManager().post(new TPAAcceptEvent(player, sender));
-				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.WHITE, "TPA Request Accepted."));
+				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.WHITE, "TPA Request Accepted."));
 			}
 			else if (sender != null)
 			{
 				game.getEventManager().post(new TPAHereAcceptEvent(player, sender));
-				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.WHITE, "TPA Here Request Accepted."));
+				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.WHITE, "TPA Here Request Accepted."));
 			}
 			else
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Pending TPA request not found!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Pending TPA request not found!"));
 			}
 
 			if (foundInvitation != null)
@@ -92,11 +92,11 @@ public class TPAAcceptExecutor implements CommandExecutor
 		}
 		else if (src instanceof ConsoleSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tpaccept!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tpaccept!"));
 		}
 		else if (src instanceof CommandBlockSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tpaccept!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tpaccept!"));
 		}
 		return CommandResult.success();
 	}

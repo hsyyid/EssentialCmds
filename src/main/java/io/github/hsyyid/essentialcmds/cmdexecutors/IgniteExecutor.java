@@ -33,7 +33,7 @@ import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
@@ -51,23 +51,23 @@ public class IgniteExecutor implements CommandExecutor
 			{
 				Player player = (Player) src;
 				player.offer(Keys.FIRE_TICKS, ticks);
-				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "You are now on fire."));
+				player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "You are now on fire."));
 			}
 			else if (src instanceof ConsoleSource)
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /ignite!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /ignite!"));
 			}
 			else if (src instanceof CommandBlockSource)
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /ignite!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /ignite!"));
 			}
 		}
 		else if (target.isPresent() && src.hasPermission("ignite.others"))
 		{
 			Player player = target.get();
 			player.offer(Keys.FIRE_TICKS, ticks);
-			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set player on fire."));
-			player.sendMessage(Texts.of(TextColors.GOLD, src.getName(), TextColors.RED, " has set you on fire."));
+			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set player on fire."));
+			player.sendMessage(Text.of(TextColors.GOLD, src.getName(), TextColors.RED, " has set you on fire."));
 		}
 
 		return CommandResult.success();

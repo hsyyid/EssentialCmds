@@ -24,20 +24,18 @@
  */
 package io.github.hsyyid.essentialcmds.listeners;
 
+import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.utils.AFK;
 import io.github.hsyyid.essentialcmds.utils.Utils;
-
-import io.github.hsyyid.essentialcmds.EssentialCmds;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.command.MessageSinkEvent;
+import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.service.permission.option.OptionSubject;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.util.TextMessageException;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -45,14 +43,13 @@ import java.util.UUID;
 
 public class MessageSinkListener
 {
-	@SuppressWarnings("deprecation")
 	@Listener
-	public void onMessage(MessageSinkEvent.Chat event)
+	public void onMessage(MessageChannelEvent.Chat event)
 	{
 		if (event.getCause().first(Player.class).isPresent())
 		{
 			Player player = event.getCause().first(Player.class).get();
-			String message = Texts.toPlain(event.getMessage());
+			String message = event.getMessage().orElse(Text.of()).toPlain();
 
 			if (message.contains("http://") || message.contains("https://"))
 			{
@@ -71,10 +68,7 @@ public class MessageSinkListener
 
 					try
 					{
-						Text newMessage = Texts.builder()
-							.append(event.getMessage())
-							.onClick(TextActions.openUrl(new URL(foundLink)))
-							.build();
+						Text newMessage = Text.builder().append(event.getMessage().orElse(Text.of())).onClick(TextActions.openUrl(new URL(foundLink))).build();
 
 						event.setMessage(newMessage);
 					}
@@ -85,7 +79,7 @@ public class MessageSinkListener
 				}
 				else
 				{
-					player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You don't have permission to send links."));
+					player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You don't have permission to send links."));
 					event.setCancelled(true);
 					return;
 				}
@@ -93,7 +87,7 @@ public class MessageSinkListener
 		}
 		else
 		{
-			String message = Texts.toPlain(event.getMessage());
+			String message = event.getMessage().orElse(Text.of()).toPlain();
 
 			if (message.contains("http://") || message.contains("https://"))
 			{
@@ -110,10 +104,7 @@ public class MessageSinkListener
 
 				try
 				{
-					Text newMessage = Texts.builder()
-						.append(event.getMessage())
-						.onClick(TextActions.openUrl(new URL(foundLink)))
-						.build();
+					Text newMessage = Text.builder().append(event.getMessage().orElse(Text.of())).onClick(TextActions.openUrl(new URL(foundLink))).build();
 
 					event.setMessage(newMessage);
 				}
@@ -167,7 +158,7 @@ public class MessageSinkListener
 					{
 						for (Player p : EssentialCmds.getEssentialCmds().getGame().getServer().getOnlinePlayers())
 						{
-							p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is no longer AFK."));
+							p.sendMessage(Text.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is no longer AFK."));
 						}
 					}
 
@@ -176,18 +167,18 @@ public class MessageSinkListener
 
 				EssentialCmds.afkList.add(afk);
 			}
-			
+
 			for (UUID mutedUUID : EssentialCmds.muteList)
 			{
 				if (mutedUUID.equals(player.getUniqueId()))
 				{
-					player.sendMessage(Texts.of(TextColors.RED, "You have been muted."));
+					player.sendMessage(Text.of(TextColors.RED, "You have been muted."));
 					event.setCancelled(true);
 					return;
 				}
 			}
 
-			String original = Texts.toPlain(event.getMessage());
+			String original = event.getMessage().orElse(Text.of()).toPlain();
 			Subject subject = player.getContainingCollection().get(player.getIdentifier());
 
 			if (subject instanceof OptionSubject)
@@ -203,15 +194,10 @@ public class MessageSinkListener
 
 					if (!(player.hasPermission("essentialcmds.color.chat.use")))
 					{
-						event.setMessage(Texts.builder()
-							.append(Texts.of(original))
-							.onClick(event.getMessage().getClickAction().orElse(null))
-							.style(event.getMessage().getStyle())
-							.onHover(event.getMessage().getHoverAction().orElse(null))
-							.build());
+						event.setMessage(Text.builder().append(Text.of(original)).onClick(event.getMessage().orElse(Text.of()).getClickAction().orElse(null)).style(event.getMessage().orElse(Text.of()).getStyle()).onHover(event.getMessage().orElse(Text.of()).getHoverAction().orElse(null)).build());
 					}
 				}
-				
+
 				String suffix = optionSubject.getOption("suffix").orElse("");
 
 				if (!suffix.equals(""))
@@ -221,12 +207,7 @@ public class MessageSinkListener
 
 					if (!(player.hasPermission("essentialcmds.color.chat.use")))
 					{
-						event.setMessage(Texts.builder()
-							.append(Texts.of(original))
-							.onClick(event.getMessage().getClickAction().orElse(null))
-							.style(event.getMessage().getStyle())
-							.onHover(event.getMessage().getHoverAction().orElse(null))
-							.build());
+						event.setMessage(Text.builder().append(Text.of(original)).onClick(event.getMessage().orElse(Text.of()).getClickAction().orElse(null)).style(event.getMessage().orElse(Text.of()).getStyle()).onHover(event.getMessage().orElse(Text.of()).getHoverAction().orElse(null)).build());
 					}
 				}
 
@@ -235,12 +216,7 @@ public class MessageSinkListener
 				if (!nick.equals(""))
 				{
 					original = original.replaceFirst(player.getName(), nick);
-					event.setMessage(Texts.builder()
-						.append(Texts.of(original))
-						.style(event.getMessage().getStyle())
-						.onClick(event.getMessage().getClickAction().orElse(null))
-						.onHover(event.getMessage().getHoverAction().orElse(null))
-						.build());
+					event.setMessage(Text.builder().append(Text.of(original)).style(event.getMessage().orElse(Text.of()).getStyle()).onClick(event.getMessage().orElse(Text.of()).getClickAction().orElse(null)).onHover(event.getMessage().orElse(Text.of()).getHoverAction().orElse(null)).build());
 				}
 			}
 
@@ -249,30 +225,13 @@ public class MessageSinkListener
 
 			if (!(player.hasPermission("essentialcmds.color.chat.use")))
 			{
-				event.setMessage(Texts.builder()
-					.append(Texts.of(original))
-					.style(event.getMessage().getStyle())
-					.onClick(event.getMessage().getClickAction().orElse(null))
-					.onHover(event.getMessage().getHoverAction().orElse(null))
-					.build());
+				event.setMessage(Text.builder().append(Text.of(original)).style(event.getMessage().orElse(Text.of()).getStyle()).onClick(event.getMessage().orElse(Text.of()).getClickAction().orElse(null)).onHover(event.getMessage().orElse(Text.of()).getHoverAction().orElse(null)).build());
 			}
 
 			if (player.hasPermission("essentialcmds.color.chat.use"))
 			{
-				try
-				{
-					Text newMessage = Texts.legacy('&').from(original);
-					event.setMessage(Texts.builder()
-						.append(newMessage)
-						.style(event.getMessage().getStyle())
-						.onClick(event.getMessage().getClickAction().orElse(null))
-						.onHover(event.getMessage().getHoverAction().orElse(null))
-						.build());
-				}
-				catch (TextMessageException e)
-				{
-					e.printStackTrace();
-				}
+				Text newMessage = TextSerializers.formattingCode('&').deserialize(original);
+				event.setMessage(Text.builder().append(newMessage).style(event.getMessage().orElse(Text.of()).getStyle()).onClick(event.getMessage().orElse(Text.of()).getClickAction().orElse(null)).onHover(event.getMessage().orElse(Text.of()).getHoverAction().orElse(null)).build());
 			}
 		}
 	}

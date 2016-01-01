@@ -33,7 +33,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.gamemode.GameMode;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.DimensionType;
 import org.spongepowered.api.world.DimensionTypes;
@@ -84,7 +84,7 @@ public class CreateWorldExecutor implements CommandExecutor
 				generator = GeneratorTypes.THE_END;
 				break;
 			default:
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Environment specified not found."));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Environment specified not found."));
 				return CommandResult.success();
 		}
 
@@ -104,7 +104,7 @@ public class CreateWorldExecutor implements CommandExecutor
 				gamemode = GameModes.SPECTATOR;
 				break;
 			default:
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Gamemode specified not found."));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Gamemode specified not found."));
 				return CommandResult.success();
 		}
 
@@ -123,11 +123,11 @@ public class CreateWorldExecutor implements CommandExecutor
 				difficulty = Difficulties.PEACEFUL;
 				break;
 			default:
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Difficulty specified not found."));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Difficulty specified not found."));
 				return CommandResult.success();
 		}
 
-		src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Beginning creation of world."));
+		src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Beginning creation of world."));
 
 		WorldCreationSettings worldSettings = EssentialCmds.getEssentialCmds().getGame().getRegistry().createBuilder(WorldCreationSettings.Builder.class)
 			.name(name)
@@ -148,16 +148,16 @@ public class CreateWorldExecutor implements CommandExecutor
 			if(world.isPresent())
 			{
 				world.get().getProperties().setDifficulty(difficulty);
-				src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "World ", TextColors.GRAY, name, TextColors.GOLD, " has been created."));
+				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "World ", TextColors.GRAY, name, TextColors.GOLD, " has been created."));
 			}
 			else
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The world could not be created."));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The world could not be created."));
 			}
 		}
 		else
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The world properties could not be created."));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The world properties could not be created."));
 		}
 
 		return CommandResult.success();

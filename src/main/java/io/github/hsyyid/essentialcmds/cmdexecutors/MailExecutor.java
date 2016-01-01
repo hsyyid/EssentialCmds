@@ -33,7 +33,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class MailExecutor implements CommandExecutor
@@ -49,7 +49,7 @@ public class MailExecutor implements CommandExecutor
 			
 			if(p.getName().equalsIgnoreCase(playerName))
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot send mail to yourself!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot send mail to yourself!"));
 				return CommandResult.success();
 			}
 			
@@ -58,11 +58,11 @@ public class MailExecutor implements CommandExecutor
 			MailSendEvent event = new MailSendEvent(p, playerName, message);
 			game.getEventManager().post(event);
 
-			p.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Sent Mail to " + playerName));
+			p.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Sent Mail to " + playerName));
 		}
 		else
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be an in-game player to send mail!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be an in-game player to send mail!"));
 		}
 		
 		return CommandResult.success();

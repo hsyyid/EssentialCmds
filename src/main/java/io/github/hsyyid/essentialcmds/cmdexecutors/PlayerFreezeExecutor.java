@@ -31,7 +31,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class PlayerFreezeExecutor implements CommandExecutor
@@ -42,19 +42,19 @@ public class PlayerFreezeExecutor implements CommandExecutor
 		
 		if(targetPlayer.equals(src))
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot freeze yourself!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot freeze yourself!"));
 			return CommandResult.success();
 		}
 		
 		if(EssentialCmds.frozenPlayers.contains(targetPlayer.getUniqueId()))
 		{
 			EssentialCmds.frozenPlayers.remove(targetPlayer.getUniqueId());
-			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Un-froze player."));
+			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Un-froze player."));
 		}
 		else
 		{
 			EssentialCmds.frozenPlayers.add(targetPlayer.getUniqueId());
-			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Froze player."));
+			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Froze player."));
 		}
 		
 		return CommandResult.success();

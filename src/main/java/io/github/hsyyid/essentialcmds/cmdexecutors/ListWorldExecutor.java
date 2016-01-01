@@ -32,8 +32,6 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.TextBuilder;
-import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
@@ -56,9 +54,9 @@ public class ListWorldExecutor implements CommandExecutor
 
 		for (String name : worlds)
 		{
-			Text item = Texts.builder(name)
+			Text item = Text.builder(name)
 				.onClick(TextActions.runCommand("/tpworld " + name))
-				.onHover(TextActions.showText(Texts.of(TextColors.WHITE, "Teleport to world ", TextColors.GOLD, name)))
+				.onHover(TextActions.showText(Text.of(TextColors.WHITE, "Teleport to world ", TextColors.GOLD, name)))
 				.color(TextColors.DARK_AQUA)
 				.style(TextStyles.UNDERLINE)
 				.build();
@@ -68,10 +66,10 @@ public class ListWorldExecutor implements CommandExecutor
 
 		pList.setItemsPerPage(10);
 
-		TextBuilder header = Texts.builder();
-		header.append(Texts.of(TextColors.GREEN, "------------"));
-		header.append(Texts.of(TextColors.GREEN, " Showing Worlds page " + pageNo + " of " + pList.getTotalPages() + " "));
-		header.append(Texts.of(TextColors.GREEN, "------------"));
+		Text.Builder header = Text.builder();
+		header.append(Text.of(TextColors.GREEN, "------------"));
+		header.append(Text.of(TextColors.GREEN, " Showing Worlds page " + pageNo + " of " + pList.getTotalPages() + " "));
+		header.append(Text.of(TextColors.GREEN, "------------"));
 
 		pList.setHeader(header.build());
 

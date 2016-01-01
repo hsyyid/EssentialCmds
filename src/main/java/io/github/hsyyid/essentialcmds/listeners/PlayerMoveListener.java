@@ -30,7 +30,7 @@ import io.github.hsyyid.essentialcmds.EssentialCmds;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.DisplaceEntityEvent;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class PlayerMoveListener
@@ -44,7 +44,7 @@ public class PlayerMoveListener
 
 			if (EssentialCmds.frozenPlayers.contains(player.getUniqueId()))
 			{
-				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot move while frozen."));
+				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot move while frozen."));
 				event.setCancelled(true);
 				return;
 			}
@@ -88,7 +88,7 @@ public class PlayerMoveListener
 					{
 						for (Player p : EssentialCmds.getEssentialCmds().getGame().getServer().getOnlinePlayers())
 						{
-							p.sendMessage(Texts.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is no longer AFK."));
+							p.sendMessage(Text.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is no longer AFK."));
 						}
 					}
 

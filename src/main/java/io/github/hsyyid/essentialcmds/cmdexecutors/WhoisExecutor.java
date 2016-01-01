@@ -36,7 +36,7 @@ import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.service.permission.option.OptionSubject;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.text.ParseException;
@@ -60,13 +60,13 @@ public class WhoisExecutor implements CommandExecutor
 		if (optPlayer.isPresent())
 		{
 			Player player = optPlayer.get();
-			src.sendMessage(Texts.of(TextColors.GOLD, "Real Name: ", TextColors.GRAY, player.getName()));
-			src.sendMessage(Texts.of(TextColors.GOLD, "UUID: ", TextColors.GRAY, player.getUniqueId().toString()));
+			src.sendMessage(Text.of(TextColors.GOLD, "Real Name: ", TextColors.GRAY, player.getName()));
+			src.sendMessage(Text.of(TextColors.GOLD, "UUID: ", TextColors.GRAY, player.getUniqueId().toString()));
 			if (game.getServer().getPlayer(player.getUniqueId()).isPresent())
-				src.sendMessage(Texts.of(TextColors.GOLD, "Current Ontime: ", TextColors.GRAY, getCurrentOnTime(player.getUniqueId())));
+				src.sendMessage(Text.of(TextColors.GOLD, "Current Ontime: ", TextColors.GRAY, getCurrentOnTime(player.getUniqueId())));
 			else
-				src.sendMessage(Texts.of(TextColors.GOLD, "Last Time Online: ", TextColors.GRAY, Utils.getLastTimePlayerJoined(player.getUniqueId())));
-			src.sendMessage(Texts.of(TextColors.GOLD, "Current World: ", TextColors.GRAY, player.getWorld().getName()));
+				src.sendMessage(Text.of(TextColors.GOLD, "Last Time Online: ", TextColors.GRAY, Utils.getLastTimePlayerJoined(player.getUniqueId())));
+			src.sendMessage(Text.of(TextColors.GOLD, "Current World: ", TextColors.GRAY, player.getWorld().getName()));
 		}
 		else if (optPlayerName.isPresent())
 		{
@@ -75,13 +75,13 @@ public class WhoisExecutor implements CommandExecutor
 			if (optionalPlayer.isPresent())
 			{
 				Player player = optionalPlayer.get();
-				src.sendMessage(Texts.of(TextColors.GOLD, "Real Name: ", TextColors.GRAY, player.getName()));
-				src.sendMessage(Texts.of(TextColors.GOLD, "UUID: ", TextColors.GRAY, player.getUniqueId().toString()));
+				src.sendMessage(Text.of(TextColors.GOLD, "Real Name: ", TextColors.GRAY, player.getName()));
+				src.sendMessage(Text.of(TextColors.GOLD, "UUID: ", TextColors.GRAY, player.getUniqueId().toString()));
 				if (game.getServer().getPlayer(player.getUniqueId()).isPresent())
-					src.sendMessage(Texts.of(TextColors.GOLD, "Current Ontime: ", TextColors.GRAY, getCurrentOnTime(player.getUniqueId())));
+					src.sendMessage(Text.of(TextColors.GOLD, "Current Ontime: ", TextColors.GRAY, getCurrentOnTime(player.getUniqueId())));
 				else
-					src.sendMessage(Texts.of(TextColors.GOLD, "Last Time Online: ", TextColors.GRAY, Utils.getLastTimePlayerJoined(player.getUniqueId())));
-				src.sendMessage(Texts.of(TextColors.GOLD, "Current World: ", TextColors.GRAY, player.getWorld().getName()));
+					src.sendMessage(Text.of(TextColors.GOLD, "Last Time Online: ", TextColors.GRAY, Utils.getLastTimePlayerJoined(player.getUniqueId())));
+				src.sendMessage(Text.of(TextColors.GOLD, "Current World: ", TextColors.GRAY, player.getWorld().getName()));
 			}
 			else
 			{
@@ -112,25 +112,25 @@ public class WhoisExecutor implements CommandExecutor
 
 				if (foundPlayer == null)
 				{
-					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Player not found."));
+					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Player not found."));
 					return CommandResult.success();
 				}
 				else
 				{
 					Player player = foundPlayer;
-					src.sendMessage(Texts.of(TextColors.GOLD, "Real Name: ", TextColors.GRAY, player.getName()));
-					src.sendMessage(Texts.of(TextColors.GOLD, "UUID: ", TextColors.GRAY, player.getUniqueId().toString()));
+					src.sendMessage(Text.of(TextColors.GOLD, "Real Name: ", TextColors.GRAY, player.getName()));
+					src.sendMessage(Text.of(TextColors.GOLD, "UUID: ", TextColors.GRAY, player.getUniqueId().toString()));
 					if (game.getServer().getPlayer(player.getUniqueId()).isPresent())
-						src.sendMessage(Texts.of(TextColors.GOLD, "Current Ontime: ", TextColors.GRAY, getCurrentOnTime(player.getUniqueId())));
+						src.sendMessage(Text.of(TextColors.GOLD, "Current Ontime: ", TextColors.GRAY, getCurrentOnTime(player.getUniqueId())));
 					else
-						src.sendMessage(Texts.of(TextColors.GOLD, "Last Time Online: ", TextColors.GRAY, Utils.getLastTimePlayerJoined(player.getUniqueId())));
-					src.sendMessage(Texts.of(TextColors.GOLD, "Current World: ", TextColors.GRAY, player.getWorld().getName()));
+						src.sendMessage(Text.of(TextColors.GOLD, "Last Time Online: ", TextColors.GRAY, Utils.getLastTimePlayerJoined(player.getUniqueId())));
+					src.sendMessage(Text.of(TextColors.GOLD, "Current World: ", TextColors.GRAY, player.getWorld().getName()));
 				}
 			}
 		}
 		else
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You did not specify any arguments."));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You did not specify any arguments."));
 		}
 
 		return CommandResult.success();

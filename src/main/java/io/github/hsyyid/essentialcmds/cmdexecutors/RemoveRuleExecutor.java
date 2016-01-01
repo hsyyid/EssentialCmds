@@ -30,7 +30,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class RemoveRuleExecutor implements CommandExecutor
@@ -42,11 +42,11 @@ public class RemoveRuleExecutor implements CommandExecutor
 		if (ruleNo <= Utils.getRules().size() && ruleNo >= 1)
 		{
 			Utils.removeRule(ruleNo - 1);
-			src.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Removed rule."));
+			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Removed rule."));
 		}
 		else
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The number you entered is invalid."));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The number you entered is invalid."));
 		}
 
 		return CommandResult.success();

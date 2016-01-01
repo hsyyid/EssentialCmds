@@ -38,7 +38,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.Enchantment;
 import org.spongepowered.api.item.Enchantments;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
@@ -131,7 +131,7 @@ public class EnchantExecutor implements CommandExecutor
 				enchantment = Enchantments.UNBREAKING;
 				break;
 			default:
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment specified not found!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment specified not found!"));
 				return CommandResult.success();
 		}
 
@@ -139,7 +139,7 @@ public class EnchantExecutor implements CommandExecutor
 		{
 			if (enchantment.getMaximumLevel() < level)
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment level too high!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment level too high!"));
 				return CommandResult.success();
 			}
 
@@ -157,7 +157,7 @@ public class EnchantExecutor implements CommandExecutor
 
 					if (!enchantment.canBeAppliedToStack(itemInHand))
 					{
-						src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment cannot be applied to this item!"));
+						src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment cannot be applied to this item!"));
 						return CommandResult.success();
 					}
 
@@ -186,20 +186,20 @@ public class EnchantExecutor implements CommandExecutor
 
 					itemInHand.offer(enchantmentData);
 					player.setItemInHand(itemInHand);
-					player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Enchanted item(s) in your hand."));
+					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Enchanted item(s) in your hand."));
 				}
 				else
 				{
-					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be holding something to enchant!"));
+					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be holding something to enchant!"));
 				}
 			}
 			else if (src instanceof ConsoleSource)
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /enchant!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /enchant!"));
 			}
 			else if (src instanceof CommandBlockSource)
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /enchant!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /enchant!"));
 			}
 		}
 		else if (target.isPresent() && src.hasPermission("essentialcmds.enchant.others"))
@@ -212,7 +212,7 @@ public class EnchantExecutor implements CommandExecutor
 
 				if (!enchantment.canBeAppliedToStack(itemInHand))
 				{
-					src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment cannot be applied to this item!"));
+					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment cannot be applied to this item!"));
 					return CommandResult.success();
 				}
 
@@ -241,11 +241,11 @@ public class EnchantExecutor implements CommandExecutor
 
 				itemInHand.offer(enchantmentData);
 				player.setItemInHand(itemInHand);
-				player.sendMessage(Texts.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Enchanted item(s) in your hand."));
+				player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Enchanted item(s) in your hand."));
 			}
 			else
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be holding something to enchant!"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be holding something to enchant!"));
 			}
 		}
 

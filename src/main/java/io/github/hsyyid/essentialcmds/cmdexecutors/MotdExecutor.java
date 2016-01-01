@@ -32,7 +32,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class MotdExecutor implements CommandExecutor
@@ -41,7 +41,7 @@ public class MotdExecutor implements CommandExecutor
 	{
 		Game game = EssentialCmds.getEssentialCmds().getGame();
 		Server server = game.getServer();
-		src.sendMessage(Texts.of(TextColors.GOLD, "[MOTD]: ", server.getMotd()));
+		src.sendMessage(Text.of(TextColors.GOLD, "[MOTD]: ", server.getMotd()));
 		return CommandResult.success();
 	}
 }

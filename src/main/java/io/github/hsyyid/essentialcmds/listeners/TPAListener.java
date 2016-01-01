@@ -36,7 +36,7 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.scheduler.Scheduler;
 import org.spongepowered.api.scheduler.Task;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.concurrent.TimeUnit;
@@ -50,7 +50,7 @@ public class TPAListener
 	public void tpaEventHandler(TPAEvent event)
 	{
 		String senderName = event.getSender().getName();
-		event.getRecipient().sendMessage(Texts.of(TextColors.BLUE, "TPA Request From: ", 
+		event.getRecipient().sendMessage(Text.of(TextColors.BLUE, "TPA Request From: ", 
 			TextColors.GOLD, senderName + ".", TextColors.RED, " You have 10 seconds to do /tpaccept to accept the request"));
 
 		// Adds Invite to List
@@ -73,7 +73,7 @@ public class TPAListener
 	public void tpaAcceptEventHandler(TPAAcceptEvent event)
 	{
 		String senderName = event.getSender().getName();
-		event.getRecipient().sendMessage(Texts.of(TextColors.GREEN, senderName, TextColors.WHITE, " accepted your TPA Request."));
+		event.getRecipient().sendMessage(Text.of(TextColors.GREEN, senderName, TextColors.WHITE, " accepted your TPA Request."));
 		event.getRecipient().setLocation(event.getSender().getLocation());
 	}
 
@@ -81,7 +81,7 @@ public class TPAListener
 	public void tpaHereAcceptEventHandler(TPAHereAcceptEvent event)
 	{
 		String recipientName = event.getRecipient().getName();
-		event.getSender().sendMessage(Texts.of(TextColors.GREEN, recipientName, TextColors.WHITE, " accepted your TPA Here Request."));
+		event.getSender().sendMessage(Text.of(TextColors.GREEN, recipientName, TextColors.WHITE, " accepted your TPA Here Request."));
 		event.getSender().setLocation(event.getRecipient().getLocation());
 	}
 
@@ -89,7 +89,7 @@ public class TPAListener
 	public void tpaHereEventHandler(TPAHereEvent event)
 	{
 		String senderName = event.getSender().getName();
-		event.getRecipient().sendMessage(Texts.of(TextColors.BLUE, senderName, TextColors.GOLD, " has requested for you to teleport to them.", TextColors.RED, " You have 10 seconds to do /tpaccept to accept the request"));
+		event.getRecipient().sendMessage(Text.of(TextColors.BLUE, senderName, TextColors.GOLD, " has requested for you to teleport to them.", TextColors.RED, " You have 10 seconds to do /tpaccept to accept the request"));
 
 		// Adds Invite to List
 		final PendingInvitation invite = new PendingInvitation(event.getSender(), event.getRecipient());

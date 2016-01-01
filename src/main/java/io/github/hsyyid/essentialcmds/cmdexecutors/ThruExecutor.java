@@ -33,7 +33,7 @@ import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.blockray.BlockRay;
 import org.spongepowered.api.util.blockray.BlockRayHit;
@@ -75,29 +75,29 @@ public class ThruExecutor implements CommandExecutor
 			{
 				if (player.setLocationSafely(location))
 				{
-					player.sendMessage(Texts.of(TextColors.LIGHT_PURPLE, "Whoosh!"));
+					player.sendMessage(Text.of(TextColors.LIGHT_PURPLE, "Whoosh!"));
 				}
 				else
 				{
-					player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "No free spot ahead of you found."));
+					player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "No free spot ahead of you found."));
 				}
 			}
 			else if (finalHitRay == null)
 			{
-				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You are not facing a wall."));
+				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You are not facing a wall."));
 			}
 			else if (location == null)
 			{
-				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "No free spot ahead of you found."));
+				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "No free spot ahead of you found."));
 			}
 		}
 		else if (src instanceof ConsoleSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /thru!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /thru!"));
 		}
 		else if (src instanceof CommandBlockSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /thru!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /thru!"));
 		}
 
 		return CommandResult.success();

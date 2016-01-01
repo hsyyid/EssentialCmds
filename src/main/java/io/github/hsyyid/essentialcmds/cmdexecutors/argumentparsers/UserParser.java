@@ -35,13 +35,13 @@ import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
 
 /**
  * Parses an argument and tries to match it up against any user, online or offline.
@@ -70,7 +70,7 @@ public class UserParser extends CommandElement {
         List<User> listUser = Sponge.getGame().getServer().getOnlinePlayers().stream()
                 .filter(x -> x.getName().toLowerCase().startsWith(user.toLowerCase())).collect(Collectors.toList());
         if (listUser.isEmpty()) {
-            throw args.createError(Texts.of(TextColors.RED, "Could not find user with the name " + user));
+            throw args.createError(Text.of(TextColors.RED, "Could not find user with the name " + user));
         }
 
         if (listUser.size() == 1) {

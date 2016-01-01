@@ -35,8 +35,6 @@ import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.TextBuilder;
-import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
@@ -56,7 +54,7 @@ public class ListHomeExecutor implements CommandExecutor
 
 			if (homes.size() == 0)
 			{
-				player.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must first set a home to list your homes!"));
+				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must first set a home to list your homes!"));
 				return CommandResult.success();
 			}
 
@@ -67,16 +65,16 @@ public class ListHomeExecutor implements CommandExecutor
 			PaginatedList pList = new PaginatedList("/homes");
 			for (String name : homes)
 			{
-				Text item = Texts.builder(name).onClick(TextActions.runCommand("/home " + name)).onHover(TextActions.showText(Texts.of(TextColors.WHITE, "Teleport to home ", TextColors.GOLD, name))).color(TextColors.DARK_AQUA).style(TextStyles.UNDERLINE).build();
+				Text item = Text.builder(name).onClick(TextActions.runCommand("/home " + name)).onHover(TextActions.showText(Text.of(TextColors.WHITE, "Teleport to home ", TextColors.GOLD, name))).color(TextColors.DARK_AQUA).style(TextStyles.UNDERLINE).build();
 
 				pList.add(item);
 			}
 			pList.setItemsPerPage(10);
 			// Header
-			TextBuilder header = Texts.builder();
-			header.append(Texts.of(TextColors.GREEN, "------------"));
-			header.append(Texts.of(TextColors.GREEN, " Showing Homes page " + pgNo + " of " + pList.getTotalPages() + " "));
-			header.append(Texts.of(TextColors.GREEN, "------------"));
+			Text.Builder header = Text.builder();
+			header.append(Text.of(TextColors.GREEN, "------------"));
+			header.append(Text.of(TextColors.GREEN, " Showing Homes page " + pgNo + " of " + pList.getTotalPages() + " "));
+			header.append(Text.of(TextColors.GREEN, "------------"));
 
 			pList.setHeader(header.build());
 			// Send List
@@ -85,11 +83,11 @@ public class ListHomeExecutor implements CommandExecutor
 		}
 		else if (src instanceof ConsoleSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /homes!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /homes!"));
 		}
 		else if (src instanceof CommandBlockSource)
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /homes!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /homes!"));
 		}
 
 		return CommandResult.success();

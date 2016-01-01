@@ -34,41 +34,27 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.util.TextMessageException;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 public class BroadcastExecutor implements CommandExecutor
 {
-	@SuppressWarnings("deprecation")
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		String message = ctx.<String> getOne("message").get();
 		Game game = EssentialCmds.getEssentialCmds().getGame();
 		Server server = game.getServer();
 
-		try
+		Text msg = TextSerializers.formattingCode('&').deserialize(message);
+		Text broadcast = Text.of(TextColors.DARK_GRAY, "[", TextColors.DARK_RED, "Broadcast", TextColors.DARK_GRAY, "]", TextColors.GREEN, " ");
+		Text finalBroadcast = Text.builder().append(broadcast).append(msg).build();
+
+		for (Player player : server.getOnlinePlayers())
 		{
-			Text msg = Texts.legacy('&').from(message);
-			Text broadcast = Texts.of(TextColors.DARK_GRAY, "[", TextColors.DARK_RED, "Broadcast", TextColors.DARK_GRAY, "]", TextColors.GREEN, " ");
-			Text finalBroadcast = Texts.builder().append(broadcast).append(msg).build();
-
-			for (Player player : server.getOnlinePlayers())
-			{
-				player.sendMessage(finalBroadcast);
-			}
-
-			server.getConsole().sendMessage(finalBroadcast);
+			player.sendMessage(finalBroadcast);
 		}
-		catch (TextMessageException e)
-		{
-			for (Player player : server.getOnlinePlayers())
-			{
-				player.sendMessage(Texts.of(TextColors.DARK_GRAY, "[", TextColors.DARK_RED, "Broadcast", TextColors.DARK_GRAY, "]", TextColors.GREEN, " " + message));
-			}
 
-			server.getConsole().sendMessage(Texts.of(TextColors.DARK_GRAY, "[", TextColors.DARK_RED, "Broadcast", TextColors.DARK_GRAY, "]", TextColors.GREEN, " " + message));
-		}
+		server.getConsole().sendMessage(finalBroadcast);
 
 		return CommandResult.success();
 	}

@@ -28,7 +28,7 @@ import io.github.hsyyid.essentialcmds.events.MailSendEvent;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
@@ -50,7 +50,7 @@ public class MailListener
 				.getPlayer(recipientName)
 				.get()
 				.sendMessage(
-					Texts.of(TextColors.GOLD, "[Mail]: ", TextColors.GRAY, "You have received new mail from " + event.getSender().getName()
+					Text.of(TextColors.GOLD, "[Mail]: ", TextColors.GRAY, "You have received new mail from " + event.getSender().getName()
 						+ " do ", TextColors.RED, "/listmail!"));
 		}
 		else
