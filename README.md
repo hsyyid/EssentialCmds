@@ -1,4 +1,4 @@
-EssentialCmds
+EssentialCmds [![Build Status](https://travis-ci.org/hsyyid/EssentialCmds.svg?branch=master)](https://travis-ci.org/hsyyid/EssentialCmds)
 =============
 
 **Currently not stable and under heavy development**
