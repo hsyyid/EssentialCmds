@@ -47,15 +47,11 @@ public class HatExecutor implements CommandExecutor
 
 			if (itemInHand.isPresent())
 			{
-				ItemStack hatStack = itemInHand.get();
-				hatStack.setQuantity(1);
-				player.setHelmet(hatStack);
+				player.setHelmet(itemInHand.get());
 
 				if (itemInHand.get().getQuantity() > 1)
 				{
-					ItemStack stack = itemInHand.get();
-					stack.setQuantity(itemInHand.get().getQuantity() - 1);
-					player.setItemInHand(stack);
+					itemInHand.get().setQuantity(itemInHand.get().getQuantity() - 1);
 				}
 				else
 				{
@@ -65,9 +61,9 @@ public class HatExecutor implements CommandExecutor
 			else
 			{
 				player.sendMessage(Text.of("No item selected in hotbar."));
-				return CommandResult.empty();
 			}
 		}
+		
 		return CommandResult.success();
 	}
 }
