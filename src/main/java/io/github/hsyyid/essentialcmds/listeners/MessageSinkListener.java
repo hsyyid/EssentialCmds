@@ -199,7 +199,7 @@ public class MessageSinkListener
 				String suffixInOriginal = original.substring(original.indexOf(player.getName()) + player.getName().length(), original.indexOf(Utils.getLastChatCharReplacement()));
 
 				original = original.replaceFirst(player.getName(), nick);
-				String playerName = original.substring(prefixInOriginal.length(), original.indexOf(suffix));
+				String playerName = original.substring(prefixInOriginal.length(), original.indexOf(nick) + nick.length());
 
 				String restOfOriginal = original.substring(original.indexOf(Utils.getLastChatCharReplacement()), original.length());
 
