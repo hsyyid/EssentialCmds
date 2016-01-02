@@ -52,8 +52,8 @@ public class PlayerJoinListener
 		format.setTimeZone(TimeZone.getTimeZone("GMT"));
 		Utils.setLastTimePlayerJoined(player.getUniqueId(), format.format(cal.getTime()));
 
-		String message = Utils.getJoinMsg().replaceAll("&", "\u00A7");
-		player.sendMessage(Text.of(message));
+		Text message = TextSerializers.formattingCode('&').deserialize(Utils.getJoinMsg());
+		player.sendMessage(message);
 
 		ArrayList<Mail> newMail = (ArrayList<Mail>) Utils.getMail().stream().filter(mail -> mail.getRecipientName().equals(player.getName())).collect(Collectors.toList());
 

@@ -179,6 +179,9 @@ public class MessageSinkListener
 			}
 
 			String original = event.getMessage().orElse(Text.of()).toPlain();
+			original = original.replaceFirst("<", Utils.getFirstChatCharReplacement());
+			original = original.replaceFirst(">", Utils.getLastChatCharReplacement());
+
 			Subject subject = player.getContainingCollection().get(player.getIdentifier());
 
 			if (subject instanceof OptionSubject)
@@ -186,46 +189,32 @@ public class MessageSinkListener
 				OptionSubject optionSubject = (OptionSubject) subject;
 
 				String prefix = optionSubject.getOption("prefix").orElse("");
-
-				if (!prefix.equals(""))
-				{
-					prefix = prefix.replaceAll("&", "\u00A7");
-					original = original.replaceFirst("<", ("<" + prefix + " "));
-
-					if (!(player.hasPermission("essentialcmds.color.chat.use")))
-					{
-						event.setMessage(Text.builder().append(Text.of(original)).onClick(event.getMessage().orElse(Text.of()).getClickAction().orElse(null)).style(event.getMessage().orElse(Text.of()).getStyle()).onHover(event.getMessage().orElse(Text.of()).getHoverAction().orElse(null)).build());
-					}
-				}
-
 				String suffix = optionSubject.getOption("suffix").orElse("");
+				String nick = optionSubject.getOption("nick").orElse(player.getName());
 
-				if (!suffix.equals(""))
+				original = original.replaceFirst(Utils.getFirstChatCharReplacement(), (Utils.getFirstChatCharReplacement() + prefix + " "));
+				String prefixInOriginal = original.substring(0, prefix.length() + 1);
+
+				original = original.replaceFirst(Utils.getLastChatCharReplacement(), (suffix + Utils.getLastChatCharReplacement()));
+				String suffixInOriginal = original.substring(original.indexOf(player.getName()) + player.getName().length(), original.indexOf(Utils.getLastChatCharReplacement()));
+
+				original = original.replaceFirst(player.getName(), nick);
+				String playerName = original.substring(prefixInOriginal.length(), original.indexOf(suffix));
+
+				String restOfOriginal = original.substring(original.indexOf(Utils.getLastChatCharReplacement()), original.length());
+
+				if (!(player.hasPermission("essentialcmds.color.chat.use")))
 				{
-					suffix = suffix.replaceAll("&", "\u00A7");
-					original = original.replaceFirst(">", (suffix + ">"));
-
-					if (!(player.hasPermission("essentialcmds.color.chat.use")))
-					{
-						event.setMessage(Text.builder().append(Text.of(original)).onClick(event.getMessage().orElse(Text.of()).getClickAction().orElse(null)).style(event.getMessage().orElse(Text.of()).getStyle()).onHover(event.getMessage().orElse(Text.of()).getHoverAction().orElse(null)).build());
-					}
+					event.setMessage(Text.builder()
+						.append(TextSerializers.formattingCode('&').deserialize(prefixInOriginal))
+						.append(TextSerializers.formattingCode('&').deserialize(playerName))
+						.append(TextSerializers.formattingCode('&').deserialize(suffixInOriginal))
+						.append(Text.of(restOfOriginal))
+						.onClick(event.getMessage().orElse(Text.of()).getClickAction().orElse(null))
+						.style(event.getMessage().orElse(Text.of()).getStyle())
+						.onHover(event.getMessage().orElse(Text.of()).getHoverAction().orElse(null))
+						.build());
 				}
-
-				String nick = optionSubject.getOption("nick").orElse("");
-
-				if (!nick.equals(""))
-				{
-					original = original.replaceFirst(player.getName(), nick);
-					event.setMessage(Text.builder().append(Text.of(original)).style(event.getMessage().orElse(Text.of()).getStyle()).onClick(event.getMessage().orElse(Text.of()).getClickAction().orElse(null)).onHover(event.getMessage().orElse(Text.of()).getHoverAction().orElse(null)).build());
-				}
-			}
-
-			original = original.replaceFirst("<", Utils.getFirstChatCharReplacement());
-			original = original.replaceFirst(">", "\u00A7f" + Utils.getLastChatCharReplacement());
-
-			if (!(player.hasPermission("essentialcmds.color.chat.use")))
-			{
-				event.setMessage(Text.builder().append(Text.of(original)).style(event.getMessage().orElse(Text.of()).getStyle()).onClick(event.getMessage().orElse(Text.of()).getClickAction().orElse(null)).onHover(event.getMessage().orElse(Text.of()).getHoverAction().orElse(null)).build());
 			}
 
 			if (player.hasPermission("essentialcmds.color.chat.use"))

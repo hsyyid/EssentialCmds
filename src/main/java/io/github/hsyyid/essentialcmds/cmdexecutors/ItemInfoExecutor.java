@@ -47,7 +47,7 @@ public class ItemInfoExecutor implements CommandExecutor
 			{
 				ItemStack itemInHand = player.getItemInHand().get();
 				player.sendMessage(Text.of(TextColors.GOLD, "The ID of the item in your hand is: ", TextColors.GRAY, itemInHand.getItem().getName()));
-				player.sendMessage(Text.of(TextColors.GOLD, "The meta of the item in your hand is: ", TextColors.GRAY, itemInHand.toContainer().get(new DataQuery("UnsafeDamage")).get().toString()));
+				player.sendMessage(Text.of(TextColors.GOLD, "The meta of the item in your hand is: ", TextColors.GRAY, itemInHand.toContainer().get(DataQuery.of("UnsafeDamage")).get().toString()));
 			}
 			else
 			{

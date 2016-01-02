@@ -67,7 +67,7 @@ public class BlockInfoExecutor implements CommandExecutor
 			if (finalHitRay != null)
 			{
 				player.sendMessage(Text.of(TextColors.GOLD, "The ID of the block you're looking at is: ", TextColors.GRAY, finalHitRay.getLocation().getBlock().getType().getName()));
-				player.sendMessage(Text.of(TextColors.GOLD, "The meta of the block you're looking at is: ", TextColors.GRAY, finalHitRay.getLocation().getBlock().toContainer().get(new DataQuery("UnsafeMeta")).get().toString()));
+				player.sendMessage(Text.of(TextColors.GOLD, "The meta of the block you're looking at is: ", TextColors.GRAY, finalHitRay.getLocation().getBlock().toContainer().get(DataQuery.of("UnsafeMeta")).get().toString()));
 			}
 			else
 			{

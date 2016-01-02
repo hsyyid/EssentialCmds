@@ -41,7 +41,6 @@ public class NickExecutor implements CommandExecutor
 	{
 		Player player = ctx.<Player> getOne("player").get();
 		String nick = ctx.<String> getOne("nick").get();
-		nick = nick.replace("&", "\u00A7");
 
 		if (src instanceof Player && ((Player) src).getUniqueId() != player.getUniqueId() && src.hasPermission("essentialcmds.nick.others"))
 		{
