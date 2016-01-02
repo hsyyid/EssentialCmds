@@ -759,10 +759,9 @@ public class Utils
 
 	public static void setSpawn(Location<World> playerLocation, String worldName)
 	{
-
-		Configs.getConfig(config).getNode("spawn", "X").setValue(playerLocation.getBlockX());
-		Configs.getConfig(config).getNode("spawn", "Y").setValue(playerLocation.getBlockY());
-		Configs.getConfig(config).getNode("spawn", "Z").setValue(playerLocation.getBlockZ());
+		Configs.getConfig(config).getNode("spawn", "X").setValue(playerLocation.getX());
+		Configs.getConfig(config).getNode("spawn", "Y").setValue(playerLocation.getY());
+		Configs.getConfig(config).getNode("spawn", "Z").setValue(playerLocation.getZ());
 		Configs.getConfig(config).getNode("spawn", "world").setValue(worldName);
 
 		Configs.saveConfig(config);
@@ -770,43 +769,36 @@ public class Utils
 
 	public static void setJoinMsg(String msg)
 	{
-
 		Configs.getConfig(config).getNode("joinmsg").setValue(msg);
-
 		Configs.saveConfig(config);
 	}
 
 	public static void setFirstChatCharReplacement(String replacement)
 	{
-
 		Configs.getConfig(config).getNode("chat", "firstcharacter").setValue(replacement);
 		Configs.saveConfig(config);
 	}
 
 	public static void setLastChatCharReplacement(String replacement)
 	{
-
 		Configs.getConfig(config).getNode("chat", "lastcharacter").setValue(replacement);
 		Configs.saveConfig(config);
 	}
 
 	public static void setAFK(double length)
 	{
-
 		Configs.getConfig(config).getNode("afk", "timer").setValue(length);
 		Configs.saveConfig(config);
 	}
 
 	public static void setAFKKick(boolean val)
 	{
-
 		Configs.getConfig(config).getNode("afk", "kick", "use").setValue(val);
 		Configs.saveConfig(config);
 	}
 
 	public static void setAFKKickTimer(double length)
 	{
-
 		Configs.getConfig(config).getNode("afk", "kick", "timer").setValue(length);
 		Configs.saveConfig(config);
 	}
