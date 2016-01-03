@@ -209,6 +209,7 @@ public class MessageSinkListener
 						.append(TextSerializers.formattingCode('&').deserialize(prefixInOriginal))
 						.append(TextSerializers.formattingCode('&').deserialize(playerName))
 						.append(TextSerializers.formattingCode('&').deserialize(suffixInOriginal))
+						.append(Text.builder().color(TextColors.WHITE).build())
 						.append(Text.of(restOfOriginal))
 						.onClick(event.getMessage().orElse(Text.of()).getClickAction().orElse(null))
 						.style(event.getMessage().orElse(Text.of()).getStyle())
