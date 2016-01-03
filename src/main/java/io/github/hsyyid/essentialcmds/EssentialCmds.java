@@ -102,6 +102,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.TPADenyExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.TPAExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.TPAHereExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.TPHereExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.TakeExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.TeleportExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.TeleportPosExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.TeleportWorldExecutor;
@@ -224,6 +225,11 @@ public class EssentialCmds
 			CommandSpec.builder().description(Text.of("Home Command")).permission("essentialcmds.home.use")
 			.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("home name")))).executor(new HomeExecutor()).build();
 		getGame().getCommandManager().register(this, homeCommandSpec, "home");
+
+		CommandSpec takeCommandSpec =
+			CommandSpec.builder().description(Text.of("Take Command")).permission("essentialcmds.take.use")
+			.arguments(GenericArguments.onlyOne(GenericArguments.player(Text.of("target")))).executor(new TakeExecutor()).build();
+		getGame().getCommandManager().register(this, takeCommandSpec, "take");
 
 		CommandSpec mobSpawnerCommandSpec =
 			CommandSpec.builder().description(Text.of("Mob Spawner Command")).permission("essentialcmds.mobspawner.use")
