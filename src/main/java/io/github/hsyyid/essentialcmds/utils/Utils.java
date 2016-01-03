@@ -338,13 +338,14 @@ public class Utils
 	{
 		Configs.setValue(config, new Object[] { "disconnect", "message" }, value);
 	}
-	
+
 	public static String getNick(Player player)
 	{
-		CommentedConfigurationNode node = Configs.getConfig(config).getNode("nick", player.getUniqueId());
+		CommentedConfigurationNode node = Configs.getConfig(config).getNode("nick", player.getUniqueId().toString());
 		if (configManager.getString(node).isPresent())
 			return node.getString();
-		return player.getName();
+		else
+			return player.getName();
 	}
 
 	public static void setNick(String value, UUID playerUuid)
@@ -536,7 +537,7 @@ public class Utils
 			Configs.setValue(config, node.getPath(), items + formattedItem);
 			return;
 		}
-		
+
 		Configs.setValue(config, node.getPath(), formattedItem);
 	}
 
@@ -669,7 +670,7 @@ public class Utils
 
 		CommentedConfigurationNode node = Configs.getConfig(config).getNode("warps", "warps");
 		String format = warpName + ",";
-		
+
 		if (configManager.getString(node).isPresent())
 		{
 			String items = node.getString();
@@ -940,12 +941,12 @@ public class Utils
 	{
 		String playerName = userName.toString();
 		ConfigurationNode valueNode = Configs.getConfig(config).getNode("home", "users", playerName, "homes");
-		
+
 		if(valueNode.getValue() == null)
 		{
 			return Lists.newArrayList();
 		}
-		
+
 		String list = valueNode.getString();
 
 		ArrayList<String> homeList = new ArrayList<>();
@@ -982,12 +983,12 @@ public class Utils
 	public static ArrayList<String> getWarps()
 	{
 		ConfigurationNode valueNode = Configs.getConfig(config).getNode("warps", "warps");
-		
+
 		if(valueNode.getValue() == null)
 		{
 			return Lists.newArrayList();
 		}
-		
+
 		String list = valueNode.getString();
 
 		ArrayList<String> warpList = new ArrayList<>();

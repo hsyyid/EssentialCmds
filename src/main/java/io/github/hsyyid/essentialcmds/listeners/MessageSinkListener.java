@@ -183,52 +183,55 @@ public class MessageSinkListener
 			original = original.replaceFirst(">", Utils.getLastChatCharReplacement());
 
 			Subject subject = player.getContainingCollection().get(player.getIdentifier());
+			String prefix = "";
+			String suffix = "";
 
 			if (subject instanceof OptionSubject)
 			{
 				OptionSubject optionSubject = (OptionSubject) subject;
 
-				String prefix = optionSubject.getOption("prefix").orElse("");
-				String suffix = optionSubject.getOption("suffix").orElse("");
-				String nick = Utils.getNick(player);
+				prefix = optionSubject.getOption("prefix").orElse("");
+				suffix = optionSubject.getOption("suffix").orElse("");
+			}
+			
+			String nick = Utils.getNick(player);
 
-				original = original.replaceFirst(Utils.getFirstChatCharReplacement(), (Utils.getFirstChatCharReplacement() + prefix + " "));
-				String prefixInOriginal = original.substring(0, prefix.length() + 1);
-				
-				original = original.replaceFirst(Utils.getLastChatCharReplacement(), (suffix + Utils.getLastChatCharReplacement()));
-				String suffixInOriginal = original.substring(original.indexOf(player.getName()) + player.getName().length(), original.indexOf(Utils.getLastChatCharReplacement()));
-				
-				original = original.replaceFirst(player.getName(), nick);
-				String playerName = original.substring(prefixInOriginal.length(), original.indexOf(nick) + nick.length());
+			original = original.replaceFirst(Utils.getFirstChatCharReplacement(), (Utils.getFirstChatCharReplacement() + prefix));
+			String prefixInOriginal = original.substring(0, prefix.length() + 1);
 
-				String restOfOriginal = original.substring(original.indexOf(Utils.getLastChatCharReplacement()), original.length());
-				
-				if (!(player.hasPermission("essentialcmds.color.chat.use")))
-				{
-					event.setMessage(Text.builder()
-						.append(TextSerializers.formattingCode('&').deserialize(prefixInOriginal))
-						.append(TextSerializers.formattingCode('&').deserialize(playerName))
-						.append(TextSerializers.formattingCode('&').deserialize(suffixInOriginal))
-						.append(Text.of(TextColors.RESET))
-						.append(Text.of(restOfOriginal))
-						.onClick(event.getMessage().orElse(Text.of()).getClickAction().orElse(null))
-						.style(event.getMessage().orElse(Text.of()).getStyle())
-						.onHover(event.getMessage().orElse(Text.of()).getHoverAction().orElse(null))
-						.build());
-				}
-				else
-				{
-					event.setMessage(Text.builder()
-						.append(TextSerializers.formattingCode('&').deserialize(prefixInOriginal))
-						.append(TextSerializers.formattingCode('&').deserialize(playerName))
-						.append(TextSerializers.formattingCode('&').deserialize(suffixInOriginal))
-						.append(Text.of(TextColors.RESET))
-						.append(TextSerializers.formattingCode('&').deserialize(restOfOriginal))
-						.onClick(event.getMessage().orElse(Text.of()).getClickAction().orElse(null))
-						.style(event.getMessage().orElse(Text.of()).getStyle())
-						.onHover(event.getMessage().orElse(Text.of()).getHoverAction().orElse(null))
-						.build());
-				}
+			original = original.replaceFirst(Utils.getLastChatCharReplacement(), (suffix + Utils.getLastChatCharReplacement()));
+			String suffixInOriginal = original.substring(original.indexOf(player.getName()) + player.getName().length(), original.indexOf(Utils.getLastChatCharReplacement()));
+
+			original = original.replaceFirst(player.getName(), nick);
+			String playerName = original.substring(prefixInOriginal.length(), original.indexOf(nick) + nick.length());
+
+			String restOfOriginal = original.substring(original.indexOf(Utils.getLastChatCharReplacement()), original.length());
+
+			if (!(player.hasPermission("essentialcmds.color.chat.use")))
+			{
+				event.setMessage(Text.builder()
+					.append(TextSerializers.formattingCode('&').deserialize(prefixInOriginal))
+					.append(TextSerializers.formattingCode('&').deserialize(playerName))
+					.append(TextSerializers.formattingCode('&').deserialize(suffixInOriginal))
+					.append(Text.of(TextColors.RESET))
+					.append(Text.of(restOfOriginal))
+					.onClick(event.getMessage().orElse(Text.of()).getClickAction().orElse(null))
+					.style(event.getMessage().orElse(Text.of()).getStyle())
+					.onHover(event.getMessage().orElse(Text.of()).getHoverAction().orElse(null))
+					.build());
+			}
+			else
+			{
+				event.setMessage(Text.builder()
+					.append(TextSerializers.formattingCode('&').deserialize(prefixInOriginal))
+					.append(TextSerializers.formattingCode('&').deserialize(playerName))
+					.append(TextSerializers.formattingCode('&').deserialize(suffixInOriginal))
+					.append(Text.of(TextColors.RESET))
+					.append(TextSerializers.formattingCode('&').deserialize(restOfOriginal))
+					.onClick(event.getMessage().orElse(Text.of()).getClickAction().orElse(null))
+					.style(event.getMessage().orElse(Text.of()).getStyle())
+					.onHover(event.getMessage().orElse(Text.of()).getHoverAction().orElse(null))
+					.build());
 			}
 		}
 	}
