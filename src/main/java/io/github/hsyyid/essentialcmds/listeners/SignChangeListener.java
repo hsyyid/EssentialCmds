@@ -33,6 +33,7 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.tileentity.ChangeSignEvent;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 public class SignChangeListener
 {
@@ -64,10 +65,10 @@ public class SignChangeListener
 				}
 				else if (player != null && player.hasPermission("color.sign.use"))
 				{
-					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Text.of(line0.replaceAll("&", "\u00A7"))));
-					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(1, Text.of(line1.replaceAll("&", "\u00A7"))));
-					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(2, Text.of(line2.replaceAll("&", "\u00A7"))));
-					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(3, Text.of(line3.replaceAll("&", "\u00A7"))));
+					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, TextSerializers.formattingCode('&').deserialize(line0)));
+					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(1, TextSerializers.formattingCode('&').deserialize(line1)));
+					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(2, TextSerializers.formattingCode('&').deserialize(line2)));
+					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(3, TextSerializers.formattingCode('&').deserialize(line3)));
 				}
 			}
 		}
