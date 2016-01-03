@@ -33,32 +33,22 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class TakeExecutor implements CommandExecutor
+public class InvSeeExecutor implements CommandExecutor
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Player target = ctx.<Player> getOne("target").get();
-
-		if (src instanceof Player)
+		Player target = ctx.<Player>getOne("target").get();
+		
+		if(src instanceof Player)
 		{
 			Player player = (Player) src;
-
-			if (target.getItemInHand().isPresent())
-			{
-				player.getInventory().offer(target.getItemInHand().get());
-				target.setItemInHand(null);
-				player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Took " + target.getName() + "'s held item."));
-			}
-			else
-			{
-				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Target is not holding anything!"));
-			}
+			player.openInventory(target.getInventory());
 		}
 		else
 		{
-			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be an in-game player to take other players items!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be a player to see other inventories."));
 		}
-
+		
 		return CommandResult.success();
 	}
 }

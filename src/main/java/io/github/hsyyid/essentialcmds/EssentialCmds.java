@@ -59,6 +59,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.HatExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.HealExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.HomeExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.IgniteExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.InvSeeExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.ItemInfoExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.JumpExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.KickExecutor;
@@ -230,6 +231,11 @@ public class EssentialCmds
 			CommandSpec.builder().description(Text.of("Take Command")).permission("essentialcmds.take.use")
 			.arguments(GenericArguments.onlyOne(GenericArguments.player(Text.of("target")))).executor(new TakeExecutor()).build();
 		getGame().getCommandManager().register(this, takeCommandSpec, "take");
+		
+		CommandSpec invSeeCommandSpec =
+			CommandSpec.builder().description(Text.of("InvSee Command")).permission("essentialcmds.invsee.use")
+			.arguments(GenericArguments.onlyOne(GenericArguments.player(Text.of("target")))).executor(new InvSeeExecutor()).build();
+		getGame().getCommandManager().register(this, invSeeCommandSpec, "invsee", "inventorysee", "invview");
 
 		CommandSpec mobSpawnerCommandSpec =
 			CommandSpec.builder().description(Text.of("Mob Spawner Command")).permission("essentialcmds.mobspawner.use")
