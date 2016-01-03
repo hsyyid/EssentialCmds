@@ -204,9 +204,9 @@ public class MessageSinkListener
 
 			original = original.replaceFirst(player.getName(), nick);
 			String playerName = original.substring(prefixInOriginal.length(), original.indexOf(nick) + nick.length());
-
+			
 			String restOfOriginal = original.substring(original.indexOf(Utils.getLastChatCharReplacement()), original.length());
-
+			
 			if (!(player.hasPermission("essentialcmds.color.chat.use")))
 			{
 				event.setMessage(Text.builder()
