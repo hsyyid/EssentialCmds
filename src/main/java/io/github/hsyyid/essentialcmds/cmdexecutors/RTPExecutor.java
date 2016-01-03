@@ -24,7 +24,7 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.EssentialCmds;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -59,7 +59,7 @@ public class RTPExecutor implements CommandExecutor
 			int z = rand.nextInt(3999);
 
 			Location<World> randLocation = new Location<World>(playerLocation.getExtent(), x, y, z);
-			TeleportHelper teleportHelper = EssentialCmds.helper;
+			TeleportHelper teleportHelper = Sponge.getGame().getTeleportHelper();
 			Optional<Location<World>> optionalLocation = teleportHelper.getSafeLocation(randLocation);
 
 			if (optionalLocation.isPresent())

@@ -144,7 +144,6 @@ import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.world.TeleportHelper;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -161,7 +160,6 @@ public class EssentialCmds
 	protected EssentialCmds() {}
 	private static EssentialCmds essentialCmds;
 
-	public static TeleportHelper helper;
 	public static List<PendingInvitation> pendingInvites = Lists.newArrayList();
 	public static List<AFK> afkList = Lists.newArrayList();
 	public static List<Player> recentlyJoined = Lists.newArrayList();
@@ -186,7 +184,6 @@ public class EssentialCmds
 	@Listener
 	public void onPreInitialization(GamePreInitializationEvent event) {
 		essentialCmds = this;
-		getLogger().info(ID + " loading...");
 
 		// Create Config Directory for EssentialCmds
 		if (!Files.exists(configDir)) {
@@ -203,7 +200,7 @@ public class EssentialCmds
 
 	@Listener
 	public void onServerInit(GameInitializationEvent event) {
-		helper = getGame().getTeleportHelper();
+		getLogger().info(ID + " loading...");
 
 		Utils.readMutes();
 		Utils.startAFKService();
