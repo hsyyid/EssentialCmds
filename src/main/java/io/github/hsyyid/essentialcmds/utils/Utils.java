@@ -327,7 +327,7 @@ public class Utils
 
 	public static String getDisconnectMessage()
 	{
-		CommentedConfigurationNode node = Configs.getConfig(config).getNode("disconnected", "message");
+		CommentedConfigurationNode node = Configs.getConfig(config).getNode("disconnect", "message");
 		if (configManager.getString(node).isPresent())
 			return node.getString();
 		setDisconnectMessage("");
@@ -337,6 +337,19 @@ public class Utils
 	public static void setDisconnectMessage(String value)
 	{
 		Configs.setValue(config, new Object[] { "disconnect", "message" }, value);
+	}
+	
+	public static String getNick(Player player)
+	{
+		CommentedConfigurationNode node = Configs.getConfig(config).getNode("nick", player.getUniqueId());
+		if (configManager.getString(node).isPresent())
+			return node.getString();
+		return player.getName();
+	}
+
+	public static void setNick(String value, UUID playerUuid)
+	{
+		Configs.setValue(config, new Object[] { "nick", playerUuid.toString() }, value);
 	}
 
 	public static boolean unsafeEnchanmentsEnabled()

@@ -24,14 +24,13 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.service.permission.Subject;
-import org.spongepowered.api.service.permission.option.OptionSubject;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
@@ -44,18 +43,8 @@ public class NickExecutor implements CommandExecutor
 
 		if (src instanceof Player && ((Player) src).getUniqueId() != player.getUniqueId() && src.hasPermission("essentialcmds.nick.others"))
 		{
-			Subject subject = player.getContainingCollection().get(player.getIdentifier());
-
-			if (subject instanceof OptionSubject)
-			{
-				OptionSubject optionSubject = (OptionSubject) subject;
-				optionSubject.getTransientSubjectData().setOption(player.getActiveContexts(), "nick", nick);
-				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Nick successfully set!"));
-			}
-			else
-			{
-				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Your server doesn't currently support /nick!"));
-			}
+			Utils.setNick(nick, player.getUniqueId());
+			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Nick successfully set!"));
 		}
 		else if(src instanceof Player && ((Player) src).getUniqueId() != player.getUniqueId())
 		{
@@ -63,18 +52,8 @@ public class NickExecutor implements CommandExecutor
 		}
 		else
 		{
-			Subject subject = player.getContainingCollection().get(player.getIdentifier());
-
-			if (subject instanceof OptionSubject)
-			{
-				OptionSubject optionSubject = (OptionSubject) subject;
-				optionSubject.getTransientSubjectData().setOption(player.getActiveContexts(), "nick", nick);
-				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Nick successfully set!"));
-			}
-			else
-			{
-				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Your server doesn't currently support /nick!"));
-			}
+			Utils.setNick(nick, player.getUniqueId());
+			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Nick successfully set!"));
 		}
 
 		return CommandResult.success();

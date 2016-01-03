@@ -190,7 +190,7 @@ public class MessageSinkListener
 
 				String prefix = optionSubject.getOption("prefix").orElse("");
 				String suffix = optionSubject.getOption("suffix").orElse("");
-				String nick = optionSubject.getOption("nick").orElse(player.getName());
+				String nick = Utils.getNick(player);
 
 				original = original.replaceFirst(Utils.getFirstChatCharReplacement(), (Utils.getFirstChatCharReplacement() + prefix + " "));
 				String prefixInOriginal = original.substring(0, prefix.length() + 1);
