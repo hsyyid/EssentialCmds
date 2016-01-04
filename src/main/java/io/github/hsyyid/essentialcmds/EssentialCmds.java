@@ -88,12 +88,14 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.ReloadExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.RemoveRuleExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.RepairExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.RespondExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.RocketExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.RuleExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.SetHomeExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.SetSpawnExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.SetWarpExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.SetWorldSpawnExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.SkullExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.SlapExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.SocialSpyExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.SpawnExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.SpeedExecutor;
@@ -222,6 +224,32 @@ public class EssentialCmds
 			.build();
 		getGame().getCommandManager().register(this, essentialCmdsCommandSpec, "essentialcmds", "essentialcmd");
 
+		CommandSpec slapCommandSpec = CommandSpec.builder()
+			.description(Text.of("Slap Command"))
+			.permission("essentialcmds.slap.use")
+			.arguments(GenericArguments.firstParsing(
+				GenericArguments.flags()
+                	.flag("-v", "v")
+                	.flag("-damage", "d")
+                	.flag("-hard", "h")
+                	.buildWith(GenericArguments.firstParsing(GenericArguments.optional(GenericArguments.player(Text.of("target"))), 
+                		GenericArguments.optional(GenericArguments.string(Text.of("targets")))))))
+			.executor(new SlapExecutor())
+			.build();
+		getGame().getCommandManager().register(this, slapCommandSpec, "slap");
+		
+		CommandSpec rocketCommandSpec = CommandSpec.builder()
+			.description(Text.of("Rocket Command"))
+			.permission("essentialcmds.rocket.use")
+			.arguments(GenericArguments.firstParsing(
+				GenericArguments.flags()
+                	.flag("-hard", "h")
+                	.buildWith(GenericArguments.firstParsing(GenericArguments.optional(GenericArguments.player(Text.of("target"))), 
+                		GenericArguments.optional(GenericArguments.string(Text.of("targets")))))))
+			.executor(new RocketExecutor())
+			.build();
+		getGame().getCommandManager().register(this, rocketCommandSpec, "rocket");
+		
 		CommandSpec homeCommandSpec =
 			CommandSpec.builder().description(Text.of("Home Command")).permission("essentialcmds.home.use")
 			.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("home name")))).executor(new HomeExecutor()).build();

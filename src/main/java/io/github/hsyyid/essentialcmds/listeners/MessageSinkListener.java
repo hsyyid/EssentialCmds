@@ -179,8 +179,6 @@ public class MessageSinkListener
 			}
 
 			String original = event.getMessage().orElse(Text.of()).toPlain();
-			original = original.replaceFirst("<", Utils.getFirstChatCharReplacement());
-			original = original.replaceFirst(">", Utils.getLastChatCharReplacement());
 
 			Subject subject = player.getContainingCollection().get(player.getIdentifier());
 			String prefix = "";
@@ -196,16 +194,19 @@ public class MessageSinkListener
 			
 			String nick = Utils.getNick(player);
 
-			original = original.replaceFirst(Utils.getFirstChatCharReplacement(), (Utils.getFirstChatCharReplacement() + prefix));
+			original = original.replaceFirst("<", ("<" + prefix));
 			String prefixInOriginal = original.substring(0, prefix.length() + 1);
 
-			original = original.replaceFirst(Utils.getLastChatCharReplacement(), (suffix + Utils.getLastChatCharReplacement()));
-			String suffixInOriginal = original.substring(original.indexOf(player.getName()) + player.getName().length(), original.indexOf(Utils.getLastChatCharReplacement()));
+			original = original.replaceFirst(">", (suffix + ">"));
+			String suffixInOriginal = original.substring(original.indexOf(player.getName()) + player.getName().length(), original.indexOf(">"));
 
 			original = original.replaceFirst(player.getName(), nick);
 			String playerName = original.substring(prefixInOriginal.length(), original.indexOf(nick) + nick.length());
-			
-			String restOfOriginal = original.substring(original.indexOf(Utils.getLastChatCharReplacement()), original.length());
+
+			String restOfOriginal = original.substring(original.indexOf(">"), original.length());
+
+			prefixInOriginal = prefixInOriginal.replaceFirst("<", Utils.getFirstChatCharReplacement());
+			restOfOriginal = restOfOriginal.replaceFirst(">", Utils.getLastChatCharReplacement());
 			
 			if (!(player.hasPermission("essentialcmds.color.chat.use")))
 			{
