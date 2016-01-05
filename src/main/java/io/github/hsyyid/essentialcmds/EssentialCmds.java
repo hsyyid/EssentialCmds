@@ -53,6 +53,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.EssentialCmdsExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.FeedExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.FireballExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.FlyExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.GCExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.GamemodeExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.GetPosExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.HatExecutor;
@@ -223,6 +224,13 @@ public class EssentialCmds
 			.executor(new EssentialCmdsExecutor())
 			.build();
 		getGame().getCommandManager().register(this, essentialCmdsCommandSpec, "essentialcmds", "essentialcmd");
+		
+		CommandSpec gcCommandSpec = CommandSpec.builder()
+			.description(Text.of("TickStat Command"))
+			.permission("essentialcmds.tickstat.use")
+			.executor(new GCExecutor())
+			.build();
+		getGame().getCommandManager().register(this, gcCommandSpec, "gc", "tickstat");
 
 		CommandSpec slapCommandSpec = CommandSpec.builder()
 			.description(Text.of("Slap Command"))
