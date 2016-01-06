@@ -50,6 +50,10 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.DirectionExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.EnchantExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.EntityInfoExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.EssentialCmdsExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.ExpExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.ExpGiveExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.ExpSetExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.ExpTakeExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.FeedExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.FireballExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.FlyExecutor;
@@ -224,6 +228,43 @@ public class EssentialCmds
 			.executor(new EssentialCmdsExecutor())
 			.build();
 		getGame().getCommandManager().register(this, essentialCmdsCommandSpec, "essentialcmds", "essentialcmd");
+		
+		HashMap<List<String>, CommandSpec> expSubcommands = new HashMap<List<String>, CommandSpec>();
+
+		expSubcommands.put(Arrays.asList("take"), CommandSpec.builder()
+			.description(Text.of("Experience Take Command"))
+			.permission("essentialcmds.exp.take.use")
+			.arguments(GenericArguments.seq(
+				GenericArguments.player(Text.of("target")),
+				GenericArguments.integer(Text.of("exp"))))
+			.executor(new ExpTakeExecutor())
+			.build());
+
+		expSubcommands.put(Arrays.asList("give"), CommandSpec.builder()
+			.description(Text.of("Experience Give Command"))
+			.permission("essentialcmds.exp.give.use")
+			.arguments(GenericArguments.seq(
+				GenericArguments.player(Text.of("target")),
+				GenericArguments.integer(Text.of("exp"))))
+			.executor(new ExpGiveExecutor())
+			.build());
+
+		expSubcommands.put(Arrays.asList("set"), CommandSpec.builder()
+			.description(Text.of("Experience Set Command"))
+			.permission("essentialcmds.exp.set.use")
+			.arguments(GenericArguments.seq(
+				GenericArguments.player(Text.of("target")),
+				GenericArguments.integer(Text.of("exp"))))
+			.executor(new ExpSetExecutor())
+			.build());
+		
+		CommandSpec expCommandSpec = CommandSpec.builder()
+			.description(Text.of("Experience Command"))
+			.children(expSubcommands)
+			.permission("essentialcmds.exp.use")
+			.executor(new ExpExecutor())
+			.build();
+		getGame().getCommandManager().register(this, expCommandSpec, "exp", "experience");
 		
 		CommandSpec gcCommandSpec = CommandSpec.builder()
 			.description(Text.of("TickStat Command"))
