@@ -24,38 +24,40 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.EssentialCmds;
-import org.spongepowered.api.Game;
-import org.spongepowered.api.Server;
-import org.spongepowered.api.command.CommandException;
-import org.spongepowered.api.command.CommandResult;
+import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
-import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
-public class BroadcastExecutor implements CommandExecutor
+import javax.annotation.Nonnull;
+
+public class BroadcastExecutor extends AsyncCommandExecutorBase
 {
-	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
-	{
+	@Override
+	public void executeAsync(CommandSource src, CommandContext ctx) {
 		String message = ctx.<String> getOne("message").get();
-		Game game = EssentialCmds.getEssentialCmds().getGame();
-		Server server = game.getServer();
 
 		Text msg = TextSerializers.formattingCode('&').deserialize(message);
 		Text broadcast = Text.of(TextColors.DARK_GRAY, "[", TextColors.DARK_RED, "Broadcast", TextColors.DARK_GRAY, "]", TextColors.GREEN, " ");
 		Text finalBroadcast = Text.builder().append(broadcast).append(msg).build();
+		MessageChannel.TO_ALL.send(finalBroadcast);
+	}
 
-		for (Player player : server.getOnlinePlayers())
-		{
-			player.sendMessage(finalBroadcast);
-		}
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "broadcast", "bc" };
+	}
 
-		server.getConsole().sendMessage(finalBroadcast);
-
-		return CommandResult.success();
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("Broadcast Command")).permission("essentialcmds.broadcast.use")
+				.arguments(GenericArguments.remainingJoinedStrings(Text.of("message"))).executor(this).build();
 	}
 }

@@ -25,20 +25,23 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import com.flowpowered.math.vector.Vector3d;
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
-public class RocketExecutor implements CommandExecutor
+public class RocketExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
@@ -116,5 +119,26 @@ public class RocketExecutor implements CommandExecutor
 		}
 
 		return CommandResult.success();
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "rocket" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder()
+				.description(Text.of("Rocket Command"))
+				.permission("essentialcmds.rocket.use")
+				.arguments(GenericArguments.firstParsing(
+						GenericArguments.flags()
+								.flag("-hard", "h")
+								.buildWith(GenericArguments.firstParsing(GenericArguments.optional(GenericArguments.player(Text.of("target"))),
+										GenericArguments.optional(GenericArguments.string(Text.of("targets")))))))
+				.executor(this)
+				.build();
 	}
 }

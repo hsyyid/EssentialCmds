@@ -24,30 +24,13 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.EssentialCmds;
-import org.spongepowered.api.command.CommandException;
-import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
+import javax.annotation.Nonnull;
 
-public class LoadWorldExecutor implements CommandExecutor
+public class LoadWorldExecutor extends WorldsBase.Load
 {
-	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
-	{
-		String name = ctx.<String> getOne("name").get();
-
-		if (EssentialCmds.getEssentialCmds().getGame().getServer().loadWorld(name).isPresent())
-		{
-			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "World ", TextColors.GRAY, name, TextColors.GOLD, " has been imported."));
-		}
-		else
-		{
-			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The world could not be loaded."));
-		}
-
-		return CommandResult.success();
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "loadworld", "importworld" };
 	}
 }

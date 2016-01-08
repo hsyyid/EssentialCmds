@@ -24,14 +24,16 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.player.Player;
@@ -44,9 +46,10 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.extent.Extent;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
-public class LightningExecutor implements CommandExecutor
+public class LightningExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
@@ -65,11 +68,7 @@ public class LightningExecutor implements CommandExecutor
 				{
 					BlockRayHit<World> currentHitRay = playerBlockRay.next();
 
-					if (player.getWorld().getBlockType(currentHitRay.getBlockPosition()).equals(BlockTypes.AIR))
-					{
-						continue;
-					}
-					else
+					if (!player.getWorld().getBlockType(currentHitRay.getBlockPosition()).equals(BlockTypes.AIR))
 					{
 						finalHitRay = currentHitRay;
 						break;
@@ -117,5 +116,19 @@ public class LightningExecutor implements CommandExecutor
 		Optional<Entity> optional = extent.createEntity(EntityTypes.LIGHTNING, location.getPosition());
 		Entity lightning = optional.get();
 		extent.spawnEntity(lightning, Cause.of(this));
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "thor", "smite", "lightning" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("Lightning Command")).permission("essentialcmds.lightning.use")
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))))
+				.executor(this).build();
 	}
 }

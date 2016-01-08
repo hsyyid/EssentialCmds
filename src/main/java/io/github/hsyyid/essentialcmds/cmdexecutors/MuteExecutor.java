@@ -25,67 +25,64 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
+import io.github.hsyyid.essentialcmds.cmdexecutors.argumentparsers.TimespanParser;
+import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.Game;
-import org.spongepowered.api.command.CommandException;
-import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public class MuteExecutor implements CommandExecutor
+public class MuteExecutor extends AsyncCommandExecutorBase
 {
-	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+	@Override
+	public void executeAsync(CommandSource src, CommandContext ctx)
 	{
 		Game game = EssentialCmds.getEssentialCmds().getGame();
 		Player p = ctx.<Player> getOne("player").get();
+
+		// Uses the TimespanParser.
 		Optional<Long> time = ctx.<Long> getOne("time");
-		Optional<String> timeUnit = ctx.<String> getOne("time unit");
 
-		if (time.isPresent() && timeUnit.isPresent())
+		if (time.isPresent())
 		{
-			TimeUnit unit;
-
-			if (timeUnit.get().toLowerCase().equals("m"))
-			{
-				unit = TimeUnit.MINUTES;
-			}
-			else if (timeUnit.get().toLowerCase().equals("h"))
-			{
-				unit = TimeUnit.HOURS;
-			}
-			else if (timeUnit.get().toLowerCase().equals("s"))
-			{
-				unit = TimeUnit.SECONDS;
-			}
-			else if (timeUnit.get().toLowerCase().equals("d"))
-			{
-				unit = TimeUnit.DAYS;
-			}
-			else
-			{
-				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! Invalid time unit."));
-				return CommandResult.empty();
-			}
-
 			Task.Builder taskBuilder = game.getScheduler().createTaskBuilder();
 			taskBuilder.execute(() -> {
 				if (EssentialCmds.muteList.contains(p.getUniqueId()))
 					EssentialCmds.muteList.remove(p.getUniqueId());
-			}).interval(time.get(), unit).name("EssentialCmds - Remove previous mutes").submit(game.getPluginManager().getPlugin("EssentialCmds").get().getInstance());
+			}).delay(time.get(), TimeUnit.SECONDS).name("EssentialCmds - Remove previous mutes").submit(EssentialCmds.getEssentialCmds());
 		}
 
 		EssentialCmds.muteList.add(p.getUniqueId());
 		Utils.addMute(p.getUniqueId());
 		src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player muted."));
+	}
 
-		return CommandResult.success();
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "mute" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec
+				.builder()
+				.description(Text.of("Mute Command"))
+				.permission("essentialcmds.mute.use")
+				.arguments(
+						GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))),
+						GenericArguments.onlyOne(GenericArguments.optional(new TimespanParser(Text.of("time"))))))
+				.executor(this).build();
 	}
 }

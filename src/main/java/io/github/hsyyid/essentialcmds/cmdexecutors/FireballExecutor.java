@@ -25,13 +25,15 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import com.flowpowered.math.vector.Vector3d;
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
@@ -45,9 +47,10 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.extent.Extent;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
-public class FireballExecutor implements CommandExecutor
+public class FireballExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
@@ -70,8 +73,9 @@ public class FireballExecutor implements CommandExecutor
 
 					BlockRayHit<World> currentHitRay = playerBlockRay.next();
 
-					if (spawnLocation == null && i > 5)
+					if (i > 5)
 					{
+						// We can set the spawn location, so break here.
 						spawnLocation = currentHitRay.getLocation();
 						break;
 					}
@@ -112,5 +116,19 @@ public class FireballExecutor implements CommandExecutor
 		Entity fireball = optional.get();
 		fireball.offer(Keys.VELOCITY, velocity);
 		extent.spawnEntity(fireball, Cause.of(src));
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "fireball", "ghast" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("Fireball Command")).permission("essentialcmds.fireball.use")
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))))
+				.executor(new FireballExecutor()).build();
 	}
 }

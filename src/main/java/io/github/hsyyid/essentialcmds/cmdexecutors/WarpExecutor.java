@@ -25,24 +25,27 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import com.flowpowered.math.vector.Vector3d;
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.Optional;
 
-public class WarpExecutor implements CommandExecutor
+public class WarpExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
@@ -126,5 +129,21 @@ public class WarpExecutor implements CommandExecutor
 		}
 
 		return CommandResult.success();
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "warp" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("Warp Command")).permission("essentialcmds.warp.use")
+				.arguments(GenericArguments.seq(
+						GenericArguments.onlyOne(GenericArguments.string(Text.of("warp name"))),
+						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))))))
+				.executor(this).build();
 	}
 }

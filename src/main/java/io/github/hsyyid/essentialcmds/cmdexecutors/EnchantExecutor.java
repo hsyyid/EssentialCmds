@@ -24,14 +24,16 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.manipulator.mutable.item.EnchantmentData;
 import org.spongepowered.api.data.meta.ItemEnchantment;
 import org.spongepowered.api.entity.living.player.Player;
@@ -41,9 +43,10 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
-public class EnchantExecutor implements CommandExecutor
+public class EnchantExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
@@ -250,5 +253,25 @@ public class EnchantExecutor implements CommandExecutor
 		}
 
 		return CommandResult.success();
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "enchant", "ench" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec
+				.builder()
+				.description(Text.of("Enchant Command"))
+				.permission("essentialcmds.enchant.use")
+				.arguments(GenericArguments.seq(
+						GenericArguments.optional(GenericArguments.player(Text.of("target"))),
+						GenericArguments.onlyOne(GenericArguments.integer(Text.of("level")))),
+						GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("enchantment"))))
+				.executor(this).build();
 	}
 }

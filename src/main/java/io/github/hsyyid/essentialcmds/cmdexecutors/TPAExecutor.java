@@ -24,26 +24,29 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
-
 import io.github.hsyyid.essentialcmds.events.TPAEvent;
+import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
 import org.spongepowered.api.Game;
-import org.spongepowered.api.command.CommandException;
-import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class TPAExecutor implements CommandExecutor
+import javax.annotation.Nonnull;
+
+import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
+
+public class TPAExecutor extends AsyncCommandExecutorBase
 {
 	private Game game = getEssentialCmds().getGame();
 
-	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+	@Override
+	public void executeAsync(CommandSource src, CommandContext ctx)
 	{
 		Player recipient = ctx.<Player> getOne("player").get();
 
@@ -68,7 +71,18 @@ public class TPAExecutor implements CommandExecutor
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tpa!"));
 		}
-		
-		return CommandResult.success();
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "tpa" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("TPA Command")).permission("essentialcmds.tpa.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))).executor(this).build();
 	}
 }

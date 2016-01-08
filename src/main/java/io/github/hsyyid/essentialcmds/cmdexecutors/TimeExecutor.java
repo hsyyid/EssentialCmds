@@ -24,18 +24,21 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
-public class TimeExecutor implements CommandExecutor
+public class TimeExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
@@ -96,5 +99,25 @@ public class TimeExecutor implements CommandExecutor
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be a in-game player to do /time!"));
 			return CommandResult.success();
 		}
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "time" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec
+				.builder()
+				.description(Text.of("Set Time Command"))
+				.permission("essentialcmds.time.set")
+				.arguments(
+						GenericArguments.firstParsing(
+								GenericArguments.integer(Text.of("ticks")),
+								GenericArguments.string(Text.of("time"))))
+				.executor(this).build();
 	}
 }

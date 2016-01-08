@@ -24,24 +24,27 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.Utils;
-import org.spongepowered.api.command.CommandException;
-import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.service.permission.option.OptionSubject;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class SetHomeExecutor implements CommandExecutor
+import javax.annotation.Nonnull;
+
+public class SetHomeExecutor extends AsyncCommandExecutorBase
 {
 
-	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+	@Override
+	public void executeAsync(CommandSource src, CommandContext ctx)
 	{
 		String homeName = ctx.<String> getOne("home name").get();
 		if (src instanceof Player)
@@ -103,7 +106,18 @@ public class SetHomeExecutor implements CommandExecutor
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /sethome!"));
 		}
+	}
 
-		return CommandResult.success();
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "sethome" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("Set Home Command")).permission("essentialcmds.home.set")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("home name")))).executor(this).build();
 	}
 }

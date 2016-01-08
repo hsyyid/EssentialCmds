@@ -24,18 +24,20 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
-public class HatExecutor implements CommandExecutor
+public class HatExecutor extends CommandExecutorBase
 {
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException
@@ -65,5 +67,17 @@ public class HatExecutor implements CommandExecutor
 		}
 		
 		return CommandResult.success();
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "hat" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("Hat Command")).permission("essentialcmds.hat.use").executor(this).build();
 	}
 }

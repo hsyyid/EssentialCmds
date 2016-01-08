@@ -26,22 +26,24 @@ package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.api.util.config.Configs;
 import io.github.hsyyid.essentialcmds.api.util.config.Configurable;
+import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
 import io.github.hsyyid.essentialcmds.managers.config.Config;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import ninja.leaping.configurate.ConfigurationNode;
-import org.spongepowered.api.command.CommandException;
-import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class DeleteHomeExecutor implements CommandExecutor
+import javax.annotation.Nonnull;
+
+public class DeleteHomeExecutor extends AsyncCommandExecutorBase
 {
-	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
-	{
+	@Override
+	public void executeAsync(CommandSource src, CommandContext ctx) {
 		String homeName = ctx.<String> getOne("home name").get();
 		Configurable config = Config.getConfig();
 
@@ -60,19 +62,29 @@ public class DeleteHomeExecutor implements CommandExecutor
 				Configs.removeChild(config, new Object[] { "home", "users", player.getUniqueId().toString() }, homeName);
 
 				src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Deleted home " + homeName));
-
-				return CommandResult.success();
 			}
 			else
 			{
 				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "This home doesn't exist!"));
-				return CommandResult.empty();
 			}
 		}
 		else
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /delhome!"));
-			return CommandResult.success();
 		}
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "deletehome", "delhome" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("Delete Home Command")).permission("essentialcmds.home.delete")
+			.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("home name")))).executor(this)
+			.build();
 	}
 }

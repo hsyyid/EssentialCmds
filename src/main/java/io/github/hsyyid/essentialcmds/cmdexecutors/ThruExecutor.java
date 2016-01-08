@@ -24,6 +24,7 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -31,7 +32,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -40,7 +41,9 @@ import org.spongepowered.api.util.blockray.BlockRayHit;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-public class ThruExecutor implements CommandExecutor
+import javax.annotation.Nonnull;
+
+public class ThruExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
@@ -86,7 +89,7 @@ public class ThruExecutor implements CommandExecutor
 			{
 				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You are not facing a wall."));
 			}
-			else if (location == null)
+			else
 			{
 				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "No free spot ahead of you found."));
 			}
@@ -101,5 +104,18 @@ public class ThruExecutor implements CommandExecutor
 		}
 
 		return CommandResult.success();
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "through", "thru" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("Thru Command")).permission("essentialcmds.thru.use")
+				.executor(this).build();
 	}
 }

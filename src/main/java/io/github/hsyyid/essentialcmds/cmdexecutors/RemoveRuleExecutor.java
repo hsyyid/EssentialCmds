@@ -24,18 +24,21 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.Utils;
-import org.spongepowered.api.command.CommandException;
-import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class RemoveRuleExecutor implements CommandExecutor
+import javax.annotation.Nonnull;
+
+public class RemoveRuleExecutor extends AsyncCommandExecutorBase
 {
-	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+	@Override
+	public void executeAsync(CommandSource src, CommandContext ctx)
 	{
 		int ruleNo = ctx.<Integer> getOne("rule number").get();
 
@@ -48,7 +51,18 @@ public class RemoveRuleExecutor implements CommandExecutor
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The number you entered is invalid."));
 		}
+	}
 
-		return CommandResult.success();
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "removerule", "delrule", "deleterule" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("Home Command")).permission("essentialcmds.rules.remove")
+				.arguments(GenericArguments.onlyOne(GenericArguments.integer(Text.of("rule number")))).executor(this).build();
 	}
 }

@@ -25,14 +25,19 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.text.Text;
 
-public class AsConsoleExecutor implements CommandExecutor
+import javax.annotation.Nonnull;
+
+public class AsConsoleExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
@@ -40,5 +45,19 @@ public class AsConsoleExecutor implements CommandExecutor
 		String command = ctx.<String> getOne("command").get();
 		game.getCommandManager().process(game.getServer().getConsole().getCommandSource().get(), command);
 		return CommandResult.success();
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "asconsole", "asConsole" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("AsConsole Command")).permission("essentialcmds.asconsole.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("command"))))
+				.executor(this).build();
 	}
 }

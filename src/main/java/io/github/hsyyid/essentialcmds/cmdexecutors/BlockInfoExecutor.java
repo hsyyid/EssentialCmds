@@ -24,12 +24,13 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
@@ -38,7 +39,9 @@ import org.spongepowered.api.util.blockray.BlockRay;
 import org.spongepowered.api.util.blockray.BlockRayHit;
 import org.spongepowered.api.world.World;
 
-public class BlockInfoExecutor implements CommandExecutor
+import javax.annotation.Nonnull;
+
+public class BlockInfoExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
@@ -53,11 +56,7 @@ public class BlockInfoExecutor implements CommandExecutor
 			{
 				BlockRayHit<World> currentHitRay = playerBlockRay.next();
 
-				if (player.getWorld().getBlockType(currentHitRay.getBlockPosition()).equals(BlockTypes.AIR))
-				{
-					continue;
-				}
-				else
+				if (!player.getWorld().getBlockType(currentHitRay.getBlockPosition()).equals(BlockTypes.AIR))
 				{
 					finalHitRay = currentHitRay;
 					break;
@@ -80,5 +79,18 @@ public class BlockInfoExecutor implements CommandExecutor
 		}
 
 		return CommandResult.success();
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "blockinfo" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("BlockInfo Command")).permission("essentialcmds.blockinfo.use")
+				.executor(this).build();
 	}
 }

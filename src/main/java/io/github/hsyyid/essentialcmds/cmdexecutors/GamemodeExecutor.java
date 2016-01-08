@@ -24,13 +24,15 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.entity.GameModeData;
 import org.spongepowered.api.entity.living.player.Player;
@@ -38,9 +40,10 @@ import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
-public class GamemodeExecutor implements CommandExecutor
+public class GamemodeExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
@@ -50,12 +53,12 @@ public class GamemodeExecutor implements CommandExecutor
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
+			Player targetPlayer = optionalPlayer.orElse(player);
 
-			if (optionalPlayer.isPresent())
+			if (player != targetPlayer)
 			{
 				try
 				{
-					Player targetPlayer = optionalPlayer.get();
 					if (gamemode.equals("creative") || gamemode.equals("c") || Integer.parseInt(gamemode) == 1)
 					{
 						GameModeData data = targetPlayer.getGameModeData().set(Keys.GAME_MODE, GameModes.CREATIVE);
@@ -144,5 +147,24 @@ public class GamemodeExecutor implements CommandExecutor
 		}
 
 		return CommandResult.success();
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "gamemode", "gm" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec
+				.builder()
+				.description(Text.of("Gamemode Command"))
+				.permission("essentialcmds.gamemode.use")
+				.arguments(
+						GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.string(Text.of("gamemode"))),
+						GenericArguments.onlyOne(GenericArguments.optional(GenericArguments.player(Text.of("player"))))))
+				.executor(this).build();
 	}
 }

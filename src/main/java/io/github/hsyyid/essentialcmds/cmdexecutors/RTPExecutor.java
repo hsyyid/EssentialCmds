@@ -24,6 +24,7 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.command.CommandException;
@@ -32,7 +33,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -40,10 +41,11 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.TeleportHelper;
 import org.spongepowered.api.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.Random;
 
-public class RTPExecutor implements CommandExecutor
+public class RTPExecutor extends CommandExecutorBase
 {
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
@@ -117,5 +119,18 @@ public class RTPExecutor implements CommandExecutor
 		}
 
 		return CommandResult.success();
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "randomtp", "rtp" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("RTP Command")).permission("essentialcmds.rtp.use")
+				.executor(this).build();
 	}
 }

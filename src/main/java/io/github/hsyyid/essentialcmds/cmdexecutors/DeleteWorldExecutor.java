@@ -24,65 +24,13 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.EssentialCmds;
-import org.spongepowered.api.Game;
-import org.spongepowered.api.command.CommandException;
-import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.world.World;
+import javax.annotation.Nonnull;
 
-public class DeleteWorldExecutor implements CommandExecutor
+public class DeleteWorldExecutor extends WorldsBase.Delete
 {
-	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
-	{
-		String worldName = ctx.<String> getOne("name").get();
-		Game game = EssentialCmds.getEssentialCmds().getGame();
-
-		World foundWorld = null;
-		World altWorld = null;
-		
-		for (World world : game.getServer().getWorlds())
-		{
-			if (world.getName().equals(worldName))
-			{
-				foundWorld = world;
-				break;
-			}
-		}
-		
-		for (World world : game.getServer().getWorlds())
-		{
-			if (!world.getName().equals(worldName))
-			{
-				altWorld = world;
-				break;
-			}
-		}
-		
-		if (foundWorld != null)
-		{
-			for(Player player : game.getServer().getOnlinePlayers())
-			{
-				if(player.getWorld().getUniqueId().equals(foundWorld.getUniqueId()) && altWorld != null)
-				{
-					player.transferToWorld(altWorld.getName(), altWorld.getSpawnLocation().getPosition());
-					
-				}
-			}
-			
-			foundWorld.getProperties().setEnabled(false);
-			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Disabled world. To fully delete the world, please delete it from your files."));
-		}
-		else
-		{
-			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The world you specified was not found."));
-		}
-
-		return CommandResult.success();
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "deleteworld", "delworld" };
 	}
 }

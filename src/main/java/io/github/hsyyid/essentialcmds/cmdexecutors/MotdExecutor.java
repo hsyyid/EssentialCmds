@@ -25,23 +25,36 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
+import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Server;
-import org.spongepowered.api.command.CommandException;
-import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class MotdExecutor implements CommandExecutor
+import javax.annotation.Nonnull;
+
+public class MotdExecutor extends AsyncCommandExecutorBase
 {
-	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+	@Override
+	public void executeAsync(CommandSource src, CommandContext args)
 	{
 		Game game = EssentialCmds.getEssentialCmds().getGame();
 		Server server = game.getServer();
 		src.sendMessage(Text.of(TextColors.GOLD, "[MOTD]: ", server.getMotd()));
-		return CommandResult.success();
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "motd" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("MOTD Command")).permission("essentialcmds.motd.use").executor(new MotdExecutor()).build();
 	}
 }

@@ -24,21 +24,24 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
-public class FlyExecutor implements CommandExecutor
+public class FlyExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
@@ -57,14 +60,14 @@ public class FlyExecutor implements CommandExecutor
 					if (canFly)
 					{
 						player.offer(Keys.IS_FLYING, false);
-						player.offer(Keys.CAN_FLY, !canFly);
 						player.sendMessage(Text.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "off."));
 					}
 					else
 					{
-						player.offer(Keys.CAN_FLY, !canFly);
 						player.sendMessage(Text.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "on."));
 					}
+
+					player.offer(Keys.CAN_FLY, !canFly);
 				}
 			}
 			else if (src instanceof ConsoleSource)
@@ -103,5 +106,19 @@ public class FlyExecutor implements CommandExecutor
 		}
 
 		return CommandResult.success();
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "fly" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("Fly Command")).permission("essentialcmds.fly.use")
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))))
+				.executor(this).build();
 	}
 }

@@ -24,22 +24,25 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
-
 import io.github.hsyyid.essentialcmds.EssentialCmds;
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
-public class LockWeatherExecutor implements CommandExecutor
+import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
+
+public class LockWeatherExecutor extends CommandExecutorBase
 {
 	private Game game = getEssentialCmds().getGame();
 
@@ -70,5 +73,21 @@ public class LockWeatherExecutor implements CommandExecutor
 		}
 
 		return CommandResult.success();
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "lockweather", "killweather" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder()
+				.description(Text.of("LockWeather Command"))
+				.permission("essentialcmds.lockweather.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("name"))))
+				.executor(this).build();
 	}
 }

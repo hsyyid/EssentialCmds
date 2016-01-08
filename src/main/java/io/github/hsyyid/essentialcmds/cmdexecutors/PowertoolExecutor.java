@@ -25,21 +25,24 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.Powertool;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
-public class PowertoolExecutor implements CommandExecutor
+public class PowertoolExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
@@ -47,50 +50,32 @@ public class PowertoolExecutor implements CommandExecutor
 		{
 			Optional<String> optionalCommand = ctx.<String> getOne("command");
 			Player player = (Player) src;
+
+			// TODO: Allow players not holding an item to remove their powertool
 			if (player.getItemInHand().isPresent())
 			{
 				if (optionalCommand.isPresent())
 				{
 					String command = optionalCommand.get();
-					Powertool replacePowertool = null;
-					for (Powertool powertool : EssentialCmds.powertools)
-					{
-						if (powertool.getItemID().equals(player.getItemInHand().get().getItem().getName()) && powertool.getPlayer().equals(player))
-						{
-							replacePowertool = powertool;
-							break;
-						}
-					}
 
-					if (replacePowertool == null)
-					{
-						Powertool powertool = new Powertool(player, player.getItemInHand().get().getItem().getName(), command);
-						EssentialCmds.powertools.add(powertool);
-					}
-					else
-					{
-						EssentialCmds.powertools.remove(replacePowertool);
-						Powertool powertool = new Powertool(player, player.getItemInHand().get().getItem().getName(), command);
-						EssentialCmds.powertools.add(powertool);
-					}
+					// If there is a powertool for the player, remove it.
+					EssentialCmds.powertools.stream()
+							.filter(p -> p.getPlayer().equals(player) && p.getItemID().equals(player.getItemInHand().get().getItem().getName()))
+							.findFirst().ifPresent(x -> EssentialCmds.powertools.remove(x));
+					Powertool powertool = new Powertool(player, player.getItemInHand().get().getItem().getName(), command);
+					EssentialCmds.powertools.add(powertool);
 
 					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully bound command ", TextColors.BLUE, command, TextColors.YELLOW, " to ", TextColors.RED, player.getItemInHand().get().getItem().getName(), TextColors.YELLOW, "!"));
 				}
 				else
 				{
-					Powertool powertoolToRemove = null;
-					for (Powertool powertool : EssentialCmds.powertools)
-					{
-						if (powertool.getPlayer().equals(player) && powertool.getItemID().equals(player.getItemInHand().get().getItem().getName()))
-						{
-							powertoolToRemove = powertool;
-							break;
-						}
-					}
+					Optional<Powertool> powertoolToRemove = EssentialCmds.powertools.stream()
+							.filter(p -> p.getPlayer().equals(player) && p.getItemID().equals(player.getItemInHand().get().getItem().getName()))
+							.findFirst();
 
-					if (powertoolToRemove != null)
+					if (powertoolToRemove.isPresent())
 					{
-						EssentialCmds.powertools.remove(powertoolToRemove);
+						EssentialCmds.powertools.remove(powertoolToRemove.get());
 						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Removed command from this powertool!"));
 					}
 					else
@@ -114,5 +99,19 @@ public class PowertoolExecutor implements CommandExecutor
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /powertool!"));
 		}
 		return CommandResult.success();
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "powertool", "pt" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("Powertool Command")).permission("essentialcmds.powertool.use")
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("command")))))
+				.executor(this).build();
 	}
 }

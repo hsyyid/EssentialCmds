@@ -25,20 +25,62 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.PluginInfo;
+import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
+import io.github.hsyyid.essentialcmds.managers.config.Config;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.CommandException;
-import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class EssentialCmdsExecutor implements CommandExecutor
+import javax.annotation.Nonnull;
+
+public class EssentialCmdsExecutor extends AsyncCommandExecutorBase
 {
-	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException
-	{
+	@Override
+	public void executeAsync(CommandSource src, CommandContext args) {
 		src.sendMessage(Text.of(TextColors.GOLD, "[EssentialCmds]: ", TextColors.GRAY, "Version: ", TextColors.GREEN, Sponge.getPluginManager().getPlugin(PluginInfo.ID).get().getVersion()));
-		return CommandResult.success();
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "essentialcmds", "essentialcmd" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder()
+				.description(Text.of("EssentialCmds Command"))
+				.children(getChildrenList(new ReloadExecutor()))
+				.executor(this)
+				.build();
+	}
+
+	private static class ReloadExecutor extends AsyncCommandExecutorBase {
+
+		@Override
+		public void executeAsync(CommandSource src, CommandContext args) {
+			Config.getConfig().load();
+			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Config reloaded."));
+		}
+
+		@Nonnull
+		@Override
+		public String[] getAliases() {
+			return new String[] { "reload" };
+		}
+
+		@Nonnull
+		@Override
+		public CommandSpec getSpec() {
+			return CommandSpec.builder()
+					.description(Text.of("Reload Command"))
+					.permission("essentialcmds.reload.use")
+					.executor(this)
+					.build();
+		}
 	}
 }

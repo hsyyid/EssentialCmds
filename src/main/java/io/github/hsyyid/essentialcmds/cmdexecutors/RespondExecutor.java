@@ -24,88 +24,39 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
-
 import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.utils.Message;
-import org.spongepowered.api.Game;
-import org.spongepowered.api.command.CommandException;
-import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import java.util.ArrayList;
-import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
+import java.util.Optional;
 
-public class RespondExecutor implements CommandExecutor
+public class RespondExecutor extends MessageExecutor
 {
-	private Game game = getEssentialCmds().getGame();
-
-	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+	@Override
+	public void executeAsync(CommandSource src, CommandContext ctx)
 	{
 		if (src instanceof Player)
 		{
-			Player recipient = null;
 			Player player = (Player) src;
-
-			for (Message m : EssentialCmds.recentlyMessaged)
-			{
-				if (m.getRecipient().getUniqueId().toString().equals(player.getUniqueId().toString()))
-				{
-					recipient = m.getSender();
-					break;
-				}
-			}
-
-			if (recipient != null)
-			{
-				String message = ctx.<String> getOne("message").get();
-
-				ArrayList<Player> socialSpies = (ArrayList<Player>) game.getServer().getOnlinePlayers().stream().filter(p -> EssentialCmds.socialSpies.contains(p.getUniqueId())).collect(Collectors.toList());
-
-				if (recipient.getUniqueId().toString().equals(player.getUniqueId().toString()))
-				{
-					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot send a private message to yourself!"));
-					return CommandResult.success();
-				}
-
-				src.sendMessage(Text.of(TextColors.GOLD, "[", TextColors.RED, player.getName(), TextColors.GOLD, " > ", TextColors.RED, recipient.getName(), TextColors.GOLD, "]: ", TextColors.GRAY, message));
-				recipient.sendMessage(Text.of(TextColors.GOLD, "[", TextColors.RED, player.getName(), TextColors.GOLD, " > ", TextColors.RED, recipient.getName(), TextColors.GOLD, "]: ", TextColors.GRAY, message));
-
-				Message messageToRemove = null;
-
-				for (Message m : EssentialCmds.recentlyMessaged)
-				{
-					if (m.getRecipient().getUniqueId().equals(recipient.getUniqueId()))
-					{
-						messageToRemove = m;
-						break;
-					}
-				}
-
-				if (messageToRemove != null)
-				{
-					EssentialCmds.recentlyMessaged.remove(messageToRemove);
-				}
-
-				Message msg = new Message(player, recipient, message);
-				EssentialCmds.recentlyMessaged.add(msg);
-
-				for (Player socialspy : socialSpies)
-				{
-					socialspy.sendMessage(Text.of(TextColors.GOLD, "[", TextColors.RED, player.getName(), TextColors.GOLD, " > ", TextColors.RED, recipient.getName(), TextColors.GOLD, "]: ", TextColors.GRAY, message));
-				}
-			}
-			else
-			{
+			Optional<Message> om = EssentialCmds.recentlyMessaged.stream().filter(m -> m.getRecipient().getUniqueId().toString().equals(player.getUniqueId().toString())).findFirst();
+			if (!om.isPresent()) {
 				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "No recent messages found!"));
+				return;
 			}
+
+			ctx.putArg("recipient", om.get().getRecipient());
+
+			// Logic is the same as in the MessageExecutor now, so hand off to that.
+			super.executeAsync(src, ctx);
 		}
 		else if (src instanceof ConsoleSource)
 		{
@@ -115,7 +66,19 @@ public class RespondExecutor implements CommandExecutor
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be an in-game player to use /r!"));
 		}
+	}
 
-		return CommandResult.success();
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "r" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("Respond to Message Command")).permission("essentialcmds.message.respond")
+				.arguments(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("message"))))
+				.executor(this).build();
 	}
 }

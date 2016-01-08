@@ -24,20 +24,22 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import com.google.common.collect.Iterables;
+import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.CommandException;
-import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.world.Chunk;
 import org.spongepowered.api.world.World;
 
-public class GCExecutor implements CommandExecutor
+import javax.annotation.Nonnull;
+
+public class GCExecutor extends AsyncCommandExecutorBase
 {
-	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+	@Override
+	public void executeAsync(CommandSource src, CommandContext ctx)
 	{
 		double tps = Sponge.getServer().getTicksPerSecond();
 		src.sendMessage(Text.of(TextColors.GOLD, "Current TPS: ", TextColors.GRAY, tps));
@@ -46,19 +48,27 @@ public class GCExecutor implements CommandExecutor
 		for (World world : Sponge.getServer().getWorlds())
 		{
 			int numOfEntities = world.getEntities().size();
-			int loadedChunks = 0;
-
-			for (Chunk chunk : world.getLoadedChunks())
-			{
-				loadedChunks++;
-			}
-
+			int loadedChunks = Iterables.size(world.getLoadedChunks());
 			src.sendMessage(Text.of());
 			src.sendMessage(Text.of(TextColors.GREEN, "World: ", world.getName()));
 			src.sendMessage(Text.of(TextColors.GOLD, "Entities: ", TextColors.GRAY, numOfEntities));
 			src.sendMessage(Text.of(TextColors.GOLD, "Loaded Chunks: ", TextColors.GRAY, loadedChunks));
 		}
+	}
 
-		return CommandResult.success();
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "gc", "tickstat" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder()
+				.description(Text.of("TickStat Command"))
+				.permission("essentialcmds.tickstat.use")
+				.executor(this)
+				.build();
 	}
 }
