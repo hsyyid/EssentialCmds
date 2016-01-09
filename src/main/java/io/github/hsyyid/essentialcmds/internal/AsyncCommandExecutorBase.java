@@ -22,36 +22,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.hsyyid.essentialcmds.cmdexecutors;
+package io.github.hsyyid.essentialcmds.internal;
 
-import com.flowpowered.math.vector.Vector3i;
+import io.github.hsyyid.essentialcmds.EssentialCmds;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
 
-public class WorldSpawnExecutor implements CommandExecutor
-{
-	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
-	{
-		if (src instanceof Player)
-		{
-			Player player = (Player) src;
-			Vector3i spawnPos = player.getWorld().getProperties().getSpawnPosition();
-			player.setLocation(new Location<World>(player.getWorld(), spawnPos.getX(), spawnPos.getY(), spawnPos.getZ()));
-			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to world spawn."));
-		}
-		else
-		{
-			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot teleport, you are not a player!"));
-		}
-		
-		return CommandResult.success();
-	}
+/**
+ * Represents a command that can be run on an Async thread.
+ */
+public abstract class AsyncCommandExecutorBase extends CommandExecutorBase {
+
+    /**
+     * The command to execute on an Async scheduler thread.
+     *
+     * <p>
+     *     <strong>DO NOT USE NON-THREAD SAFE API CALLS WITHIN THIS METHOD</strong> unless you use a scheduler to put the
+     *     calls back on the main thread.
+     * </p>
+     *
+     * @param src The {@link CommandSource}
+     * @param args The arguments.
+     */
+    public abstract void executeAsync(CommandSource src, CommandContext args);
+
+    @Override
+    public final CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
+        Sponge.getScheduler().createAsyncExecutor(EssentialCmds.getEssentialCmds()).execute(() -> executeAsync(src, args));
+        return CommandResult.success();
+    }
 }

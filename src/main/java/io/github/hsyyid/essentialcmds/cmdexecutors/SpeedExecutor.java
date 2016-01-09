@@ -24,19 +24,22 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
-public class SpeedExecutor implements CommandExecutor
+public class SpeedExecutor extends CommandExecutorBase
 {
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
@@ -91,5 +94,21 @@ public class SpeedExecutor implements CommandExecutor
 		}
 
 		return CommandResult.success();
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "speed" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("Speed Command")).permission("essentialcmds.speed.use")
+				.arguments(GenericArguments.seq(
+						GenericArguments.onlyOne(GenericArguments.integer(Text.of("speed"))),
+						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))))))
+				.executor(this).build();
 	}
 }

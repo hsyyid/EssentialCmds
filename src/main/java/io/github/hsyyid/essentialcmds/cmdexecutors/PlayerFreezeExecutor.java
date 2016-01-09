@@ -25,25 +25,33 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
-import org.spongepowered.api.command.CommandException;
-import org.spongepowered.api.command.CommandResult;
+import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class PlayerFreezeExecutor implements CommandExecutor
+import javax.annotation.Nonnull;
+
+/* (non-Javadoc)
+ *
+ * This is async as this is only adding/removing a player from a list in EssentialCmds. This does not touch the
+ * SpongeAPI itself.
+ */
+public class PlayerFreezeExecutor extends AsyncCommandExecutorBase
 {
-	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+	@Override
+	public void executeAsync(CommandSource src, CommandContext ctx)
 	{
 		Player targetPlayer = ctx.<Player> getOne("player").get();
 		
 		if(targetPlayer.equals(src))
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot freeze yourself!"));
-			return CommandResult.success();
+			return;
 		}
 		
 		if(EssentialCmds.frozenPlayers.contains(targetPlayer.getUniqueId()))
@@ -56,7 +64,18 @@ public class PlayerFreezeExecutor implements CommandExecutor
 			EssentialCmds.frozenPlayers.add(targetPlayer.getUniqueId());
 			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Froze player."));
 		}
-		
-		return CommandResult.success();
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "playerfreeze", "freezeplayer" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("Player Freeze Command")).permission("essentialcmds.playerfreeze.use")
+				.arguments(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))).executor(this).build();
 	}
 }

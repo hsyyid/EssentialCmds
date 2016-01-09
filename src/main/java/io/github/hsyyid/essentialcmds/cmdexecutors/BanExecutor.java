@@ -25,12 +25,15 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
+import io.github.hsyyid.essentialcmds.cmdexecutors.argumentparsers.UserParser;
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.service.ban.BanService;
 import org.spongepowered.api.text.Text;
@@ -38,7 +41,9 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.ban.Ban;
 import org.spongepowered.api.util.ban.BanTypes;
 
-public class BanExecutor implements CommandExecutor
+import javax.annotation.Nonnull;
+
+public class BanExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
@@ -63,5 +68,24 @@ public class BanExecutor implements CommandExecutor
 
 		src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, player.getName() + " has been banned."));
 		return CommandResult.success();
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "ban" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec
+				.builder()
+				.description(Text.of("Ban Command"))
+				.permission("essentialcmds.ban.use")
+				.arguments(
+						GenericArguments.seq(GenericArguments.onlyOne(new UserParser(Text.of("player"))), GenericArguments
+								.optional(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("reason"))))))
+				.executor(this).build();
 	}
 }

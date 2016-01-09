@@ -24,11 +24,10 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
-
 import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.events.TPAAcceptEvent;
 import io.github.hsyyid.essentialcmds.events.TPAHereAcceptEvent;
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.PendingInvitation;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.command.CommandException;
@@ -37,12 +36,16 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class TPAAcceptExecutor implements CommandExecutor
+import javax.annotation.Nonnull;
+
+import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
+
+public class TPAAcceptExecutor extends CommandExecutorBase
 {
 	private Game game = getEssentialCmds().getGame();
 
@@ -99,5 +102,17 @@ public class TPAAcceptExecutor implements CommandExecutor
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /tpaccept!"));
 		}
 		return CommandResult.success();
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "tpaaccept", "tpaccept" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("TPA Accept Command")).permission("essentialcmds.tpa.accept").executor(this).build();
 	}
 }

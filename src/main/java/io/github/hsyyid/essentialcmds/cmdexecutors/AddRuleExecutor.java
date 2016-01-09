@@ -24,16 +24,20 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class AddRuleExecutor implements CommandExecutor
+import javax.annotation.Nonnull;
+
+public class AddRuleExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
@@ -41,5 +45,18 @@ public class AddRuleExecutor implements CommandExecutor
 		Utils.addRule(rule);
 		src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Added rule."));
 		return CommandResult.success();
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "addrule" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("Add Rule Command")).permission("essentialcmds.rules.add")
+				.arguments(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("rule")))).executor(this).build();
 	}
 }

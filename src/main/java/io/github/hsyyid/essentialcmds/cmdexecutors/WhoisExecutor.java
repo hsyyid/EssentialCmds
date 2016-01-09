@@ -24,35 +24,33 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
-
+import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.Game;
-import org.spongepowered.api.command.CommandException;
-import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.service.permission.option.OptionSubject;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import javax.annotation.Nonnull;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Optional;
-import java.util.TimeZone;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class WhoisExecutor implements CommandExecutor
+import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
+
+public class WhoisExecutor extends AsyncCommandExecutorBase
 {
 	private static Game game = getEssentialCmds().getGame();
 
-	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+	@Override
+	public void executeAsync(CommandSource src, CommandContext ctx)
 	{
 		Optional<Player> optPlayer = ctx.<Player> getOne("player");
 		Optional<String> optPlayerName = ctx.<String> getOne("player name");
@@ -104,27 +102,23 @@ public class WhoisExecutor implements CommandExecutor
 							}
 						}
 					}
-					else
-					{
-						continue;
-					}
 				}
 
 				if (foundPlayer == null)
 				{
 					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Player not found."));
-					return CommandResult.success();
 				}
 				else
 				{
-					Player player = foundPlayer;
-					src.sendMessage(Text.of(TextColors.GOLD, "Real Name: ", TextColors.GRAY, player.getName()));
-					src.sendMessage(Text.of(TextColors.GOLD, "UUID: ", TextColors.GRAY, player.getUniqueId().toString()));
-					if (game.getServer().getPlayer(player.getUniqueId()).isPresent())
-						src.sendMessage(Text.of(TextColors.GOLD, "Current Ontime: ", TextColors.GRAY, getCurrentOnTime(player.getUniqueId())));
-					else
-						src.sendMessage(Text.of(TextColors.GOLD, "Last Time Online: ", TextColors.GRAY, Utils.getLastTimePlayerJoined(player.getUniqueId())));
-					src.sendMessage(Text.of(TextColors.GOLD, "Current World: ", TextColors.GRAY, player.getWorld().getName()));
+					src.sendMessage(Text.of(TextColors.GOLD, "Real Name: ", TextColors.GRAY, foundPlayer.getName()));
+					src.sendMessage(Text.of(TextColors.GOLD, "UUID: ", TextColors.GRAY, foundPlayer.getUniqueId().toString()));
+					if (game.getServer().getPlayer(foundPlayer.getUniqueId()).isPresent()) {
+						src.sendMessage(Text.of(TextColors.GOLD, "Current Ontime: ", TextColors.GRAY, getCurrentOnTime(foundPlayer.getUniqueId())));
+					} else {
+						src.sendMessage(Text.of(TextColors.GOLD, "Last Time Online: ", TextColors.GRAY, Utils.getLastTimePlayerJoined(foundPlayer.getUniqueId())));
+					}
+
+					src.sendMessage(Text.of(TextColors.GOLD, "Current World: ", TextColors.GRAY, foundPlayer.getWorld().getName()));
 				}
 			}
 		}
@@ -132,8 +126,6 @@ public class WhoisExecutor implements CommandExecutor
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You did not specify any arguments."));
 		}
-
-		return CommandResult.success();
 	}
 
 	public String getCurrentOnTime(UUID uuid)
@@ -165,5 +157,21 @@ public class WhoisExecutor implements CommandExecutor
 		{
 			return "NaN";
 		}
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "whois", "realname", "seen" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("WhoIs Command")).permission("essentialcmds.whois.use")
+				.arguments(
+						GenericArguments.firstParsing(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))),
+								GenericArguments.onlyOne(GenericArguments.string(Text.of("player name")))))
+				.executor(this).build();
 	}
 }

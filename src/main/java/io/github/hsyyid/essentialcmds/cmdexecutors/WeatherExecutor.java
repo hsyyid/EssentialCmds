@@ -24,20 +24,23 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.weather.Weather;
 import org.spongepowered.api.world.weather.Weathers;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
-public class WeatherExecutor implements CommandExecutor
+public class WeatherExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
@@ -86,5 +89,23 @@ public class WeatherExecutor implements CommandExecutor
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be a in-game player to do /weather!"));
 			return CommandResult.success();
 		}
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "weather" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec
+				.builder()
+				.description(Text.of("Weather Command"))
+				.permission("essentialcmds.weather.use")
+				.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.string(Text.of("weather")))),
+						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Text.of("duration")))))
+				.executor(this).build();
 	}
 }

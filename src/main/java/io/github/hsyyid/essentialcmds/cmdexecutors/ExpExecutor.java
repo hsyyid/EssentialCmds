@@ -24,17 +24,22 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.entity.ExperienceHolderData;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class ExpExecutor implements CommandExecutor
+import javax.annotation.Nonnull;
+
+public class ExpExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
@@ -51,5 +56,115 @@ public class ExpExecutor implements CommandExecutor
 		}
 		
 		return CommandResult.success();
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "exp", "experience" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec() {
+		return CommandSpec.builder()
+				.description(Text.of("Experience Command"))
+				.children(getChildrenList(new GiveExecutor(), new SetExecutor(), new TakeExecutor()))
+				.permission("essentialcmds.exp.use")
+				.executor(this)
+				.build();
+	}
+
+	private static class GiveExecutor extends CommandExecutorBase {
+
+		@Nonnull
+		@Override
+		public String[] getAliases() {
+			return new String[] { "give" };
+		}
+
+		@Nonnull
+		@Override
+		public CommandSpec getSpec() {
+			return CommandSpec.builder()
+					.description(Text.of("Experience Give Command"))
+					.permission("essentialcmds.exp.give.use")
+					.arguments(GenericArguments.seq(
+							GenericArguments.player(Text.of("target")),
+							GenericArguments.integer(Text.of("exp"))))
+					.executor(this)
+					.build();
+		}
+
+		@Override
+		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException {
+			int expLevel = ctx.<Integer> getOne("exp").get();
+			Player player = ctx.<Player> getOne("target").get();
+			player.offer(Keys.TOTAL_EXPERIENCE, player.get(Keys.TOTAL_EXPERIENCE).get() + expLevel);
+			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Gave " + player.getName() + " " + expLevel + " experience."));
+			return CommandResult.success();
+		}
+	}
+
+	private static class SetExecutor extends CommandExecutorBase {
+
+		@Nonnull
+		@Override
+		public String[] getAliases() {
+			return new String[] { "set" };
+		}
+
+		@Nonnull
+		@Override
+		public CommandSpec getSpec() {
+			return CommandSpec.builder()
+					.description(Text.of("Experience Set Command"))
+					.permission("essentialcmds.exp.set.use")
+					.arguments(GenericArguments.seq(
+							GenericArguments.player(Text.of("target")),
+							GenericArguments.integer(Text.of("exp"))))
+					.executor(this)
+					.build();
+		}
+
+		@Override
+		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException {
+			int expLevel = ctx.<Integer> getOne("exp").get();
+			Player player = ctx.<Player> getOne("target").get();
+			player.offer(Keys.TOTAL_EXPERIENCE, expLevel);
+			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set " + player.getName() + "'s experience level to" + expLevel + "."));
+			return CommandResult.success();
+		}
+	}
+
+	private static class TakeExecutor extends CommandExecutorBase {
+
+		@Nonnull
+		@Override
+		public String[] getAliases() {
+			return new String[] { "take" };
+		}
+
+		@Nonnull
+		@Override
+		public CommandSpec getSpec() {
+			return CommandSpec.builder()
+				.description(Text.of("Experience Take Command"))
+				.permission("essentialcmds.exp.take.use")
+				.arguments(GenericArguments.seq(
+						GenericArguments.player(Text.of("target")),
+						GenericArguments.integer(Text.of("exp"))))
+				.executor(this)
+				.build();
+		}
+
+		@Override
+		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException {
+			int expLevel = ctx.<Integer> getOne("exp").get();
+			Player player = ctx.<Player> getOne("target").get();
+			player.offer(Keys.TOTAL_EXPERIENCE, player.get(Keys.TOTAL_EXPERIENCE).get() - expLevel);
+			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Took " + expLevel + " experience from " + player.getName() + "."));
+			return CommandResult.success();
+		}
 	}
 }

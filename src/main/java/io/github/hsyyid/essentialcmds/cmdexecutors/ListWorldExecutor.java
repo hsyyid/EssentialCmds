@@ -24,57 +24,13 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.EssentialCmds;
-import io.github.hsyyid.essentialcmds.utils.PaginatedList;
-import org.spongepowered.api.command.CommandException;
-import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandExecutor;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.action.TextActions;
-import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.format.TextStyles;
-import org.spongepowered.api.world.World;
+import javax.annotation.Nonnull;
 
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-public class ListWorldExecutor implements CommandExecutor
+public class ListWorldExecutor extends WorldsBase.List
 {
-	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
-	{
-		ArrayList<String> worlds = EssentialCmds.getEssentialCmds().getGame().getServer().getWorlds().stream().filter(world -> world.getProperties().isEnabled()).map(World::getName).collect(Collectors.toCollection(ArrayList::new));
-
-		Optional<Integer> optionalPageNo = ctx.<Integer> getOne("page no");
-		int pageNo = optionalPageNo.orElse(1);
-
-		PaginatedList pList = new PaginatedList("/worlds");
-
-		for (String name : worlds)
-		{
-			Text item = Text.builder(name)
-				.onClick(TextActions.runCommand("/tpworld " + name))
-				.onHover(TextActions.showText(Text.of(TextColors.WHITE, "Teleport to world ", TextColors.GOLD, name)))
-				.color(TextColors.DARK_AQUA)
-				.style(TextStyles.UNDERLINE)
-				.build();
-
-			pList.add(item);
-		}
-
-		pList.setItemsPerPage(10);
-
-		Text.Builder header = Text.builder();
-		header.append(Text.of(TextColors.GREEN, "------------"));
-		header.append(Text.of(TextColors.GREEN, " Showing Worlds page " + pageNo + " of " + pList.getTotalPages() + " "));
-		header.append(Text.of(TextColors.GREEN, "------------"));
-
-		pList.setHeader(header.build());
-
-		src.sendMessage(pList.getPage(pageNo));
-
-		return CommandResult.success();
+	@Nonnull
+	@Override
+	public String[] getAliases() {
+		return new String[] { "worlds" };
 	}
 }
