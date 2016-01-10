@@ -503,6 +503,49 @@ public class Utils
 		}
 	}
 
+	public static void removeJail(int number)
+	{
+		Configs.removeChild(config, new Object[] { "jails" }, String.valueOf(number));
+	}
+
+	public static void teleportPlayerToJail(Player player, int number)
+	{
+		UUID worldUuid = UUID.fromString(Configs.getConfig(config).getNode("jails", String.valueOf(number), "world").getString());
+		double x = Configs.getConfig(config).getNode("jails", String.valueOf(number), "X").getDouble();
+		double y = Configs.getConfig(config).getNode("jails", String.valueOf(number), "Y").getDouble();
+		double z = Configs.getConfig(config).getNode("jails", String.valueOf(number), "Z").getDouble();
+		World world = Sponge.getServer().getWorld(worldUuid).orElse(null);
+		
+		if(world != null)
+		{
+			Location<World> location = new Location<World>(world, x, y, z);
+			
+			if(player.getWorld().getUniqueId().equals(worldUuid))
+			{
+				player.setLocation(location);
+			}
+			else
+			{
+				player.transferToWorld(world.getUniqueId(), location.getPosition());
+			}
+		}
+	}
+
+	public static int getNumberOfJails()
+	{
+		return Configs.getConfig(config).getNode("jails").getChildrenMap().values().size();
+	}
+
+	public static void addJail(Location<World> location)
+	{
+		int number = Utils.getNumberOfJails() + 1;
+		Configs.getConfig(config).getNode("jails", String.valueOf(number), "world").setValue(location.getExtent().getUniqueId().toString());
+		Configs.getConfig(config).getNode("jails", String.valueOf(number), "X").setValue(location.getX());
+		Configs.getConfig(config).getNode("jails", String.valueOf(number), "Y").setValue(location.getY());
+		Configs.getConfig(config).getNode("jails", String.valueOf(number), "Z").setValue(location.getZ());
+		Configs.saveConfig(config);
+	}
+
 	public static void setHome(UUID userName, Location<World> playerLocation, String worldName, String homeName)
 	{
 		String playerName = userName.toString();
@@ -942,7 +985,7 @@ public class Utils
 		String playerName = userName.toString();
 		ConfigurationNode valueNode = Configs.getConfig(config).getNode("home", "users", playerName, "homes");
 
-		if(valueNode.getValue() == null)
+		if (valueNode.getValue() == null)
 		{
 			return Lists.newArrayList();
 		}
@@ -984,7 +1027,7 @@ public class Utils
 	{
 		ConfigurationNode valueNode = Configs.getConfig(config).getNode("warps", "warps");
 
-		if(valueNode.getValue() == null)
+		if (valueNode.getValue() == null)
 		{
 			return Lists.newArrayList();
 		}
@@ -1075,12 +1118,6 @@ public class Utils
 		throw new IllegalArgumentException();
 	}
 
-	public static String getSpawnWorldName()
-	{
-		ConfigurationNode valueNode = Configs.getConfig(config).getNode("spawn", "world");
-		return valueNode.getString();
-	}
-
 	public static double getWarpY(String warpName)
 	{
 		ConfigurationNode valueNode = Configs.getConfig(config).getNode("warps", warpName, "Y");
@@ -1116,8 +1153,15 @@ public class Utils
 		return inConfig != null;
 	}
 
-	public static Location<World> getSpawn(Player player)
+	public static Location<World> getSpawn()
 	{
+		World world = null;
+		CommentedConfigurationNode worldNode = Configs.getConfig(config).getNode("spawn", "world");
+		if (configManager.getString(worldNode).isPresent())
+		{
+			world = Sponge.getServer().getWorld(UUID.fromString(configManager.getString(worldNode).get())).orElse(null);
+		}
+		
 		double x = 0, y = 0, z = 0;
 		CommentedConfigurationNode xNode = Configs.getConfig(config).getNode("spawn", "X");
 		if (configManager.getDouble(xNode).isPresent())
@@ -1133,7 +1177,7 @@ public class Utils
 		if (configManager.getDouble(zNode).isPresent())
 			z = zNode.getDouble();
 
-		return new Location<>(player.getWorld(), x, y, z);
+		return new Location<World>(world, x, y, z);
 	}
 
 	public static boolean isLastDeathInConfig(Player player)

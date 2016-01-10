@@ -24,13 +24,32 @@
  */
 package io.github.hsyyid.essentialcmds;
 
+import static io.github.hsyyid.essentialcmds.PluginInfo.ID;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import io.github.hsyyid.essentialcmds.internal.CommandLoader;
-import io.github.hsyyid.essentialcmds.listeners.*;
+import io.github.hsyyid.essentialcmds.listeners.ChangeBlockListener;
+import io.github.hsyyid.essentialcmds.listeners.CommandListener;
+import io.github.hsyyid.essentialcmds.listeners.InventoryListener;
+import io.github.hsyyid.essentialcmds.listeners.MailListener;
+import io.github.hsyyid.essentialcmds.listeners.MessageSinkListener;
+import io.github.hsyyid.essentialcmds.listeners.PlayerClickListener;
+import io.github.hsyyid.essentialcmds.listeners.PlayerDeathListener;
+import io.github.hsyyid.essentialcmds.listeners.PlayerDisconnectListener;
+import io.github.hsyyid.essentialcmds.listeners.PlayerInteractListener;
+import io.github.hsyyid.essentialcmds.listeners.PlayerJoinListener;
+import io.github.hsyyid.essentialcmds.listeners.PlayerMoveListener;
+import io.github.hsyyid.essentialcmds.listeners.SignChangeListener;
+import io.github.hsyyid.essentialcmds.listeners.TPAListener;
+import io.github.hsyyid.essentialcmds.listeners.WeatherChangeListener;
 import io.github.hsyyid.essentialcmds.managers.config.Config;
-import io.github.hsyyid.essentialcmds.utils.*;
+import io.github.hsyyid.essentialcmds.utils.AFK;
+import io.github.hsyyid.essentialcmds.utils.Message;
+import io.github.hsyyid.essentialcmds.utils.PendingInvitation;
+import io.github.hsyyid.essentialcmds.utils.Powertool;
+import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
@@ -48,8 +67,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import static io.github.hsyyid.essentialcmds.PluginInfo.*;
-
 @Plugin(id = PluginInfo.ID, name = PluginInfo.NAME, version = PluginInfo.VERSION)
 public class EssentialCmds 
 {
@@ -64,6 +81,7 @@ public class EssentialCmds
 	public static List<Message> recentlyMessaged = Lists.newArrayList();
 	public static Set<UUID> muteList = Sets.newHashSet();
 	public static Set<UUID> frozenPlayers = Sets.newHashSet();
+	public static Set<UUID> jailedPlayers = Sets.newHashSet();
 	public static Set<UUID> lockedWeatherWorlds = Sets.newHashSet();
 
 	@Inject
@@ -116,6 +134,8 @@ public class EssentialCmds
 		getGame().getEventManager().registerListeners(this, new PlayerDisconnectListener());
 		getGame().getEventManager().registerListeners(this, new WeatherChangeListener());
 		getGame().getEventManager().registerListeners(this, new InventoryListener());
+		getGame().getEventManager().registerListeners(this, new CommandListener());
+		getGame().getEventManager().registerListeners(this, new ChangeBlockListener());
 
 		getLogger().info("-----------------------------");
 		getLogger().info("EssentialCmds was made by HassanS6000!");

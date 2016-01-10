@@ -183,7 +183,7 @@ public class MessageSinkListener
 			Subject subject = player.getContainingCollection().get(player.getIdentifier());
 			String prefix = "";
 			String suffix = "";
-
+			
 			if (subject instanceof OptionSubject)
 			{
 				OptionSubject optionSubject = (OptionSubject) subject;

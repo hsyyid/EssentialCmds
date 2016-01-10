@@ -24,7 +24,6 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import com.flowpowered.math.vector.Vector3d;
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.command.CommandException;
@@ -40,8 +39,9 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
+
+import javax.annotation.Nonnull;
 
 public class SpawnExecutor extends CommandExecutorBase
 {
@@ -50,20 +50,22 @@ public class SpawnExecutor extends CommandExecutorBase
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
+			
 			if (Utils.isSpawnInConfig())
 			{
-				if (!Objects.equals(player.getWorld().getName(), Utils.getSpawnWorldName()))
+				Location<World> spawn = Utils.getSpawn();
+				
+				if (!Objects.equals(player.getWorld().getUniqueId(), spawn.getExtent().getUniqueId()))
 				{
-					Vector3d position = new Vector3d(Utils.getSpawn(player).getX(), Utils.getSpawn(player).getY(), Utils.getSpawn(player).getZ());
-					player.transferToWorld(Utils.getSpawnWorldName(), position);
+					player.transferToWorld(spawn.getExtent().getUniqueId(), spawn.getPosition());
 					src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Spawn"));
 					return CommandResult.success();
 				}
 				else
 				{
-					Location<World> spawn = new Location<>(player.getWorld(), Utils.getSpawn(player).getX(), Utils.getSpawn(player).getY(), Utils.getSpawn(player).getZ());
 					player.setLocation(spawn);
 				}
+				
 				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Spawn"));
 			}
 			else

@@ -125,7 +125,8 @@ public final class CommandLoader {
             new WarpExecutor(),
             new WeatherExecutor(),
             new WhoisExecutor(),
-            new WorldsBase()
+            new WorldsBase(),
+            new JailExecutor()
         );
     }
 

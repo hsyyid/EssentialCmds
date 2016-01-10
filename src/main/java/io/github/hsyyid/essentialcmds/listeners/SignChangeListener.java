@@ -63,7 +63,7 @@ public class SignChangeListener
 						signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Text.of(TextColors.DARK_RED, "[Warp]")));
 					}
 				}
-				else if (player != null && player.hasPermission("color.sign.use"))
+				else if (player != null && player.hasPermission("essentialcmds.color.sign.use"))
 				{
 					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, TextSerializers.formattingCode('&').deserialize(line0)));
 					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(1, TextSerializers.formattingCode('&').deserialize(line1)));

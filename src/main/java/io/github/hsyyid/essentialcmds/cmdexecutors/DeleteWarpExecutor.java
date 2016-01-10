@@ -29,12 +29,9 @@ import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
 import io.github.hsyyid.essentialcmds.managers.config.Config;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import ninja.leaping.configurate.ConfigurationNode;
-import org.spongepowered.api.command.CommandException;
-import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -75,8 +72,11 @@ public class DeleteWarpExecutor extends AsyncCommandExecutorBase
 	@Nonnull
 	@Override
 	public CommandSpec getSpec() {
-		return CommandSpec.builder().description(Text.of("Delete Warp Command")).permission("essentialcmds.warp.delete")
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("warp name")))).executor(this)
-				.build();
+		return CommandSpec.builder()
+			.description(Text.of("Delete Warp Command"))
+			.permission("essentialcmds.warp.delete")
+			.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("warp name"))))
+			.executor(this)
+			.build();
 	}
 }

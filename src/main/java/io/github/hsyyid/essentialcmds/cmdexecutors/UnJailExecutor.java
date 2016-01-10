@@ -24,68 +24,67 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.api.util.config.Configs;
-import io.github.hsyyid.essentialcmds.api.util.config.Configurable;
-import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
-import io.github.hsyyid.essentialcmds.managers.config.Config;
+import io.github.hsyyid.essentialcmds.EssentialCmds;
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.Utils;
-import ninja.leaping.configurate.ConfigurationNode;
+import org.spongepowered.api.command.CommandException;
+import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
+
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-public class DeleteHomeExecutor extends AsyncCommandExecutorBase
+public class UnJailExecutor extends CommandExecutorBase
 {
-	@Override
-	public void executeAsync(CommandSource src, CommandContext ctx) {
-		String homeName = ctx.<String> getOne("home name").get();
-		Configurable config = Config.getConfig();
+	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+	{
+		Player target = ctx.<Player> getOne("target").get();
+		Location<World> spawn = Utils.getSpawn();
 
-		if (src instanceof Player)
+		if(EssentialCmds.jailedPlayers.contains(target.getUniqueId()))
 		{
-			Player player = (Player) src;
-			
-			if (Utils.inConfig(player.getUniqueId(), homeName))
+			if (!Objects.equals(target.getWorld().getUniqueId(), spawn.getExtent().getUniqueId()))
 			{
-				ConfigurationNode homeNode = Configs.getConfig(config).getNode("home", "users", player.getUniqueId().toString(), "homes");
-
-				// Get Value of Home Node
-				String homes = homeNode.getString();
-				String newVal = homes.replace(homeName + ",", "");
-
-				Configs.setValue(config, homeNode.getPath(), newVal);
-				Configs.removeChild(config, new Object[] { "home", "users", player.getUniqueId().toString() }, homeName);
-
-				src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Deleted home " + homeName));
+				target.transferToWorld(spawn.getExtent().getUniqueId(), spawn.getPosition());
+				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Spawn"));
 			}
 			else
 			{
-				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "This home doesn't exist!"));
+				target.setLocation(spawn);
 			}
+			
+			EssentialCmds.jailedPlayers.remove(target.getUniqueId());
+			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Un-jailed player."));
 		}
 		else
 		{
-			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /delhome!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Player is not jailed."));
 		}
+
+		return CommandResult.success();
 	}
 
 	@Nonnull
 	@Override
 	public String[] getAliases() {
-		return new String[] { "deletehome", "delhome" };
+		return new String[] { "unjail" };
 	}
 
 	@Nonnull
 	@Override
 	public CommandSpec getSpec() {
-		return CommandSpec.builder().description(Text.of("Delete Home Command")).permission("essentialcmds.home.delete")
-			.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("home name")))).executor(this)
+		return CommandSpec.builder()
+			.description(Text.of("Un-Jail Command"))
+			.permission("essentialcmds.unjail.use")
+			.executor(this)
 			.build();
 	}
 }
