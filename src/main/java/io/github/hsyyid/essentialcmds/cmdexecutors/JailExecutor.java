@@ -48,7 +48,7 @@ public class JailExecutor extends CommandExecutorBase
 
 		if(!EssentialCmds.jailedPlayers.contains(target.getUniqueId()))
 		{	
-			if(Utils.getNumberOfJails() <= jailNumber)
+			if(Utils.getNumberOfJails() >= jailNumber)
 			{
 				EssentialCmds.jailedPlayers.add(target.getUniqueId());
 				Utils.teleportPlayerToJail(target, jailNumber);
