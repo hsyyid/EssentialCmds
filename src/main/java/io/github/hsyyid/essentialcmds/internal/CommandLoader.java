@@ -127,7 +127,8 @@ public final class CommandLoader {
             new WhoisExecutor(),
             new WorldsBase(),
             new JailExecutor(),
-            new UnJailExecutor()
+            new UnJailExecutor(),
+            new KickAllExecutor()
         );
     }
 

@@ -86,7 +86,7 @@ public class WorldsBase extends CommandExecutorBase {
 
 			String difficultyInput = ctx.<String> getOne("difficulty").get();
 			GameMode gamemode = ctx.<GameMode> getOne("gamemode").get();
-			Difficulty difficulty; // = ctx.<Difficulty>getOne("difficulty").get();
+			Difficulty difficulty;
 			DimensionType dimension;
 			GeneratorType generator;
 
