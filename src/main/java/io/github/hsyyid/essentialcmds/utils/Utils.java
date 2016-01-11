@@ -1159,7 +1159,7 @@ public class Utils
 		CommentedConfigurationNode worldNode = Configs.getConfig(config).getNode("spawn", "world");
 		if (configManager.getString(worldNode).isPresent())
 		{
-			world = Sponge.getServer().getWorld(UUID.fromString(configManager.getString(worldNode).get())).orElse(null);
+			world = Sponge.getServer().getWorld(configManager.getString(worldNode).get()).orElse(null);
 		}
 		
 		double x = 0, y = 0, z = 0;
