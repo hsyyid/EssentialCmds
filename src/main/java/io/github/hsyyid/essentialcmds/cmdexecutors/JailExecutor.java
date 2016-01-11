@@ -47,11 +47,10 @@ public class JailExecutor extends CommandExecutorBase
 		int jailNumber = ctx.<Integer> getOne("number").get();
 
 		if(!EssentialCmds.jailedPlayers.contains(target.getUniqueId()))
-		{
-			EssentialCmds.jailedPlayers.add(target.getUniqueId());
-			
+		{	
 			if(Utils.getNumberOfJails() <= jailNumber)
 			{
+				EssentialCmds.jailedPlayers.add(target.getUniqueId());
 				Utils.teleportPlayerToJail(target, jailNumber);
 				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Jailed " + target.getName() + "."));
 			}

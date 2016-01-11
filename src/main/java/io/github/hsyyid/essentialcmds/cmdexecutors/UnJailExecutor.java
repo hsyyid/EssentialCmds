@@ -85,7 +85,7 @@ public class UnJailExecutor extends CommandExecutorBase
 		return CommandSpec.builder()
 			.description(Text.of("Un-Jail Command"))
 			.permission("essentialcmds.unjail.use")
-			.arguments(GenericArguments.onlyOne(GenericArguments.player(Text.of("traget"))))
+			.arguments(GenericArguments.onlyOne(GenericArguments.player(Text.of("target"))))
 			.executor(this)
 			.build();
 	}
