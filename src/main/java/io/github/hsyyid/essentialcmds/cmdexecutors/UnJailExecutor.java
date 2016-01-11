@@ -31,6 +31,7 @@ import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
@@ -84,6 +85,7 @@ public class UnJailExecutor extends CommandExecutorBase
 		return CommandSpec.builder()
 			.description(Text.of("Un-Jail Command"))
 			.permission("essentialcmds.unjail.use")
+			.arguments(GenericArguments.onlyOne(GenericArguments.player(Text.of("traget"))))
 			.executor(this)
 			.build();
 	}
