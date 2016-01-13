@@ -29,6 +29,7 @@ import io.github.hsyyid.essentialcmds.utils.AFK;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.service.permission.option.OptionSubject;
@@ -43,7 +44,7 @@ import java.util.UUID;
 
 public class MessageSinkListener
 {
-	@Listener
+	@Listener(order=Order.PRE)
 	public void onMessage(MessageChannelEvent.Chat event)
 	{
 		if (event.getCause().first(Player.class).isPresent())
@@ -199,12 +200,12 @@ public class MessageSinkListener
 
 			original = original.replaceFirst(">", (suffix + ">"));
 			String suffixInOriginal = original.substring(original.indexOf(player.getName()) + player.getName().length(), original.indexOf(">"));
-
+			
 			original = original.replaceFirst(player.getName(), nick);
 			String playerName = original.substring(prefixInOriginal.length(), original.indexOf(nick) + nick.length());
-
+			
 			String restOfOriginal = original.substring(original.indexOf(">"), original.length());
-
+			
 			prefixInOriginal = prefixInOriginal.replaceFirst("<", Utils.getFirstChatCharReplacement());
 			restOfOriginal = restOfOriginal.replaceFirst(">", Utils.getLastChatCharReplacement());
 			
