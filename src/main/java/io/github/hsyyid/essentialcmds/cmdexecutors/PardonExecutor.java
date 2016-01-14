@@ -68,7 +68,11 @@ public class PardonExecutor extends CommandExecutorBase
 	@Nonnull
 	@Override
 	public CommandSpec getSpec() {
-		return CommandSpec.builder().description(Text.of("Unban Command")).permission("essentialcmds.unban.use")
-				.arguments(GenericArguments.onlyOne(new UserParser(Text.of("player")))).executor(this).build();
+		return CommandSpec.builder()
+			.description(Text.of("Unban Command"))
+			.permission("essentialcmds.unban.use")
+			.arguments(GenericArguments.onlyOne(new UserParser(Text.of("player"))))
+			.executor(this)
+			.build();
 	}
 }

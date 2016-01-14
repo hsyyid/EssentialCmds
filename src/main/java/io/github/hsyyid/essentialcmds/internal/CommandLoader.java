@@ -128,6 +128,7 @@ public final class CommandLoader {
             new WorldsBase(),
             new JailExecutor(),
             new UnJailExecutor(),
+            new VanishExecutor(),
             new KickAllExecutor()
         );
     }
