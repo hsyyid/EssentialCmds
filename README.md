@@ -61,7 +61,7 @@ Windows systems in place of any 'gradle' command.
 
 We use [Gradle] for EssentialCmds.
 
-In order to build EssentialCmds you simply need to run the `gradle` command.
+In order to build EssentialCmds you simply need to run the `gradle build` command.
 You can find the compiled JAR file in `./build/libs` labeled similarly to 'EssentialCmds-x.x.jar'.
 
 [Source]: https://github.com/hsyyid/EssentialCmds
