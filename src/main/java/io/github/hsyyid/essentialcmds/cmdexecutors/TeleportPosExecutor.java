@@ -25,6 +25,7 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -35,24 +36,37 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
+
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 public class TeleportPosExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		Optional<Player> p = ctx.<Player> getOne("player");
+		Optional<String> optionalWorld = ctx.<String> getOne("world");
 		int x = ctx.<Integer> getOne("x").get();
 		int y = ctx.<Integer> getOne("y").get();
 		int z = ctx.<Integer> getOne("z").get();
+		World world = null;
+
+		if(optionalWorld.isPresent())
+		{
+			world = Sponge.getServer().getWorld(optionalWorld.get()).orElse(null);
+		}
 
 		if (p.isPresent())
 		{
 			if (src.hasPermission("teleport.pos.others"))
 			{
-				p.get().setLocation(new Location<>(p.get().getWorld(), x, y, z));
+				if(world != null)
+					p.get().setLocation(new Location<>(world, x, y, z));
+				else
+					p.get().setLocation(new Location<>(p.get().getWorld(), x, y, z));
+
 				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported player " + p.get().getName() + " to " + x + "," + y + "," + z + "."));
 				p.get().sendMessage(Text.of(TextColors.GOLD, "You have been teleported by " + src.getName()));
 			}
@@ -62,7 +76,12 @@ public class TeleportPosExecutor extends CommandExecutorBase
 			if (src instanceof Player)
 			{
 				Player player = (Player) src;
-				player.setLocation(new Location<>(player.getWorld(), x, y, z));
+				
+				if(world != null)
+					player.setLocation(new Location<>(world, x, y, z));
+				else
+					player.setLocation(new Location<>(player.getWorld(), x, y, z));
+				
 				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to coords."));
 			}
 			else
@@ -89,6 +108,7 @@ public class TeleportPosExecutor extends CommandExecutorBase
 			.permission("essentialcmds.teleport.pos.use")
 			.arguments(
 				GenericArguments.seq(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))))),
+				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("world")))),
 				GenericArguments.onlyOne(GenericArguments.integer(Text.of("x"))),
 				GenericArguments.onlyOne(GenericArguments.integer(Text.of("y"))),
 				GenericArguments.onlyOne(GenericArguments.integer(Text.of("z")))).executor(this).build();

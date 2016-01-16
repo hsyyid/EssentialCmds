@@ -49,14 +49,17 @@ public class HatExecutor extends CommandExecutorBase
 
 			if (itemInHand.isPresent())
 			{
-				player.setHelmet(itemInHand.get());
-
 				if (itemInHand.get().getQuantity() > 1)
 				{
-					itemInHand.get().setQuantity(itemInHand.get().getQuantity() - 1);
+					ItemStack stack = itemInHand.get();
+					stack.setQuantity(itemInHand.get().getQuantity() - 1);
+					player.setItemInHand(stack);
+					stack.setQuantity(1);
+					player.setHelmet(stack);
 				}
 				else
 				{
+					player.setHelmet(itemInHand.get());
 					player.setItemInHand(null);
 				}
 			}
