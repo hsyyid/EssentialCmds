@@ -88,11 +88,22 @@ public class Config implements Configurable {
 
     @Override
     public void populate() {
-
-        get().getNode("afk", "timer").setValue(30000);
-        get().getNode("afk", "kick", "use").setValue(false);
-        get().getNode("afk", "kick", "timer").setValue(30000);
-        get().getNode("joinmsg").setValue("&4Welcome!");
+        get().getNode("afk", "timer").setValue(30000).setComment("The length of time in millisec until a player is AFK.");
+        get().getNode("afk", "kick", "use").setValue(false).setComment("When enabled, it enables the kicking of players who are AFK.");
+        get().getNode("afk", "kick", "timer").setValue(30000).setComment("Sets the amount of time until a player is kicked for being AFK.");
+        get().getNode("joinmsg").setValue("&4Welcome!").setComment("Message sent to a player when they join the server.");
+        get().getNode("login", "message").setValue("").setComment("Message sent to everyone when a player joins.");
+        get().getNode("disconnect", "message").setValue("").setComment("Message sent to everyone when a player disconnects.");
+        get().getNode("mysql").setComment("MySQL Options for EssentialCmds.");
+        get().getNode("mysql", "use").setValue(false).setComment("Enables/Disables MySQL usage for EssentialCmds.");
+        get().getNode("mysql", "port").setValue("8080").setComment("Port of MySQL Database.");
+        get().getNode("mysql", "host").setValue("localhost").setComment("Address of MySQL Database.");
+        get().getNode("mysql", "database").setValue("EssentialCmds").setComment("Name of MySQL Database.");
+        get().getNode("mysql", "username").setValue("root").setComment("Username for MySQL Database.");
+        get().getNode("mysql", "password").setValue("pass").setComment("Password for MySQL Database.");
+        get().getNode("chat", "firstcharacter").setValue("<").setComment("When set, changes the first character in chat from '<'.");
+        get().getNode("chat", "lastcharacter").setValue(">").setComment("When set, changes the character after the player name from '>'.");
+        get().getNode("home").setComment("Home data for EssentialCmds.");
     }
 
     @Override
