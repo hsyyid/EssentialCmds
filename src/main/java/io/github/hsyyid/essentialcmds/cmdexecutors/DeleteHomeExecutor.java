@@ -24,12 +24,10 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.api.util.config.Configs;
 import io.github.hsyyid.essentialcmds.api.util.config.Configurable;
 import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
 import io.github.hsyyid.essentialcmds.managers.config.Config;
 import io.github.hsyyid.essentialcmds.utils.Utils;
-import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
@@ -45,7 +43,6 @@ public class DeleteHomeExecutor extends AsyncCommandExecutorBase
 	@Override
 	public void executeAsync(CommandSource src, CommandContext ctx) {
 		String homeName = ctx.<String> getOne("home name").get();
-		Configurable config = Config.getConfig();
 
 		if (src instanceof Player)
 		{
@@ -53,15 +50,7 @@ public class DeleteHomeExecutor extends AsyncCommandExecutorBase
 			
 			if (Utils.inConfig(player.getUniqueId(), homeName))
 			{
-				ConfigurationNode homeNode = Configs.getConfig(config).getNode("home", "users", player.getUniqueId().toString(), "homes");
-
-				// Get Value of Home Node
-				String homes = homeNode.getString();
-				String newVal = homes.replace(homeName + ",", "");
-
-				Configs.setValue(config, homeNode.getPath(), newVal);
-				Configs.removeChild(config, new Object[] { "home", "users", player.getUniqueId().toString() }, homeName);
-
+				Utils.deleteHome(player, homeName);
 				src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Deleted home " + homeName));
 			}
 			else

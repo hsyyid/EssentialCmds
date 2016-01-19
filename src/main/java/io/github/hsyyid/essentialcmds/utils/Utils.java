@@ -1185,4 +1185,13 @@ public class Utils
 	{
 		return Utils.lastDeath(player) != null;
 	}
+
+	public static void deleteHome(Player player, String homeName)
+	{
+		ConfigurationNode homeNode = Configs.getConfig(config).getNode("home", "users", player.getUniqueId().toString(), "homes");
+		String homes = homeNode.getString();
+		homes = homes.replace(homeName + ",", "");
+		Configs.setValue(config, homeNode.getPath(), homes);
+		Configs.removeChild(config, new Object[] { "home", "users", player.getUniqueId().toString() }, homeName);
+	}
 }
