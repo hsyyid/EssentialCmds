@@ -25,6 +25,7 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
+import org.spongepowered.api.block.tileentity.CommandBlock;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -35,8 +36,9 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
+
+import javax.annotation.Nonnull;
 
 public class TimeExecutor extends CommandExecutorBase
 {
@@ -89,6 +91,55 @@ public class TimeExecutor extends CommandExecutorBase
 				else
 				{
 					player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Could not understand input."));
+				}
+			}
+
+			return CommandResult.success();
+		}
+		else if(src instanceof CommandBlock)
+		{
+			CommandBlock commandBlock = (CommandBlock) src;
+			
+			if (timeTicks.isPresent())
+			{
+				commandBlock.getWorld().getProperties().setWorldTime(timeTicks.get());
+				commandBlock.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeTicks.get()));
+			}
+			else if (timeString.isPresent())
+			{
+				if (timeString.get().toLowerCase().equals("dawn") || timeString.get().toLowerCase().equals("morning"))
+				{
+					commandBlock.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
+					commandBlock.getWorld().getProperties().setWorldTime(0);
+				}
+				else if (timeString.get().toLowerCase().equals("day"))
+				{
+					commandBlock.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
+					commandBlock.getWorld().getProperties().setWorldTime(1000);
+				}
+				else if (timeString.get().toLowerCase().equals("afternoon") || timeString.get().toLowerCase().equals("noon"))
+				{
+					commandBlock.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
+					commandBlock.getWorld().getProperties().setWorldTime(6000);
+				}
+				else if (timeString.get().toLowerCase().equals("dusk"))
+				{
+					commandBlock.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
+					commandBlock.getWorld().getProperties().setWorldTime(12000);
+				}
+				else if (timeString.get().toLowerCase().equals("night"))
+				{
+					commandBlock.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
+					commandBlock.getWorld().getProperties().setWorldTime(14000);
+				}
+				else if (timeString.get().toLowerCase().equals("midnight"))
+				{
+					commandBlock.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
+					commandBlock.getWorld().getProperties().setWorldTime(18000);
+				}
+				else
+				{
+					commandBlock.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Could not understand input."));
 				}
 			}
 

@@ -68,7 +68,7 @@ public class ItemInfoExecutor extends CommandExecutorBase
 	@Nonnull
 	@Override
 	public String[] getAliases() {
-		return new String[] { "iteminfo" };
+		return new String[] { "iteminfo", "itemdb" };
 	}
 
 	@Nonnull

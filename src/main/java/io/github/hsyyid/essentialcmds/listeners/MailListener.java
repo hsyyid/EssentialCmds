@@ -35,7 +35,6 @@ import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
 
 public class MailListener
 {
-
 	private Game game = getEssentialCmds().getGame();
 
 	@Listener

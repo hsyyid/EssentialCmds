@@ -1157,6 +1157,7 @@ public class Utils
 	{
 		World world = null;
 		CommentedConfigurationNode worldNode = Configs.getConfig(config).getNode("spawn", "world");
+		
 		if (configManager.getString(worldNode).isPresent())
 		{
 			world = Sponge.getServer().getWorld(configManager.getString(worldNode).get()).orElse(null);

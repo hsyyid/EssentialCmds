@@ -197,17 +197,17 @@ public class MessageSinkListener
 
 			original = original.replaceFirst("<", ("<" + prefix));
 			String prefixInOriginal = original.substring(0, prefix.length() + 1);
-
-			original = original.replaceFirst(">", (suffix + ">"));
-			String suffixInOriginal = original.substring(original.indexOf(player.getName()) + player.getName().length(), original.indexOf(">"));
 			
 			original = original.replaceFirst(player.getName(), nick);
 			String playerName = original.substring(prefixInOriginal.length(), original.indexOf(nick) + nick.length());
 			
-			String restOfOriginal = original.substring(original.indexOf(">"), original.length());
+			String restOfOriginal = original.substring(original.indexOf(">") + 1, original.length());
+			
+			original = original.replaceFirst(">", (suffix + ">"));
+			String suffixInOriginal = original.substring(original.indexOf(nick) + nick.length(), original.indexOf(restOfOriginal));
 			
 			prefixInOriginal = prefixInOriginal.replaceFirst("<", Utils.getFirstChatCharReplacement());
-			restOfOriginal = restOfOriginal.replaceFirst(">", Utils.getLastChatCharReplacement());
+			suffixInOriginal = suffixInOriginal.substring(0, suffixInOriginal.lastIndexOf(">")) + Utils.getLastChatCharReplacement();
 			
 			if (!(player.hasPermission("essentialcmds.color.chat.use")))
 			{

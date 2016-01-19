@@ -69,6 +69,7 @@ public final class CommandLoader {
             new GetPosExecutor(),
             new HatExecutor(),
             new HomeExecutor(),
+            new HealExecutor(),
             new IgniteExecutor(),
             new InvSeeExecutor(),
             new ItemInfoExecutor(),
