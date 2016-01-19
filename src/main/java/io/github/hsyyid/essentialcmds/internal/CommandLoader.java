@@ -48,6 +48,7 @@ public final class CommandLoader {
             new AFKExecutor(),
             new AsConsoleExecutor(),
             new BackExecutor(),
+            new BanExecutor(),
             new BlacklistBase(),
             new BlockInfoExecutor(),
             new BroadcastExecutor(),

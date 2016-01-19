@@ -84,8 +84,7 @@ public class BanExecutor extends CommandExecutorBase
 				.description(Text.of("Ban Command"))
 				.permission("essentialcmds.ban.use")
 				.arguments(
-						GenericArguments.seq(GenericArguments.onlyOne(new UserParser(Text.of("player"))), GenericArguments
-								.optional(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("reason"))))))
+						GenericArguments.seq(GenericArguments.onlyOne(new UserParser(Text.of("player"))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("reason"))))))
 				.executor(this).build();
 	}
 }
