@@ -28,23 +28,19 @@ import io.github.hsyyid.essentialcmds.EssentialCmds;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.command.SendCommandEvent;
+import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class CommandListener
 {
 	@Listener
-	public void onPlayerSendCommand(SendCommandEvent event)
+	public void onPlayerSendCommand(SendCommandEvent event, @First Player player)
 	{
-		if(event.getCause().first(Player.class).isPresent())
+		if(EssentialCmds.jailedPlayers.contains(player.getUniqueId()))
 		{
-			Player player = event.getCause().first(Player.class).get();
-			
-			if(EssentialCmds.jailedPlayers.contains(player.getUniqueId()))
-			{
-				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You may not execute commands while in jail!"));
-				event.setCancelled(true);
-			}
+			player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You may not execute commands while in jail!"));
+			event.setCancelled(true);
 		}
 	}
 }

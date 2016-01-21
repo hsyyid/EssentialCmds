@@ -25,6 +25,7 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
+import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -51,17 +52,14 @@ public class TeleportPosExecutor extends CommandExecutorBase
 		int x = ctx.<Integer> getOne("x").get();
 		int y = ctx.<Integer> getOne("y").get();
 		int z = ctx.<Integer> getOne("z").get();
-		World world = null;
-
-		if(optionalWorld.isPresent())
-		{
-			world = Sponge.getServer().getWorld(optionalWorld.get()).orElse(null);
-		}
+		World world = Sponge.getServer().getWorld(optionalWorld.get()).orElse(null);
 
 		if (p.isPresent())
 		{
 			if (src.hasPermission("teleport.pos.others"))
 			{
+				Utils.setLastTeleportOrDeathLocation(p.get().getUniqueId(), p.get().getLocation());
+				
 				if(world != null)
 					p.get().setLocation(new Location<>(world, x, y, z));
 				else
@@ -76,6 +74,7 @@ public class TeleportPosExecutor extends CommandExecutorBase
 			if (src instanceof Player)
 			{
 				Player player = (Player) src;
+				Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
 				
 				if(world != null)
 					player.setLocation(new Location<>(world, x, y, z));
@@ -106,8 +105,8 @@ public class TeleportPosExecutor extends CommandExecutorBase
 			.builder()
 			.description(Text.of("Teleport Position Command"))
 			.permission("essentialcmds.teleport.pos.use")
-			.arguments(
-				GenericArguments.seq(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))))),
+			.arguments(GenericArguments.seq(
+				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))))),
 				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("world")))),
 				GenericArguments.onlyOne(GenericArguments.integer(Text.of("x"))),
 				GenericArguments.onlyOne(GenericArguments.integer(Text.of("y"))),

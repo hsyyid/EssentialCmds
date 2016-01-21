@@ -24,9 +24,7 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.api.util.config.Configurable;
 import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
-import io.github.hsyyid.essentialcmds.managers.config.Config;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
@@ -41,13 +39,14 @@ import javax.annotation.Nonnull;
 public class DeleteHomeExecutor extends AsyncCommandExecutorBase
 {
 	@Override
-	public void executeAsync(CommandSource src, CommandContext ctx) {
+	public void executeAsync(CommandSource src, CommandContext ctx)
+	{
 		String homeName = ctx.<String> getOne("home name").get();
 
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			
+
 			if (Utils.inConfig(player.getUniqueId(), homeName))
 			{
 				Utils.deleteHome(player, homeName);
@@ -66,15 +65,15 @@ public class DeleteHomeExecutor extends AsyncCommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "deletehome", "delhome" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
-		return CommandSpec.builder().description(Text.of("Delete Home Command")).permission("essentialcmds.home.delete")
-			.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("home name")))).executor(this)
-			.build();
+	public CommandSpec getSpec()
+	{
+		return CommandSpec.builder().description(Text.of("Delete Home Command")).permission("essentialcmds.home.delete").arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("home name")))).executor(this).build();
 	}
 }

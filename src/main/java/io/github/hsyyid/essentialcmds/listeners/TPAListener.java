@@ -32,6 +32,7 @@ import io.github.hsyyid.essentialcmds.events.TPAEvent;
 import io.github.hsyyid.essentialcmds.events.TPAHereAcceptEvent;
 import io.github.hsyyid.essentialcmds.events.TPAHereEvent;
 import io.github.hsyyid.essentialcmds.utils.PendingInvitation;
+import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.scheduler.Scheduler;
@@ -74,6 +75,7 @@ public class TPAListener
 	{
 		String senderName = event.getSender().getName();
 		event.getRecipient().sendMessage(Text.of(TextColors.GREEN, senderName, TextColors.WHITE, " accepted your TPA Request."));
+		Utils.setLastTeleportOrDeathLocation(event.getRecipient().getUniqueId(), event.getRecipient().getLocation());
 		event.getRecipient().setLocation(event.getSender().getLocation());
 	}
 
@@ -82,6 +84,7 @@ public class TPAListener
 	{
 		String recipientName = event.getRecipient().getName();
 		event.getSender().sendMessage(Text.of(TextColors.GREEN, recipientName, TextColors.WHITE, " accepted your TPA Here Request."));
+		Utils.setLastTeleportOrDeathLocation(event.getSender().getUniqueId(), event.getSender().getLocation());
 		event.getSender().setLocation(event.getRecipient().getLocation());
 	}
 

@@ -34,6 +34,7 @@ import org.spongepowered.api.data.manipulator.mutable.tileentity.SignData;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.InteractBlockEvent;
+import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
@@ -44,47 +45,42 @@ import java.util.Optional;
 public class PlayerInteractListener
 {
 	@Listener
-	public void onPlayerInteractBlock(InteractBlockEvent event)
+	public void onPlayerInteractBlock(InteractBlockEvent event, @First Player player)
 	{
-		if (event.getCause().first(Player.class).isPresent())
+		if (EssentialCmds.frozenPlayers.contains(player.getUniqueId()))
 		{
-			Player player = event.getCause().first(Player.class).get();
+			player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot interact while frozen."));
+			event.setCancelled(true);
+			return;
+		}
 
-			if (EssentialCmds.frozenPlayers.contains(player.getUniqueId()))
+		Location<World> location = event.getTargetBlock().getLocation().get();
+
+		if (location.getTileEntity().isPresent() && location.getTileEntity().get() != null && location.getTileEntity().get().getType() != null)
+		{
+			TileEntity clickedEntity = location.getTileEntity().get();
+
+			if (event.getTargetBlock().getState().getType().equals(BlockTypes.STANDING_SIGN) || event.getTargetBlock().getState().getType().equals(BlockTypes.WALL_SIGN))
 			{
-				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot interact while frozen."));
-				event.setCancelled(true);
-				return;
-			}
+				Optional<SignData> signData = clickedEntity.getOrCreate(SignData.class);
 
-			Location<World> location = event.getTargetBlock().getLocation().get();
-
-			if (location.getTileEntity().isPresent() && location.getTileEntity().get() != null && location.getTileEntity().get().getType() != null)
-			{
-				TileEntity clickedEntity = location.getTileEntity().get();
-
-				if (event.getTargetBlock().getState().getType().equals(BlockTypes.STANDING_SIGN) || event.getTargetBlock().getState().getType().equals(BlockTypes.WALL_SIGN))
+				if (signData.isPresent())
 				{
-					Optional<SignData> signData = clickedEntity.getOrCreate(SignData.class);
+					SignData data = signData.get();
+					CommandManager cmdService = Sponge.getGame().getCommandManager();
+					String line0 = data.getValue(Keys.SIGN_LINES).get().get(0).toPlain();
+					String line1 = data.getValue(Keys.SIGN_LINES).get().get(1).toPlain();
+					String command = "warp " + line1;
 
-					if (signData.isPresent())
+					if (line0.equals("[Warp]"))
 					{
-						SignData data = signData.get();
-						CommandManager cmdService = Sponge.getGame().getCommandManager();
-						String line0 = data.getValue(Keys.SIGN_LINES).get().get(0).toPlain();
-						String line1 = data.getValue(Keys.SIGN_LINES).get().get(1).toPlain();
-						String command = "warp " + line1;
-
-						if (line0.equals("[Warp]"))
+						if (player.hasPermission("essentialcmds.warps.use.sign"))
 						{
-							if (player.hasPermission("essentialcmds.warps.use.sign"))
-							{
-								cmdService.process(player, command);
-							}
-							else
-							{
-								player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to use Warp Signs!"));
-							}
+							cmdService.process(player, command);
+						}
+						else
+						{
+							player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to use Warp Signs!"));
 						}
 					}
 				}

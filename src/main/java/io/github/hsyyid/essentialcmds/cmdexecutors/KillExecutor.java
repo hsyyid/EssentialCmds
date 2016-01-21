@@ -49,7 +49,7 @@ public class KillExecutor extends CommandExecutorBase
 		if (p.isPresent())
 		{
 			p.get().offer(Keys.HEALTH, 0d);
-			Utils.setLastDeathLocation(p.get().getUniqueId(), p.get().getLocation());
+			Utils.setLastTeleportOrDeathLocation(p.get().getUniqueId(), p.get().getLocation());
 			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Killed player " + p.get().getName()));
 			p.get().sendMessage(Text.of(TextColors.RED, "You have been killed by " + src.getName()));
 		}
@@ -59,7 +59,7 @@ public class KillExecutor extends CommandExecutorBase
 			{
 				Player player = (Player) src;
 				player.offer(Keys.HEALTH, 0d);
-				Utils.setLastDeathLocation(player.getUniqueId(), player.getLocation());
+				Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
 				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Killed yourself."));
 			}
 			else

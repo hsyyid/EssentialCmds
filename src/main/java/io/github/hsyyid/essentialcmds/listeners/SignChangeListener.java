@@ -31,6 +31,7 @@ import org.spongepowered.api.data.manipulator.mutable.tileentity.SignData;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.tileentity.ChangeSignEvent;
+import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
@@ -38,38 +39,34 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 public class SignChangeListener
 {
 	@Listener
-	public void onSignChange(ChangeSignEvent event)
+	public void onSignChange(ChangeSignEvent event, @First Player player)
 	{
-		if (event.getCause().first(Player.class).isPresent())
+		SignData signData = event.getText();
+
+		if (signData.getValue(Keys.SIGN_LINES).isPresent())
 		{
-			Player player = event.getCause().first(Player.class).get();
-			SignData signData = event.getText();
+			String line0 = signData.getValue(Keys.SIGN_LINES).get().get(0).toPlain();
+			String line1 = signData.getValue(Keys.SIGN_LINES).get().get(1).toPlain();
+			String line2 = signData.getValue(Keys.SIGN_LINES).get().get(2).toPlain();
+			String line3 = signData.getValue(Keys.SIGN_LINES).get().get(3).toPlain();
 
-			if (signData.getValue(Keys.SIGN_LINES).isPresent())
+			if (line0.equals("[Warp]"))
 			{
-				String line0 = signData.getValue(Keys.SIGN_LINES).get().get(0).toPlain();
-				String line1 = signData.getValue(Keys.SIGN_LINES).get().get(1).toPlain();
-				String line2 = signData.getValue(Keys.SIGN_LINES).get().get(2).toPlain();
-				String line3 = signData.getValue(Keys.SIGN_LINES).get().get(3).toPlain();
-
-				if (line0.equals("[Warp]"))
+				if (Utils.getWarps().contains(line1))
 				{
-					if (Utils.getWarps().contains(line1))
-					{
-						signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Text.of(TextColors.DARK_BLUE, "[Warp]")));
-					}
-					else
-					{
-						signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Text.of(TextColors.DARK_RED, "[Warp]")));
-					}
+					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Text.of(TextColors.DARK_BLUE, "[Warp]")));
 				}
-				else if (player != null && player.hasPermission("essentialcmds.color.sign.use"))
+				else
 				{
-					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, TextSerializers.formattingCode('&').deserialize(line0)));
-					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(1, TextSerializers.formattingCode('&').deserialize(line1)));
-					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(2, TextSerializers.formattingCode('&').deserialize(line2)));
-					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(3, TextSerializers.formattingCode('&').deserialize(line3)));
+					signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Text.of(TextColors.DARK_RED, "[Warp]")));
 				}
+			}
+			else if (player != null && player.hasPermission("essentialcmds.color.sign.use"))
+			{
+				signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, TextSerializers.formattingCode('&').deserialize(line0)));
+				signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(1, TextSerializers.formattingCode('&').deserialize(line1)));
+				signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(2, TextSerializers.formattingCode('&').deserialize(line2)));
+				signData = signData.set(signData.getValue(Keys.SIGN_LINES).get().set(3, TextSerializers.formattingCode('&').deserialize(line3)));
 			}
 		}
 	}

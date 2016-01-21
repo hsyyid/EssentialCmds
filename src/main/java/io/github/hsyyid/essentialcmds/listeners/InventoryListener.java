@@ -28,6 +28,7 @@ import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -38,37 +39,27 @@ import org.spongepowered.api.text.format.TextColors;
 public class InventoryListener
 {
 	@Listener
-	public void onChangeHeldItem(ChangeInventoryEvent.Held event)
+	public void onChangeHeldItem(ChangeInventoryEvent.Held event, @First Player player)
 	{
-		if (event.getCause().first(Player.class).isPresent())
+		for (SlotTransaction transaction : event.getTransactions())
 		{
-			Player player = event.getCause().first(Player.class).get();
-			
-			for (SlotTransaction transaction : event.getTransactions())
+			if (Utils.getBlacklistItems().contains(transaction.getFinal().createStack().getItem().getId()))
 			{
-				if (Utils.getBlacklistItems().contains(transaction.getFinal().createStack().getItem().getId()))
-				{
-					player.sendMessage(Text.of(TextColors.RED, "The item ", TextColors.GRAY, transaction.getFinal().createStack().getItem().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
-					transaction.setCustom(Sponge.getRegistry().createBuilder(ItemStack.Builder.class).itemType(ItemTypes.DIRT).quantity(1).build());
-				}
+				player.sendMessage(Text.of(TextColors.RED, "The item ", TextColors.GRAY, transaction.getFinal().createStack().getItem().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
+				transaction.setCustom(Sponge.getRegistry().createBuilder(ItemStack.Builder.class).itemType(ItemTypes.DIRT).quantity(1).build());
 			}
 		}
 	}
-	
+
 	@Listener
-	public void onChangeEquipment(ChangeInventoryEvent.Equipment event)
+	public void onChangeEquipment(ChangeInventoryEvent.Equipment event, @First Player player)
 	{
-		if (event.getCause().first(Player.class).isPresent())
+		for (SlotTransaction transaction : event.getTransactions())
 		{
-			Player player = event.getCause().first(Player.class).get();
-			
-			for (SlotTransaction transaction : event.getTransactions())
+			if (Utils.getBlacklistItems().contains(transaction.getFinal().createStack().getItem().getId()))
 			{
-				if (Utils.getBlacklistItems().contains(transaction.getFinal().createStack().getItem().getId()))
-				{
-					player.sendMessage(Text.of(TextColors.RED, "The item ", TextColors.GRAY, transaction.getFinal().createStack().getItem().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
-					transaction.setCustom(Sponge.getRegistry().createBuilder(ItemStack.Builder.class).itemType(ItemTypes.DIRT).quantity(1).build());
-				}
+				player.sendMessage(Text.of(TextColors.RED, "The item ", TextColors.GRAY, transaction.getFinal().createStack().getItem().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
+				transaction.setCustom(Sponge.getRegistry().createBuilder(ItemStack.Builder.class).itemType(ItemTypes.DIRT).quantity(1).build());
 			}
 		}
 	}

@@ -25,6 +25,7 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
+import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -49,6 +50,7 @@ public class TeleportExecutor extends CommandExecutorBase
 		{
 			if (src.hasPermission("teleport.others"))
 			{
+				Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
 				player.setLocation(target.get().getLocation());
 				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported player " + player.getName() + " to " + target.get().getName()));
 				player.sendMessage(Text.of(TextColors.GOLD, "You have been teleported to " + target.get().getName() + " by " + src.getName()));

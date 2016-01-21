@@ -51,7 +51,7 @@ public class BackExecutor extends CommandExecutorBase
 
 			if (Utils.isLastDeathInConfig(player))
 			{
-				Location<World> location = Utils.lastDeath(player);
+				Location<World> location = Utils.getLastTeleportOrDeathLocation(player);
 				
 				if (player.getLocation().getExtent().getUniqueId().equals(location.getExtent().getUniqueId()))
 				{

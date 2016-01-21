@@ -860,7 +860,7 @@ public class Utils
 		Configs.saveConfig(config);
 	}
 
-	public static void setLastDeathLocation(UUID userName, Location<World> playerLocation)
+	public static void setLastTeleportOrDeathLocation(UUID userName, Location<World> playerLocation)
 	{
 		String playerName = userName.toString();
 
@@ -872,7 +872,7 @@ public class Utils
 		Configs.saveConfig(config);
 	}
 
-	public static Location<World> lastDeath(Player player)
+	public static Location<World> getLastTeleportOrDeathLocation(Player player)
 	{
 		try
 		{
@@ -1183,7 +1183,7 @@ public class Utils
 
 	public static boolean isLastDeathInConfig(Player player)
 	{
-		return Utils.lastDeath(player) != null;
+		return Utils.getLastTeleportOrDeathLocation(player) != null;
 	}
 
 	public static void deleteHome(Player player, String homeName)
