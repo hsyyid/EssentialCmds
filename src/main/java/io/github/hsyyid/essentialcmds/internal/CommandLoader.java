@@ -131,7 +131,8 @@ public final class CommandLoader {
             new JailExecutor(),
             new UnJailExecutor(),
             new VanishExecutor(),
-            new KickAllExecutor()
+            new KickAllExecutor(),
+            new WorldInfoExecutor()
         );
     }
 

@@ -52,7 +52,6 @@ public class GetPosExecutor extends CommandExecutorBase
 			{
 				Player player = (Player) src;
 				player.sendMessage(Text.of(TextColors.GOLD, "Your current position is: ", TextColors.GRAY, player.getLocation().getX() + ", " + player.getLocation().getY() + ", " + player.getLocation().getZ()));
-
 			}
 			else if (src instanceof ConsoleSource)
 			{
@@ -78,15 +77,20 @@ public class GetPosExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "getpos" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
-		return CommandSpec.builder().description(Text.of("GetPos Command")).permission("essentialcmds.getpos.use")
-				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))))
-				.executor(this).build();
+	public CommandSpec getSpec()
+	{
+		return CommandSpec.builder()
+			.description(Text.of("GetPos Command"))
+			.permission("essentialcmds.getpos.use")
+			.arguments(GenericArguments.optional(
+				GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))))
+			.executor(this).build();
 	}
 }

@@ -65,16 +65,19 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
-public class WorldsBase extends CommandExecutorBase {
+public class WorldsBase extends CommandExecutorBase
+{
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "world" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec.builder()
 			.description(Text.of("World Command"))
 			.permission("essentialcmds.world.use")
@@ -83,11 +86,13 @@ public class WorldsBase extends CommandExecutorBase {
 	}
 
 	@Override
-	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
+	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException
+	{
 		return CommandResult.empty();
 	}
 
-	static class Create extends CommandExecutorBase {
+	static class Create extends CommandExecutorBase
+	{
 		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 		{
 			String name = ctx.<String> getOne("name").get();
@@ -99,7 +104,7 @@ public class WorldsBase extends CommandExecutorBase {
 			DimensionType dimension = null;
 			GeneratorType generator = null;
 
-			if(Sponge.getRegistry().getType(DimensionType.class, dimensionInput).isPresent())
+			if (Sponge.getRegistry().getType(DimensionType.class, dimensionInput).isPresent())
 			{
 				dimension = Sponge.getRegistry().getType(DimensionType.class, dimensionInput).get();
 			}
@@ -109,7 +114,7 @@ public class WorldsBase extends CommandExecutorBase {
 				return CommandResult.success();
 			}
 
-			if(Sponge.getRegistry().getType(GeneratorType.class, generatorInput).isPresent())
+			if (Sponge.getRegistry().getType(GeneratorType.class, generatorInput).isPresent())
 			{
 				generator = Sponge.getRegistry().getType(GeneratorType.class, generatorInput).get();
 			}
@@ -119,7 +124,7 @@ public class WorldsBase extends CommandExecutorBase {
 				return CommandResult.success();
 			}
 
-			if(Sponge.getRegistry().getType(Difficulty.class, difficultyInput).isPresent())
+			if (Sponge.getRegistry().getType(Difficulty.class, difficultyInput).isPresent())
 			{
 				difficulty = Sponge.getRegistry().getType(Difficulty.class, difficultyInput).get();
 			}
@@ -147,7 +152,7 @@ public class WorldsBase extends CommandExecutorBase {
 			{
 				Optional<World> world = Sponge.getGame().getServer().loadWorld(worldProperties.get());
 
-				if(world.isPresent())
+				if (world.isPresent())
 				{
 					world.get().getProperties().setDifficulty(difficulty);
 					src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "World ", TextColors.GRAY, name, TextColors.GOLD, " has been created."));
@@ -167,29 +172,27 @@ public class WorldsBase extends CommandExecutorBase {
 
 		@Nonnull
 		@Override
-		public String[] getAliases() {
+		public String[] getAliases()
+		{
 			return new String[] { "create" };
 		}
 
 		@Nonnull
 		@Override
-		public CommandSpec getSpec() {
+		public CommandSpec getSpec()
+		{
 			return CommandSpec
 				.builder()
 				.description(Text.of("Create World Command"))
 				.permission("essentialcmds.world.create")
-				.arguments(
-					GenericArguments.onlyOne(GenericArguments.string(Text.of("name"))),
-					GenericArguments.onlyOne(GenericArguments.string(Text.of("dimension"))),
-					GenericArguments.onlyOne(GenericArguments.string(Text.of("generator"))),
-					GenericArguments.onlyOne(GenericArguments.catalogedElement(Text.of("gamemode"), CatalogTypes.GAME_MODE)),
-					GenericArguments.onlyOne(GenericArguments.string(Text.of("difficulty"))))
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("name"))), GenericArguments.onlyOne(GenericArguments.string(Text.of("dimension"))), GenericArguments.onlyOne(GenericArguments.string(Text.of("generator"))), GenericArguments.onlyOne(GenericArguments.catalogedElement(Text.of("gamemode"), CatalogTypes.GAME_MODE)), GenericArguments.onlyOne(GenericArguments.string(Text.of("difficulty"))))
 				.executor(this).build();
-			//GenericArguments.onlyOne(GenericArguments.catalogedElement(Text.of("difficulty"), CatalogTypes.DIFFICULTY)))
+			// GenericArguments.onlyOne(GenericArguments.catalogedElement(Text.of("difficulty"), CatalogTypes.DIFFICULTY)))
 		}
 	}
 
-	static class Delete extends CommandExecutorBase {
+	static class Delete extends CommandExecutorBase
+	{
 		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 		{
 			String worldName = ctx.<String> getOne("name").get();
@@ -218,9 +221,9 @@ public class WorldsBase extends CommandExecutorBase {
 
 			if (foundWorld != null)
 			{
-				for(Player player : game.getServer().getOnlinePlayers())
+				for (Player player : game.getServer().getOnlinePlayers())
 				{
-					if(player.getWorld().getUniqueId().equals(foundWorld.getUniqueId()) && altWorld != null)
+					if (player.getWorld().getUniqueId().equals(foundWorld.getUniqueId()) && altWorld != null)
 					{
 						player.transferToWorld(altWorld.getName(), altWorld.getSpawnLocation().getPosition());
 
@@ -240,22 +243,26 @@ public class WorldsBase extends CommandExecutorBase {
 
 		@Nonnull
 		@Override
-		public String[] getAliases() {
+		public String[] getAliases()
+		{
 			return new String[] { "delete", "del" };
 		}
 
 		@Nonnull
 		@Override
-		public CommandSpec getSpec() {
+		public CommandSpec getSpec()
+		{
 			return CommandSpec.builder().description(Text.of("Delete World Command")).permission("essentialcmds.world.delete")
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("name")))).executor(this).build();
 		}
 	}
 
-	static class List extends AsyncCommandExecutorBase {
+	static class List extends AsyncCommandExecutorBase
+	{
 
 		@Override
-		public void executeAsync(CommandSource src, CommandContext ctx) {
+		public void executeAsync(CommandSource src, CommandContext ctx)
+		{
 			ArrayList<String> worlds = EssentialCmds.getEssentialCmds().getGame().getServer().getWorlds().stream().filter(world -> world.getProperties().isEnabled()).map(World::getName).collect(Collectors.toCollection(ArrayList::new));
 
 			Optional<Integer> optionalPageNo = ctx.<Integer> getOne("page no");
@@ -289,13 +296,15 @@ public class WorldsBase extends CommandExecutorBase {
 
 		@Nonnull
 		@Override
-		public String[] getAliases() {
+		public String[] getAliases()
+		{
 			return new String[] { "list" };
 		}
 
 		@Nonnull
 		@Override
-		public CommandSpec getSpec() {
+		public CommandSpec getSpec()
+		{
 			return CommandSpec.builder()
 				.description(Text.of("List World Command"))
 				.permission("essentialcmds.worlds.list")
@@ -305,28 +314,31 @@ public class WorldsBase extends CommandExecutorBase {
 		}
 	}
 
-	static class Teleport extends CommandExecutorBase {
+	static class Teleport extends CommandExecutorBase
+	{
 
 		@Nonnull
 		@Override
-		public String[] getAliases() {
+		public String[] getAliases()
+		{
 			return new String[] { "tp", "teleport" };
 		}
 
 		@Nonnull
 		@Override
-		public CommandSpec getSpec() {
+		public CommandSpec getSpec()
+		{
 			return CommandSpec.builder()
 				.description(Text.of("Teleport World Command"))
 				.permission("essentialcmds.tpworld.use")
-				.arguments(GenericArguments.seq(GenericArguments.string(Text.of("name")),
-					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))))))
+				.arguments(GenericArguments.seq(GenericArguments.string(Text.of("name")), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))))))
 				.executor(this)
 				.build();
 		}
 
 		@Override
-		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException {
+		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+		{
 			Optional<Player> optPlayer = ctx.<Player> getOne("player");
 			String name = ctx.<String> getOne("name").get();
 
@@ -378,17 +390,20 @@ public class WorldsBase extends CommandExecutorBase {
 		}
 	}
 
-	static class Spawn extends CommandExecutorBase {
+	static class Spawn extends CommandExecutorBase
+	{
 
 		@Nonnull
 		@Override
-		public String[] getAliases() {
+		public String[] getAliases()
+		{
 			return new String[] { "spawn" };
 		}
 
 		@Nonnull
 		@Override
-		public CommandSpec getSpec() {
+		public CommandSpec getSpec()
+		{
 			return CommandSpec.builder()
 				.description(Text.of("World Spawn Command"))
 				.permission("essentialcmds.world.spawn.use")
@@ -397,7 +412,8 @@ public class WorldsBase extends CommandExecutorBase {
 		}
 
 		@Override
-		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException {
+		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+		{
 			if (src instanceof Player)
 			{
 				Player player = (Player) src;
@@ -414,17 +430,20 @@ public class WorldsBase extends CommandExecutorBase {
 		}
 	}
 
-	static class SetSpawn extends CommandExecutorBase {
+	static class SetSpawn extends CommandExecutorBase
+	{
 
 		@Nonnull
 		@Override
-		public String[] getAliases() {
+		public String[] getAliases()
+		{
 			return new String[] { "setspawn" };
 		}
 
 		@Nonnull
 		@Override
-		public CommandSpec getSpec() {
+		public CommandSpec getSpec()
+		{
 			return CommandSpec.builder()
 				.description(Text.of("Set World Spawn Command"))
 				.permission("essentialcmds.world.spawn.set")
@@ -433,7 +452,8 @@ public class WorldsBase extends CommandExecutorBase {
 		}
 
 		@Override
-		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException {
+		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+		{
 			if (src instanceof Player)
 			{
 				Player player = (Player) src;
@@ -449,32 +469,31 @@ public class WorldsBase extends CommandExecutorBase {
 		}
 	}
 
-	static class Load extends CommandExecutorBase {
+	static class Load extends CommandExecutorBase
+	{
 
 		@Nonnull
 		@Override
-		public String[] getAliases() {
+		public String[] getAliases()
+		{
 			return new String[] { "load" };
 		}
 
 		@Nonnull
 		@Override
-		public CommandSpec getSpec() {
+		public CommandSpec getSpec()
+		{
 			return CommandSpec
 				.builder()
 				.description(Text.of("Load World Command"))
 				.permission("essentialcmds.world.load")
-				.arguments(
-					GenericArguments.onlyOne(GenericArguments.string(Text.of("name"))),
-					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("dimension")))),
-					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("generator")))),
-					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.catalogedElement(Text.of("gamemode"), CatalogTypes.GAME_MODE))),
-					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("difficulty")))))
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("name"))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("dimension")))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("generator")))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.catalogedElement(Text.of("gamemode"), CatalogTypes.GAME_MODE))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("difficulty")))))
 				.executor(this).build();
 		}
 
 		@Override
-		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException {
+		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+		{
 			String name = ctx.<String> getOne("name").get();
 			Optional<String> dimensionInput = ctx.<String> getOne("dimension");
 			Optional<String> generatorInput = ctx.<String> getOne("generator");
@@ -484,29 +503,29 @@ public class WorldsBase extends CommandExecutorBase {
 			DimensionType dimension = DimensionTypes.OVERWORLD;
 			GeneratorType generator = GeneratorTypes.OVERWORLD;
 
-			if(dimensionInput.isPresent() && Sponge.getRegistry().getType(DimensionType.class, dimensionInput.get()).isPresent())
+			if (dimensionInput.isPresent() && Sponge.getRegistry().getType(DimensionType.class, dimensionInput.get()).isPresent())
 			{
 				dimension = Sponge.getRegistry().getType(DimensionType.class, dimensionInput.get()).get();
 			}
-			else if(dimensionInput.isPresent())
+			else if (dimensionInput.isPresent())
 			{
 				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Dimension type specified not found."));
 			}
 
-			if(generatorInput.isPresent() && Sponge.getRegistry().getType(GeneratorType.class, generatorInput.get()).isPresent())
+			if (generatorInput.isPresent() && Sponge.getRegistry().getType(GeneratorType.class, generatorInput.get()).isPresent())
 			{
 				generator = Sponge.getRegistry().getType(GeneratorType.class, generatorInput.get()).get();
 			}
-			else if(generatorInput.isPresent())
+			else if (generatorInput.isPresent())
 			{
 				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Generator type specified not found."));
 			}
 
-			if(difficultyInput.isPresent() && Sponge.getRegistry().getType(Difficulty.class, difficultyInput.get()).isPresent())
+			if (difficultyInput.isPresent() && Sponge.getRegistry().getType(Difficulty.class, difficultyInput.get()).isPresent())
 			{
 				difficulty = Sponge.getRegistry().getType(Difficulty.class, difficultyInput.get()).get();
 			}
-			else if(difficultyInput.isPresent())
+			else if (difficultyInput.isPresent())
 			{
 				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Difficulty specified not found."));
 			}
@@ -529,7 +548,7 @@ public class WorldsBase extends CommandExecutorBase {
 			{
 				Optional<World> world = Sponge.getGame().getServer().loadWorld(worldProperties.get());
 
-				if(world.isPresent())
+				if (world.isPresent())
 				{
 					world.get().getProperties().setDifficulty(difficulty);
 					src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "World ", TextColors.GRAY, name, TextColors.GOLD, " has been loaded."));
