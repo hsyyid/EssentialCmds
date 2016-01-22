@@ -43,15 +43,19 @@ import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameMode;
+import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.world.DimensionType;
+import org.spongepowered.api.world.DimensionTypes;
 import org.spongepowered.api.world.GeneratorType;
+import org.spongepowered.api.world.GeneratorTypes;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.WorldCreationSettings;
+import org.spongepowered.api.world.difficulty.Difficulties;
 import org.spongepowered.api.world.difficulty.Difficulty;
 import org.spongepowered.api.world.storage.WorldProperties;
 
@@ -104,7 +108,7 @@ public class WorldsBase extends CommandExecutorBase {
 				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Dimension type specified not found."));
 				return CommandResult.success();
 			}
-			
+
 			if(Sponge.getRegistry().getType(GeneratorType.class, generatorInput).isPresent())
 			{
 				generator = Sponge.getRegistry().getType(GeneratorType.class, generatorInput).get();
@@ -460,13 +464,53 @@ public class WorldsBase extends CommandExecutorBase {
 				.builder()
 				.description(Text.of("Load World Command"))
 				.permission("essentialcmds.world.load")
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("name"))))
+				.arguments(
+					GenericArguments.onlyOne(GenericArguments.string(Text.of("name"))),
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("dimension")))),
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("generator")))),
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.catalogedElement(Text.of("gamemode"), CatalogTypes.GAME_MODE))),
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("difficulty")))))
 				.executor(this).build();
 		}
 
 		@Override
 		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException {
 			String name = ctx.<String> getOne("name").get();
+			Optional<String> dimensionInput = ctx.<String> getOne("dimension");
+			Optional<String> generatorInput = ctx.<String> getOne("generator");
+			Optional<String> difficultyInput = ctx.<String> getOne("difficulty");
+			Optional<GameMode> gamemode = ctx.<GameMode> getOne("gamemode");
+			Difficulty difficulty = Difficulties.NORMAL;
+			DimensionType dimension = DimensionTypes.OVERWORLD;
+			GeneratorType generator = GeneratorTypes.OVERWORLD;
+
+			if(dimensionInput.isPresent() && Sponge.getRegistry().getType(DimensionType.class, dimensionInput.get()).isPresent())
+			{
+				dimension = Sponge.getRegistry().getType(DimensionType.class, dimensionInput.get()).get();
+			}
+			else if(dimensionInput.isPresent())
+			{
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Dimension type specified not found."));
+			}
+
+			if(generatorInput.isPresent() && Sponge.getRegistry().getType(GeneratorType.class, generatorInput.get()).isPresent())
+			{
+				generator = Sponge.getRegistry().getType(GeneratorType.class, generatorInput.get()).get();
+			}
+			else if(generatorInput.isPresent())
+			{
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Generator type specified not found."));
+			}
+
+			if(difficultyInput.isPresent() && Sponge.getRegistry().getType(Difficulty.class, difficultyInput.get()).isPresent())
+			{
+				difficulty = Sponge.getRegistry().getType(Difficulty.class, difficultyInput.get()).get();
+			}
+			else if(difficultyInput.isPresent())
+			{
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Difficulty specified not found."));
+			}
+
 			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Beginning loading of world."));
 
 			WorldCreationSettings worldSettings = EssentialCmds.getEssentialCmds().getGame().getRegistry().createBuilder(WorldCreationSettings.Builder.class)
@@ -474,6 +518,9 @@ public class WorldsBase extends CommandExecutorBase {
 				.enabled(true)
 				.loadsOnStartup(true)
 				.keepsSpawnLoaded(true)
+				.dimension(dimension)
+				.generator(generator)
+				.gameMode(gamemode.orElse(GameModes.SURVIVAL))
 				.build();
 
 			Optional<WorldProperties> worldProperties = Sponge.getGame().getServer().createWorldProperties(worldSettings);
@@ -484,6 +531,7 @@ public class WorldsBase extends CommandExecutorBase {
 
 				if(world.isPresent())
 				{
+					world.get().getProperties().setDifficulty(difficulty);
 					src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "World ", TextColors.GRAY, name, TextColors.GOLD, " has been loaded."));
 				}
 				else
