@@ -48,7 +48,7 @@ public class SlapExecutor extends CommandExecutorBase
 	{
 		Optional<Player> target = ctx.<Player> getOne("target");
 		Optional<String> targets = ctx.<String> getOne("targets");
-		
+
 		Random random = new Random();
 
 		if (!target.isPresent() && !targets.isPresent())
@@ -79,16 +79,16 @@ public class SlapExecutor extends CommandExecutorBase
 				player.sendMessage(Text.of(TextColors.YELLOW, "Slapped!"));
 			}
 		}
-		else if(targets.isPresent() && src.hasPermission("essentialcmds.slap.others"))
+		else if (targets.isPresent() && src.hasPermission("essentialcmds.slap.others"))
 		{
 			String targ = targets.get();
-			
-			if(targ.equalsIgnoreCase("a") || targ.equalsIgnoreCase("@a"))
+
+			if (targ.equalsIgnoreCase("a") || targ.equalsIgnoreCase("@a"))
 			{
-				for(Player player : Sponge.getServer().getOnlinePlayers())
+				for (Player player : Sponge.getServer().getOnlinePlayers())
 				{
 					Vector3d velocity = null;
-					
+
 					if (ctx.hasAny("v"))
 					{
 						velocity = new Vector3d(random.nextDouble() * 10.0 - 5, random.nextDouble() * 10, random.nextDouble() * 10.0 - 5);
@@ -115,7 +115,7 @@ public class SlapExecutor extends CommandExecutorBase
 				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Invalid argument supplied!"));
 			}
 		}
-		else if(target.isPresent() && src.hasPermission("essentialcmds.slap.others"))
+		else if (target.isPresent() && src.hasPermission("essentialcmds.slap.others"))
 		{
 			Player player = target.get();
 			Vector3d velocity = null;
@@ -150,14 +150,20 @@ public class SlapExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "slap" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
-		return CommandSpec.builder().description(Text.of("Skull Command")).permission("essentialcmds.skull.use")
-				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))))).executor(this).build();
+	public CommandSpec getSpec()
+	{
+		return CommandSpec.builder().description(Text.of("Slap Command"))
+			.permission("essentialcmds.slap.use")
+			.arguments(GenericArguments.optional(
+				GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))))
+			.executor(this)
+			.build();
 	}
 }
