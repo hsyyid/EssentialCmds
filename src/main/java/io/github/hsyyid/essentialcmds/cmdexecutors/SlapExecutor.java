@@ -159,10 +159,14 @@ public class SlapExecutor extends CommandExecutorBase
 	@Override
 	public CommandSpec getSpec()
 	{
-		return CommandSpec.builder().description(Text.of("Slap Command"))
+		return CommandSpec.builder()
+			.description(Text.of("Slap Command"))
 			.permission("essentialcmds.slap.use")
-			.arguments(GenericArguments.optional(
-				GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))))
+			.arguments(GenericArguments.firstParsing(GenericArguments.flags()
+				.flag("-v", "v")
+				.flag("-damage", "d")
+				.flag("-hard", "h")
+				.buildWith(GenericArguments.firstParsing(GenericArguments.optional(GenericArguments.player(Text.of("target"))), GenericArguments.optional(GenericArguments.string(Text.of("targets")))))))
 			.executor(this)
 			.build();
 	}

@@ -132,7 +132,9 @@ public final class CommandLoader {
             new UnJailExecutor(),
             new VanishExecutor(),
             new KickAllExecutor(),
-            new WorldInfoExecutor()
+            new WorldInfoExecutor(),
+            new SlapExecutor(),
+            new RocketExecutor()
         );
     }
 
