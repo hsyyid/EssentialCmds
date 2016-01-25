@@ -38,35 +38,45 @@ import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.util.PositionOutOfBoundsException;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
+
+import javax.annotation.Nonnull;
 
 public class HomeExecutor extends CommandExecutorBase
 {
-
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		String homeName = ctx.<String> getOne("home name").get();
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
+			
 			if (Utils.inConfig(player.getUniqueId(), homeName))
 			{
-				if (Objects.equals(player.getWorld().getName(), Utils.getHomeWorldName(player.getUniqueId(), homeName)))
+				try
 				{
-					Location<World> home = new Location<>(player.getWorld(), Utils.getX(player.getUniqueId(), homeName), Utils.getY(player.getUniqueId(), homeName), Utils.getZ(player.getUniqueId(), homeName));
-					player.setLocation(home);
-					src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Home " + homeName));
-					return CommandResult.success();
+					if (Objects.equals(player.getWorld().getName(), Utils.getHomeWorldName(player.getUniqueId(), homeName)))
+					{
+						Location<World> home = new Location<>(player.getWorld(), Utils.getX(player.getUniqueId(), homeName), Utils.getY(player.getUniqueId(), homeName), Utils.getZ(player.getUniqueId(), homeName));
+						player.setLocation(home);
+						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Home " + homeName));
+						return CommandResult.success();
+					}
+					else
+					{
+						Vector3d position = new Vector3d(Utils.getX(player.getUniqueId(), homeName), Utils.getY(player.getUniqueId(), homeName), Utils.getZ(player.getUniqueId(), homeName));
+						player.transferToWorld(Utils.getHomeWorldName(player.getUniqueId(), homeName), position);
+						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Home " + homeName));
+						return CommandResult.success();
+					}
 				}
-				else
+				catch (PositionOutOfBoundsException e)
 				{
-					Vector3d position = new Vector3d(Utils.getX(player.getUniqueId(), homeName), Utils.getY(player.getUniqueId(), homeName), Utils.getZ(player.getUniqueId(), homeName));
-					player.transferToWorld(Utils.getHomeWorldName(player.getUniqueId(), homeName), position);
-					src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Home " + homeName));
+					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Home is in invalid coordinates!"));
 					return CommandResult.success();
 				}
 			}
@@ -88,13 +98,15 @@ public class HomeExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "home" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec.builder().description(Text.of("Home Command")).permission("essentialcmds.home.use")
 			.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("home name")))).executor(this).build();
 	}
