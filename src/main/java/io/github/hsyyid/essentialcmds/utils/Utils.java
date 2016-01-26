@@ -1195,6 +1195,7 @@ public class Utils
 		ConfigurationNode warpNode = Configs.getConfig(warpsConfig).getNode("warps", "warps");
 		String warps = warpNode.getString();
 		warps = warps.replace(warpName + ",", "");
-		Configs.setValue(warpsConfig, new java.lang.Object[] { "warps", "warps" }, warps);
+		Configs.setValue(warpsConfig, warpNode.getPath(), warps);
+		Configs.removeChild(warpsConfig, new Object[] { "warps" }, warpName);
 	}
 }
