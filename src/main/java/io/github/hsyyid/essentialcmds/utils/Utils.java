@@ -905,12 +905,12 @@ public class Utils
 	{
 		String playerName = userName.toString();
 
-		Configs.getConfig(mainConfig).getNode("back", "users", playerName, "lastDeath", "X").setValue(playerLocation.getX());
-		Configs.getConfig(mainConfig).getNode("back", "users", playerName, "lastDeath", "Y").setValue(playerLocation.getY());
-		Configs.getConfig(mainConfig).getNode("back", "users", playerName, "lastDeath", "Z").setValue(playerLocation.getZ());
-		Configs.getConfig(mainConfig).getNode("back", "users", playerName, "lastDeath", "worldUUID").setValue(playerLocation.getExtent().getUniqueId().toString());
+		Configs.getConfig(playerDataConfig).getNode("back", "users", playerName, "lastDeath", "X").setValue(playerLocation.getX());
+		Configs.getConfig(playerDataConfig).getNode("back", "users", playerName, "lastDeath", "Y").setValue(playerLocation.getY());
+		Configs.getConfig(playerDataConfig).getNode("back", "users", playerName, "lastDeath", "Z").setValue(playerLocation.getZ());
+		Configs.getConfig(playerDataConfig).getNode("back", "users", playerName, "lastDeath", "worldUUID").setValue(playerLocation.getExtent().getUniqueId().toString());
 
-		Configs.saveConfig(mainConfig);
+		Configs.saveConfig(playerDataConfig);
 	}
 
 	public static Location<World> getLastTeleportOrDeathLocation(Player player)
@@ -918,13 +918,13 @@ public class Utils
 		try
 		{
 			String playerName = player.getUniqueId().toString();
-			ConfigurationNode xNode = Configs.getConfig(mainConfig).getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.X").split("\\."));
+			ConfigurationNode xNode = Configs.getConfig(playerDataConfig).getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.X").split("\\."));
 			double x = xNode.getDouble();
-			ConfigurationNode yNode = Configs.getConfig(mainConfig).getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Y").split("\\."));
+			ConfigurationNode yNode = Configs.getConfig(playerDataConfig).getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Y").split("\\."));
 			double y = yNode.getDouble();
-			ConfigurationNode zNode = Configs.getConfig(mainConfig).getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Z").split("\\."));
+			ConfigurationNode zNode = Configs.getConfig(playerDataConfig).getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Z").split("\\."));
 			double z = zNode.getDouble();
-			ConfigurationNode worldNode = Configs.getConfig(mainConfig).getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.worldUUID").split("\\."));
+			ConfigurationNode worldNode = Configs.getConfig(playerDataConfig).getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.worldUUID").split("\\."));
 			UUID worldUUID = UUID.fromString(worldNode.getString());
 			Optional<World> world = game.getServer().getWorld(worldUUID);
 

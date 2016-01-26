@@ -109,6 +109,7 @@ public class PlayerDataConfig implements Configurable
 	public void populate()
 	{
 		get().getNode("player").setComment("Contains all player-specific data.");
+		get().getNode("back").setComment("Contains player last-teleported data.");
 	}
 
 	@Override
