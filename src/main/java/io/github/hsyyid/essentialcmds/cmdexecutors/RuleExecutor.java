@@ -24,38 +24,56 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import com.google.common.collect.Lists;
 import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.Utils;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.service.pagination.PaginationBuilder;
+import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nonnull;
 
 public class RuleExecutor extends AsyncCommandExecutorBase
 {
 	@Override
-	public void executeAsync(CommandSource src, CommandContext ctx) {
+	public void executeAsync(CommandSource src, CommandContext ctx)
+	{
 		ArrayList<String> rules = Utils.getRules();
+		List<Text> ruleText = Lists.newArrayList();
+
 		for (String rule : rules)
 		{
-			src.sendMessage(Text.of(TextColors.GRAY, (rules.indexOf(rule) + 1) + ". ", TextColors.GOLD, rule));
+			ruleText.add(Text.of(TextColors.GRAY, (rules.indexOf(rule) + 1) + ". ", TextColors.GOLD, rule));
 		}
+
+		PaginationService paginationService = Sponge.getServiceManager().provide(PaginationService.class).get();
+		PaginationBuilder paginationBuilder = paginationService.builder().contents(ruleText).title(Text.of(TextColors.GOLD, "Rules")).paddingString("-");
+		paginationBuilder.sendTo(src);
 	}
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "rules" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
-		return CommandSpec.builder().description(Text.of("Rules Command")).permission("essentialcmds.rules.use")
-				.executor(this).build();
+	public CommandSpec getSpec()
+	{
+		return CommandSpec.builder()
+			.description(Text.of("Rules Command"))
+			.permission("essentialcmds.rules.use")
+			.executor(this)
+			.build();
 	}
 }
