@@ -28,6 +28,7 @@ import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.utils.AFK;
 import io.github.hsyyid.essentialcmds.utils.Mail;
 import io.github.hsyyid.essentialcmds.utils.Utils;
+import org.spongepowered.api.data.manipulator.mutable.entity.JoinData;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
@@ -52,7 +53,7 @@ public class PlayerJoinListener
 	{
 		Player player = event.getTargetEntity();
 
-		if (player.getJoinData().firstPlayed().get().equals(player.getJoinData().lastPlayed().get()))
+		if (player.get(JoinData.class).isPresent() && player.getJoinData().firstPlayed().get().equals(player.getJoinData().lastPlayed().get()))
 		{
 			Location<World> spawn = Utils.getSpawn();
 
