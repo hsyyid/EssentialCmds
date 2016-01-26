@@ -76,6 +76,7 @@ public class EssentialCmds
 {
 	protected EssentialCmds()
 	{
+		;
 	}
 
 	private static EssentialCmds essentialCmds;
