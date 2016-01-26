@@ -24,24 +24,25 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import com.google.common.collect.Lists;
 import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
-import io.github.hsyyid.essentialcmds.utils.PaginatedList;
 import io.github.hsyyid.essentialcmds.utils.Utils;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.source.CommandBlockSource;
-import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.service.pagination.PaginationBuilder;
+import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Optional;
+import java.util.List;
+
+import javax.annotation.Nonnull;
 
 public class ListHomeExecutor extends AsyncCommandExecutorBase
 {
@@ -60,34 +61,25 @@ public class ListHomeExecutor extends AsyncCommandExecutorBase
 				return;
 			}
 
-			Optional<Integer> arguments = ctx.<Integer> getOne("page no");
-			int pgNo = arguments.orElse(1);
+			PaginationService paginationService = Sponge.getServiceManager().provide(PaginationService.class).get();
+			List<Text> homeText = Lists.newArrayList();
 
-			// Add List
-			PaginatedList pList = new PaginatedList("/homes");
 			for (String name : homes)
 			{
-				Text item = Text.builder(name).onClick(TextActions.runCommand("/home " + name)).onHover(TextActions.showText(Text.of(TextColors.WHITE, "Teleport to home ", TextColors.GOLD, name))).color(TextColors.DARK_AQUA).style(TextStyles.UNDERLINE).build();
+				Text item = Text.builder(name)
+					.onClick(TextActions.runCommand("/home " + name))
+					.onHover(TextActions.showText(Text.of(TextColors.WHITE, "Teleport to home ", TextColors.GOLD, name)))
+					.color(TextColors.DARK_AQUA)
+					.style(TextStyles.UNDERLINE)
+					.build();
 
-				pList.add(item);
+				homeText.add(item);
 			}
-			pList.setItemsPerPage(10);
-			// Header
-			Text.Builder header = Text.builder();
-			header.append(Text.of(TextColors.GREEN, "------------"));
-			header.append(Text.of(TextColors.GREEN, " Showing Homes page " + pgNo + " of " + pList.getTotalPages() + " "));
-			header.append(Text.of(TextColors.GREEN, "------------"));
 
-			pList.setHeader(header.build());
-			// Send List
-			src.sendMessage(pList.getPage(pgNo));
-
+			PaginationBuilder paginationBuilder = paginationService.builder().contents(homeText).title(Text.of(TextColors.GREEN, "Showing Homes")).paddingString("-");
+			paginationBuilder.sendTo(src);
 		}
-		else if (src instanceof ConsoleSource)
-		{
-			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /homes!"));
-		}
-		else if (src instanceof CommandBlockSource)
+		else
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /homes!"));
 		}
@@ -95,15 +87,19 @@ public class ListHomeExecutor extends AsyncCommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "homes" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
-		return CommandSpec.builder().description(Text.of("List Home Command")).permission("essentialcmds.home.list")
-				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Text.of("page no")))))
-				.executor(this).build();
+	public CommandSpec getSpec()
+	{
+		return CommandSpec.builder()
+			.description(Text.of("List Home Command"))
+			.permission("essentialcmds.home.list")
+			.executor(this)
+			.build();
 	}
 }

@@ -24,24 +24,27 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import com.google.common.collect.Lists;
 import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
-import io.github.hsyyid.essentialcmds.utils.PaginatedList;
 import io.github.hsyyid.essentialcmds.utils.Utils;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.service.pagination.PaginationBuilder;
+import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Optional;
+import java.util.List;
+
+import javax.annotation.Nonnull;
 
 public class ListWarpExecutor extends AsyncCommandExecutorBase
 {
@@ -52,19 +55,18 @@ public class ListWarpExecutor extends AsyncCommandExecutorBase
 		{
 			Player player = (Player) src;
 			ArrayList<String> warps = Utils.getWarps();
-			
+
 			if (warps.size() == 0)
 			{
 				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "No warps set!"));
 				return;
 			}
 
-			Optional<Integer> arguments = ctx.<Integer> getOne("page no");
-			int pgNo = arguments.orElse(1);
-
 			if (warps.size() > 0)
 			{
-				PaginatedList pList = new PaginatedList("/warps");
+				PaginationService paginationService = Sponge.getServiceManager().provide(PaginationService.class).get();
+				List<Text> warpText = Lists.newArrayList();
+
 				for (String name : warps)
 				{
 					Text item = Text.builder(name)
@@ -74,18 +76,11 @@ public class ListWarpExecutor extends AsyncCommandExecutorBase
 						.style(TextStyles.UNDERLINE)
 						.build();
 
-					pList.add(item);
+					warpText.add(item);
 				}
-				pList.setItemsPerPage(10);
-				// Header
-				Text.Builder header = Text.builder();
-				header.append(Text.of(TextColors.GREEN, "------------"));
-				header.append(Text.of(TextColors.GREEN, " Showing Warps page " + pgNo + " of " + pList.getTotalPages() + " "));
-				header.append(Text.of(TextColors.GREEN, "------------"));
-
-				pList.setHeader(header.build());
 				
-				src.sendMessage(pList.getPage(pgNo));
+				PaginationBuilder paginationBuilder = paginationService.builder().contents(warpText).title(Text.of(TextColors.GREEN, "Showing Warps")).paddingString("-");
+				paginationBuilder.sendTo(src);
 			}
 			else
 			{
@@ -104,15 +99,18 @@ public class ListWarpExecutor extends AsyncCommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "warps" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
-		return CommandSpec.builder().description(Text.of("List Warps Command")).permission("essentialcmds.warps.list")
-				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Text.of("page no")))))
-				.executor(this).build();
+	public CommandSpec getSpec()
+	{
+		return CommandSpec.builder()
+			.description(Text.of("List Warps Command"))
+			.permission("essentialcmds.warps.list")
+			.executor(this).build();
 	}
 }

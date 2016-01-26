@@ -25,10 +25,10 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import com.flowpowered.math.vector.Vector3i;
+import com.google.common.collect.Lists;
 import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
-import io.github.hsyyid.essentialcmds.utils.PaginatedList;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.CatalogTypes;
 import org.spongepowered.api.Game;
@@ -44,6 +44,8 @@ import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameMode;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
+import org.spongepowered.api.service.pagination.PaginationBuilder;
+import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -265,10 +267,8 @@ public class WorldsBase extends CommandExecutorBase
 		{
 			ArrayList<String> worlds = EssentialCmds.getEssentialCmds().getGame().getServer().getWorlds().stream().filter(world -> world.getProperties().isEnabled()).map(World::getName).collect(Collectors.toCollection(ArrayList::new));
 
-			Optional<Integer> optionalPageNo = ctx.<Integer> getOne("page no");
-			int pageNo = optionalPageNo.orElse(1);
-
-			PaginatedList pList = new PaginatedList("/worlds");
+			PaginationService paginationService = Sponge.getServiceManager().provide(PaginationService.class).get();
+			ArrayList<Text> worldText = Lists.newArrayList();
 
 			for (String name : worlds)
 			{
@@ -279,19 +279,11 @@ public class WorldsBase extends CommandExecutorBase
 					.style(TextStyles.UNDERLINE)
 					.build();
 
-				pList.add(item);
+				worldText.add(item);
 			}
 
-			pList.setItemsPerPage(10);
-
-			Text.Builder header = Text.builder();
-			header.append(Text.of(TextColors.GREEN, "------------"));
-			header.append(Text.of(TextColors.GREEN, " Showing Worlds page " + pageNo + " of " + pList.getTotalPages() + " "));
-			header.append(Text.of(TextColors.GREEN, "------------"));
-
-			pList.setHeader(header.build());
-
-			src.sendMessage(pList.getPage(pageNo));
+			PaginationBuilder paginationBuilder = paginationService.builder().contents(worldText).title(Text.of(TextColors.GREEN, "Showing Worlds")).paddingString("-");
+			paginationBuilder.sendTo(src);
 		}
 
 		@Nonnull
@@ -308,7 +300,6 @@ public class WorldsBase extends CommandExecutorBase
 			return CommandSpec.builder()
 				.description(Text.of("List World Command"))
 				.permission("essentialcmds.worlds.list")
-				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.integer(Text.of("page no")))))
 				.executor(this)
 				.build();
 		}

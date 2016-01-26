@@ -24,195 +24,183 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import com.google.common.collect.Lists;
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
-import io.github.hsyyid.essentialcmds.utils.PaginatedList;
 import io.github.hsyyid.essentialcmds.utils.Utils;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.source.CommandBlockSource;
-import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
-import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.service.pagination.PaginationBuilder;
+import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
 
-import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.Optional;
 
-public class BlacklistBase extends CommandExecutorBase {
-    @Nonnull
-    @Override
-    public String[] getAliases() {
-        return new String[] { "blacklist", "bl" };
-    }
+import javax.annotation.Nonnull;
 
-    @Nonnull
-    @Override
-    public CommandSpec getSpec() {
-        return CommandSpec.builder()
-            .description(Text.of("Blacklist Command"))
-            .permission("essentialcmds.blacklist.use")
-            .children(getChildrenList(new BlacklistAddExecutor(), new BlacklistListExecutor(), new BlacklistRemoveExecutor()))
-            .build();
-    }
+public class BlacklistBase extends CommandExecutorBase
+{
+	@Nonnull
+	@Override
+	public String[] getAliases()
+	{
+		return new String[] { "blacklist", "bl" };
+	}
 
-    @Override
-    public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException {
-        return CommandResult.empty();
-    }
+	@Nonnull
+	@Override
+	public CommandSpec getSpec()
+	{
+		return CommandSpec.builder()
+			.description(Text.of("Blacklist Command"))
+			.permission("essentialcmds.blacklist.use")
+			.children(getChildrenList(new BlacklistAddExecutor(), new BlacklistListExecutor(), new BlacklistRemoveExecutor()))
+			.build();
+	}
 
-    private static class BlacklistAddExecutor extends CommandExecutorBase {
+	@Override
+	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+	{
+		return CommandResult.empty();
+	}
 
-        @Nonnull
-        @Override
-        public String[] getAliases() {
-            return new String[] { "add" };
-        }
+	private static class BlacklistAddExecutor extends CommandExecutorBase
+	{
 
-        @Nonnull
-        @Override
-        public CommandSpec getSpec() {
-            return CommandSpec.builder()
-                    .description(Text.of("Add Blacklist Command"))
-                    .permission("essentialcmds.blacklist.add")
-                    .arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("item id"))))
-                    .executor(this)
-                    .build();
-        }
+		@Nonnull
+		@Override
+		public String[] getAliases()
+		{
+			return new String[] { "add" };
+		}
 
-        @Override
-        public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException {
-            String itemId = ctx.<String> getOne("item id").get();
+		@Nonnull
+		@Override
+		public CommandSpec getSpec()
+		{
+			return CommandSpec.builder()
+				.description(Text.of("Add Blacklist Command"))
+				.permission("essentialcmds.blacklist.add")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("item id"))))
+				.executor(this)
+				.build();
+		}
 
-            if (!Utils.getBlacklistItems().contains(itemId))
-            {
-                Utils.addBlacklistItem(itemId);
-                src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, itemId + " has been blacklisted."));
-            }
-            else
-            {
-                src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, itemId + " has already been blacklisted."));
-            }
+		@Override
+		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+		{
+			String itemId = ctx.<String> getOne("item id").get();
 
-            return CommandResult.success();
-        }
-    }
+			if (!Utils.getBlacklistItems().contains(itemId))
+			{
+				Utils.addBlacklistItem(itemId);
+				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, itemId + " has been blacklisted."));
+			}
+			else
+			{
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, itemId + " has already been blacklisted."));
+			}
 
-    private static class BlacklistRemoveExecutor extends CommandExecutorBase {
+			return CommandResult.success();
+		}
+	}
 
-        @Nonnull
-        @Override
-        public String[] getAliases() {
-            return new String[] { "remove" };
-        }
+	private static class BlacklistRemoveExecutor extends CommandExecutorBase
+	{
 
-        @Nonnull
-        @Override
-        public CommandSpec getSpec() {
-            return CommandSpec.builder()
-                    .description(Text.of("Remove Blacklist Command"))
-                    .permission("essentailcmds.blacklist.remove")
-                    .arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("item id"))))
-                    .executor(this)
-                    .build();
-        }
+		@Nonnull
+		@Override
+		public String[] getAliases()
+		{
+			return new String[] { "remove" };
+		}
 
-        @Override
-        public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException {
-            String itemId = ctx.<String> getOne("item id").get();
+		@Nonnull
+		@Override
+		public CommandSpec getSpec()
+		{
+			return CommandSpec.builder()
+				.description(Text.of("Remove Blacklist Command"))
+				.permission("essentailcmds.blacklist.remove")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("item id"))))
+				.executor(this)
+				.build();
+		}
 
-            if (Utils.getBlacklistItems().contains(itemId))
-            {
-                Utils.removeBlacklistItem(itemId);
-                src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, itemId + " has been un-blacklisted."));
-            }
-            else
-            {
-                src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "This item is not blacklisted."));
-            }
+		@Override
+		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+		{
+			String itemId = ctx.<String> getOne("item id").get();
 
-            return CommandResult.success();
-        }
-    }
+			if (Utils.getBlacklistItems().contains(itemId))
+			{
+				Utils.removeBlacklistItem(itemId);
+				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, itemId + " has been un-blacklisted."));
+			}
+			else
+			{
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "This item is not blacklisted."));
+			}
 
-    private static class BlacklistListExecutor extends CommandExecutorBase {
+			return CommandResult.success();
+		}
+	}
 
-        @Nonnull
-        @Override
-        public String[] getAliases() {
-            return new String[] { "list" };
-        }
+	private static class BlacklistListExecutor extends CommandExecutorBase
+	{
 
-        @Nonnull
-        @Override
-        public CommandSpec getSpec() {
-            return CommandSpec.builder()
-                    .description(Text.of("List Blacklist Command"))
-                    .permission("essentailcmds.blacklist.list")
-                    .arguments(GenericArguments.optional(
-                            GenericArguments.onlyOne(GenericArguments.integer(Text.of("page no")))))
-                    .executor(this)
-                    .build();
-        }
+		@Nonnull
+		@Override
+		public String[] getAliases()
+		{
+			return new String[] { "list" };
+		}
 
-        @Override
-        public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException {
-            Optional<Integer> arguments = ctx.<Integer> getOne("page no");
+		@Nonnull
+		@Override
+		public CommandSpec getSpec()
+		{
+			return CommandSpec.builder()
+				.description(Text.of("List Blacklist Command"))
+				.permission("essentailcmds.blacklist.list")
+				.executor(this)
+				.build();
+		}
 
-            if (src instanceof Player)
-            {
-                Player player = (Player) src;
-                List<String> blacklistItems = Utils.getBlacklistItems();
+		@Override
+		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+		{
+			List<String> blacklistItems = Utils.getBlacklistItems();
 
-                if(blacklistItems.size() == 0)
-                {
-                    player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "There are no blacklisted items!"));
-                    return CommandResult.success();
-                }
+			if (blacklistItems.size() == 0)
+			{
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "There are no blacklisted items!"));
+				return CommandResult.success();
+			}
 
-                int pgNo = arguments.orElse(1);
+			PaginationService paginationService = Sponge.getServiceManager().provide(PaginationService.class).get();
+			List<Text> blacklistText = Lists.newArrayList();
 
-                PaginatedList pList = new PaginatedList("/blacklist list");
+			for (String name : blacklistItems)
+			{
+				Text item = Text.builder(name)
+					.color(TextColors.DARK_AQUA)
+					.style(TextStyles.UNDERLINE)
+					.build();
 
-                for (String name : blacklistItems)
-                {
-                    Text item = Text.builder(name)
-                            .color(TextColors.DARK_AQUA)
-                            .style(TextStyles.UNDERLINE)
-                            .build();
+				blacklistText.add(item);
+			}
 
-                    pList.add(item);
-                }
+			PaginationBuilder paginationBuilder = paginationService.builder().contents(blacklistText).title(Text.of(TextColors.GREEN, "Showing Blacklist")).paddingString("-");
+			paginationBuilder.sendTo(src);
 
-                pList.setItemsPerPage(10);
-
-                Text.Builder header = Text.builder();
-                header.append(Text.of(TextColors.GREEN, "------------"));
-                header.append(Text.of(TextColors.GREEN, " Showing Blacklist page " + pgNo + " of " + pList.getTotalPages() + " "));
-                header.append(Text.of(TextColors.GREEN, "------------"));
-
-                pList.setHeader(header.build());
-
-                if(pgNo > pList.getTotalPages())
-                    pgNo = 1;
-
-                src.sendMessage(pList.getPage(pgNo));
-            }
-            else if (src instanceof ConsoleSource)
-            {
-                src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /blacklist list!"));
-            }
-            else if (src instanceof CommandBlockSource)
-            {
-                src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /blacklist list!"));
-            }
-
-            return CommandResult.success();
-        }
-    }
+			return CommandResult.success();
+		}
+	}
 }
