@@ -47,7 +47,7 @@ public class DeleteHomeExecutor extends AsyncCommandExecutorBase
 		{
 			Player player = (Player) src;
 
-			if (Utils.inConfig(player.getUniqueId(), homeName))
+			if (Utils.isHomeInConfig(player.getUniqueId(), homeName))
 			{
 				Utils.deleteHome(player, homeName);
 				src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Deleted home " + homeName));

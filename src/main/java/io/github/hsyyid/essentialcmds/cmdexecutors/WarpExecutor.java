@@ -24,7 +24,6 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import com.flowpowered.math.vector.Vector3d;
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.command.CommandException;
@@ -32,8 +31,6 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.source.CommandBlockSource;
-import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
@@ -41,9 +38,10 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.Optional;
+
+import javax.annotation.Nonnull;
 
 public class WarpExecutor extends CommandExecutorBase
 {
@@ -57,28 +55,25 @@ public class WarpExecutor extends CommandExecutorBase
 			if (src instanceof Player)
 			{
 				Player player = (Player) src;
+				Location<World> warpLocation = Utils.getWarp(warpName);
 
-				if (Utils.isWarpInConfig(warpName))
+				if (Utils.isWarpInConfig(warpName) && warpLocation != null)
 				{
 					if (player.hasPermission("essentialcmds.warp." + warpName))
 					{
-						if (!Objects.equals(player.getWorld().getUniqueId(), Utils.getWarpWorldUUID(warpName)))
+						if (!Objects.equals(player.getWorld().getUniqueId(), warpLocation.getExtent().getUniqueId()))
 						{
-							Vector3d position = new Vector3d(Utils.getWarpX(warpName), Utils.getWarpY(warpName), Utils.getWarpZ(warpName));
-							player.transferToWorld(Utils.getWarpWorldUUID(warpName), position);
+							player.transferToWorld(warpLocation.getExtent().getUniqueId(), warpLocation.getPosition());
 							src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
-							return CommandResult.success();
 						}
 						else
 						{
-							Location<World> warp = new Location<>(player.getWorld(), Utils.getWarpX(warpName), Utils.getWarpY(warpName), Utils.getWarpZ(warpName));
-							player.setLocation(warp);
+							player.setLocation(warpLocation);
 						}
 					}
 					else
 					{
 						src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to use this warp!"));
-						return CommandResult.success();
 					}
 				}
 				else
@@ -86,11 +81,7 @@ public class WarpExecutor extends CommandExecutorBase
 					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Warp " + warpName + " does not exist!"));
 				}
 			}
-			else if (src instanceof ConsoleSource)
-			{
-				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /warp!"));
-			}
-			else if (src instanceof CommandBlockSource)
+			else
 			{
 				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /warp!"));
 			}
@@ -98,28 +89,25 @@ public class WarpExecutor extends CommandExecutorBase
 		else
 		{
 			Player player = optionalPlayer.get();
-
-			if (Utils.isWarpInConfig(warpName))
+			Location<World> warpLocation = Utils.getWarp(warpName);
+			
+			if (Utils.isWarpInConfig(warpName) && warpLocation != null)
 			{
 				if (src.hasPermission("essentialcmds.warp." + warpName) && src.hasPermission("essentialcmds.warp.others"))
 				{
-					if (!Objects.equals(player.getWorld().getUniqueId(), Utils.getWarpWorldUUID(warpName)))
+					if (!Objects.equals(player.getWorld().getUniqueId(), warpLocation.getExtent().getUniqueId()))
 					{
-						Vector3d position = new Vector3d(Utils.getWarpX(warpName), Utils.getWarpY(warpName), Utils.getWarpZ(warpName));
-						player.transferToWorld(Utils.getWarpWorldUUID(warpName), position);
+						player.transferToWorld(warpLocation.getExtent().getUniqueId(), warpLocation.getPosition());
 						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
-						return CommandResult.success();
 					}
 					else
 					{
-						Location<World> warp = new Location<>(player.getWorld(), Utils.getWarpX(warpName), Utils.getWarpY(warpName), Utils.getWarpZ(warpName));
-						player.setLocation(warp);
+						player.setLocation(warpLocation);
 					}
 				}
 				else
 				{
 					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to use this warp!"));
-					return CommandResult.success();
 				}
 			}
 			else
@@ -133,17 +121,21 @@ public class WarpExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "warp" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
-		return CommandSpec.builder().description(Text.of("Warp Command")).permission("essentialcmds.warp.use")
-				.arguments(GenericArguments.seq(
-						GenericArguments.onlyOne(GenericArguments.string(Text.of("warp name"))),
-						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))))))
-				.executor(this).build();
+	public CommandSpec getSpec()
+	{
+		return CommandSpec.builder()
+			.description(Text.of("Warp Command"))
+			.permission("essentialcmds.warp.use")
+			.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.string(Text.of("warp name"))), 
+				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))))))
+			.executor(this)
+			.build();
 	}
 }

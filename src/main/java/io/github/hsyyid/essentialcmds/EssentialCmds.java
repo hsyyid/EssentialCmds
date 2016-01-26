@@ -45,6 +45,10 @@ import io.github.hsyyid.essentialcmds.listeners.SignChangeListener;
 import io.github.hsyyid.essentialcmds.listeners.TPAListener;
 import io.github.hsyyid.essentialcmds.listeners.WeatherChangeListener;
 import io.github.hsyyid.essentialcmds.managers.config.Config;
+import io.github.hsyyid.essentialcmds.managers.config.HomeConfig;
+import io.github.hsyyid.essentialcmds.managers.config.JailConfig;
+import io.github.hsyyid.essentialcmds.managers.config.RulesConfig;
+import io.github.hsyyid.essentialcmds.managers.config.WarpConfig;
 import io.github.hsyyid.essentialcmds.utils.AFK;
 import io.github.hsyyid.essentialcmds.utils.Message;
 import io.github.hsyyid.essentialcmds.utils.PendingInvitation;
@@ -68,9 +72,12 @@ import java.util.Set;
 import java.util.UUID;
 
 @Plugin(id = PluginInfo.ID, name = PluginInfo.NAME, version = PluginInfo.VERSION)
-public class EssentialCmds 
+public class EssentialCmds
 {
-	protected EssentialCmds() {}
+	protected EssentialCmds()
+	{
+	}
+
 	private static EssentialCmds essentialCmds;
 
 	public static List<PendingInvitation> pendingInvites = Lists.newArrayList();
@@ -91,29 +98,45 @@ public class EssentialCmds
 	@ConfigDir(sharedRoot = false)
 	private Path configDir;
 
-	public static EssentialCmds getEssentialCmds() {
+	public static EssentialCmds getEssentialCmds()
+	{
 		return essentialCmds;
 	}
 
 	@Listener
-	public void onPreInitialization(GamePreInitializationEvent event) {
+	public void onPreInitialization(GamePreInitializationEvent event)
+	{
 		essentialCmds = this;
 
 		// Create Config Directory for EssentialCmds
-		if (!Files.exists(configDir)) {
-			try {
+		if (!Files.exists(configDir))
+		{
+			try
+			{
 				Files.createDirectories(configDir);
-			} catch (IOException e) {
+				Files.createDirectories(configDir.resolve("data"));
+			}
+			catch (IOException e)
+			{
 				e.printStackTrace();
 			}
 		}
 
 		// Create config.conf
 		Config.getConfig().setup();
+		// Create warps.conf
+		WarpConfig.getConfig().setup();
+		// Create homes.conf
+		HomeConfig.getConfig().setup();
+		// Create rules.conf
+		RulesConfig.getConfig().setup();
+		// Create jails.conf
+		JailConfig.getConfig().setup();
 	}
 
 	@Listener
-	public void onServerInit(GameInitializationEvent event) {
+	public void onServerInit(GameInitializationEvent event)
+	{
 		getLogger().info(ID + " loading...");
 
 		Utils.readMutes();
@@ -145,15 +168,18 @@ public class EssentialCmds
 		getLogger().info("EssentialCmds loaded!");
 	}
 
-	public Path getConfigDir() {
+	public Path getConfigDir()
+	{
 		return configDir;
 	}
 
-	public Logger getLogger() {
+	public Logger getLogger()
+	{
 		return logger;
 	}
 
-	public Game getGame() {
+	public Game getGame()
+	{
 		return Sponge.getGame();
 	}
 

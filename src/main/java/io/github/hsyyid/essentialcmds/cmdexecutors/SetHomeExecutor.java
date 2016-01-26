@@ -29,8 +29,6 @@ import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.source.CommandBlockSource;
-import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.permission.Subject;
@@ -42,20 +40,22 @@ import javax.annotation.Nonnull;
 
 public class SetHomeExecutor extends AsyncCommandExecutorBase
 {
-
 	@Override
 	public void executeAsync(CommandSource src, CommandContext ctx)
 	{
 		String homeName = ctx.<String> getOne("home name").get();
+
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
 			Subject subject = player.getContainingCollection().get(player.getIdentifier());
 			String homesAllowed = null;
+
 			if (subject instanceof OptionSubject)
 			{
 				homesAllowed = ((OptionSubject) subject).getOption("homes").orElse("");
 			}
+
 			if (homesAllowed != null && !(homesAllowed.equals("")))
 			{
 				if (homesAllowed.equals("unlimited"))
@@ -98,11 +98,7 @@ public class SetHomeExecutor extends AsyncCommandExecutorBase
 				src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Home set."));
 			}
 		}
-		else if (src instanceof ConsoleSource)
-		{
-			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /sethome!"));
-		}
-		else if (src instanceof CommandBlockSource)
+		else
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /sethome!"));
 		}
@@ -110,14 +106,19 @@ public class SetHomeExecutor extends AsyncCommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "sethome" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
-		return CommandSpec.builder().description(Text.of("Set Home Command")).permission("essentialcmds.home.set")
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("home name")))).executor(this).build();
+	public CommandSpec getSpec()
+	{
+		return CommandSpec.builder()
+			.description(Text.of("Set Home Command")).permission("essentialcmds.home.set")
+			.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("home name"))))
+			.executor(this)
+			.build();
 	}
 }

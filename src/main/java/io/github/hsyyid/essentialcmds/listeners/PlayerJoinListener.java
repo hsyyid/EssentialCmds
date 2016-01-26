@@ -32,6 +32,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.world.Location;
@@ -63,15 +64,16 @@ public class PlayerJoinListener
 			{
 				player.setLocation(spawn);
 			}
+			
+			Text firstJoinMsg = TextSerializers.formattingCode('&').deserialize(Utils.getFirstJoinMsg().replaceAll("@p", player.getName()));
+			MessageChannel.TO_ALL.send(firstJoinMsg);
 		}
 
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy HH:mm:ss");
 		format.setTimeZone(TimeZone.getTimeZone("GMT"));
 		Utils.setLastTimePlayerJoined(player.getUniqueId(), format.format(cal.getTime()));
-
-		Text message = TextSerializers.formattingCode('&').deserialize(Utils.getJoinMsg());
-		player.sendMessage(message);
+		player.sendMessage(TextSerializers.formattingCode('&').deserialize(Utils.getJoinMsg()));
 
 		ArrayList<Mail> newMail = (ArrayList<Mail>) Utils.getMail().stream().filter(mail -> mail.getRecipientName().equals(player.getName())).collect(Collectors.toList());
 

@@ -41,7 +41,6 @@ public class BroadcastExecutor extends AsyncCommandExecutorBase
 	@Override
 	public void executeAsync(CommandSource src, CommandContext ctx) {
 		String message = ctx.<String> getOne("message").get();
-
 		Text msg = TextSerializers.formattingCode('&').deserialize(message);
 		Text broadcast = Text.of(TextColors.DARK_GRAY, "[", TextColors.DARK_RED, "Broadcast", TextColors.DARK_GRAY, "]", TextColors.GREEN, " ");
 		Text finalBroadcast = Text.builder().append(broadcast).append(msg).build();

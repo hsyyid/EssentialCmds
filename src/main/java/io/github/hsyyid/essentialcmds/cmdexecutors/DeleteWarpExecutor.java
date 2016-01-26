@@ -24,11 +24,8 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.api.util.config.Configs;
 import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
-import io.github.hsyyid.essentialcmds.managers.config.Config;
 import io.github.hsyyid.essentialcmds.utils.Utils;
-import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
@@ -46,15 +43,7 @@ public class DeleteWarpExecutor extends AsyncCommandExecutorBase
 
 		if (Utils.isWarpInConfig(warpName))
 		{
-			ConfigurationNode warpNode = Configs.getConfig(Config.getConfig()).getNode("warps", "warps");
-
-			// Get Value of Warp Node
-			String warps = warpNode.getString();
-
-			// Remove Warp
-			String newVal = warps.replace(warpName + ",", "");
-			Configs.setValue(Config.getConfig(), new java.lang.Object[]{"warps", "warps"}, newVal);
-
+			Utils.deleteWarp(warpName);
 			src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Deleted warp " + warpName));
 		}
 		else
