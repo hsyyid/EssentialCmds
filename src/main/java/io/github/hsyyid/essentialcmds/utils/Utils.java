@@ -35,6 +35,7 @@ import io.github.hsyyid.essentialcmds.api.util.config.Configurable;
 import io.github.hsyyid.essentialcmds.managers.config.Config;
 import io.github.hsyyid.essentialcmds.managers.config.HomeConfig;
 import io.github.hsyyid.essentialcmds.managers.config.JailConfig;
+import io.github.hsyyid.essentialcmds.managers.config.PlayerDataConfig;
 import io.github.hsyyid.essentialcmds.managers.config.RulesConfig;
 import io.github.hsyyid.essentialcmds.managers.config.SpawnConfig;
 import io.github.hsyyid.essentialcmds.managers.config.WarpConfig;
@@ -87,6 +88,7 @@ public class Utils
 	private static Configurable rulesConfig = RulesConfig.getConfig();
 	private static Configurable jailsConfig = JailConfig.getConfig();
 	private static Configurable spawnConfig = SpawnConfig.getConfig();
+	private static Configurable playerDataConfig = PlayerDataConfig.getConfig();
 	private static ConfigManager configManager = new ConfigManager();
 
 	public static void setSQLPort(String value)
@@ -320,7 +322,7 @@ public class Utils
 
 	public static String getLastTimePlayerJoined(UUID uuid)
 	{
-		CommentedConfigurationNode node = Configs.getConfig(mainConfig).getNode("player", uuid.toString(), "time");
+		CommentedConfigurationNode node = Configs.getConfig(playerDataConfig).getNode("player", uuid.toString(), "time");
 		if (configManager.getString(node).isPresent())
 			return node.getString();
 		return "";
@@ -328,7 +330,7 @@ public class Utils
 
 	public static void setLastTimePlayerJoined(UUID uuid, String time)
 	{
-		Configs.setValue(mainConfig, new Object[] { "player", uuid.toString(), "time" }, time);
+		Configs.setValue(playerDataConfig, new Object[] { "player", uuid.toString(), "time" }, time);
 	}
 
 	public static String getLoginMessage()

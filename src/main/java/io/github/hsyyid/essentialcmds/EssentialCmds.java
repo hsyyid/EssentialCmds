@@ -47,6 +47,7 @@ import io.github.hsyyid.essentialcmds.listeners.WeatherChangeListener;
 import io.github.hsyyid.essentialcmds.managers.config.Config;
 import io.github.hsyyid.essentialcmds.managers.config.HomeConfig;
 import io.github.hsyyid.essentialcmds.managers.config.JailConfig;
+import io.github.hsyyid.essentialcmds.managers.config.PlayerDataConfig;
 import io.github.hsyyid.essentialcmds.managers.config.RulesConfig;
 import io.github.hsyyid.essentialcmds.managers.config.SpawnConfig;
 import io.github.hsyyid.essentialcmds.managers.config.WarpConfig;
@@ -148,6 +149,8 @@ public class EssentialCmds
 		JailConfig.getConfig().setup();
 		// Create spawn.conf
 		SpawnConfig.getConfig().setup();
+		// Create playerdata.conf
+		PlayerDataConfig.getConfig().setup();
 	}
 
 	@Listener
