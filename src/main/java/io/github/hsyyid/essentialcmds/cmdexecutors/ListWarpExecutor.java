@@ -69,16 +69,19 @@ public class ListWarpExecutor extends AsyncCommandExecutorBase
 
 				for (String name : warps)
 				{
-					Text item = Text.builder(name)
-						.onClick(TextActions.runCommand("/warp " + name))
-						.onHover(TextActions.showText(Text.of(TextColors.WHITE, "Warp to ", TextColors.GOLD, name)))
-						.color(TextColors.DARK_AQUA)
-						.style(TextStyles.UNDERLINE)
-						.build();
+					if (player.hasPermission("essentialcmds.warp." + name))
+					{
+						Text item = Text.builder(name)
+							.onClick(TextActions.runCommand("/warp " + name))
+							.onHover(TextActions.showText(Text.of(TextColors.WHITE, "Warp to ", TextColors.GOLD, name)))
+							.color(TextColors.DARK_AQUA)
+							.style(TextStyles.UNDERLINE)
+							.build();
 
-					warpText.add(item);
+						warpText.add(item);
+					}
 				}
-				
+
 				PaginationBuilder paginationBuilder = paginationService.builder().contents(warpText).title(Text.of(TextColors.GREEN, "Showing Warps")).paddingString("-");
 				paginationBuilder.sendTo(src);
 			}
