@@ -48,6 +48,7 @@ import io.github.hsyyid.essentialcmds.managers.config.Config;
 import io.github.hsyyid.essentialcmds.managers.config.HomeConfig;
 import io.github.hsyyid.essentialcmds.managers.config.JailConfig;
 import io.github.hsyyid.essentialcmds.managers.config.RulesConfig;
+import io.github.hsyyid.essentialcmds.managers.config.SpawnConfig;
 import io.github.hsyyid.essentialcmds.managers.config.WarpConfig;
 import io.github.hsyyid.essentialcmds.utils.AFK;
 import io.github.hsyyid.essentialcmds.utils.Message;
@@ -115,6 +116,18 @@ public class EssentialCmds
 			try
 			{
 				Files.createDirectories(configDir);
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+
+		// Create data Directory for EssentialCmds
+		if (!Files.exists(configDir.resolve("data")))
+		{
+			try
+			{
 				Files.createDirectories(configDir.resolve("data"));
 			}
 			catch (IOException e)
@@ -133,6 +146,8 @@ public class EssentialCmds
 		RulesConfig.getConfig().setup();
 		// Create jails.conf
 		JailConfig.getConfig().setup();
+		// Create spawn.conf
+		SpawnConfig.getConfig().setup();
 	}
 
 	@Listener

@@ -36,6 +36,7 @@ import io.github.hsyyid.essentialcmds.managers.config.Config;
 import io.github.hsyyid.essentialcmds.managers.config.HomeConfig;
 import io.github.hsyyid.essentialcmds.managers.config.JailConfig;
 import io.github.hsyyid.essentialcmds.managers.config.RulesConfig;
+import io.github.hsyyid.essentialcmds.managers.config.SpawnConfig;
 import io.github.hsyyid.essentialcmds.managers.config.WarpConfig;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -85,6 +86,7 @@ public class Utils
 	private static Configurable homesConfig = HomeConfig.getConfig();
 	private static Configurable rulesConfig = RulesConfig.getConfig();
 	private static Configurable jailsConfig = JailConfig.getConfig();
+	private static Configurable spawnConfig = SpawnConfig.getConfig();
 	private static ConfigManager configManager = new ConfigManager();
 
 	public static void setSQLPort(String value)
@@ -356,14 +358,14 @@ public class Utils
 	{
 		Configs.setValue(mainConfig, new Object[] { "message", "disconnect" }, value);
 	}
-	
+
 	public static String getFirstJoinMsg()
 	{
 		CommentedConfigurationNode node = Configs.getConfig(mainConfig).getNode("message", "firstjoin");
-		
+
 		if (configManager.getString(node).isPresent())
 			return node.getString();
-		
+
 		setFirstJoinMsg("&4Welcome &a@p &4to the server!");
 		return "&4Welcome &a@p &4to the server!";
 	}
@@ -853,12 +855,12 @@ public class Utils
 
 	public static void setSpawn(Location<World> playerLocation, String worldName)
 	{
-		Configs.getConfig(mainConfig).getNode("spawn", "X").setValue(playerLocation.getX());
-		Configs.getConfig(mainConfig).getNode("spawn", "Y").setValue(playerLocation.getY());
-		Configs.getConfig(mainConfig).getNode("spawn", "Z").setValue(playerLocation.getZ());
-		Configs.getConfig(mainConfig).getNode("spawn", "world").setValue(worldName);
+		Configs.getConfig(spawnConfig).getNode("spawn", "X").setValue(playerLocation.getX());
+		Configs.getConfig(spawnConfig).getNode("spawn", "Y").setValue(playerLocation.getY());
+		Configs.getConfig(spawnConfig).getNode("spawn", "Z").setValue(playerLocation.getZ());
+		Configs.getConfig(spawnConfig).getNode("spawn", "world").setValue(worldName);
 
-		Configs.saveConfig(mainConfig);
+		Configs.saveConfig(spawnConfig);
 	}
 
 	public static void setJoinMsg(String msg)
@@ -1140,7 +1142,7 @@ public class Utils
 
 	public static boolean isSpawnInConfig()
 	{
-		ConfigurationNode valueNode = Configs.getConfig(mainConfig).getNode("spawn", "X");
+		ConfigurationNode valueNode = Configs.getConfig(spawnConfig).getNode("spawn", "X");
 		Object inConfig = valueNode.getValue();
 		return inConfig != null;
 	}
@@ -1148,29 +1150,28 @@ public class Utils
 	public static Location<World> getSpawn()
 	{
 		World world = null;
-		CommentedConfigurationNode worldNode = Configs.getConfig(mainConfig).getNode("spawn", "world");
-
+		CommentedConfigurationNode worldNode = Configs.getConfig(spawnConfig).getNode("spawn", "world");
 		if (configManager.getString(worldNode).isPresent())
-		{
 			world = Sponge.getServer().getWorld(configManager.getString(worldNode).get()).orElse(null);
-		}
 
 		double x = 0, y = 0, z = 0;
-		CommentedConfigurationNode xNode = Configs.getConfig(mainConfig).getNode("spawn", "X");
-		if (configManager.getDouble(xNode).isPresent())
-		{
-			x = xNode.getDouble();
-		}
 
-		CommentedConfigurationNode yNode = Configs.getConfig(mainConfig).getNode("spawn", "Y");
+		CommentedConfigurationNode xNode = Configs.getConfig(spawnConfig).getNode("spawn", "X");
+		if (configManager.getDouble(xNode).isPresent())
+			x = xNode.getDouble();
+
+		CommentedConfigurationNode yNode = Configs.getConfig(spawnConfig).getNode("spawn", "Y");
 		if (configManager.getDouble(yNode).isPresent())
 			y = yNode.getDouble();
 
-		CommentedConfigurationNode zNode = Configs.getConfig(mainConfig).getNode("spawn", "Z");
+		CommentedConfigurationNode zNode = Configs.getConfig(spawnConfig).getNode("spawn", "Z");
 		if (configManager.getDouble(zNode).isPresent())
 			z = zNode.getDouble();
 
-		return new Location<World>(world, x, y, z);
+		if (world != null)
+			return new Location<>(world, x, y, z);
+		else
+			return null;
 	}
 
 	public static boolean isLastDeathInConfig(Player player)
