@@ -61,6 +61,7 @@ public class WarpExecutor extends CommandExecutorBase
 				{
 					if (player.hasPermission("essentialcmds.warp." + warpName))
 					{
+						Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
 						if (!Objects.equals(player.getWorld().getUniqueId(), warpLocation.getExtent().getUniqueId()))
 						{
 							player.transferToWorld(warpLocation.getExtent().getUniqueId(), warpLocation.getPosition());
@@ -95,6 +96,7 @@ public class WarpExecutor extends CommandExecutorBase
 			{
 				if (src.hasPermission("essentialcmds.warp." + warpName) && src.hasPermission("essentialcmds.warp.others"))
 				{
+					Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
 					if (!Objects.equals(player.getWorld().getUniqueId(), warpLocation.getExtent().getUniqueId()))
 					{
 						player.transferToWorld(warpLocation.getExtent().getUniqueId(), warpLocation.getPosition());

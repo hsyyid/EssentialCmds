@@ -55,6 +55,7 @@ public class HomeExecutor extends CommandExecutorBase
 			{
 				try
 				{
+					Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
 					if (Objects.equals(player.getWorld().getUniqueId(), Utils.getHome(player.getUniqueId(), homeName).getExtent().getUniqueId()))
 					{
 						player.setLocation(Utils.getHome(player.getUniqueId(), homeName));
