@@ -44,7 +44,7 @@ import java.util.UUID;
 
 public class MessageSinkListener
 {
-	@Listener(order=Order.PRE)
+	@Listener(order = Order.PRE)
 	public void onMessage(MessageChannelEvent.Chat event)
 	{
 		if (event.getCause().first(Player.class).isPresent())
@@ -70,7 +70,6 @@ public class MessageSinkListener
 					try
 					{
 						Text newMessage = Text.builder().append(event.getMessage().orElse(Text.of())).onClick(TextActions.openUrl(new URL(foundLink))).build();
-
 						event.setMessage(newMessage);
 					}
 					catch (MalformedURLException e)
@@ -106,7 +105,6 @@ public class MessageSinkListener
 				try
 				{
 					Text newMessage = Text.builder().append(event.getMessage().orElse(Text.of())).onClick(TextActions.openUrl(new URL(foundLink))).build();
-
 					event.setMessage(newMessage);
 				}
 				catch (MalformedURLException e)
@@ -184,7 +182,7 @@ public class MessageSinkListener
 			Subject subject = player.getContainingCollection().get(player.getIdentifier());
 			String prefix = "";
 			String suffix = "";
-			
+
 			if (subject instanceof OptionSubject)
 			{
 				OptionSubject optionSubject = (OptionSubject) subject;
@@ -192,23 +190,23 @@ public class MessageSinkListener
 				prefix = optionSubject.getOption("prefix").orElse("");
 				suffix = optionSubject.getOption("suffix").orElse("");
 			}
-			
+
 			String nick = Utils.getNick(player);
 
 			original = original.replaceFirst("<", ("<" + prefix));
 			String prefixInOriginal = original.substring(0, prefix.length() + 1);
-			
+
 			original = original.replaceFirst(player.getName(), nick);
 			String playerName = original.substring(prefixInOriginal.length(), original.indexOf(nick) + nick.length());
-			
+
 			String restOfOriginal = original.substring(original.indexOf(">") + 1, original.length());
-			
+
 			original = original.replaceFirst(">", (suffix + ">"));
 			String suffixInOriginal = original.substring(original.indexOf(nick) + nick.length(), original.indexOf(restOfOriginal));
-			
+
 			prefixInOriginal = prefixInOriginal.replaceFirst("<", Utils.getFirstChatCharReplacement());
 			suffixInOriginal = suffixInOriginal.substring(0, suffixInOriginal.lastIndexOf(">")) + Utils.getLastChatCharReplacement();
-			
+
 			if (!(player.hasPermission("essentialcmds.color.chat.use")))
 			{
 				event.setMessage(Text.builder()
