@@ -545,9 +545,15 @@ public class Utils
 		}
 	}
 
-	public static void removeJail(int number)
+	public static boolean removeJail(int number)
 	{
-		Configs.removeChild(jailsConfig, new Object[] { "jails" }, String.valueOf(number));
+		if (Configs.getConfig(jailsConfig).getNode(new Object[] { "jails", String.valueOf(number), "X" }).getValue() != null)
+		{
+			Configs.removeChild(jailsConfig, new Object[] { "jails" }, String.valueOf(number));
+			return true;
+		}
+		
+		return false;
 	}
 
 	public static void teleportPlayerToJail(Player player, int number)

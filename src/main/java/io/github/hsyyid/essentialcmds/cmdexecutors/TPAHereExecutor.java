@@ -59,6 +59,7 @@ public class TPAHereExecutor extends AsyncCommandExecutorBase
 			}
 			else
 			{
+				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Requested for " + recipient.getName() + " to be teleported to you"));
 				game.getEventManager().post(new TPAHereEvent(player, recipient));
 			}
 		}

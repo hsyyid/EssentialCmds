@@ -60,6 +60,7 @@ public class TPAExecutor extends AsyncCommandExecutorBase
 			}
 			else
 			{
+				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Requested to be teleported to " + recipient.getName() + "."));
 				game.getEventManager().post(new TPAEvent(player, recipient));
 			}
 		}

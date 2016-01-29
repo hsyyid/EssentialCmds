@@ -46,9 +46,9 @@ public class JailExecutor extends CommandExecutorBase
 		Player target = ctx.<Player> getOne("target").get();
 		int jailNumber = ctx.<Integer> getOne("number").get();
 
-		if(!EssentialCmds.jailedPlayers.contains(target.getUniqueId()))
-		{	
-			if(Utils.getNumberOfJails() >= jailNumber)
+		if (!EssentialCmds.jailedPlayers.contains(target.getUniqueId()))
+		{
+			if (Utils.getNumberOfJails() >= jailNumber)
 			{
 				EssentialCmds.jailedPlayers.add(target.getUniqueId());
 				Utils.teleportPlayerToJail(target, jailNumber);
@@ -69,34 +69,38 @@ public class JailExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "jail" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec.builder()
 			.description(Text.of("Jail Command"))
-			.arguments(GenericArguments.seq(GenericArguments.player(Text.of("target")), 
-				GenericArguments.integer(Text.of("number"))))
+			.arguments(GenericArguments.seq(GenericArguments.player(Text.of("target")), GenericArguments.integer(Text.of("number"))))
 			.children(getChildrenList(new AddExecutor(), new RemoveExecutor()))
 			.permission("essentialcmds.jail.use")
 			.executor(this)
 			.build();
 	}
 
-	private static class RemoveExecutor extends CommandExecutorBase {
+	private static class RemoveExecutor extends CommandExecutorBase
+	{
 
 		@Nonnull
 		@Override
-		public String[] getAliases() {
+		public String[] getAliases()
+		{
 			return new String[] { "remove" };
 		}
 
 		@Nonnull
 		@Override
-		public CommandSpec getSpec() {
+		public CommandSpec getSpec()
+		{
 			return CommandSpec.builder()
 				.description(Text.of("Jail Remove Command"))
 				.permission("essentialcmds.jail.remove.use")
@@ -106,25 +110,34 @@ public class JailExecutor extends CommandExecutorBase
 		}
 
 		@Override
-		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException {
+		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+		{
 			int number = ctx.<Integer> getOne("number").get();
-			Utils.removeJail(number);
-			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Removed jail " + number + "."));
+			boolean jailRemoved = Utils.removeJail(number);
+			
+			if (jailRemoved)
+				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Removed jail " + number + "."));
+			else
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Jail " + number + "doesn't exist."));
+
 			return CommandResult.success();
 		}
 	}
 
-	private static class AddExecutor extends CommandExecutorBase {
+	private static class AddExecutor extends CommandExecutorBase
+	{
 
 		@Nonnull
 		@Override
-		public String[] getAliases() {
+		public String[] getAliases()
+		{
 			return new String[] { "add" };
 		}
 
 		@Nonnull
 		@Override
-		public CommandSpec getSpec() {
+		public CommandSpec getSpec()
+		{
 			return CommandSpec.builder()
 				.description(Text.of("Jail Add Command"))
 				.permission("essentialcmds.jail.add.use")
@@ -133,8 +146,9 @@ public class JailExecutor extends CommandExecutorBase
 		}
 
 		@Override
-		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException {
-			if(src instanceof Player)
+		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+		{
+			if (src instanceof Player)
 			{
 				Player player = (Player) src;
 				Utils.addJail(player.getLocation());
