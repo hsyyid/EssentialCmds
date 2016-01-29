@@ -55,10 +55,11 @@ public class WarpExecutor extends CommandExecutorBase
 			if (src instanceof Player)
 			{
 				Player player = (Player) src;
-				Location<World> warpLocation = Utils.getWarp(warpName);
 
-				if (Utils.isWarpInConfig(warpName) && warpLocation != null)
+				if (Utils.isWarpInConfig(warpName))
 				{
+					Location<World> warpLocation = Utils.getWarp(warpName);
+					
 					if (player.hasPermission("essentialcmds.warp." + warpName))
 					{
 						Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());

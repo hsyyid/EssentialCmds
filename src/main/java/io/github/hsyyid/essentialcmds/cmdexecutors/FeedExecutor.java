@@ -52,7 +52,7 @@ public class FeedExecutor extends CommandExecutorBase
 		{
 			Player player = (Player) src;
 
-			if (player.hasPermission("feed.others") && p.isPresent())
+			if (player.hasPermission("essentialcmds.feed.others") && p.isPresent())
 			{
 				Player recipient = p.get();
 				Optional<FoodData> foodData = recipient.getOrCreate(FoodData.class);
