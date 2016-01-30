@@ -52,7 +52,7 @@ public class HealExecutor extends CommandExecutorBase
 		{
 			Player player = (Player) src;
 
-			if (player.hasPermission("heal.others") && p.isPresent())
+			if (player.hasPermission("essentialcmds.heal.others") && p.isPresent())
 			{
 				Player recipient = p.get();
 				recipient.offer(Keys.HEALTH, player.get(Keys.MAX_HEALTH).get());

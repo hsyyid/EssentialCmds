@@ -49,7 +49,8 @@ public class PardonExecutor extends CommandExecutorBase
 		User player = ctx.<User> getOne("player").get();
 
 		BanService srv = game.getServiceManager().provide(BanService.class).get();
-		if (!srv.isBanned(player.getProfile())) {
+		if (!srv.isBanned(player.getProfile()))
+		{
 			src.sendMessage(Text.of(TextColors.RED, "That player is not currently banned."));
 			return CommandResult.empty();
 		}
@@ -61,13 +62,15 @@ public class PardonExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
-		return new String[] { "unban", "pardon" };
+	public String[] getAliases()
+	{
+		return new String[] { "pardon", "unban" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec.builder()
 			.description(Text.of("Unban Command"))
 			.permission("essentialcmds.unban.use")

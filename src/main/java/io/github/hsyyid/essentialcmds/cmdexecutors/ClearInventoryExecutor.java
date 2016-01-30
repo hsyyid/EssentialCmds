@@ -77,7 +77,7 @@ public class ClearInventoryExecutor extends CommandExecutorBase
 	@Override
 	public String[] getAliases()
 	{
-		return new String[] { "clearinventory", "ci", "clear", "clearinv", "emptyinv" };
+		return new String[] { "clear", "clearinventory", "ci", "clearinv", "emptyinv" };
 	}
 
 	@Nonnull
