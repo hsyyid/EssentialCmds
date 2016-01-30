@@ -26,6 +26,7 @@ package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.Utils;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -38,13 +39,13 @@ import org.spongepowered.api.data.manipulator.mutable.item.EnchantmentData;
 import org.spongepowered.api.data.meta.ItemEnchantment;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.Enchantment;
-import org.spongepowered.api.item.Enchantments;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
+
+import javax.annotation.Nonnull;
 
 public class EnchantExecutor extends CommandExecutorBase
 {
@@ -54,88 +55,12 @@ public class EnchantExecutor extends CommandExecutorBase
 		String enchantmentName = ctx.<String> getOne("enchantment").get();
 		int level = ctx.<Integer> getOne("level").get();
 
-		Enchantment enchantment = null;
-
-		switch (enchantmentName.toLowerCase())
+		Enchantment enchantment = Sponge.getRegistry().getType(Enchantment.class, enchantmentName).orElse(null);
+		
+		if (enchantment == null)
 		{
-			case "aqua affinity":
-				enchantment = Enchantments.AQUA_AFFINITY;
-				break;
-			case "bane of arthropods":
-				enchantment = Enchantments.BANE_OF_ARTHROPODS;
-				break;
-			case "blast protection":
-				enchantment = Enchantments.BLAST_PROTECTION;
-				break;
-			case "depth strider":
-				enchantment = Enchantments.DEPTH_STRIDER;
-				break;
-			case "efficiency":
-				enchantment = Enchantments.EFFICIENCY;
-				break;
-			case "feather falling":
-				enchantment = Enchantments.FEATHER_FALLING;
-				break;
-			case "fire aspect":
-				enchantment = Enchantments.FIRE_ASPECT;
-				break;
-			case "fire protection":
-				enchantment = Enchantments.FIRE_PROTECTION;
-				break;
-			case "flame":
-				enchantment = Enchantments.FLAME;
-				break;
-			case "fortune":
-				enchantment = Enchantments.FORTUNE;
-				break;
-			case "infinity":
-				enchantment = Enchantments.INFINITY;
-				break;
-			case "knockback":
-				enchantment = Enchantments.KNOCKBACK;
-				break;
-			case "looting":
-				enchantment = Enchantments.LOOTING;
-				break;
-			case "luck of the sea":
-				enchantment = Enchantments.LUCK_OF_THE_SEA;
-				break;
-			case "lure":
-				enchantment = Enchantments.LURE;
-				break;
-			case "power":
-				enchantment = Enchantments.POWER;
-				break;
-			case "projectile protection":
-				enchantment = Enchantments.PROJECTILE_PROTECTION;
-				break;
-			case "protection":
-				enchantment = Enchantments.PROTECTION;
-				break;
-			case "punch":
-				enchantment = Enchantments.PUNCH;
-				break;
-			case "respiration":
-				enchantment = Enchantments.RESPIRATION;
-				break;
-			case "sharpness":
-				enchantment = Enchantments.SHARPNESS;
-				break;
-			case "silk touch":
-				enchantment = Enchantments.SILK_TOUCH;
-				break;
-			case "smite":
-				enchantment = Enchantments.SMITE;
-				break;
-			case "thorns":
-				enchantment = Enchantments.THORNS;
-				break;
-			case "unbreaking":
-				enchantment = Enchantments.UNBREAKING;
-				break;
-			default:
-				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment specified not found!"));
-				return CommandResult.success();
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment specified not found!"));
+			return CommandResult.success();
 		}
 
 		if (!Utils.unsafeEnchanmentsEnabled())
@@ -257,21 +182,20 @@ public class EnchantExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "enchant", "ench" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec
-				.builder()
-				.description(Text.of("Enchant Command"))
-				.permission("essentialcmds.enchant.use")
-				.arguments(GenericArguments.seq(
-						GenericArguments.optional(GenericArguments.player(Text.of("target"))),
-						GenericArguments.onlyOne(GenericArguments.integer(Text.of("level")))),
-						GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("enchantment"))))
-				.executor(this).build();
+			.builder()
+			.description(Text.of("Enchant Command"))
+			.permission("essentialcmds.enchant.use")
+			.arguments(GenericArguments.seq(GenericArguments.optional(GenericArguments.player(Text.of("target"))), GenericArguments.onlyOne(GenericArguments.integer(Text.of("level")))), GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("enchantment"))))
+			.executor(this).build();
 	}
 }
