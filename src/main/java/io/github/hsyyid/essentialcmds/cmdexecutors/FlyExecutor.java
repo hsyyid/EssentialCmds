@@ -68,6 +68,10 @@ public class FlyExecutor extends CommandExecutorBase
 
 					player.offer(Keys.CAN_FLY, !canFly);
 				}
+				else
+				{
+					player.offer(Keys.CAN_FLY, true);
+				}
 			}
 			else if (src instanceof ConsoleSource)
 			{

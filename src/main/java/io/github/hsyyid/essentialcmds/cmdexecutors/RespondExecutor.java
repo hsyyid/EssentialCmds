@@ -48,12 +48,13 @@ public class RespondExecutor extends MessageExecutor
 		{
 			Player player = (Player) src;
 			Optional<Message> om = EssentialCmds.recentlyMessaged.stream().filter(m -> m.getRecipient().getUniqueId().toString().equals(player.getUniqueId().toString())).findFirst();
-			if (!om.isPresent()) {
+			if (!om.isPresent())
+			{
 				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "No recent messages found!"));
 				return;
 			}
 
-			ctx.putArg("recipient", om.get().getRecipient());
+			ctx.putArg("recipient", om.get().getSender());
 
 			// Logic is the same as in the MessageExecutor now, so hand off to that.
 			super.executeAsync(src, ctx);
@@ -70,15 +71,17 @@ public class RespondExecutor extends MessageExecutor
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "r" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec.builder().description(Text.of("Respond to Message Command")).permission("essentialcmds.message.respond")
-				.arguments(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("message"))))
-				.executor(this).build();
+			.arguments(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("message"))))
+			.executor(this).build();
 	}
 }
