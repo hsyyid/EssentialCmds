@@ -48,6 +48,12 @@ public class RuleExecutor extends AsyncCommandExecutorBase
 	{
 		ArrayList<String> rules = Utils.getRules();
 		List<Text> ruleText = Lists.newArrayList();
+		
+		if (rules.isEmpty())
+		{
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The rules for this server are not defined."));
+			return;
+		}
 
 		for (String rule : rules)
 		{
