@@ -135,7 +135,8 @@ public final class CommandLoader {
             new WorldInfoExecutor(),
             new SlapExecutor(),
             new RocketExecutor(),
-            new ClearInventoryExecutor()
+            new ClearInventoryExecutor(),
+            new TempBanExecutor()
         );
     }
 
