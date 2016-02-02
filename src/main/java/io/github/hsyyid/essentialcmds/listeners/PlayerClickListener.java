@@ -47,6 +47,13 @@ public class PlayerClickListener
 			return;
 		}
 
+		if (EssentialCmds.jailedPlayers.contains(player.getUniqueId()))
+		{
+			player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot click while jailed."));
+			event.setCancelled(true);
+			return;
+		}
+
 		Powertool foundTool = null;
 
 		for (Powertool powertool : EssentialCmds.powertools)

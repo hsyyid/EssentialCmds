@@ -167,14 +167,11 @@ public class MessageSinkListener
 				EssentialCmds.afkList.add(afk);
 			}
 
-			for (UUID mutedUUID : EssentialCmds.muteList)
+			if (EssentialCmds.muteList.contains(player.getUniqueId()))
 			{
-				if (mutedUUID.equals(player.getUniqueId()))
-				{
-					player.sendMessage(Text.of(TextColors.RED, "You have been muted."));
-					event.setCancelled(true);
-					return;
-				}
+				player.sendMessage(Text.of(TextColors.RED, "You have been muted."));
+				event.setCancelled(true);
+				return;
 			}
 
 			String original = event.getMessage().orElse(Text.of()).toPlain();

@@ -42,15 +42,15 @@ public class NickExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Player player = ctx.<Player> getOne("player").get();
-		String nick = ctx.<String> getOne("nick").get();
+		Player player = ctx.<Player>getOne("player").get();
+		String nick = ctx.<String>getOne("nick").get();
 
 		if (src instanceof Player && ((Player) src).getUniqueId() != player.getUniqueId() && src.hasPermission("essentialcmds.nick.others"))
 		{
 			Utils.setNick(nick, player.getUniqueId());
 			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Nick successfully set!"));
 		}
-		else if(src instanceof Player && ((Player) src).getUniqueId() != player.getUniqueId())
+		else if (src instanceof Player && ((Player) src).getUniqueId() != player.getUniqueId())
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to make changes to other player's nicknames.!"));
 		}
@@ -65,21 +65,23 @@ public class NickExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "nick" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec
-				.builder()
-				.description(Text.of("Nick Command"))
-				.permission("essentialcmds.nick.use")
-				.arguments(
-						GenericArguments.seq(
-								GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))),
-								GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("nick")))))
-				.executor(this).build();
+			.builder()
+			.description(Text.of("Nick Command"))
+			.permission("essentialcmds.nick.use")
+			.arguments(
+				GenericArguments.seq(
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))),
+					GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("nick")))))
+			.executor(this).build();
 	}
 }

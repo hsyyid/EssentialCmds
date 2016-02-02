@@ -54,6 +54,13 @@ public class PlayerInteractListener
 			return;
 		}
 
+		if (EssentialCmds.jailedPlayers.contains(player.getUniqueId()))
+		{
+			player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot interact while jailed."));
+			event.setCancelled(true);
+			return;
+		}
+
 		Location<World> location = event.getTargetBlock().getLocation().get();
 
 		if (location.getTileEntity().isPresent() && location.getTileEntity().get() != null && location.getTileEntity().get().getType() != null)
