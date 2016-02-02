@@ -127,7 +127,7 @@ public class BlacklistBase extends CommandExecutorBase
 		{
 			return CommandSpec.builder()
 				.description(Text.of("Remove Blacklist Command"))
-				.permission("essentailcmds.blacklist.remove")
+				.permission("essentialcmds.blacklist.remove")
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("item id"))))
 				.executor(this)
 				.build();
@@ -168,7 +168,7 @@ public class BlacklistBase extends CommandExecutorBase
 		{
 			return CommandSpec.builder()
 				.description(Text.of("List Blacklist Command"))
-				.permission("essentailcmds.blacklist.list")
+				.permission("essentialcmds.blacklist.list")
 				.executor(this)
 				.build();
 		}

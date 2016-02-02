@@ -59,7 +59,7 @@ public class BanExecutor extends CommandExecutorBase
 			src.sendMessage(Text.of(TextColors.RED, "That player has already been banned."));
 			return CommandResult.empty();
 		}
-
+		
 		srv.addBan(Ban.builder().type(BanTypes.PROFILE).source(src).profile(player.getProfile()).reason(TextSerializers.formattingCode('&').deserialize(reason)).build());
 
 		if (player.isOnline())
