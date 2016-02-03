@@ -25,6 +25,7 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
+
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -33,6 +34,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.data.property.block.PassableProperty;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -58,8 +60,9 @@ public class JumpExecutor extends CommandExecutorBase
 			{
 				BlockRayHit<World> currentHitRay = playerBlockRay.next();
 
-				//If the block it hit was air, keep going.
-				if (!player.getWorld().getBlockType(currentHitRay.getBlockPosition()).equals(BlockTypes.AIR))
+				//If the block it hit was air or a passable block such as tall grass, keep going.
+				if (!player.getWorld().getBlockType(currentHitRay.getBlockPosition()).equals(BlockTypes.AIR) &&
+					!currentHitRay.getLocation().getProperty(PassableProperty.class).get().getValue())
 				{
 					finalHitRay = currentHitRay;
 					break;
@@ -72,7 +75,8 @@ public class JumpExecutor extends CommandExecutorBase
 			}
 			else
 			{
-				if (player.setLocationSafely(finalHitRay.getLocation()))
+				// Add 1 so that players do not spawn in the block
+				if (player.setLocationSafely(finalHitRay.getLocation().add(0, 1, 0)))
 				{
 					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Jumped to the block you were looking at."));
 				}
@@ -82,11 +86,7 @@ public class JumpExecutor extends CommandExecutorBase
 				}
 			}
 		}
-		else if (src instanceof ConsoleSource)
-		{
-			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /jump!"));
-		}
-		else if (src instanceof CommandBlockSource)
+		else if (src instanceof ConsoleSource || src instanceof CommandBlockSource)
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /jump!"));
 		}
