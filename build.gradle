@@ -31,10 +31,14 @@ repositories {
         name 'Sponge maven repo'
         url 'http://repo.spongepowered.org/maven'
     }
+    maven {
+    	url 'https://jitpack.io'
+    }
 }
 
 dependencies {
     compile "org.spongepowered:spongeapi:3.0.0"
+    compile "com.github.Flibio:Updatifier:v1.0.0"
 }
 
 test {
