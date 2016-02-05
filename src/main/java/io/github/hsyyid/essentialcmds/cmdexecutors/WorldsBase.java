@@ -691,6 +691,11 @@ public class WorldsBase extends CommandExecutorBase
 			if(world != null)
 			{
 				world.getProperties().setGameMode(gamemode);
+				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set gamemode of world."));
+			}
+			else
+			{
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "World not found!"));
 			}
 
 			return CommandResult.success();
