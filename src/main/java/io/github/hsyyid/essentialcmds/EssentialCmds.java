@@ -36,6 +36,7 @@ import io.github.hsyyid.essentialcmds.listeners.InventoryListener;
 import io.github.hsyyid.essentialcmds.listeners.MailListener;
 import io.github.hsyyid.essentialcmds.listeners.MessageSinkListener;
 import io.github.hsyyid.essentialcmds.listeners.PlayerClickListener;
+import io.github.hsyyid.essentialcmds.listeners.PlayerDamageListener;
 import io.github.hsyyid.essentialcmds.listeners.PlayerDeathListener;
 import io.github.hsyyid.essentialcmds.listeners.PlayerDisconnectListener;
 import io.github.hsyyid.essentialcmds.listeners.PlayerInteractListener;
@@ -56,6 +57,7 @@ import io.github.hsyyid.essentialcmds.utils.Message;
 import io.github.hsyyid.essentialcmds.utils.PendingInvitation;
 import io.github.hsyyid.essentialcmds.utils.Powertool;
 import io.github.hsyyid.essentialcmds.utils.Utils;
+import me.flibio.updatifier.Updatifier;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
@@ -73,7 +75,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-@Plugin(id = PluginInfo.ID, name = PluginInfo.NAME, version = PluginInfo.VERSION)
+@Updatifier(repoName = "EssentialCmds", repoOwner = "hsyyid", version = "v" + PluginInfo.VERSION)
+@Plugin(id = PluginInfo.ID, name = PluginInfo.NAME, version = PluginInfo.VERSION, dependencies = "after:Updatifier")
 public class EssentialCmds
 {
 	protected EssentialCmds()
@@ -93,6 +96,7 @@ public class EssentialCmds
 	public static Set<UUID> frozenPlayers = Sets.newHashSet();
 	public static Set<UUID> jailedPlayers = Sets.newHashSet();
 	public static Set<UUID> lockedWeatherWorlds = Sets.newHashSet();
+	public static Set<UUID> teleportingPlayers = Sets.newHashSet();
 
 	@Inject
 	private Logger logger;
@@ -178,6 +182,7 @@ public class EssentialCmds
 		getGame().getEventManager().registerListeners(this, new InventoryListener());
 		getGame().getEventManager().registerListeners(this, new CommandListener());
 		getGame().getEventManager().registerListeners(this, new ChangeBlockListener());
+		getGame().getEventManager().registerListeners(this, new PlayerDamageListener());
 
 		getLogger().info("-----------------------------");
 		getLogger().info("EssentialCmds was made by HassanS6000!");

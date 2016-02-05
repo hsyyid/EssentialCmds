@@ -40,7 +40,6 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.UUID;
 
 public class MessageSinkListener
 {

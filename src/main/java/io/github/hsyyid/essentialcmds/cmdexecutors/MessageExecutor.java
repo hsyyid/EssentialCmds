@@ -28,7 +28,6 @@ import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.Message;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
@@ -41,18 +40,18 @@ import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.channel.MutableMessageChannel;
 import org.spongepowered.api.text.format.TextColors;
 
-import javax.accessibility.AccessibleEditableText;
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
 
 public class MessageExecutor extends AsyncCommandExecutorBase
 {
 	@Override
 	public void executeAsync(CommandSource src, CommandContext ctx)
 	{
-		Player recipient = ctx.<Player>getOne("recipient").get();
-		String message = ctx.<String>getOne("message").get();
+		Player recipient = ctx.<Player> getOne("recipient").get();
+		String message = ctx.<String> getOne("message").get();
 
 		ArrayList<Player> socialSpies = (ArrayList<Player>) EssentialCmds.getEssentialCmds().getGame().getServer().getOnlinePlayers().stream().filter(player -> EssentialCmds.socialSpies.contains(player.getUniqueId())).collect(Collectors.toList());
 		MutableMessageChannel mc = MessageChannel.fixed(socialSpies).asMutable();
@@ -126,8 +125,7 @@ public class MessageExecutor extends AsyncCommandExecutorBase
 			.builder()
 			.description(Text.of("Message Command"))
 			.permission("essentialcmds.message.use")
-			.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Text.of("recipient")))),
-				GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("message"))))
+			.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Text.of("recipient")))), GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("message"))))
 			.executor(new MessageExecutor()).build();
 	}
 }

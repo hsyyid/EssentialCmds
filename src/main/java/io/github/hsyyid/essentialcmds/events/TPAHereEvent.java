@@ -62,7 +62,7 @@ public class TPAHereEvent extends AbstractEvent implements Cancellable
 		this.sender = sender;
 		this.recipient = recipient;
 	}
-	
+
 	@Override
 	public Cause getCause()
 	{

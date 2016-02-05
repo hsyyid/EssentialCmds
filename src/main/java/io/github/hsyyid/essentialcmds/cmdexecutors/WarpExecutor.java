@@ -24,8 +24,10 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.Utils;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -40,6 +42,7 @@ import org.spongepowered.api.world.World;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
@@ -59,18 +62,45 @@ public class WarpExecutor extends CommandExecutorBase
 				if (Utils.isWarpInConfig(warpName))
 				{
 					Location<World> warpLocation = Utils.getWarp(warpName);
-					
+
 					if (player.hasPermission("essentialcmds.warp." + warpName))
 					{
-						Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
-						if (!Objects.equals(player.getWorld().getUniqueId(), warpLocation.getExtent().getUniqueId()))
+						if (Utils.isTeleportCooldownEnabled())
 						{
-							player.transferToWorld(warpLocation.getExtent().getUniqueId(), warpLocation.getPosition());
-							src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
+							EssentialCmds.teleportingPlayers.add(player.getUniqueId());
+							src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleporting to Last Location. Please wait " + Utils.getTeleportCooldown() + " seconds."));
+							Sponge.getScheduler().createTaskBuilder().execute(() -> {
+								if (EssentialCmds.teleportingPlayers.contains(player.getUniqueId()))
+								{
+									Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
+
+									if (!Objects.equals(player.getWorld().getUniqueId(), warpLocation.getExtent().getUniqueId()))
+									{
+										player.transferToWorld(warpLocation.getExtent().getUniqueId(), warpLocation.getPosition());
+										src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
+									}
+									else
+									{
+										player.setLocation(warpLocation);
+									}
+
+									EssentialCmds.teleportingPlayers.remove(player.getUniqueId());
+								}
+							}).delay(Utils.getTeleportCooldown(), TimeUnit.SECONDS).name("EssentialCmds - Back Timer").submit(Sponge.getGame().getPluginManager().getPlugin("EssentialCmds").get().getInstance().get());
 						}
 						else
 						{
-							player.setLocation(warpLocation);
+							Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
+
+							if (!Objects.equals(player.getWorld().getUniqueId(), warpLocation.getExtent().getUniqueId()))
+							{
+								player.transferToWorld(warpLocation.getExtent().getUniqueId(), warpLocation.getPosition());
+								src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
+							}
+							else
+							{
+								player.setLocation(warpLocation);
+							}
 						}
 					}
 					else
@@ -92,7 +122,7 @@ public class WarpExecutor extends CommandExecutorBase
 		{
 			Player player = optionalPlayer.get();
 			Location<World> warpLocation = Utils.getWarp(warpName);
-			
+
 			if (Utils.isWarpInConfig(warpName) && warpLocation != null)
 			{
 				if (src.hasPermission("essentialcmds.warp." + warpName) && src.hasPermission("essentialcmds.warp.others"))
@@ -136,8 +166,7 @@ public class WarpExecutor extends CommandExecutorBase
 		return CommandSpec.builder()
 			.description(Text.of("Warp Command"))
 			.permission("essentialcmds.warp.use")
-			.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.string(Text.of("warp name"))), 
-				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))))))
+			.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.string(Text.of("warp name"))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))))))
 			.executor(this)
 			.build();
 	}

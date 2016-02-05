@@ -279,6 +279,34 @@ public class Utils
 		return "Mutes";
 	}
 
+	public static boolean isTeleportCooldownEnabled()
+	{
+		CommentedConfigurationNode node = Configs.getConfig(mainConfig).getNode("teleport", "cooldown", "enabled");
+		if (configManager.getBoolean(node).isPresent())
+			return node.getBoolean();
+		setTeleportCooldownEnabled(false);
+		return false;
+	}
+
+	public static void setTeleportCooldownEnabled(boolean value)
+	{
+		Configs.setValue(mainConfig, new Object[] { "teleport", "cooldown", "enabled" }, value);
+	}
+
+	public static long getTeleportCooldown()
+	{
+		CommentedConfigurationNode node = Configs.getConfig(mainConfig).getNode("teleport", "cooldown", "timer");
+		if (configManager.getLong(node).isPresent())
+			return node.getLong();
+		setTeleportCooldown(10);
+		return 10l;
+	}
+
+	public static void setTeleportCooldown(long value)
+	{
+		Configs.setValue(mainConfig, new Object[] { "teleport", "cooldown", "timer" }, value);
+	}
+
 	public static String getMySQLPassword()
 	{
 		CommentedConfigurationNode node = Configs.getConfig(mainConfig).getNode("mysql", "password");
@@ -552,7 +580,7 @@ public class Utils
 			Configs.removeChild(jailsConfig, new Object[] { "jails" }, String.valueOf(number));
 			return true;
 		}
-		
+
 		return false;
 	}
 

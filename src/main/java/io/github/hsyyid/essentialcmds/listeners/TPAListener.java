@@ -34,6 +34,7 @@ import io.github.hsyyid.essentialcmds.events.TPAHereEvent;
 import io.github.hsyyid.essentialcmds.utils.PendingInvitation;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.scheduler.Scheduler;
 import org.spongepowered.api.scheduler.Task;
@@ -51,8 +52,7 @@ public class TPAListener
 	public void tpaEventHandler(TPAEvent event)
 	{
 		String senderName = event.getSender().getName();
-		event.getRecipient().sendMessage(Text.of(TextColors.BLUE, "TPA Request From: ", 
-			TextColors.GOLD, senderName + ".", TextColors.RED, " You have 10 seconds to do /tpaccept to accept the request"));
+		event.getRecipient().sendMessage(Text.of(TextColors.BLUE, "TPA Request From: ", TextColors.GOLD, senderName + ".", TextColors.RED, " You have 10 seconds to do /tpaccept to accept the request"));
 
 		// Adds Invite to List
 		final PendingInvitation invite = new PendingInvitation(event.getSender(), event.getRecipient());
@@ -74,18 +74,54 @@ public class TPAListener
 	public void tpaAcceptEventHandler(TPAAcceptEvent event)
 	{
 		String senderName = event.getSender().getName();
-		event.getRecipient().sendMessage(Text.of(TextColors.GREEN, senderName, TextColors.WHITE, " accepted your TPA Request."));
-		Utils.setLastTeleportOrDeathLocation(event.getRecipient().getUniqueId(), event.getRecipient().getLocation());
-		event.getRecipient().setLocation(event.getSender().getLocation());
+
+		if (Utils.isTeleportCooldownEnabled())
+		{
+			EssentialCmds.teleportingPlayers.add(event.getRecipient().getUniqueId());
+			event.getRecipient().sendMessage(Text.of(TextColors.GREEN, senderName, TextColors.WHITE, " accepted your TPA Request. Please wait " + Utils.getTeleportCooldown() + " seconds."));
+			
+			Sponge.getScheduler().createTaskBuilder().execute(() -> {
+				if (EssentialCmds.teleportingPlayers.contains(event.getRecipient().getUniqueId()))
+				{
+					Utils.setLastTeleportOrDeathLocation(event.getRecipient().getUniqueId(), event.getRecipient().getLocation());
+					event.getRecipient().setLocation(event.getSender().getLocation());
+					EssentialCmds.teleportingPlayers.remove(event.getRecipient().getUniqueId());
+				}
+			}).delay(Utils.getTeleportCooldown(), TimeUnit.SECONDS).name("EssentialCmds - TPA Timer").submit(game.getPluginManager().getPlugin("EssentialCmds").get().getInstance().get());
+		}
+		else
+		{
+			event.getRecipient().sendMessage(Text.of(TextColors.GREEN, senderName, TextColors.WHITE, " accepted your TPA Request."));
+			Utils.setLastTeleportOrDeathLocation(event.getRecipient().getUniqueId(), event.getRecipient().getLocation());
+			event.getRecipient().setLocation(event.getSender().getLocation());
+		}
 	}
 
 	@Listener
 	public void tpaHereAcceptEventHandler(TPAHereAcceptEvent event)
 	{
 		String recipientName = event.getRecipient().getName();
-		event.getSender().sendMessage(Text.of(TextColors.GREEN, recipientName, TextColors.WHITE, " accepted your TPA Here Request."));
-		Utils.setLastTeleportOrDeathLocation(event.getSender().getUniqueId(), event.getSender().getLocation());
-		event.getSender().setLocation(event.getRecipient().getLocation());
+
+		if (Utils.isTeleportCooldownEnabled())
+		{
+			EssentialCmds.teleportingPlayers.add(event.getSender().getUniqueId());
+			event.getSender().sendMessage(Text.of(TextColors.GREEN, recipientName, TextColors.WHITE, " accepted your TPA Here Request. Please wait " + Utils.getTeleportCooldown() + " seconds."));
+			
+			Sponge.getScheduler().createTaskBuilder().execute(() -> {
+				if (EssentialCmds.teleportingPlayers.contains(event.getSender().getUniqueId()))
+				{
+					Utils.setLastTeleportOrDeathLocation(event.getSender().getUniqueId(), event.getSender().getLocation());
+					event.getSender().setLocation(event.getRecipient().getLocation());
+					EssentialCmds.teleportingPlayers.remove(event.getSender().getUniqueId());
+				}
+			}).delay(Utils.getTeleportCooldown(), TimeUnit.SECONDS).name("EssentialCmds - TPA Timer").submit(game.getPluginManager().getPlugin("EssentialCmds").get().getInstance().get());
+		}
+		else
+		{
+			event.getSender().sendMessage(Text.of(TextColors.GREEN, recipientName, TextColors.WHITE, " accepted your TPA Here Request."));
+			Utils.setLastTeleportOrDeathLocation(event.getSender().getUniqueId(), event.getSender().getLocation());
+			event.getSender().setLocation(event.getRecipient().getLocation());
+		}
 	}
 
 	@Listener

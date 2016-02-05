@@ -24,8 +24,10 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.Utils;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -38,6 +40,7 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.PositionOutOfBoundsException;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
@@ -55,15 +58,35 @@ public class HomeExecutor extends CommandExecutorBase
 			{
 				try
 				{
-					Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
-					if (Objects.equals(player.getWorld().getUniqueId(), Utils.getHome(player.getUniqueId(), homeName).getExtent().getUniqueId()))
+					if (Utils.isTeleportCooldownEnabled())
 					{
-						player.setLocation(Utils.getHome(player.getUniqueId(), homeName));
-						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Home " + homeName));
+						EssentialCmds.teleportingPlayers.add(player.getUniqueId());
+						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleporting to Home. Please wait " + Utils.getTeleportCooldown() + " seconds."));
+
+						Sponge.getScheduler().createTaskBuilder().execute(() -> {
+							if (EssentialCmds.teleportingPlayers.contains(player.getUniqueId()))
+							{
+								Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
+
+								if (Objects.equals(player.getWorld().getUniqueId(), Utils.getHome(player.getUniqueId(), homeName).getExtent().getUniqueId()))
+									player.setLocation(Utils.getHome(player.getUniqueId(), homeName));
+								else
+									player.transferToWorld(Utils.getHome(player.getUniqueId(), homeName).getExtent().getUniqueId(), Utils.getHome(player.getUniqueId(), homeName).getPosition());
+
+								src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Home " + homeName));
+								EssentialCmds.teleportingPlayers.remove(player.getUniqueId());
+							}
+						}).delay(Utils.getTeleportCooldown(), TimeUnit.SECONDS).name("EssentialCmds - Back Timer").submit(Sponge.getGame().getPluginManager().getPlugin("EssentialCmds").get().getInstance().get());
 					}
 					else
 					{
-						player.transferToWorld(Utils.getHome(player.getUniqueId(), homeName).getExtent().getUniqueId(), Utils.getHome(player.getUniqueId(), homeName).getPosition());
+						Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
+
+						if (Objects.equals(player.getWorld().getUniqueId(), Utils.getHome(player.getUniqueId(), homeName).getExtent().getUniqueId()))
+							player.setLocation(Utils.getHome(player.getUniqueId(), homeName));
+						else
+							player.transferToWorld(Utils.getHome(player.getUniqueId(), homeName).getExtent().getUniqueId(), Utils.getHome(player.getUniqueId(), homeName).getPosition());
+
 						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Home " + homeName));
 					}
 				}

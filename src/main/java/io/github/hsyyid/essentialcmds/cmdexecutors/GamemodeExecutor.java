@@ -31,8 +31,6 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.source.CommandBlockSource;
-import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.entity.GameModeData;
@@ -52,46 +50,41 @@ public class GamemodeExecutor extends CommandExecutorBase
 		String gamemode = ctx.<String> getOne("gamemode").get();
 		Optional<Player> optionalPlayer = ctx.<Player> getOne("player");
 
-		if (src instanceof Player)
+		if (!optionalPlayer.isPresent())
 		{
-			Player player = (Player) src;
-			Player targetPlayer = optionalPlayer.orElse(player);
-
-			if (player != targetPlayer)
+			if (src instanceof Player)
 			{
-				if(NumberUtils.isNumber(gamemode))
+				Player player = (Player) src;
+
+				if (NumberUtils.isNumber(gamemode))
 				{
 					if (Integer.parseInt(gamemode) == 1)
 					{
-						GameModeData data = targetPlayer.getGameModeData().set(Keys.GAME_MODE, GameModes.CREATIVE);
-						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully changed " + targetPlayer.getName() + "'s gamemode."));
-						targetPlayer.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to creative"));
-						targetPlayer.offer(data);
-						return CommandResult.success();
+						GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.CREATIVE);
+						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully changed " + player.getName() + "'s gamemode."));
+						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to creative"));
+						player.offer(data);
 					}
 					else if (Integer.parseInt(gamemode) == 0)
 					{
-						GameModeData data = targetPlayer.getGameModeData().set(Keys.GAME_MODE, GameModes.SURVIVAL);
-						targetPlayer.offer(data);
-						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully changed " + targetPlayer.getName() + "'s gamemode."));
-						targetPlayer.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to survival"));
-						return CommandResult.success();
+						GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.SURVIVAL);
+						player.offer(data);
+						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully changed " + player.getName() + "'s gamemode."));
+						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to survival"));
 					}
 					else if (Integer.parseInt(gamemode) == 2)
 					{
-						GameModeData data = targetPlayer.getGameModeData().set(Keys.GAME_MODE, GameModes.ADVENTURE);
-						targetPlayer.offer(data);
-						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully changed " + targetPlayer.getName() + "'s gamemode."));
-						targetPlayer.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to adventure"));
-						return CommandResult.success();
+						GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.ADVENTURE);
+						player.offer(data);
+						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully changed " + player.getName() + "'s gamemode."));
+						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to adventure"));
 					}
 					else if (Integer.parseInt(gamemode) == 3)
 					{
-						GameModeData data = targetPlayer.getGameModeData().set(Keys.GAME_MODE, GameModes.SPECTATOR);
-						targetPlayer.offer(data);
-						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully changed " + targetPlayer.getName() + "'s gamemode."));
-						targetPlayer.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to spectator"));
-						return CommandResult.success();
+						GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.SPECTATOR);
+						player.offer(data);
+						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully changed " + player.getName() + "'s gamemode."));
+						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to spectator"));
 					}
 					else
 					{
@@ -102,35 +95,31 @@ public class GamemodeExecutor extends CommandExecutorBase
 				{
 					if (gamemode.equals("creative") || gamemode.equals("c"))
 					{
-						GameModeData data = targetPlayer.getGameModeData().set(Keys.GAME_MODE, GameModes.CREATIVE);
-						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully changed " + targetPlayer.getName() + "'s gamemode."));
-						targetPlayer.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to creative"));
-						targetPlayer.offer(data);
-						return CommandResult.success();
+						GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.CREATIVE);
+						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully changed " + player.getName() + "'s gamemode."));
+						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to creative"));
+						player.offer(data);
 					}
 					else if (gamemode.equals("survival") || gamemode.equals("s"))
 					{
-						GameModeData data = targetPlayer.getGameModeData().set(Keys.GAME_MODE, GameModes.SURVIVAL);
-						targetPlayer.offer(data);
-						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully changed " + targetPlayer.getName() + "'s gamemode."));
-						targetPlayer.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to survival"));
-						return CommandResult.success();
+						GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.SURVIVAL);
+						player.offer(data);
+						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully changed " + player.getName() + "'s gamemode."));
+						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to survival"));
 					}
 					else if (gamemode.equals("adventure") || gamemode.equals("a"))
 					{
-						GameModeData data = targetPlayer.getGameModeData().set(Keys.GAME_MODE, GameModes.ADVENTURE);
-						targetPlayer.offer(data);
-						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully changed " + targetPlayer.getName() + "'s gamemode."));
-						targetPlayer.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to adventure"));
-						return CommandResult.success();
+						GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.ADVENTURE);
+						player.offer(data);
+						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully changed " + player.getName() + "'s gamemode."));
+						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to adventure"));
 					}
 					else if (gamemode.equals("spectator") || gamemode.equals("spec"))
 					{
-						GameModeData data = targetPlayer.getGameModeData().set(Keys.GAME_MODE, GameModes.SPECTATOR);
-						targetPlayer.offer(data);
-						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully changed " + targetPlayer.getName() + "'s gamemode."));
-						targetPlayer.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to spectator"));
-						return CommandResult.success();
+						GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.SPECTATOR);
+						player.offer(data);
+						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully changed " + player.getName() + "'s gamemode."));
+						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to spectator"));
 					}
 					else
 					{
@@ -140,85 +129,75 @@ public class GamemodeExecutor extends CommandExecutorBase
 			}
 			else
 			{
-				if(NumberUtils.isNumber(gamemode))
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /gamemode!"));
+			}
+		}
+		else if (src.hasPermission("essentialcmds.gamemode.others"))
+		{
+			Player player = optionalPlayer.get();
+
+			if (NumberUtils.isNumber(gamemode))
+			{
+				if (Integer.parseInt(gamemode) == 1)
 				{
-					if (Integer.parseInt(gamemode) == 1)
-					{
-						GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.CREATIVE);
-						player.offer(data);
-						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to creative"));
-						return CommandResult.success();
-					}
-					else if (Integer.parseInt(gamemode) == 0)
-					{
-						GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.SURVIVAL);
-						player.offer(data);
-						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to survival"));
-						return CommandResult.success();
-					}
-					else if (Integer.parseInt(gamemode) == 2)
-					{
-						GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.ADVENTURE);
-						player.offer(data);
-						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to adventure"));
-						return CommandResult.success();
-					}
-					else if (Integer.parseInt(gamemode) == 3)
-					{
-						GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.SPECTATOR);
-						player.offer(data);
-						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to spectator"));
-						return CommandResult.success();
-					}
-					else
-					{
-						player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, gamemode + " does not appear to be a gamemode!"));
-					}
+					GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.CREATIVE);
+					player.offer(data);
+					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to creative"));
+				}
+				else if (Integer.parseInt(gamemode) == 0)
+				{
+					GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.SURVIVAL);
+					player.offer(data);
+					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to survival"));
+				}
+				else if (Integer.parseInt(gamemode) == 2)
+				{
+					GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.ADVENTURE);
+					player.offer(data);
+					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to adventure"));
+				}
+				else if (Integer.parseInt(gamemode) == 3)
+				{
+					GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.SPECTATOR);
+					player.offer(data);
+					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to spectator"));
 				}
 				else
 				{
-					if (gamemode.equals("creative") || gamemode.equals("c"))
-					{
-						GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.CREATIVE);
-						player.offer(data);
-						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to creative"));
-						return CommandResult.success();
-					}
-					else if (gamemode.equals("survival") || gamemode.equals("s"))
-					{
-						GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.SURVIVAL);
-						player.offer(data);
-						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to survival"));
-						return CommandResult.success();
-					}
-					else if (gamemode.equals("adventure") || gamemode.equals("a"))
-					{
-						GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.ADVENTURE);
-						player.offer(data);
-						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to adventure"));
-						return CommandResult.success();
-					}
-					else if (gamemode.equals("spectator") || gamemode.equals("spec"))
-					{
-						GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.SPECTATOR);
-						player.offer(data);
-						player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to spectator"));
-						return CommandResult.success();
-					}
-					else
-					{
-						player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, gamemode + " does not appear to be a gamemode!"));
-					}
+					player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, gamemode + " does not appear to be a gamemode!"));
 				}
 			}
-		}
-		else if (src instanceof ConsoleSource)
-		{
-			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /gamemode!"));
-		}
-		else if (src instanceof CommandBlockSource)
-		{
-			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /gamemode!"));
+			else
+			{
+				if (gamemode.equals("creative") || gamemode.equals("c"))
+				{
+					GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.CREATIVE);
+					player.offer(data);
+					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to creative"));
+				}
+				else if (gamemode.equals("survival") || gamemode.equals("s"))
+				{
+					GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.SURVIVAL);
+					player.offer(data);
+					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to survival"));
+				}
+				else if (gamemode.equals("adventure") || gamemode.equals("a"))
+				{
+					GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.ADVENTURE);
+					player.offer(data);
+					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to adventure"));
+				}
+				else if (gamemode.equals("spectator") || gamemode.equals("spec"))
+				{
+					GameModeData data = player.getGameModeData().set(Keys.GAME_MODE, GameModes.SPECTATOR);
+					player.offer(data);
+					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set your gamemode to spectator"));
+				}
+				else
+				{
+					player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, gamemode + " does not appear to be a gamemode!"));
+				}
+			}
 		}
 
 		return CommandResult.success();
@@ -226,20 +205,22 @@ public class GamemodeExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "gamemode", "gm" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec
 			.builder()
 			.description(Text.of("Gamemode Command"))
 			.permission("essentialcmds.gamemode.use")
-			.arguments(
-				GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.string(Text.of("gamemode"))),
-					GenericArguments.onlyOne(GenericArguments.optional(GenericArguments.player(Text.of("player"))))))
+			.arguments(GenericArguments.seq(
+				GenericArguments.onlyOne(GenericArguments.string(Text.of("gamemode"))), 
+				GenericArguments.onlyOne(GenericArguments.optional(GenericArguments.player(Text.of("player"))))))
 			.executor(this).build();
 	}
 }
