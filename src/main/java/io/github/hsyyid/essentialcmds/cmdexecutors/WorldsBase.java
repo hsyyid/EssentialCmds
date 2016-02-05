@@ -83,7 +83,7 @@ public class WorldsBase extends CommandExecutorBase
 		return CommandSpec.builder()
 			.description(Text.of("World Command"))
 			.permission("essentialcmds.world.use")
-			.children(getChildrenList(new List(), new Teleport(), new Spawn(), new SetSpawn(), new Load(), new Create(), new Delete(), new SetDifficulty()))
+			.children(getChildrenList(new List(), new Teleport(), new Spawn(), new SetSpawn(), new Load(), new Create(), new Delete(), new SetDifficulty(), new SetGamemode()))
 			.build();
 	}
 
@@ -553,8 +553,14 @@ public class WorldsBase extends CommandExecutorBase
 				.builder()
 				.description(Text.of("Load World Command"))
 				.permission("essentialcmds.world.load")
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("name"))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("dimension")))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("generator")))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.catalogedElement(Text.of("gamemode"), CatalogTypes.GAME_MODE))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("difficulty")))))
-				.executor(this).build();
+				.arguments(GenericArguments.seq(
+					GenericArguments.onlyOne(GenericArguments.string(Text.of("name"))),
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("dimension")))),
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("generator")))), 
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.catalogedElement(Text.of("gamemode"), CatalogTypes.GAME_MODE))), 
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("difficulty"))))))
+				.executor(this)
+				.build();
 		}
 
 		@Override
@@ -627,6 +633,64 @@ public class WorldsBase extends CommandExecutorBase
 			else
 			{
 				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The world properties could not be created."));
+			}
+
+			return CommandResult.success();
+		}
+	}
+	
+	static class SetGamemode extends CommandExecutorBase
+	{
+
+		@Nonnull
+		@Override
+		public String[] getAliases()
+		{
+			return new String[] { "setgamemode" };
+		}
+
+		@Nonnull
+		@Override
+		public CommandSpec getSpec()
+		{
+			return CommandSpec
+				.builder()
+				.description(Text.of("SetGamemode World Command"))
+				.permission("essentialcmds.world.setgamemode")
+				.arguments(GenericArguments.seq(
+					GenericArguments.onlyOne(GenericArguments.catalogedElement(Text.of("gamemode"), CatalogTypes.GAME_MODE))), 
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("world")))))
+				.executor(this)
+				.build();
+		}
+
+		@Override
+		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+		{
+			GameMode gamemode = ctx.<GameMode> getOne("gamemode").get();
+			Optional<String> worldName = ctx.<String> getOne("world");
+			World world = null;
+			
+			if(worldName.isPresent())
+			{
+				world = Sponge.getServer().getWorld(worldName.get()).orElse(null);
+			}
+			else
+			{
+				if(src instanceof Player)
+				{
+					Player player = (Player) src;
+					world = player.getWorld();
+				}
+				else
+				{
+					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be an in-game player or specify the world name to set its gamemode!"));
+				}
+			}
+			
+			if(world != null)
+			{
+				world.getProperties().setGameMode(gamemode);
 			}
 
 			return CommandResult.success();
