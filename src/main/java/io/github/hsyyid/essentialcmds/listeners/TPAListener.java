@@ -75,7 +75,7 @@ public class TPAListener
 	{
 		String senderName = event.getSender().getName();
 
-		if (Utils.isTeleportCooldownEnabled())
+		if (Utils.isTeleportCooldownEnabled() && !event.getRecipient().hasPermission("essentialcmds.teleport.cooldown.override"))
 		{
 			EssentialCmds.teleportingPlayers.add(event.getRecipient().getUniqueId());
 			event.getRecipient().sendMessage(Text.of(TextColors.GREEN, senderName, TextColors.WHITE, " accepted your TPA Request. Please wait " + Utils.getTeleportCooldown() + " seconds."));
@@ -102,7 +102,7 @@ public class TPAListener
 	{
 		String recipientName = event.getRecipient().getName();
 
-		if (Utils.isTeleportCooldownEnabled())
+		if (Utils.isTeleportCooldownEnabled() && !event.getSender().hasPermission("essentialcmds.teleport.cooldown.override"))
 		{
 			EssentialCmds.teleportingPlayers.add(event.getSender().getUniqueId());
 			event.getSender().sendMessage(Text.of(TextColors.GREEN, recipientName, TextColors.WHITE, " accepted your TPA Here Request. Please wait " + Utils.getTeleportCooldown() + " seconds."));

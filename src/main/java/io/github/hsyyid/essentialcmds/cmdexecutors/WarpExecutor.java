@@ -65,7 +65,7 @@ public class WarpExecutor extends CommandExecutorBase
 
 					if (player.hasPermission("essentialcmds.warp." + warpName))
 					{
-						if (Utils.isTeleportCooldownEnabled())
+						if (Utils.isTeleportCooldownEnabled() && !player.hasPermission("essentialcmds.teleport.cooldown.override"))
 						{
 							EssentialCmds.teleportingPlayers.add(player.getUniqueId());
 							src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleporting to Last Location. Please wait " + Utils.getTeleportCooldown() + " seconds."));

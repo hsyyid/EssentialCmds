@@ -58,7 +58,7 @@ public class HomeExecutor extends CommandExecutorBase
 			{
 				try
 				{
-					if (Utils.isTeleportCooldownEnabled())
+					if (Utils.isTeleportCooldownEnabled() && !player.hasPermission("essentialcmds.teleport.cooldown.override"))
 					{
 						EssentialCmds.teleportingPlayers.add(player.getUniqueId());
 						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleporting to Home. Please wait " + Utils.getTeleportCooldown() + " seconds."));
