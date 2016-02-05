@@ -124,7 +124,7 @@ public class Config implements Configurable
 		get().getNode("mysql", "password").setValue("pass").setComment("Password for MySQL Database.");
 		get().getNode("chat", "firstcharacter").setValue("<").setComment("When set, changes the first character in chat from '<'.");
 		get().getNode("chat", "lastcharacter").setValue(">").setComment("When set, changes the character after the player name from '>'.");
-		get().getNode("teleport", "cooldown", "enable").setValue(false).setComment("Toggles the cooldown option for teleports.");
+		get().getNode("teleport", "cooldown", "enabled").setValue(false).setComment("Toggles the cooldown option for teleports.");
 		get().getNode("teleport", "cooldown", "timer").setValue(10).setComment("The length of time in seconds until a player teleports.");
 	}
 
