@@ -90,5 +90,6 @@ def getGitHash() {
 }
 
 blossom {
-    replaceToken '@project.version@', project.version + getGitHash(), 'src/main/java/io/github/hsyyid/essentialcmds/PluginInfo.java'
+    replaceToken '@project.version@', project.version, 'src/main/java/io/github/hsyyid/essentialcmds/PluginInfo.java'
+    replaceToken '@project.gitVersion@', project.version + getGitHash(), 'src/main/java/io/github/hsyyid/essentialcmds/PluginInfo.java'
 }
