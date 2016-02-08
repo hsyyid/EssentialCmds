@@ -24,8 +24,6 @@
  */
 package io.github.hsyyid.essentialcmds;
 
-import static io.github.hsyyid.essentialcmds.PluginInfo.ID;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -160,7 +158,7 @@ public class EssentialCmds
 	@Listener
 	public void onServerInit(GameInitializationEvent event)
 	{
-		getLogger().info(ID + " loading...");
+		getLogger().info(PluginInfo.ID + " loading...");
 
 		Utils.readMutes();
 		Utils.startAFKService();

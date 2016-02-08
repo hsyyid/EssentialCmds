@@ -136,7 +136,9 @@ public final class CommandLoader {
             new SlapExecutor(),
             new RocketExecutor(),
             new ClearInventoryExecutor(),
-            new TempBanExecutor()
+            new TempBanExecutor(),
+            new SetNameExecutor(),
+            new LoreBase()
         );
     }
 
