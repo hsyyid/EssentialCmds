@@ -63,7 +63,7 @@ public class WarpExecutor extends CommandExecutorBase
 				{
 					Location<World> warpLocation = Utils.getWarp(warpName);
 
-					if (player.hasPermission("essentialcmds.warp." + warpName))
+					if (player.hasPermission("essentialcmds.warp.use." + warpName))
 					{
 						if (Utils.isTeleportCooldownEnabled() && !player.hasPermission("essentialcmds.teleport.cooldown.override"))
 						{
@@ -125,7 +125,7 @@ public class WarpExecutor extends CommandExecutorBase
 
 			if (Utils.isWarpInConfig(warpName) && warpLocation != null)
 			{
-				if (src.hasPermission("essentialcmds.warp." + warpName) && src.hasPermission("essentialcmds.warp.others"))
+				if (src.hasPermission("essentialcmds.warp.use." + warpName) && src.hasPermission("essentialcmds.warp.others"))
 				{
 					Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
 					if (!Objects.equals(player.getWorld().getUniqueId(), warpLocation.getExtent().getUniqueId()))
