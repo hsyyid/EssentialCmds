@@ -24,6 +24,7 @@
  */
 package io.github.hsyyid.essentialcmds;
 
+import static io.github.hsyyid.essentialcmds.PluginInfo.DEPENDENCIES;
 import static io.github.hsyyid.essentialcmds.PluginInfo.ID;
 
 import com.google.common.collect.Lists;
@@ -76,7 +77,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Updatifier(repoName = "EssentialCmds", repoOwner = "hsyyid", version = "v" + PluginInfo.VERSION)
-@Plugin(id = PluginInfo.ID, name = PluginInfo.NAME, version = PluginInfo.INFORMATIVE_VERSION, dependencies = "after:Updatifier")
+@Plugin(id = PluginInfo.ID, name = PluginInfo.NAME, version = PluginInfo.INFORMATIVE_VERSION, dependencies = DEPENDENCIES)
 public class EssentialCmds
 {
 	protected EssentialCmds()
