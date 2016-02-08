@@ -98,6 +98,7 @@ public class LoreBase extends CommandExecutorBase
 
 					if (dataTransactionResult.isSuccessful())
 					{
+						player.setItemInHand(stack);
 						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set lore on item."));
 					}
 					else
@@ -121,7 +122,7 @@ public class LoreBase extends CommandExecutorBase
 		@Override
 		public String[] getAliases()
 		{
-			return new String[] { "create" };
+			return new String[] { "set" };
 		}
 
 		@Nonnull
@@ -159,6 +160,7 @@ public class LoreBase extends CommandExecutorBase
 
 					if (dataTransactionResult.isSuccessful())
 					{
+						player.setItemInHand(stack);
 						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Added lore to item."));
 					}
 					else
@@ -219,6 +221,7 @@ public class LoreBase extends CommandExecutorBase
 
 					if (dataTransactionResult.isSuccessful())
 					{
+						player.setItemInHand(stack);
 						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Removed lore from item."));
 					}
 					else

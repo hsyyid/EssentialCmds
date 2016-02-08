@@ -59,6 +59,7 @@ public class SetNameExecutor extends CommandExecutorBase
 				
 				if(dataTransactionResult.isSuccessful())
 				{
+					player.setItemInHand(stack);
 					src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set name on item."));
 				}
 				else
