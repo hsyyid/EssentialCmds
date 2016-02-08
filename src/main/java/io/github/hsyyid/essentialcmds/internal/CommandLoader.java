@@ -138,7 +138,8 @@ public final class CommandLoader {
             new ClearInventoryExecutor(),
             new TempBanExecutor(),
             new SetNameExecutor(),
-            new LoreBase()
+            new LoreBase(),
+            new HelpOpExecutor()
         );
     }
 
