@@ -26,6 +26,7 @@ package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.Utils;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -35,42 +36,111 @@ import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
+
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 public class TeleportExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Player player = ctx.<Player> getOne("player").get();
-		Optional<Player> target = ctx.<Player> getOne("target");
+		Optional<Player> optionalPlayer = ctx.<Player> getOne("player");
+		Optional<Player> optionalTarget = ctx.<Player> getOne("target");
 
-		if (target.isPresent())
+		if (optionalPlayer.isPresent())
 		{
-			if (src.hasPermission("teleport.others"))
+			Player player = optionalPlayer.get();
+
+			if (optionalTarget.isPresent())
 			{
-				Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
-				player.setLocation(target.get().getLocation());
-				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported player " + player.getName() + " to " + target.get().getName()));
-				player.sendMessage(Text.of(TextColors.GOLD, "You have been teleported to " + target.get().getName() + " by " + src.getName()));
+				if (src.hasPermission("teleport.others"))
+				{
+					Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
+					player.setLocation(optionalTarget.get().getLocation());
+					src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported player " + player.getName() + " to " + optionalTarget.get().getName()));
+					player.sendMessage(Text.of(TextColors.GOLD, "You have been teleported to " + optionalTarget.get().getName() + " by " + src.getName()));
+				}
+				else
+				{
+					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to teleport other players."));
+				}
 			}
 			else
 			{
-				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to teleport other players."));
+				if (src instanceof Player)
+				{
+					Player targ = (Player) src;
+					targ.setLocation(player.getLocation());
+					targ.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to player " + player.getName()));
+				}
+				else
+				{
+					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot teleport, you are not a player!"));
+				}
 			}
 		}
 		else
 		{
-			if (src instanceof Player)
+			int x = ctx.<Integer> getOne("x").get();
+			int y = ctx.<Integer> getOne("y").get();
+			int z = ctx.<Integer> getOne("z").get();
+			Optional<String> optionalWorld = ctx.<String> getOne("world");
+			Player target = null;
+
+			if (optionalTarget.isPresent() && src.hasPermission("essentialcmds.teleport.others"))
 			{
-				Player targ = (Player) src;
-				targ.setLocation(player.getLocation());
-				targ.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to player " + player.getName()));
+				target = optionalTarget.get();
+			}
+			else if (optionalTarget.isPresent())
+			{
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to teleport other players."));
+				return CommandResult.success();
 			}
 			else
 			{
-				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot teleport, you are not a player!"));
+				if (src instanceof Player)
+				{
+					target = (Player) src;
+				}
+				else
+				{
+					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot teleport, you are not a player!"));
+					return CommandResult.success();
+				}
+			}
+
+			if (!optionalWorld.isPresent())
+			{
+				Location<World> location = new Location<>(target.getWorld(), x, y, z);
+				target.setLocation(location);
+				target.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to location!"));
+			}
+			else
+			{
+				Optional<World> world = Sponge.getServer().getWorld(optionalWorld.get());
+
+				if (world.isPresent())
+				{
+					Location<World> location = new Location<>(world.get(), x, y, z);
+
+					if (!target.getWorld().getUniqueId().equals(world.get().getUniqueId()))
+					{
+						target.transferToWorld(world.get().getUniqueId(), location.getPosition());
+					}
+					else
+					{
+						target.setLocation(location);
+					}
+
+					target.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to location!"));
+				}
+				else
+				{
+					target.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "World not found!"));
+				}
 			}
 		}
 
@@ -79,20 +149,30 @@ public class TeleportExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "tp", "teleport" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec
 			.builder()
 			.description(Text.of("Teleport Command"))
 			.permission("essentialcmds.teleport.use")
-			.arguments(GenericArguments.seq(
-					GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))),
-					GenericArguments.optional(GenericArguments.player(Text.of("target")))))
-			.executor(this).build();
+			.arguments(GenericArguments.firstParsing(
+				GenericArguments.seq(
+					GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))), 
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("target"))))), 
+				GenericArguments.seq(
+					GenericArguments.onlyOne(GenericArguments.integer(Text.of("x"))),
+					GenericArguments.onlyOne(GenericArguments.integer(Text.of("y"))),
+					GenericArguments.onlyOne(GenericArguments.integer(Text.of("z"))), 
+					GenericArguments.optional(GenericArguments.string(Text.of("world"))),
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("target")))))))
+			.executor(this)
+			.build();
 	}
 }

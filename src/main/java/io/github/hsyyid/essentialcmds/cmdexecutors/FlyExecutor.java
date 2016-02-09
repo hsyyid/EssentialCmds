@@ -57,7 +57,7 @@ public class FlyExecutor extends CommandExecutorBase
 				{
 					boolean canFly = player.get(Keys.CAN_FLY).get();
 					player.offer(Keys.CAN_FLY, !canFly);
-					
+
 					if (canFly)
 					{
 						player.sendMessage(Text.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "off."));
@@ -112,15 +112,20 @@ public class FlyExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "fly" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
-		return CommandSpec.builder().description(Text.of("Fly Command")).permission("essentialcmds.fly.use")
-				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))))
-				.executor(this).build();
+	public CommandSpec getSpec()
+	{
+		return CommandSpec.builder()
+			.description(Text.of("Fly Command"))
+			.permission("essentialcmds.fly.use")
+			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))))
+			.executor(this)
+			.build();
 	}
 }
