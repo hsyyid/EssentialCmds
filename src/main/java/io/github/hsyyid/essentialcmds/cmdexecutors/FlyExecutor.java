@@ -56,7 +56,8 @@ public class FlyExecutor extends CommandExecutorBase
 				if (player.get(Keys.CAN_FLY).isPresent())
 				{
 					boolean canFly = player.get(Keys.CAN_FLY).get();
-
+					player.offer(Keys.CAN_FLY, !canFly);
+					
 					if (canFly)
 					{
 						player.sendMessage(Text.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "off."));
@@ -65,8 +66,6 @@ public class FlyExecutor extends CommandExecutorBase
 					{
 						player.sendMessage(Text.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "on."));
 					}
-
-					player.offer(Keys.CAN_FLY, !canFly);
 				}
 				else
 				{
