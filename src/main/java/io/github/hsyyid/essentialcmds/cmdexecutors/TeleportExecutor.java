@@ -56,7 +56,7 @@ public class TeleportExecutor extends CommandExecutorBase
 
 			if (optionalTarget.isPresent())
 			{
-				if (src.hasPermission("teleport.others"))
+				if (src.hasPermission("essentialcmds.teleport.others"))
 				{
 					Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
 					player.setLocation(optionalTarget.get().getLocation());
