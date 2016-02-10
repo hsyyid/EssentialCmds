@@ -57,7 +57,7 @@ public class PlayerJoinListener
 		{
 			Location<World> spawn = Utils.getSpawn();
 
-			if (!Objects.equals(player.getWorld().getUniqueId(), spawn.getExtent().getUniqueId()))
+			if (spawn != null && !Objects.equals(player.getWorld().getUniqueId(), spawn.getExtent().getUniqueId()))
 			{
 				player.transferToWorld(spawn.getExtent().getUniqueId(), spawn.getPosition());
 			}
