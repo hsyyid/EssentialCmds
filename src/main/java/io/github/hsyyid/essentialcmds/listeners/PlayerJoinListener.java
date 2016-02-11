@@ -57,15 +57,18 @@ public class PlayerJoinListener
 		{
 			Location<World> spawn = Utils.getSpawn();
 
-			if (spawn != null && !Objects.equals(player.getWorld().getUniqueId(), spawn.getExtent().getUniqueId()))
+			if (spawn != null)
 			{
-				player.transferToWorld(spawn.getExtent().getUniqueId(), spawn.getPosition());
+				if (!Objects.equals(player.getWorld().getUniqueId(), spawn.getExtent().getUniqueId()))
+				{
+					player.transferToWorld(spawn.getExtent().getUniqueId(), spawn.getPosition());
+				}
+				else
+				{
+					player.setLocation(spawn);
+				}
 			}
-			else
-			{
-				player.setLocation(spawn);
-			}
-			
+
 			Text firstJoinMsg = TextSerializers.formattingCode('&').deserialize(Utils.getFirstJoinMsg().replaceAll("@p", player.getName()));
 			MessageChannel.TO_ALL.send(firstJoinMsg);
 		}
