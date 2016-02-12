@@ -60,6 +60,7 @@ public class FlyExecutor extends CommandExecutorBase
 
 					if (canFly)
 					{
+						player.offer(Keys.IS_FLYING, !canFly);
 						player.sendMessage(Text.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "off."));
 					}
 					else
