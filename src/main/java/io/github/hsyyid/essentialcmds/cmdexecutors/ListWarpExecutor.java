@@ -69,7 +69,7 @@ public class ListWarpExecutor extends AsyncCommandExecutorBase
 
 				for (String name : warps)
 				{
-					if (player.hasPermission("essentialcmds.warp." + name))
+					if (player.hasPermission("essentialcmds.warp.use." + name))
 					{
 						Text item = Text.builder(name)
 							.onClick(TextActions.runCommand("/warp " + name))

@@ -63,19 +63,16 @@ public class SkullExecutor extends CommandExecutorBase
 				Player player = (Player) src;
 
 				// Create the Skull
-				ItemStack.Builder builder = game.getRegistry().createBuilder(ItemStack.Builder.class);
-				ItemStack skullStack = builder.itemType(ItemTypes.SKULL).quantity(1).build();
+				ItemStack skullStack = ItemStack.builder().itemType(ItemTypes.SKULL).quantity(1).build();
 
 				// Set it to player skull type
 				skullStack.offer(Keys.SKULL_TYPE, SkullTypes.PLAYER);
 
 				// Set the owner to the command executor
-				RepresentedPlayerData playerData = skullStack.getOrCreate(RepresentedPlayerData.class).get();
-				playerData = playerData.set(playerData.owner().set(player.getProfile()));
-				skullStack.offer(playerData);
+				skullStack.offer(Keys.REPRESENTED_PLAYER, player.getProfile());
 
 				// Put it in inventory
-				player.setItemInHand(skullStack);
+				player.getInventory().offer(skullStack);
 
 				player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Created skull of your head. Enjoy!"));
 			}
@@ -103,12 +100,10 @@ public class SkullExecutor extends CommandExecutorBase
 				skullStack.offer(Keys.SKULL_TYPE, SkullTypes.PLAYER);
 
 				// Set the owner to the specified player
-				RepresentedPlayerData playerData = skullStack.getOrCreate(RepresentedPlayerData.class).get();
-				playerData = playerData.set(playerData.owner().set(player.getProfile()));
-				skullStack.offer(playerData);
+				skullStack.offer(Keys.REPRESENTED_PLAYER, player.getProfile());
 
 				// Put it in inventory
-				source.setItemInHand(skullStack);
+				source.getInventory().offer(skullStack);
 
 				source.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Created skull of player's head. Enjoy!"));
 			}
