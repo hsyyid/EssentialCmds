@@ -9,7 +9,7 @@ plugins {
 
 group = "io.github.hsyyid"
 archivesBaseName = "EssentialCmds"
-version = '7.4d'
+version = '7.4e'
 
 apply plugin: 'net.ellune.blossom'
 
@@ -37,7 +37,7 @@ repositories {
 }
 
 dependencies {
-    compile "org.spongepowered:spongeapi:3.0.0"
+    compile "org.spongepowered:spongeapi:3.1.0-SNAPSHOT"
     compile "com.github.Flibio:Updatifier:v1.0.0"
 }
 

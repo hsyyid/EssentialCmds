@@ -175,7 +175,7 @@ public class MessageSinkListener
 				return;
 			}
 
-			String original = event.getMessage().orElse(Text.of()).toPlain();
+			StringBuilder original = new StringBuilder(event.getMessage().orElse(Text.of()).toPlain());
 
 			Subject subject = player.getContainingCollection().get(player.getIdentifier());
 			String prefix = "";
@@ -191,21 +191,28 @@ public class MessageSinkListener
 				nameColor = Sponge.getRegistry().getType(TextColor.class, optionSubject.getOption("namecolor").orElse("")).orElse(TextColors.WHITE);
 			}
 
-			String nick = Utils.getNick(player);
-
-			original = original.replaceFirst("<", ("<" + prefix));
-			String prefixInOriginal = original.substring(0, prefix.length() + 1);
-
-			original = original.replaceFirst(player.getName(), nick);
-			String playerName = original.substring(prefixInOriginal.length(), original.indexOf(nick) + nick.length());
-
 			String restOfOriginal = original.substring(original.indexOf(">") + 1, original.length());
 
-			original = original.replaceFirst(">", (suffix + ">"));
-			String suffixInOriginal = original.substring(original.indexOf(nick) + nick.length(), original.indexOf(restOfOriginal));
+			original = original.replace(0, 1, ("<" + prefix));
+			String prefixInOriginal = original.substring(0, prefix.length() + 1);
+
+			original = original.replace(
+				original.indexOf(player.getName()) + player.getName().length(),
+				original.indexOf(player.getName()) + player.getName().length() + 1,
+				suffix + ">");
+			String suffixInOriginal = original.substring(original.indexOf(player.getName()) + player.getName().length(), original.indexOf(restOfOriginal));
+
+			String nick = Utils.getNick(player);
+			original = original.replace(
+				original.indexOf(player.getName()) - 1,
+				original.indexOf(player.getName()) + player.getName().length(),
+				nick);
+			String playerName = original.substring(prefixInOriginal.length() - 1, original.indexOf(nick) + nick.length());
 
 			prefixInOriginal = prefixInOriginal.replaceFirst("<", Utils.getFirstChatCharReplacement());
-			suffixInOriginal = suffixInOriginal.substring(0, suffixInOriginal.lastIndexOf(">")) + Utils.getLastChatCharReplacement();
+
+			if (suffixInOriginal.length() != 0)
+				suffixInOriginal = suffixInOriginal.substring(0, suffixInOriginal.length() - 1) + Utils.getLastChatCharReplacement();
 
 			if (!player.hasPermission("essentialcmds.color.chat.use"))
 			{
