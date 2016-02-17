@@ -41,12 +41,15 @@ public class InventoryListener
 	@Listener
 	public void onChangeHeldItem(ChangeInventoryEvent.Held event, @First Player player)
 	{
-		for (SlotTransaction transaction : event.getTransactions())
+		if (!player.hasPermission("essentialcmds.blacklist.bypass"))
 		{
-			if (Utils.getBlacklistItems().contains(transaction.getFinal().createStack().getItem().getId()))
+			for (SlotTransaction transaction : event.getTransactions())
 			{
-				player.sendMessage(Text.of(TextColors.RED, "The item ", TextColors.GRAY, transaction.getFinal().createStack().getItem().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
-				transaction.setCustom(Sponge.getRegistry().createBuilder(ItemStack.Builder.class).itemType(ItemTypes.DIRT).quantity(1).build());
+				if (Utils.getBlacklistItems().contains(transaction.getFinal().createStack().getItem().getId()))
+				{
+					player.sendMessage(Text.of(TextColors.RED, "The item ", TextColors.GRAY, transaction.getFinal().createStack().getItem().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
+					transaction.setCustom(Sponge.getRegistry().createBuilder(ItemStack.Builder.class).itemType(ItemTypes.DIRT).quantity(1).build());
+				}
 			}
 		}
 	}
@@ -54,12 +57,15 @@ public class InventoryListener
 	@Listener
 	public void onChangeEquipment(ChangeInventoryEvent.Equipment event, @First Player player)
 	{
-		for (SlotTransaction transaction : event.getTransactions())
+		if (!player.hasPermission("essentialcmds.blacklist.bypass"))
 		{
-			if (Utils.getBlacklistItems().contains(transaction.getFinal().createStack().getItem().getId()))
+			for (SlotTransaction transaction : event.getTransactions())
 			{
-				player.sendMessage(Text.of(TextColors.RED, "The item ", TextColors.GRAY, transaction.getFinal().createStack().getItem().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
-				transaction.setCustom(Sponge.getRegistry().createBuilder(ItemStack.Builder.class).itemType(ItemTypes.DIRT).quantity(1).build());
+				if (Utils.getBlacklistItems().contains(transaction.getFinal().createStack().getItem().getId()))
+				{
+					player.sendMessage(Text.of(TextColors.RED, "The item ", TextColors.GRAY, transaction.getFinal().createStack().getItem().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
+					transaction.setCustom(Sponge.getRegistry().createBuilder(ItemStack.Builder.class).itemType(ItemTypes.DIRT).quantity(1).build());
+				}
 			}
 		}
 	}
