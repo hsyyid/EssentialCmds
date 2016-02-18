@@ -71,9 +71,9 @@ public class RTPExecutor extends CommandExecutorBase
 					boolean found = false;
 					while (!found)
 					{
-						x = rand.nextInt(30000);
+						x = rand.nextInt(10000);
 						y = rand.nextInt(256);
-						z = rand.nextInt(30000);
+						z = rand.nextInt(10000);
 
 						randLocation = new Location<World>(playerLocation.getExtent(), x, y, z);
 						optionalLocation = teleportHelper.getSafeLocation(randLocation);
@@ -93,9 +93,9 @@ public class RTPExecutor extends CommandExecutorBase
 				boolean found = false;
 				while (!found)
 				{
-					x = rand.nextInt(30000);
+					x = rand.nextInt(10000);
 					y = rand.nextInt(256);
-					z = rand.nextInt(30000);
+					z = rand.nextInt(10000);
 
 					randLocation = new Location<World>(playerLocation.getExtent(), x, y, z);
 					optionalLocation = teleportHelper.getSafeLocation(randLocation);
