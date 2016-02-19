@@ -69,6 +69,7 @@ import org.spongepowered.api.plugin.Plugin;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -85,7 +86,7 @@ public class EssentialCmds
 	private static EssentialCmds essentialCmds;
 
 	public static List<PendingInvitation> pendingInvites = Lists.newArrayList();
-	public static List<AFK> afkList = Lists.newArrayList();
+	public static HashMap<UUID, AFK> afkList = new HashMap<>();
 	public static List<Player> recentlyJoined = Lists.newArrayList();
 	public static List<Powertool> powertools = Lists.newArrayList();
 	public static Set<UUID> socialSpies = Sets.newHashSet();

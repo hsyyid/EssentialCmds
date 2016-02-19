@@ -25,7 +25,6 @@
 package io.github.hsyyid.essentialcmds.listeners;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
-import io.github.hsyyid.essentialcmds.utils.AFK;
 import io.github.hsyyid.essentialcmds.utils.Mail;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.data.manipulator.mutable.entity.JoinData;
@@ -89,20 +88,9 @@ public class PlayerJoinListener
 		EssentialCmds.recentlyJoined.add(event.getTargetEntity());
 
 		// Remove previous AFK, so player does not join as AFK.
-		AFK afkToRemove = null;
-
-		for (AFK afk : EssentialCmds.afkList)
+		if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
 		{
-			if (afk.getPlayer().equals(player))
-			{
-				afkToRemove = afk;
-				break;
-			}
-		}
-
-		if (afkToRemove != null)
-		{
-			EssentialCmds.afkList.remove(afkToRemove);
+			EssentialCmds.afkList.remove(player.getUniqueId());
 		}
 
 		String loginMessage = Utils.getLoginMessage();

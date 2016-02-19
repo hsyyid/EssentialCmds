@@ -122,38 +122,20 @@ public class MessageSinkListener
 			if (EssentialCmds.recentlyJoined.contains(player))
 			{
 				EssentialCmds.recentlyJoined.remove(player);
-				AFK removeAFK = null;
 
-				for (AFK a : EssentialCmds.afkList)
+				if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
 				{
-					if (player.getUniqueId().equals(a.getPlayer().getUniqueId()))
-					{
-						removeAFK = a;
-						break;
-					}
-				}
-
-				if (removeAFK != null)
-				{
-					EssentialCmds.afkList.remove(removeAFK);
+					EssentialCmds.afkList.remove(player.getUniqueId());
 				}
 			}
 			else
 			{
-				AFK afk = new AFK(player, System.currentTimeMillis());
-				AFK removeAFK = null;
+				AFK afk = new AFK(System.currentTimeMillis());
 
-				for (AFK a : EssentialCmds.afkList)
+				if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
 				{
-					if (player.getUniqueId().equals(a.getPlayer().getUniqueId()))
-					{
-						removeAFK = a;
-						break;
-					}
-				}
-
-				if (removeAFK != null)
-				{
+					AFK removeAFK = EssentialCmds.afkList.get(player.getUniqueId());
+					
 					if (removeAFK.getAFK())
 					{
 						for (Player p : EssentialCmds.getEssentialCmds().getGame().getServer().getOnlinePlayers())
@@ -165,7 +147,7 @@ public class MessageSinkListener
 					EssentialCmds.afkList.remove(removeAFK);
 				}
 
-				EssentialCmds.afkList.add(afk);
+				EssentialCmds.afkList.put(player.getUniqueId(), afk);
 			}
 
 			if (EssentialCmds.muteList.contains(player.getUniqueId()))

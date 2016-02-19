@@ -24,25 +24,16 @@
  */
 package io.github.hsyyid.essentialcmds.utils;
 
-import org.spongepowered.api.entity.living.player.Player;
-
 public class AFK
 {
-	public Player player;
 	public long lastMovementTime;
 	public boolean AFK = false;
 	public boolean messaged = false;
 	public int foodLevel;
 
-	public AFK(Player player, long lastMovementTime)
+	public AFK(long lastMovementTime)
 	{
-		this.player = player;
 		this.lastMovementTime = lastMovementTime;
-	}
-
-	public Player getPlayer()
-	{
-		return this.player;
 	}
 
 	public int getFood()

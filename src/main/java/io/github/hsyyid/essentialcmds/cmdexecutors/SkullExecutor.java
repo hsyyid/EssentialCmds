@@ -24,6 +24,8 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
+
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.command.CommandException;
@@ -31,11 +33,8 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.source.CommandBlockSource;
-import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.manipulator.mutable.RepresentedPlayerData;
 import org.spongepowered.api.data.type.SkullTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
@@ -43,10 +42,9 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
 
-import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
+import javax.annotation.Nonnull;
 
 public class SkullExecutor extends CommandExecutorBase
 {
@@ -76,11 +74,7 @@ public class SkullExecutor extends CommandExecutorBase
 
 				player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Created skull of your head. Enjoy!"));
 			}
-			else if (src instanceof ConsoleSource)
-			{
-				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /skull!"));
-			}
-			else if (src instanceof CommandBlockSource)
+			else
 			{
 				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /skull!"));
 			}
@@ -107,11 +101,7 @@ public class SkullExecutor extends CommandExecutorBase
 
 				source.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Created skull of player's head. Enjoy!"));
 			}
-			else if (src instanceof ConsoleSource)
-			{
-				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /skull!"));
-			}
-			else if (src instanceof CommandBlockSource)
+			else
 			{
 				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /skull!"));
 			}
@@ -122,14 +112,20 @@ public class SkullExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "skull", "playerskull", "head" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
-		return CommandSpec.builder().description(Text.of("Skull Command")).permission("essentialcmds.skull.use")
-				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))))).executor(this).build();
+	public CommandSpec getSpec()
+	{
+		return CommandSpec.builder()
+			.description(Text.of("Skull Command"))
+			.permission("essentialcmds.skull.use")
+			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))))
+			.executor(this)
+			.build();
 	}
 }

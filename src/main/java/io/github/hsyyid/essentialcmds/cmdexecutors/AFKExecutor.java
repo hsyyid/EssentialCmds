@@ -32,8 +32,6 @@ import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.source.CommandBlockSource;
-import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
@@ -49,47 +47,39 @@ public class AFKExecutor extends CommandExecutorBase
 		{
 			Player player = (Player) src;
 
-			AFK playerAFK = null;
-
-			for (AFK afk : EssentialCmds.afkList)
+			if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
 			{
-				if (afk.getPlayer().getUniqueId().equals(player.getUniqueId()))
-				{
-					playerAFK = afk;
-					break;
-				}
-			}
-
-			if (playerAFK != null)
-			{
-				EssentialCmds.afkList.remove(playerAFK);
+				EssentialCmds.afkList.remove(player.getUniqueId());
 			}
 
 			int timeBeforeAFK = (int) Utils.getAFK();
 			long timeToSet = System.currentTimeMillis() + timeBeforeAFK + 1000;
-			AFK afk = new AFK(player, timeToSet);
-			EssentialCmds.afkList.add(afk);
+			AFK afk = new AFK(timeToSet);
+			EssentialCmds.afkList.put(player.getUniqueId(), afk);
 		}
-		else if (src instanceof ConsoleSource)
+		else
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /afk!"));
 		}
-		else if (src instanceof CommandBlockSource)
-		{
-			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /afk!"));
-		}
+
 		return CommandResult.success();
 	}
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "afk" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
-		return CommandSpec.builder().description(Text.of("AFK Command")).permission("essentialcmds.afk.use").executor(this).build();
+	public CommandSpec getSpec()
+	{
+		return CommandSpec.builder()
+			.description(Text.of("AFK Command"))
+			.permission("essentialcmds.afk.use")
+			.executor(this)
+			.build();
 	}
 }
