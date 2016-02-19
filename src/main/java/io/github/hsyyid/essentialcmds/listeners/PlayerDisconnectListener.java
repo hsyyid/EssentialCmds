@@ -24,6 +24,7 @@
  */
 package io.github.hsyyid.essentialcmds.listeners;
 
+import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -44,6 +45,11 @@ public class PlayerDisconnectListener
 			disconnectMessage = disconnectMessage.replaceAll("@p", player.getName());
 			Text newMessage = TextSerializers.formattingCode('&').deserialize(disconnectMessage);
 			event.setMessage(newMessage);
+		}
+
+		if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
+		{
+			EssentialCmds.afkList.remove(player.getUniqueId());
 		}
 	}
 }
