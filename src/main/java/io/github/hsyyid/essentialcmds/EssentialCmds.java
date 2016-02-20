@@ -85,8 +85,8 @@ public class EssentialCmds
 
 	private static EssentialCmds essentialCmds;
 
-	public static List<PendingInvitation> pendingInvites = Lists.newArrayList();
 	public static HashMap<UUID, AFK> afkList = new HashMap<>();
+	public static List<PendingInvitation> pendingInvites = Lists.newArrayList();
 	public static List<Player> recentlyJoined = Lists.newArrayList();
 	public static List<Powertool> powertools = Lists.newArrayList();
 	public static Set<UUID> socialSpies = Sets.newHashSet();

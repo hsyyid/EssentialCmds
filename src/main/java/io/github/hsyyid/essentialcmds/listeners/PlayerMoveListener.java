@@ -27,6 +27,7 @@ package io.github.hsyyid.essentialcmds.listeners;
 import io.github.hsyyid.essentialcmds.utils.AFK;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import io.github.hsyyid.essentialcmds.EssentialCmds;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.DisplaceEntityEvent;
@@ -44,7 +45,7 @@ public class PlayerMoveListener
 			EssentialCmds.teleportingPlayers.remove(player.getUniqueId());
 			player.sendMessage(Text.of(TextColors.RED, "Teleportation canceled due to movement."));
 		}
-		
+
 		if (EssentialCmds.frozenPlayers.contains(player.getUniqueId()))
 		{
 			player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot move while frozen."));
@@ -55,7 +56,7 @@ public class PlayerMoveListener
 		if (EssentialCmds.recentlyJoined.contains(player))
 		{
 			EssentialCmds.recentlyJoined.remove(player);
-			
+
 			if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
 			{
 				EssentialCmds.afkList.remove(player.getUniqueId());
@@ -66,7 +67,7 @@ public class PlayerMoveListener
 			if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
 			{
 				AFK removeAFK = EssentialCmds.afkList.get(player.getUniqueId());
-				
+
 				if (removeAFK.getAFK())
 				{
 					for (Player p : EssentialCmds.getEssentialCmds().getGame().getServer().getOnlinePlayers())
@@ -80,6 +81,11 @@ public class PlayerMoveListener
 
 			AFK afk = new AFK(System.currentTimeMillis());
 			EssentialCmds.afkList.put(player.getUniqueId(), afk);
+		}
+
+		if (!event.getFromTransform().getExtent().getUniqueId().equals(event.getToTransform().getExtent().getUniqueId()))
+		{
+			player.offer(Keys.GAME_MODE, event.getToTransform().getExtent().getProperties().getGameMode());
 		}
 	}
 }
