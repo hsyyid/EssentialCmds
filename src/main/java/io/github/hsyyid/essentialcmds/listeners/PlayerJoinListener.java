@@ -87,12 +87,6 @@ public class PlayerJoinListener
 
 		EssentialCmds.recentlyJoined.add(event.getTargetEntity());
 
-		// Remove previous AFK, so player does not join as AFK.
-		if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
-		{
-			EssentialCmds.afkList.remove(player.getUniqueId());
-		}
-
 		String loginMessage = Utils.getLoginMessage();
 
 		if (loginMessage != null && !loginMessage.equals(""))

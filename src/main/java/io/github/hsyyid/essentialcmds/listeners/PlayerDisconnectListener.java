@@ -38,8 +38,14 @@ public class PlayerDisconnectListener
 	public void onPlayerDisconnect(ClientConnectionEvent.Disconnect event)
 	{
 		Player player = event.getTargetEntity();
-		String disconnectMessage = Utils.getDisconnectMessage();
 
+		// Remove previous AFK, so player does not join as AFK.
+		if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
+		{
+			EssentialCmds.afkList.remove(player.getUniqueId());
+		}
+
+		String disconnectMessage = Utils.getDisconnectMessage();
 		if (disconnectMessage != null && !disconnectMessage.equals(""))
 		{
 			disconnectMessage = disconnectMessage.replaceAll("@p", player.getName());
