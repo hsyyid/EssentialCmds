@@ -18,13 +18,6 @@ targetCompatibility = 1.8
 
 defaultTasks 'licenseFormat'
 
-jar {
-    manifest {
-        attributes 'Implementation-Title': 'EssentialCmds',
-                   'Implementation-Version': version
-    }
-}
-
 repositories {
     jcenter()
     maven {
@@ -36,9 +29,24 @@ repositories {
     }
 }
 
+configurations {
+    shade
+    compile.extendsFrom shade
+}
+
 dependencies {
     compile "org.spongepowered:spongeapi:3.1.0-SNAPSHOT"
-    compile "com.github.Flibio:Updatifier:v1.0.0"
+    shade "com.github.Flibio:Updatifier:v1.3.0:api"
+}
+
+jar {
+    configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
+        from (zipTree(artifact))
+    }
+    manifest {
+        attributes 'Implementation-Title': 'EssentialCmds',
+                   'Implementation-Version': version
+    }
 }
 
 test {
