@@ -24,6 +24,7 @@
  */
 package io.github.hsyyid.essentialcmds.listeners;
 
+import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -37,8 +38,14 @@ public class PlayerDisconnectListener
 	public void onPlayerDisconnect(ClientConnectionEvent.Disconnect event)
 	{
 		Player player = event.getTargetEntity();
-		String disconnectMessage = Utils.getDisconnectMessage();
 
+		// Remove previous AFK, so player does not join as AFK.
+		if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
+		{
+			EssentialCmds.afkList.remove(player.getUniqueId());
+		}
+
+		String disconnectMessage = Utils.getDisconnectMessage();
 		if (disconnectMessage != null && !disconnectMessage.equals(""))
 		{
 			disconnectMessage = disconnectMessage.replaceAll("@p", player.getName());
