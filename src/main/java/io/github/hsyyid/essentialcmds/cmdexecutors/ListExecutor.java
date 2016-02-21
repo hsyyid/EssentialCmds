@@ -24,42 +24,67 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.EssentialCmds;
+import com.google.common.collect.Lists;
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
-import io.github.hsyyid.essentialcmds.utils.AFK;
-import io.github.hsyyid.essentialcmds.utils.Utils;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.service.permission.PermissionService;
+import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
 import javax.annotation.Nonnull;
 
-public class AFKExecutor extends CommandExecutorBase
+public class ListExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		if (src instanceof Player)
+		Optional<PermissionService> optPermissionService = Sponge.getServiceManager().provide(PermissionService.class);
+
+		src.sendMessage(Text.of(TextColors.GOLD, "There are ", TextColors.RED, Sponge.getServer().getOnlinePlayers().size(), TextColors.GOLD, " players online out of ", TextColors.GRAY, Sponge.getServer().getMaxPlayers()));
+
+		if (optPermissionService.isPresent())
 		{
-			Player player = (Player) src;
+			PermissionService permissionService = optPermissionService.get();
 
-			if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
+			for (Subject group : permissionService.getGroupSubjects().getAllSubjects())
 			{
-				EssentialCmds.afkList.remove(player.getUniqueId());
-			}
+				Stream<Subject> users = StreamSupport.stream(permissionService.getUserSubjects().getAllSubjects().spliterator(), false).filter(u -> u.isChildOf(group));
+				List<String> onlineUsers = Lists.newArrayList();
+				Iterator<Subject> itr = users.iterator();
 
-			int timeBeforeAFK = (int) Utils.getAFK();
-			long timeToSet = System.currentTimeMillis() - timeBeforeAFK - 1000;
-			AFK afk = new AFK(timeToSet);
-			EssentialCmds.afkList.put(player.getUniqueId(), afk);
+				while (itr.hasNext())
+				{
+					Subject user = itr.next();
+					Optional<Player> optPlayer = Sponge.getServer().getPlayer(UUID.fromString(user.getIdentifier()));
+					
+					if (optPlayer.isPresent())
+					{
+						onlineUsers.add(optPlayer.get().getName());
+					}
+				}
+
+				if (onlineUsers.size() > 0)
+				{
+					src.sendMessage(Text.of(TextColors.GOLD, group.getIdentifier(), ": ", TextColors.GRAY, onlineUsers.toString()));
+				}
+			}
 		}
 		else
 		{
-			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /afk!"));
+			src.sendMessage(Text.of(TextColors.GRAY, Sponge.getServer().getOnlinePlayers().toString()));
 		}
 
 		return CommandResult.success();
@@ -69,7 +94,7 @@ public class AFKExecutor extends CommandExecutorBase
 	@Override
 	public String[] getAliases()
 	{
-		return new String[] { "afk" };
+		return new String[] { "list" };
 	}
 
 	@Nonnull
@@ -77,8 +102,8 @@ public class AFKExecutor extends CommandExecutorBase
 	public CommandSpec getSpec()
 	{
 		return CommandSpec.builder()
-			.description(Text.of("AFK Command"))
-			.permission("essentialcmds.afk.use")
+			.description(Text.of("List Command"))
+			.permission("essentialcmds.list.use")
 			.executor(this)
 			.build();
 	}
