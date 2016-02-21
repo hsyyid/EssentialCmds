@@ -53,7 +53,7 @@ public class ListExecutor extends CommandExecutorBase
 	{
 		Optional<PermissionService> optPermissionService = Sponge.getServiceManager().provide(PermissionService.class);
 
-		src.sendMessage(Text.of(TextColors.GOLD, "There are ", TextColors.RED, Sponge.getServer().getOnlinePlayers().size(), TextColors.GOLD, " players online out of ", TextColors.GRAY, Sponge.getServer().getMaxPlayers()));
+		src.sendMessage(Text.of(TextColors.GOLD, "There are ", TextColors.RED, Sponge.getServer().getOnlinePlayers().size(), TextColors.GOLD, " out of ", TextColors.GRAY, Sponge.getServer().getMaxPlayers(), TextColors.GOLD, " players."));
 
 		if (optPermissionService.isPresent())
 		{
