@@ -26,6 +26,7 @@ package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import com.google.common.collect.Lists;
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
+import io.github.hsyyid.essentialcmds.utils.SubjectComparator;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -38,6 +39,7 @@ import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -53,13 +55,16 @@ public class ListExecutor extends CommandExecutorBase
 	{
 		Optional<PermissionService> optPermissionService = Sponge.getServiceManager().provide(PermissionService.class);
 
-		src.sendMessage(Text.of(TextColors.GOLD, "There are ", TextColors.RED, Sponge.getServer().getOnlinePlayers().size(), TextColors.GOLD, " out of ", TextColors.GRAY, Sponge.getServer().getMaxPlayers(), TextColors.GOLD, " players."));
+		src.sendMessage(Text.of(TextColors.GOLD, "There are ", TextColors.RED, Sponge.getServer().getOnlinePlayers().size(), TextColors.GOLD, " out of ", TextColors.GRAY, Sponge.getServer().getMaxPlayers(), TextColors.GOLD, " players online."));
 
 		if (optPermissionService.isPresent())
 		{
 			PermissionService permissionService = optPermissionService.get();
-
-			for (Subject group : permissionService.getGroupSubjects().getAllSubjects())
+			List<Subject> groups = Lists.newArrayList(permissionService.getGroupSubjects().getAllSubjects());
+			Collections.sort(groups, new SubjectComparator());
+			List<UUID> listedPlayers = Lists.newArrayList();
+			
+			for (Subject group : groups)
 			{
 				Stream<Subject> users = StreamSupport.stream(permissionService.getUserSubjects().getAllSubjects().spliterator(), false).filter(u -> u.isChildOf(group));
 				List<String> onlineUsers = Lists.newArrayList();
@@ -79,8 +84,9 @@ public class ListExecutor extends CommandExecutorBase
 						optPlayer = Sponge.getServer().getPlayer(user.getIdentifier());
 					}
 
-					if (optPlayer.isPresent())
+					if (optPlayer.isPresent() && !listedPlayers.contains(optPlayer.get().getUniqueId()))
 					{
+						listedPlayers.add(optPlayer.get().getUniqueId());
 						onlineUsers.add(optPlayer.get().getName());
 					}
 				}
