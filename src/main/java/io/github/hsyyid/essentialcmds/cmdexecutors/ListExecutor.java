@@ -58,7 +58,6 @@ public class ListExecutor extends CommandExecutorBase
 		if (optPermissionService.isPresent())
 		{
 			PermissionService permissionService = optPermissionService.get();
-			List<UUID> listedPlayers = Lists.newArrayList();
 
 			for (Subject group : permissionService.getGroupSubjects().getAllSubjects())
 			{
@@ -69,11 +68,19 @@ public class ListExecutor extends CommandExecutorBase
 				while (itr.hasNext())
 				{
 					Subject user = itr.next();
-					Optional<Player> optPlayer = Sponge.getServer().getPlayer(UUID.fromString(user.getIdentifier()));
+					Optional<Player> optPlayer = Optional.empty();
 
-					if (optPlayer.isPresent() && !listedPlayers.contains(optPlayer.get().getUniqueId()))
+					try
 					{
-						listedPlayers.add(optPlayer.get().getUniqueId());
+						optPlayer = Sponge.getServer().getPlayer(UUID.fromString(user.getIdentifier()));
+					}
+					catch (IllegalArgumentException e)
+					{
+						optPlayer = Sponge.getServer().getPlayer(user.getIdentifier());
+					}
+
+					if (optPlayer.isPresent())
+					{
 						onlineUsers.add(optPlayer.get().getName());
 					}
 				}
