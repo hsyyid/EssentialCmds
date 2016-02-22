@@ -68,7 +68,7 @@ public class ListExecutor extends CommandExecutorBase
 				while (itr.hasNext())
 				{
 					Subject user = itr.next();
-					Optional<Player> optPlayer = Optional.empty();
+					Optional<Player> optPlayer;
 
 					try
 					{
