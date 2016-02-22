@@ -62,8 +62,9 @@ public class ListExecutor extends CommandExecutorBase
 			PermissionService permissionService = optPermissionService.get();
 			List<Subject> groups = Lists.newArrayList(permissionService.getGroupSubjects().getAllSubjects());
 			Collections.sort(groups, new SubjectComparator());
+			Collections.reverse(groups);
 			List<UUID> listedPlayers = Lists.newArrayList();
-			
+
 			for (Subject group : groups)
 			{
 				Stream<Subject> users = StreamSupport.stream(permissionService.getUserSubjects().getAllSubjects().spliterator(), false).filter(u -> u.isChildOf(group));
