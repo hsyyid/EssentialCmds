@@ -42,7 +42,7 @@ public class ItemStackSerializer
 
 	public static Optional<ItemStack> readItemStack(ConfigurationNode node)
 	{
-		DataView dataView = ConfigurateTranslator.instance().translateFrom(node);
-		return Sponge.getDataManager().deserialize(ItemStack.class, dataView);
+		DataView view = ConfigurateTranslator.instance().translateFrom(node);
+		return Sponge.getDataManager().deserialize(ItemStack.class, view);
 	}
 }

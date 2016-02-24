@@ -59,7 +59,7 @@ public class TeleportPosExecutor extends CommandExecutorBase
 			if (src.hasPermission("teleport.pos.others"))
 			{
 				Utils.setLastTeleportOrDeathLocation(p.get().getUniqueId(), p.get().getLocation());
-				
+
 				if(world != null)
 					p.get().setLocation(new Location<>(world, x, y, z));
 				else
@@ -75,12 +75,12 @@ public class TeleportPosExecutor extends CommandExecutorBase
 			{
 				Player player = (Player) src;
 				Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
-				
+
 				if(world != null)
 					player.setLocation(new Location<>(world, x, y, z));
 				else
 					player.setLocation(new Location<>(player.getWorld(), x, y, z));
-				
+
 				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to coords."));
 			}
 			else
@@ -106,10 +106,11 @@ public class TeleportPosExecutor extends CommandExecutorBase
 			.description(Text.of("Teleport Position Command"))
 			.permission("essentialcmds.teleport.pos.use")
 			.arguments(GenericArguments.seq(
-				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))))),
-				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("world")))),
 				GenericArguments.onlyOne(GenericArguments.integer(Text.of("x"))),
 				GenericArguments.onlyOne(GenericArguments.integer(Text.of("y"))),
-				GenericArguments.onlyOne(GenericArguments.integer(Text.of("z")))).executor(this).build();
+				GenericArguments.onlyOne(GenericArguments.integer(Text.of("z"))),
+				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))))),
+				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("world")))))
+			.executor(this).build();
 	}
 }
