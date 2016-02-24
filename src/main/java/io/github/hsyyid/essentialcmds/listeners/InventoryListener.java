@@ -39,12 +39,6 @@ import org.spongepowered.api.text.format.TextColors;
 public class InventoryListener
 {
 	@Listener
-	public void onInventoryChange(ChangeInventoryEvent event, @First Player player)
-	{
-		Utils.saveCurrentInv(player, player.getWorld());
-	}
-
-	@Listener
 	public void onChangeHeldItem(ChangeInventoryEvent.Held event, @First Player player)
 	{
 		if (!player.hasPermission("essentialcmds.blacklist.bypass"))
