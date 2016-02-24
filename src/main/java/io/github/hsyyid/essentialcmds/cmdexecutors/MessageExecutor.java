@@ -39,6 +39,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.channel.MutableMessageChannel;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -94,7 +95,7 @@ public class MessageExecutor extends AsyncCommandExecutorBase
 
 			Message msg = new Message(player, recipient, message);
 			EssentialCmds.recentlyMessaged.add(msg);
-			mc.send(Text.of(TextColors.GOLD, "[", TextColors.RED, player.getName(), TextColors.GOLD, " > ", TextColors.RED, recipient.getName(), TextColors.GOLD, "]: ", TextColors.GRAY, message));
+			mc.send(Text.of(TextColors.GRAY, "[SocialSpy]: ", TextStyles.ITALIC, TextColors.GOLD, "[", TextColors.RED, player.getName(), TextColors.GOLD, " > ", TextColors.RED, recipient.getName(), TextColors.GOLD, "]: ", TextColors.GRAY, message));
 		}
 		else if (src instanceof ConsoleSource)
 		{
