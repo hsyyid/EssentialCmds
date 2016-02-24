@@ -24,34 +24,22 @@
  */
 package io.github.hsyyid.essentialcmds.listeners;
 
-import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.utils.Utils;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.network.ClientConnectionEvent;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.serializer.TextSerializers;
+import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 
-public class PlayerDisconnectListener
+public class ServerListener
 {
 	@Listener
-	public void onPlayerDisconnect(ClientConnectionEvent.Disconnect event)
+	public void onServerStarted(GameStartedServerEvent event)
 	{
-		Player player = event.getTargetEntity();
-		String disconnectMessage = Utils.getDisconnectMessage();
-
-		if (disconnectMessage != null && !disconnectMessage.equals(""))
-		{
-			disconnectMessage = disconnectMessage.replaceAll("@p", player.getName());
-			Text newMessage = TextSerializers.formattingCode('&').deserialize(disconnectMessage);
-			event.setMessage(newMessage);
-		}
-
-		if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
-		{
-			EssentialCmds.afkList.remove(player.getUniqueId());
-		}
-
-		Utils.saveCurrentInv(player, player.getWorld());
+		Utils.readPlayerInventories();
+	}
+	
+	@Listener
+	public void onServerStop(GameStoppingServerEvent event)
+	{
+		Utils.updatePlayerInventories();
 	}
 }

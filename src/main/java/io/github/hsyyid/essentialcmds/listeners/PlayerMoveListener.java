@@ -24,9 +24,9 @@
  */
 package io.github.hsyyid.essentialcmds.listeners;
 
+import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.utils.AFK;
 import io.github.hsyyid.essentialcmds.utils.Utils;
-import io.github.hsyyid.essentialcmds.EssentialCmds;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -34,6 +34,7 @@ import org.spongepowered.api.event.entity.DisplaceEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.world.World;
 
 public class PlayerMoveListener
 {
@@ -85,7 +86,13 @@ public class PlayerMoveListener
 
 		if (!event.getFromTransform().getExtent().getUniqueId().equals(event.getToTransform().getExtent().getUniqueId()))
 		{
-			player.offer(Keys.GAME_MODE, event.getToTransform().getExtent().getProperties().getGameMode());
+			World oldWorld = event.getFromTransform().getExtent();
+			World newWorld = event.getToTransform().getExtent();
+
+			Utils.saveCurrentInv(player, oldWorld);
+			Utils.updateCurrentInv(player, newWorld);
+
+			player.offer(Keys.GAME_MODE, newWorld.getProperties().getGameMode());
 		}
 	}
 }

@@ -22,36 +22,60 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.hsyyid.essentialcmds.listeners;
+package io.github.hsyyid.essentialcmds.utils;
 
-import io.github.hsyyid.essentialcmds.EssentialCmds;
-import io.github.hsyyid.essentialcmds.utils.Utils;
+import com.google.common.collect.Lists;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.network.ClientConnectionEvent;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.serializer.TextSerializers;
+import org.spongepowered.api.item.inventory.Inventory;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.type.CarriedInventory;
 
-public class PlayerDisconnectListener
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+public class PlayerInventory
 {
-	@Listener
-	public void onPlayerDisconnect(ClientConnectionEvent.Disconnect event)
+	private UUID playerUuid;
+	private UUID worldUuid;
+	private List<ItemStack> slots;
+
+	public PlayerInventory(UUID playerUuid, UUID worldUuid, List<ItemStack> slots)
 	{
-		Player player = event.getTargetEntity();
-		String disconnectMessage = Utils.getDisconnectMessage();
+		this.playerUuid = playerUuid;
+		this.worldUuid = worldUuid;
+		this.slots = slots;
+	}
 
-		if (disconnectMessage != null && !disconnectMessage.equals(""))
+	public PlayerInventory(CarriedInventory<Player> inventory, UUID worldUuid)
+	{
+		this.slots = Lists.newArrayList();
+		this.worldUuid = worldUuid;
+
+		if (inventory.getCarrier().isPresent())
+			this.playerUuid = inventory.getCarrier().get().getUniqueId();
+
+		for (Inventory slot : inventory.slots())
 		{
-			disconnectMessage = disconnectMessage.replaceAll("@p", player.getName());
-			Text newMessage = TextSerializers.formattingCode('&').deserialize(disconnectMessage);
-			event.setMessage(newMessage);
-		}
+			Optional<ItemStack> stack = slot.peek();
 
-		if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
-		{
-			EssentialCmds.afkList.remove(player.getUniqueId());
+			if (stack.isPresent())
+				this.slots.add(stack.get());
 		}
+	}
 
-		Utils.saveCurrentInv(player, player.getWorld());
+	public UUID getPlayerUuid()
+	{
+		return playerUuid;
+	}
+
+	public UUID getWorldUuid()
+	{
+		return worldUuid;
+	}
+
+	public List<ItemStack> getSlots()
+	{
+		return slots;
 	}
 }

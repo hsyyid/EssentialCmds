@@ -102,41 +102,6 @@ public class PlayerJoinListener
 			event.setMessage(newMessage);
 		}
 
-		// Not working in Sponge yet
-		// Subject subject = player.getContainingCollection().get(player.getIdentifier());
-		//
-		// if (subject instanceof OptionSubject)
-		// {
-		// OptionSubject optionSubject = (OptionSubject) subject;
-		// String prefix = optionSubject.getOption("prefix").orElse("");
-		// Text textPrefix = null;
-		//
-		// try
-		// {
-		// textPrefix = Text.legacy('&').from(prefix + " ");
-		// }
-		// catch (TextMessageException e)
-		// {
-		// System.out.println("Error! A TextMessageException was caught when trying to format the prefix!");
-		// }
-		//
-		// DisplayNameData data = player.getOrCreate(DisplayNameData.class).get();
-		// Optional<Text> name = data.get(Keys.DISPLAY_NAME);
-		//
-		// if (name.isPresent())
-		// {
-		// data.set(Keys.DISPLAY_NAME, Text.of(textPrefix, name.get()));
-		// }
-		// else
-		// {
-		// data.set(Keys.DISPLAY_NAME, Text.of(textPrefix, player.getName()));
-		// }
-		//
-		// player.offer(data);
-		// }
-		// else
-		// {
-		// System.out.println("Player is not an instance of OptionSubject!");
-		// }
+		Utils.updateCurrentInv(player, player.getWorld());
 	}
 }

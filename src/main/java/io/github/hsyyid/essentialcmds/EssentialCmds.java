@@ -40,19 +40,23 @@ import io.github.hsyyid.essentialcmds.listeners.PlayerDisconnectListener;
 import io.github.hsyyid.essentialcmds.listeners.PlayerInteractListener;
 import io.github.hsyyid.essentialcmds.listeners.PlayerJoinListener;
 import io.github.hsyyid.essentialcmds.listeners.PlayerMoveListener;
+import io.github.hsyyid.essentialcmds.listeners.ServerListener;
 import io.github.hsyyid.essentialcmds.listeners.SignChangeListener;
 import io.github.hsyyid.essentialcmds.listeners.TPAListener;
 import io.github.hsyyid.essentialcmds.listeners.WeatherChangeListener;
 import io.github.hsyyid.essentialcmds.managers.config.Config;
 import io.github.hsyyid.essentialcmds.managers.config.HomeConfig;
+import io.github.hsyyid.essentialcmds.managers.config.InventoryConfig;
 import io.github.hsyyid.essentialcmds.managers.config.JailConfig;
 import io.github.hsyyid.essentialcmds.managers.config.PlayerDataConfig;
 import io.github.hsyyid.essentialcmds.managers.config.RulesConfig;
 import io.github.hsyyid.essentialcmds.managers.config.SpawnConfig;
 import io.github.hsyyid.essentialcmds.managers.config.WarpConfig;
+import io.github.hsyyid.essentialcmds.managers.config.WorldConfig;
 import io.github.hsyyid.essentialcmds.utils.AFK;
 import io.github.hsyyid.essentialcmds.utils.Message;
 import io.github.hsyyid.essentialcmds.utils.PendingInvitation;
+import io.github.hsyyid.essentialcmds.utils.PlayerInventory;
 import io.github.hsyyid.essentialcmds.utils.Powertool;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import me.flibio.updatifier.Updatifier;
@@ -89,6 +93,7 @@ public class EssentialCmds
 	public static List<PendingInvitation> pendingInvites = Lists.newArrayList();
 	public static List<Player> recentlyJoined = Lists.newArrayList();
 	public static List<Powertool> powertools = Lists.newArrayList();
+	public static List<PlayerInventory> playerInventories = Lists.newArrayList();
 	public static Set<UUID> socialSpies = Sets.newHashSet();
 	public static List<Message> recentlyMessaged = Lists.newArrayList();
 	public static Set<UUID> muteList = Sets.newHashSet();
@@ -152,8 +157,12 @@ public class EssentialCmds
 		JailConfig.getConfig().setup();
 		// Create spawn.conf
 		SpawnConfig.getConfig().setup();
+		// Create worlds.conf
+		WorldConfig.getConfig().setup();
 		// Create playerdata.conf
 		PlayerDataConfig.getConfig().setup();
+		// Create inventory.conf
+		InventoryConfig.getConfig().setup();
 	}
 
 	@Listener
@@ -182,6 +191,7 @@ public class EssentialCmds
 		getGame().getEventManager().registerListeners(this, new CommandListener());
 		getGame().getEventManager().registerListeners(this, new ChangeBlockListener());
 		getGame().getEventManager().registerListeners(this, new PlayerDamageListener());
+		getGame().getEventManager().registerListeners(this, new ServerListener());
 
 		getLogger().info("-----------------------------");
 		getLogger().info("EssentialCmds was made by HassanS6000!");

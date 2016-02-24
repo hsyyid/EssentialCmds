@@ -34,6 +34,7 @@ import io.github.hsyyid.essentialcmds.api.util.config.Configs;
 import io.github.hsyyid.essentialcmds.api.util.config.Configurable;
 import io.github.hsyyid.essentialcmds.managers.config.Config;
 import io.github.hsyyid.essentialcmds.managers.config.HomeConfig;
+import io.github.hsyyid.essentialcmds.managers.config.InventoryConfig;
 import io.github.hsyyid.essentialcmds.managers.config.JailConfig;
 import io.github.hsyyid.essentialcmds.managers.config.PlayerDataConfig;
 import io.github.hsyyid.essentialcmds.managers.config.RulesConfig;
@@ -46,6 +47,10 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
 import org.spongepowered.api.data.value.mutable.Value;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.item.inventory.Inventory;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.type.CarriedInventory;
+import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.scheduler.Scheduler;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.sql.SqlService;
@@ -69,6 +74,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -89,6 +95,7 @@ public class Utils
 	private static Configurable jailsConfig = JailConfig.getConfig();
 	private static Configurable spawnConfig = SpawnConfig.getConfig();
 	private static Configurable playerDataConfig = PlayerDataConfig.getConfig();
+	private static Configurable inventoryConfig = InventoryConfig.getConfig();
 	private static ConfigManager configManager = new ConfigManager();
 
 	public static void setSQLPort(String value)
@@ -515,7 +522,7 @@ public class Utils
 				}
 				catch (ClassNotFoundException exception)
 				{
-					System.out.println("[EssentialCmds]: You do not have ANY database software installed! Mutes will not work or be saved until this is fixed.");
+					EssentialCmds.getEssentialCmds().getLogger().error("You do not have ANY database software installed! Mutes will not work or be saved until this is fixed.");
 				}
 
 				c = DriverManager.getConnection("jdbc:sqlite:Mutes.db");
@@ -729,7 +736,7 @@ public class Utils
 			}
 			catch (Exception ex)
 			{
-				System.out.println("Could not save JSON file!");
+				EssentialCmds.getEssentialCmds().getLogger().error("Could not save JSON file!");
 			}
 		}
 	}
@@ -776,7 +783,7 @@ public class Utils
 			}
 			catch (Exception ex)
 			{
-				System.out.println("Could not save JSON file!");
+				EssentialCmds.getEssentialCmds().getLogger().error("Could not save JSON file!");
 			}
 		}
 	}
@@ -1234,5 +1241,102 @@ public class Utils
 		warps = warps.replace(warpName + ",", "");
 		Configs.setValue(warpsConfig, warpNode.getPath(), warps);
 		Configs.removeChild(warpsConfig, new Object[] { "warps" }, warpName);
+	}
+
+	public static void updatePlayerInventories()
+	{
+		EssentialCmds.getEssentialCmds().getLogger().info("Saving player inventories to config...");
+
+		for (PlayerInventory playerInventory : EssentialCmds.playerInventories)
+		{
+			for (int i = 0; i < playerInventory.getSlots().size(); i++)
+			{
+				ConfigurationNode inventoryNode = Configs.getConfig(inventoryConfig).getNode("inventory", playerInventory.getPlayerUuid().toString(), playerInventory.getWorldUuid().toString(), "slots", String.valueOf(i));
+				Object object = ItemStackSerializer.serializeItemStack(playerInventory.getSlots().get(i));
+				Configs.setValue(inventoryConfig, inventoryNode.getPath(), object);
+			}
+		}
+
+		EssentialCmds.getEssentialCmds().getLogger().info("Finished saving player inventories.");
+	}
+
+	public static void readPlayerInventories()
+	{
+		if (EssentialCmds.playerInventories.isEmpty())
+		{
+			for (GameProfile gameProfile : Sponge.getServer().getGameProfileManager().getCachedProfiles())
+			{
+				UUID playerUuid = gameProfile.getUniqueId();
+
+				for (World world : Sponge.getServer().getWorlds())
+				{
+					List<ItemStack> slots = Lists.newArrayList();
+					UUID worldUuid = world.getUniqueId();
+					ConfigurationNode parentNode = Configs.getConfig(inventoryConfig).getNode("inventory", playerUuid.toString(), worldUuid.toString(), "slots");
+
+					for (Object slot : parentNode.getChildrenMap().keySet())
+					{
+						ConfigurationNode inventoryNode = Configs.getConfig(inventoryConfig).getNode("inventory", playerUuid.toString(), worldUuid.toString(), "slots", String.valueOf(slot));
+						Optional<ItemStack> optionalStack = ItemStackSerializer.readItemStack(inventoryNode);
+
+						if (optionalStack.isPresent())
+						{
+							slots.add(optionalStack.get());
+						}
+					}
+
+					EssentialCmds.playerInventories.add(new PlayerInventory(playerUuid, worldUuid, slots));
+				}
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static void saveCurrentInv(Player player, World world)
+	{
+		PlayerInventory playerInventoryToRemove = null;
+
+		for (PlayerInventory playerInventory : EssentialCmds.playerInventories)
+		{
+			if (playerInventory.getPlayerUuid().equals(player.getUniqueId()) && playerInventory.getWorldUuid().equals(world.getUniqueId()))
+			{
+				playerInventoryToRemove = playerInventory;
+				break;
+			}
+		}
+
+		if (playerInventoryToRemove != null)
+		{
+			EssentialCmds.playerInventories.remove(playerInventoryToRemove);
+		}
+
+		PlayerInventory playerInventory = new PlayerInventory((CarriedInventory<Player>) player.getInventory(), world.getUniqueId());
+		EssentialCmds.playerInventories.add(playerInventory);
+	}
+
+	public static void updateCurrentInv(Player player, World world)
+	{
+		PlayerInventory foundPlayerInventory = null;
+
+		for (PlayerInventory playerInventory : EssentialCmds.playerInventories)
+		{
+			if (playerInventory.getPlayerUuid().equals(player.getUniqueId()) && playerInventory.getWorldUuid().equals(world.getUniqueId()))
+			{
+				foundPlayerInventory = playerInventory;
+				break;
+			}
+		}
+
+		player.getInventory().clear();
+
+		if (foundPlayerInventory != null)
+		{
+			Iterator<Inventory> slots = player.getInventory().slots().iterator();
+
+			for (int i = 0; i < foundPlayerInventory.getSlots().size(); i++)
+			{
+				slots.next().set(foundPlayerInventory.getSlots().get(i));
+			}
+		}
 	}
 }

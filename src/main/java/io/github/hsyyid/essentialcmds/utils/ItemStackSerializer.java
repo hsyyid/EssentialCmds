@@ -22,36 +22,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.hsyyid.essentialcmds.listeners;
+package io.github.hsyyid.essentialcmds.utils;
 
-import io.github.hsyyid.essentialcmds.EssentialCmds;
-import io.github.hsyyid.essentialcmds.utils.Utils;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.network.ClientConnectionEvent;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.serializer.TextSerializers;
+import ninja.leaping.configurate.ConfigurationNode;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.DataView;
+import org.spongepowered.api.data.translator.ConfigurateTranslator;
+import org.spongepowered.api.item.inventory.ItemStack;
 
-public class PlayerDisconnectListener
+import java.util.Optional;
+
+public class ItemStackSerializer
 {
-	@Listener
-	public void onPlayerDisconnect(ClientConnectionEvent.Disconnect event)
+	public static Object serializeItemStack(ItemStack itemStack)
 	{
-		Player player = event.getTargetEntity();
-		String disconnectMessage = Utils.getDisconnectMessage();
+		ConfigurationNode node = ConfigurateTranslator.instance().translateData(itemStack.toContainer());
+		return node.getValue();
+	}
 
-		if (disconnectMessage != null && !disconnectMessage.equals(""))
-		{
-			disconnectMessage = disconnectMessage.replaceAll("@p", player.getName());
-			Text newMessage = TextSerializers.formattingCode('&').deserialize(disconnectMessage);
-			event.setMessage(newMessage);
-		}
-
-		if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
-		{
-			EssentialCmds.afkList.remove(player.getUniqueId());
-		}
-
-		Utils.saveCurrentInv(player, player.getWorld());
+	public static Optional<ItemStack> readItemStack(ConfigurationNode node)
+	{
+		DataView dataView = ConfigurateTranslator.instance().translateFrom(node);
+		System.out.println("Read from Node: " + dataView.toString());
+		return Sponge.getDataManager().deserialize(ItemStack.class, dataView);
 	}
 }
