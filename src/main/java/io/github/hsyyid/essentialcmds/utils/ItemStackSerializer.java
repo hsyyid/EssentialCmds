@@ -44,7 +44,12 @@ public class ItemStackSerializer
 	public static Optional<ItemStack> readItemStack(ConfigurationNode node, Object number)
 	{
 		DataView view = ConfigurateTranslator.instance().translateFrom(node);
-		view = (DataView) view.get(DataQuery.of(String.valueOf(number))).get();
+
+		if (view.get(DataQuery.of(String.valueOf(number))).isPresent())
+			view = (DataView) view.get(DataQuery.of(String.valueOf(number))).get();
+		else
+			System.out.println(view.toString());
+
 		return Sponge.getDataManager().deserialize(ItemStack.class, view);
 	}
 }

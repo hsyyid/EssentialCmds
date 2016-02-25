@@ -25,17 +25,21 @@
 package io.github.hsyyid.essentialcmds.listeners;
 
 import io.github.hsyyid.essentialcmds.utils.Utils;
-
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
-import org.spongepowered.api.event.filter.cause.First;
 
 public class PlayerDeathListener
 {
 	@Listener
-	public void onPlayerDeath(DestructEntityEvent event, @First Player died)
+	public void onPlayerDeath(DestructEntityEvent event)
 	{
-		Utils.setLastTeleportOrDeathLocation(died.getUniqueId(), died.getLocation());
+		if (event.getTargetEntity() instanceof Player)
+		{
+			Player died = (Player) event.getTargetEntity();
+
+			Utils.savePlayerInventory(died, died.getWorld().getUniqueId());
+			Utils.setLastTeleportOrDeathLocation(died.getUniqueId(), died.getLocation());
+		}
 	}
 }

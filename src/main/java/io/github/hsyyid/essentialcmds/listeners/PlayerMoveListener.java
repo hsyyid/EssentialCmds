@@ -90,7 +90,11 @@ public class PlayerMoveListener
 			World newWorld = event.getToTransform().getExtent();
 
 			Utils.savePlayerInventory(player, oldWorld.getUniqueId());
-			Utils.updatePlayerInventory(player, newWorld.getUniqueId());
+
+			if (!Utils.doShareInventories(oldWorld.getName(), newWorld.getName()))
+			{
+				Utils.updatePlayerInventory(player, newWorld.getUniqueId());
+			}
 
 			player.offer(Keys.GAME_MODE, newWorld.getProperties().getGameMode());
 		}

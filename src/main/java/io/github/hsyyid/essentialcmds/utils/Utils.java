@@ -40,6 +40,7 @@ import io.github.hsyyid.essentialcmds.managers.config.PlayerDataConfig;
 import io.github.hsyyid.essentialcmds.managers.config.RulesConfig;
 import io.github.hsyyid.essentialcmds.managers.config.SpawnConfig;
 import io.github.hsyyid.essentialcmds.managers.config.WarpConfig;
+import io.github.hsyyid.essentialcmds.managers.config.WorldConfig;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import org.spongepowered.api.Game;
@@ -94,7 +95,10 @@ public class Utils
 	private static Configurable spawnConfig = SpawnConfig.getConfig();
 	private static Configurable playerDataConfig = PlayerDataConfig.getConfig();
 	private static Configurable inventoryConfig = InventoryConfig.getConfig();
+	private static Configurable worldConfig = WorldConfig.getConfig();
 	private static ConfigManager configManager = new ConfigManager();
+
+	public static final String[] ARMOR = new String[] { "helmet", "chestplate", "leggings", "boots" };
 
 	public static void setSQLPort(String value)
 	{
@@ -1241,22 +1245,81 @@ public class Utils
 		Configs.removeChild(warpsConfig, new Object[] { "warps" }, warpName);
 	}
 
-	public static void savePlayerInventory(Player player, UUID worldUuid)
+	public static void savePlayerInventory(Player player, UUID worldUUID)
 	{
-		List<Inventory> slots = Lists.newArrayList(player.getInventory().slots());
+		if (!Utils.areSeparateWorldInventoriesEnabled())
+			return;
 
-		for (int i = 0; i < slots.size(); i++)
+		String worldName = Sponge.getServer().getWorld(worldUUID).get().getName();
+		Set<UUID> worlds = Sets.newHashSet();
+
+		for (World world : Sponge.getServer().getWorlds())
 		{
-			Optional<ItemStack> stack = slots.get(i).peek();
-
-			if (stack.isPresent())
+			if (Utils.doShareInventories(worldName, world.getName()))
 			{
-				Object object = ItemStackSerializer.serializeItemStack(stack.get());
-				Configs.setValue(inventoryConfig, new Object[] { "inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots", String.valueOf(i) }, object);
+				if(!worlds.contains(world.getUniqueId()))
+				worlds.add(world.getUniqueId());
 			}
-			else if (Configs.getConfig(inventoryConfig).getNode("inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots").getChildrenMap().containsKey(String.valueOf(i)))
+		}
+
+		for (UUID worldUuid : worlds)
+		{
+			List<Inventory> slots = Lists.newArrayList(player.getInventory().slots());
+
+			for (int i = 0; i < slots.size(); i++)
 			{
-				Configs.removeChild(inventoryConfig, new Object[] { "inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots" }, String.valueOf(i));
+				Optional<ItemStack> stack = slots.get(i).peek();
+
+				if (stack.isPresent())
+				{
+					Object object = ItemStackSerializer.serializeItemStack(stack.get());
+					Configs.setValue(inventoryConfig, new Object[] { "inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots", String.valueOf(i) }, object);
+				}
+				else if (Configs.getConfig(inventoryConfig).getNode("inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots").getChildrenMap().containsKey(String.valueOf(i)))
+				{
+					Configs.removeChild(inventoryConfig, new Object[] { "inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots" }, String.valueOf(i));
+				}
+			}
+
+			// Save Armor
+			if (player.getHelmet().isPresent())
+			{
+				Object object = ItemStackSerializer.serializeItemStack(player.getHelmet().get());
+				Configs.setValue(inventoryConfig, new Object[] { "inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots", "helmet" }, object);
+			}
+			else if (Configs.getConfig(inventoryConfig).getNode("inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots").getChildrenMap().containsKey("helmet"))
+			{
+				Configs.removeChild(inventoryConfig, new Object[] { "inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots" }, "helmet");
+			}
+
+			if (player.getChestplate().isPresent())
+			{
+				Object object = ItemStackSerializer.serializeItemStack(player.getChestplate().get());
+				Configs.setValue(inventoryConfig, new Object[] { "inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots", "chestplate" }, object);
+			}
+			else if (Configs.getConfig(inventoryConfig).getNode("inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots").getChildrenMap().containsKey("chestplate"))
+			{
+				Configs.removeChild(inventoryConfig, new Object[] { "inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots" }, "chestplate");
+			}
+
+			if (player.getLeggings().isPresent())
+			{
+				Object object = ItemStackSerializer.serializeItemStack(player.getLeggings().get());
+				Configs.setValue(inventoryConfig, new Object[] { "inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots", "leggings" }, object);
+			}
+			else if (Configs.getConfig(inventoryConfig).getNode("inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots").getChildrenMap().containsKey("leggings"))
+			{
+				Configs.removeChild(inventoryConfig, new Object[] { "inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots" }, "leggings");
+			}
+
+			if (player.getBoots().isPresent())
+			{
+				Object object = ItemStackSerializer.serializeItemStack(player.getBoots().get());
+				Configs.setValue(inventoryConfig, new Object[] { "inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots", "boots" }, object);
+			}
+			else if (Configs.getConfig(inventoryConfig).getNode("inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots").getChildrenMap().containsKey("boots"))
+			{
+				Configs.removeChild(inventoryConfig, new Object[] { "inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots" }, "boots");
 			}
 		}
 	}
@@ -1268,20 +1331,42 @@ public class Utils
 
 		for (int slot = 0; slot < parentNode.getChildrenMap().keySet().size(); slot++)
 		{
-			ConfigurationNode inventoryNode = Configs.getConfig(inventoryConfig).getNode("inventory", playerUuid.toString(), worldUuid.toString(), "slots", String.valueOf(slot));
-			Optional<ItemStack> optionalStack = ItemStackSerializer.readItemStack(inventoryNode, slot);
-
-			if (optionalStack.isPresent())
+			if (parentNode.getChildrenMap().keySet().contains(String.valueOf(slot)))
 			{
-				slots.add(optionalStack.get());
+				ConfigurationNode inventoryNode = Configs.getConfig(inventoryConfig).getNode("inventory", playerUuid.toString(), worldUuid.toString(), "slots", String.valueOf(slot));
+				Optional<ItemStack> optionalStack = ItemStackSerializer.readItemStack(inventoryNode, slot);
+				slots.add(optionalStack.orElse(null));
+			}
+			else
+			{
+				slots.add(null);
 			}
 		}
 
-		return new PlayerInventory(playerUuid, worldUuid, slots);
+		List<ItemStack> armorSlots = Lists.newArrayList();
+
+		for (String armor : Utils.ARMOR)
+		{
+			if (parentNode.getChildrenMap().keySet().contains(armor))
+			{
+				ConfigurationNode inventoryNode = Configs.getConfig(inventoryConfig).getNode("inventory", playerUuid.toString(), worldUuid.toString(), "slots", armor);
+				Optional<ItemStack> optionalStack = ItemStackSerializer.readItemStack(inventoryNode, armor);
+				armorSlots.add(optionalStack.orElse(null));
+			}
+			else
+			{
+				armorSlots.add(null);
+			}
+		}
+
+		return new PlayerInventory(playerUuid, worldUuid, slots, armorSlots);
 	}
 
 	public static void updatePlayerInventory(Player player, UUID worldUuid)
 	{
+		if (!Utils.areSeparateWorldInventoriesEnabled())
+			return;
+
 		PlayerInventory playerInventory = Utils.getPlayerInventory(player.getUniqueId(), worldUuid);
 		player.getInventory().clear();
 
@@ -1291,8 +1376,42 @@ public class Utils
 
 			for (int i = 0; i < playerInventory.getSlots().size(); i++)
 			{
-				slots.next().set(playerInventory.getSlots().get(i));
+				if (playerInventory.getSlots().get(i) != null)
+					slots.next().set(playerInventory.getSlots().get(i));
 			}
+
+			if (playerInventory.getArmorSlots().get(0) != null)
+				player.setHelmet(playerInventory.getArmorSlots().get(0));
+
+			if (playerInventory.getArmorSlots().get(1) != null)
+				player.setChestplate(playerInventory.getArmorSlots().get(1));
+
+			if (playerInventory.getArmorSlots().get(2) != null)
+				player.setLeggings(playerInventory.getArmorSlots().get(2));
+
+			if (playerInventory.getArmorSlots().get(3) != null)
+				player.setBoots(playerInventory.getArmorSlots().get(3));
 		}
+	}
+
+	public static boolean areSeparateWorldInventoriesEnabled()
+	{
+		return Configs.getConfig(worldConfig).getNode("world", "inventory", "separate").getBoolean();
+	}
+
+	public static boolean doShareInventories(String world1, String world2)
+	{
+		CommentedConfigurationNode valueNode = Configs.getConfig(worldConfig).getNode("world", "inventory", "groups");
+
+		for (Object group : valueNode.getChildrenMap().keySet())
+		{
+			String worldString = Configs.getConfig(worldConfig).getNode("world", "inventory", "groups", String.valueOf(group)).getString();
+			List<String> worlds = Arrays.asList(worldString.split("\\s*,\\s*"));
+
+			if (worlds.contains(world1) && worlds.contains(world2))
+				return true;
+		}
+
+		return false;
 	}
 }

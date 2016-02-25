@@ -24,14 +24,9 @@
  */
 package io.github.hsyyid.essentialcmds.utils;
 
-import com.google.common.collect.Lists;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.type.CarriedInventory;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public class PlayerInventory
@@ -39,29 +34,14 @@ public class PlayerInventory
 	private UUID playerUuid;
 	private UUID worldUuid;
 	private List<ItemStack> slots;
+	private List<ItemStack> armorSlots;
 
-	public PlayerInventory(UUID playerUuid, UUID worldUuid, List<ItemStack> slots)
+	public PlayerInventory(UUID playerUuid, UUID worldUuid, List<ItemStack> slots, List<ItemStack> armorSlots)
 	{
 		this.playerUuid = playerUuid;
 		this.worldUuid = worldUuid;
 		this.slots = slots;
-	}
-
-	public PlayerInventory(CarriedInventory<Player> inventory, UUID worldUuid)
-	{
-		this.slots = Lists.newArrayList();
-		this.worldUuid = worldUuid;
-
-		if (inventory.getCarrier().isPresent())
-			this.playerUuid = inventory.getCarrier().get().getUniqueId();
-
-		for (Inventory slot : inventory.slots())
-		{
-			Optional<ItemStack> stack = slot.peek();
-
-			if (stack.isPresent())
-				this.slots.add(stack.get());
-		}
+		this.armorSlots = armorSlots;
 	}
 
 	public UUID getPlayerUuid()
@@ -77,5 +57,10 @@ public class PlayerInventory
 	public List<ItemStack> getSlots()
 	{
 		return slots;
+	}
+	
+	public List<ItemStack> getArmorSlots()
+	{
+		return armorSlots;
 	}
 }
