@@ -1257,8 +1257,8 @@ public class Utils
 		{
 			if (Utils.doShareInventories(worldName, world.getName()))
 			{
-				if(!worlds.contains(world.getUniqueId()))
-				worlds.add(world.getUniqueId());
+				if (!worlds.contains(world.getUniqueId()))
+					worlds.add(world.getUniqueId());
 			}
 		}
 
