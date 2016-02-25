@@ -52,6 +52,6 @@ public class PlayerDisconnectListener
 			EssentialCmds.afkList.remove(player.getUniqueId());
 		}
 
-		Utils.saveCurrentInv(player, player.getWorld());
+		Utils.savePlayerInventory(player, player.getWorld().getUniqueId());
 	}
 }

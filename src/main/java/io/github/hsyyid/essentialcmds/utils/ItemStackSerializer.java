@@ -26,6 +26,7 @@ package io.github.hsyyid.essentialcmds.utils;
 
 import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.DataView;
 import org.spongepowered.api.data.translator.ConfigurateTranslator;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -40,9 +41,10 @@ public class ItemStackSerializer
 		return node.getValue();
 	}
 
-	public static Optional<ItemStack> readItemStack(ConfigurationNode node)
+	public static Optional<ItemStack> readItemStack(ConfigurationNode node, Object number)
 	{
 		DataView view = ConfigurateTranslator.instance().translateFrom(node);
+		view = (DataView) view.get(DataQuery.of(String.valueOf(number))).get();
 		return Sponge.getDataManager().deserialize(ItemStack.class, view);
 	}
 }

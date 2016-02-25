@@ -57,4 +57,14 @@ public final class Configs
 		config.get().getNode(nodePath).removeChild(child);
 		config.save();
 	}
+
+	public static void removeChildren(Configurable config, Object[] nodePath)
+	{
+		for (Object child : config.get().getNode(nodePath).getChildrenMap().keySet())
+		{
+			config.get().getNode(nodePath).removeChild(child);
+		}
+
+		config.save();
+	}
 }

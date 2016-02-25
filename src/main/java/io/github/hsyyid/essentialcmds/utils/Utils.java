@@ -49,8 +49,6 @@ import org.spongepowered.api.data.value.mutable.Value;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.type.CarriedInventory;
-import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.scheduler.Scheduler;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.sql.SqlService;
@@ -1243,99 +1241,57 @@ public class Utils
 		Configs.removeChild(warpsConfig, new Object[] { "warps" }, warpName);
 	}
 
-	public static void updatePlayerInventories()
+	public static void savePlayerInventory(Player player, UUID worldUuid)
 	{
-		EssentialCmds.getEssentialCmds().getLogger().info("Saving player inventories to config...");
+		List<Inventory> slots = Lists.newArrayList(player.getInventory().slots());
 
-		for (PlayerInventory playerInventory : EssentialCmds.playerInventories)
+		for (int i = 0; i < slots.size(); i++)
 		{
-			for (int i = 0; i < playerInventory.getSlots().size(); i++)
+			Optional<ItemStack> stack = slots.get(i).peek();
+
+			if (stack.isPresent())
 			{
-				ConfigurationNode inventoryNode = Configs.getConfig(inventoryConfig).getNode("inventory", playerInventory.getPlayerUuid().toString(), playerInventory.getWorldUuid().toString(), "slots", String.valueOf(i));
-				Object object = ItemStackSerializer.serializeItemStack(playerInventory.getSlots().get(i));
-				Configs.setValue(inventoryConfig, inventoryNode.getPath(), object);
+				Object object = ItemStackSerializer.serializeItemStack(stack.get());
+				Configs.setValue(inventoryConfig, new Object[] { "inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots", String.valueOf(i) }, object);
 			}
-		}
-
-		EssentialCmds.getEssentialCmds().getLogger().info("Finished saving player inventories.");
-	}
-
-	public static void readPlayerInventories()
-	{
-		if (EssentialCmds.playerInventories.isEmpty())
-		{
-			for (GameProfile gameProfile : Sponge.getServer().getGameProfileManager().getCachedProfiles())
+			else if (Configs.getConfig(inventoryConfig).getNode("inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots").getChildrenMap().containsKey(String.valueOf(i)))
 			{
-				UUID playerUuid = gameProfile.getUniqueId();
-
-				for (World world : Sponge.getServer().getWorlds())
-				{
-					List<ItemStack> slots = Lists.newArrayList();
-					UUID worldUuid = world.getUniqueId();
-					ConfigurationNode parentNode = Configs.getConfig(inventoryConfig).getNode("inventory", playerUuid.toString(), worldUuid.toString(), "slots");
-
-					for (Object slot : parentNode.getChildrenMap().keySet())
-					{
-						ConfigurationNode inventoryNode = Configs.getConfig(inventoryConfig).getNode("inventory", playerUuid.toString(), worldUuid.toString(), "slots", String.valueOf(slot));
-						Optional<ItemStack> optionalStack = ItemStackSerializer.readItemStack(inventoryNode);
-
-						if (optionalStack.isPresent())
-						{
-							slots.add(optionalStack.get());
-						}
-					}
-
-					EssentialCmds.playerInventories.add(new PlayerInventory(playerUuid, worldUuid, slots));
-				}
+				Configs.removeChild(inventoryConfig, new Object[] { "inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots" }, String.valueOf(i));
 			}
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public static void saveCurrentInv(Player player, World world)
+	public static PlayerInventory getPlayerInventory(UUID playerUuid, UUID worldUuid)
 	{
-		PlayerInventory playerInventoryToRemove = null;
+		ConfigurationNode parentNode = Configs.getConfig(inventoryConfig).getNode("inventory", playerUuid.toString(), worldUuid.toString(), "slots");
+		List<ItemStack> slots = Lists.newArrayList();
 
-		for (PlayerInventory playerInventory : EssentialCmds.playerInventories)
+		for (int slot = 0; slot < parentNode.getChildrenMap().keySet().size(); slot++)
 		{
-			if (playerInventory.getPlayerUuid().equals(player.getUniqueId()) && playerInventory.getWorldUuid().equals(world.getUniqueId()))
+			ConfigurationNode inventoryNode = Configs.getConfig(inventoryConfig).getNode("inventory", playerUuid.toString(), worldUuid.toString(), "slots", String.valueOf(slot));
+			Optional<ItemStack> optionalStack = ItemStackSerializer.readItemStack(inventoryNode, slot);
+
+			if (optionalStack.isPresent())
 			{
-				playerInventoryToRemove = playerInventory;
-				break;
+				slots.add(optionalStack.get());
 			}
 		}
 
-		if (playerInventoryToRemove != null)
-		{
-			EssentialCmds.playerInventories.remove(playerInventoryToRemove);
-		}
-
-		PlayerInventory playerInventory = new PlayerInventory((CarriedInventory<Player>) player.getInventory(), world.getUniqueId());
-		EssentialCmds.playerInventories.add(playerInventory);
+		return new PlayerInventory(playerUuid, worldUuid, slots);
 	}
 
-	public static void updateCurrentInv(Player player, World world)
+	public static void updatePlayerInventory(Player player, UUID worldUuid)
 	{
-		PlayerInventory foundPlayerInventory = null;
-
-		for (PlayerInventory playerInventory : EssentialCmds.playerInventories)
-		{
-			if (playerInventory.getPlayerUuid().equals(player.getUniqueId()) && playerInventory.getWorldUuid().equals(world.getUniqueId()))
-			{
-				foundPlayerInventory = playerInventory;
-				break;
-			}
-		}
-
+		PlayerInventory playerInventory = Utils.getPlayerInventory(player.getUniqueId(), worldUuid);
 		player.getInventory().clear();
 
-		if (foundPlayerInventory != null)
+		if (playerInventory != null)
 		{
 			Iterator<Inventory> slots = player.getInventory().slots().iterator();
 
-			for (int i = 0; i < foundPlayerInventory.getSlots().size(); i++)
+			for (int i = 0; i < playerInventory.getSlots().size(); i++)
 			{
-				slots.next().set(foundPlayerInventory.getSlots().get(i));
+				slots.next().set(playerInventory.getSlots().get(i));
 			}
 		}
 	}
