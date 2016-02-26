@@ -103,6 +103,6 @@ public class PlayerJoinListener
 			event.setMessage(newMessage);
 		}
 
-		Utils.updatePlayerInventory(player, player.getWorld().getUniqueId());
+		Utils.savePlayerInventory(player, player.getWorld().getUniqueId());
 	}
 }
