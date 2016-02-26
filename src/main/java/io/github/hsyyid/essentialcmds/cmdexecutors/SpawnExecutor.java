@@ -24,20 +24,23 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.Utils;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
@@ -48,20 +51,51 @@ public class SpawnExecutor extends CommandExecutorBase
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			Location<World> spawn = Utils.getSpawn();
+			Transform<World> spawn = Utils.getSpawn();
 
-			if (Utils.isSpawnInConfig() && spawn != null)
+			if (Utils.isSpawnInConfig())
 			{
-				if (!Objects.equals(player.getWorld().getUniqueId(), spawn.getExtent().getUniqueId()))
+				if (Utils.isTeleportCooldownEnabled() && !player.hasPermission("essentialcmds.teleport.cooldown.override"))
 				{
-					player.transferToWorld(spawn.getExtent().getUniqueId(), spawn.getPosition());
+					EssentialCmds.teleportingPlayers.add(player.getUniqueId());
+					src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleporting to Spawn. Please wait " + Utils.getTeleportCooldown() + " seconds."));
+
+					Sponge.getScheduler().createTaskBuilder().execute(() -> {
+						if (EssentialCmds.teleportingPlayers.contains(player.getUniqueId()))
+						{
+							Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
+
+							if (!Objects.equals(player.getWorld().getUniqueId(), spawn.getExtent().getUniqueId()))
+							{
+								player.transferToWorld(spawn.getExtent().getUniqueId(), spawn.getPosition());
+								player.setTransform(spawn);
+							}
+							else
+							{
+								player.setTransform(spawn);
+							}
+
+							src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Spawn"));
+							EssentialCmds.teleportingPlayers.remove(player.getUniqueId());
+						}
+					}).delay(Utils.getTeleportCooldown(), TimeUnit.SECONDS).name("EssentialCmds - Back Timer").submit(Sponge.getGame().getPluginManager().getPlugin("EssentialCmds").get().getInstance().get());
 				}
 				else
 				{
-					player.setLocation(spawn);
-				}
+					Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
 
-				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Spawn"));
+					if (!Objects.equals(player.getWorld().getUniqueId(), spawn.getExtent().getUniqueId()))
+					{
+						player.transferToWorld(spawn.getExtent().getUniqueId(), spawn.getPosition());
+						player.setTransform(spawn);
+					}
+					else
+					{
+						player.setTransform(spawn);
+					}
+
+					src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Spawn"));
+				}
 			}
 			else
 			{
@@ -87,6 +121,10 @@ public class SpawnExecutor extends CommandExecutorBase
 	@Override
 	public CommandSpec getSpec()
 	{
-		return CommandSpec.builder().description(Text.of("Spawn Command")).permission("essentialcmds.spawn.use").executor(this).build();
+		return CommandSpec.builder()
+			.description(Text.of("Spawn Command"))
+			.permission("essentialcmds.spawn.use")
+			.executor(this)
+			.build();
 	}
 }

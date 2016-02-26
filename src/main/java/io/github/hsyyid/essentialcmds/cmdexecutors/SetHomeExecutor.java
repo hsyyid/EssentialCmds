@@ -56,45 +56,31 @@ public class SetHomeExecutor extends AsyncCommandExecutorBase
 				homesAllowed = ((OptionSubject) subject).getOption("homes").orElse("");
 			}
 
-			if (homesAllowed != null && !(homesAllowed.equals("")))
+			if (homesAllowed != null && !homesAllowed.isEmpty())
 			{
 				if (homesAllowed.equals("unlimited"))
 				{
-					Utils.setHome(player.getUniqueId(), player.getLocation(), player.getWorld().getName(), homeName);
+					Utils.setHome(player.getUniqueId(), player.getTransform(), player.getWorld().getName(), homeName);
 					src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Home set."));
 				}
 				else
 				{
 					Integer allowedHomes = Integer.parseInt(homesAllowed);
-					try
+
+					if (allowedHomes > Utils.getHomes(player.getUniqueId()).size())
 					{
-						if (allowedHomes > Utils.getHomes(player.getUniqueId()).size())
-						{
-							Utils.setHome(player.getUniqueId(), player.getLocation(), player.getWorld().getName(), homeName);
-							src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Home set."));
-						}
-						else
-						{
-							src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You have reached the maximum number of homes you are allowed!"));
-						}
+						Utils.setHome(player.getUniqueId(), player.getTransform(), player.getWorld().getName(), homeName);
+						src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Home set."));
 					}
-					catch (NullPointerException e)
+					else
 					{
-						if (allowedHomes > 0)
-						{
-							Utils.setHome(player.getUniqueId(), player.getLocation(), player.getWorld().getName(), homeName);
-							src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Home set."));
-						}
-						else
-						{
-							src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You have reached the maximum number of homes you are allowed!"));
-						}
+						src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You have reached the maximum number of homes you are allowed!"));
 					}
 				}
 			}
 			else
 			{
-				Utils.setHome(player.getUniqueId(), player.getLocation(), player.getWorld().getName(), homeName);
+				Utils.setHome(player.getUniqueId(), player.getTransform(), player.getWorld().getName(), homeName);
 				src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Home set."));
 			}
 		}
@@ -116,7 +102,8 @@ public class SetHomeExecutor extends AsyncCommandExecutorBase
 	public CommandSpec getSpec()
 	{
 		return CommandSpec.builder()
-			.description(Text.of("Set Home Command")).permission("essentialcmds.home.set")
+			.description(Text.of("Set Home Command"))
+			.permission("essentialcmds.home.set")
 			.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("home name"))))
 			.executor(this)
 			.build();

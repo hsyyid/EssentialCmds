@@ -33,10 +33,10 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.util.Objects;
@@ -48,20 +48,21 @@ public class UnJailExecutor extends CommandExecutorBase
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		Player target = ctx.<Player> getOne("target").get();
-		Location<World> spawn = Utils.getSpawn();
+		Transform<World> spawn = Utils.getSpawn();
 
-		if(EssentialCmds.jailedPlayers.contains(target.getUniqueId()))
+		if (EssentialCmds.jailedPlayers.contains(target.getUniqueId()))
 		{
 			if (!Objects.equals(target.getWorld().getUniqueId(), spawn.getExtent().getUniqueId()))
 			{
 				target.transferToWorld(spawn.getExtent().getUniqueId(), spawn.getPosition());
-				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Spawn"));
+				target.setTransform(spawn);
 			}
 			else
 			{
-				target.setLocation(spawn);
+				target.setTransform(spawn);
 			}
-			
+
+			src.sendMessage(Text.of(TextColors.GREEN, "You have been unjailed."));
 			EssentialCmds.jailedPlayers.remove(target.getUniqueId());
 			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Un-jailed player."));
 		}
@@ -75,13 +76,15 @@ public class UnJailExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "unjail" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec.builder()
 			.description(Text.of("Un-Jail Command"))
 			.permission("essentialcmds.unjail.use")

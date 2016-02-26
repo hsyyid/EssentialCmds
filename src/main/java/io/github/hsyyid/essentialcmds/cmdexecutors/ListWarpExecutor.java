@@ -41,8 +41,8 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -54,7 +54,7 @@ public class ListWarpExecutor extends AsyncCommandExecutorBase
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			ArrayList<String> warps = Utils.getWarps();
+			Set<Object> warps = Utils.getWarps();
 
 			if (warps.size() == 0)
 			{
@@ -67,13 +67,13 @@ public class ListWarpExecutor extends AsyncCommandExecutorBase
 				PaginationService paginationService = Sponge.getServiceManager().provide(PaginationService.class).get();
 				List<Text> warpText = Lists.newArrayList();
 
-				for (String name : warps)
+				for (Object name : warps)
 				{
-					if (player.hasPermission("essentialcmds.warp.use." + name))
+					if (player.hasPermission("essentialcmds.warp.use." + String.valueOf(name)))
 					{
-						Text item = Text.builder(name)
-							.onClick(TextActions.runCommand("/warp " + name))
-							.onHover(TextActions.showText(Text.of(TextColors.WHITE, "Warp to ", TextColors.GOLD, name)))
+						Text item = Text.builder(String.valueOf(name))
+							.onClick(TextActions.runCommand("/warp " + String.valueOf(name)))
+							.onHover(TextActions.showText(Text.of(TextColors.WHITE, "Warp to ", TextColors.GOLD, String.valueOf(name))))
 							.color(TextColors.DARK_AQUA)
 							.style(TextStyles.UNDERLINE)
 							.build();

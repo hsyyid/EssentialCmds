@@ -28,6 +28,7 @@ import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.utils.Mail;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.data.manipulator.mutable.entity.JoinData;
+import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
@@ -35,7 +36,6 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
-import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.text.SimpleDateFormat;
@@ -54,17 +54,18 @@ public class PlayerJoinListener
 
 		if (player.get(JoinData.class).isPresent() && player.getJoinData().firstPlayed().get().equals(player.getJoinData().lastPlayed().get()))
 		{
-			Location<World> spawn = Utils.getSpawn();
+			Transform<World> spawn = Utils.getSpawn();
 
 			if (spawn != null)
 			{
 				if (!Objects.equals(player.getWorld().getUniqueId(), spawn.getExtent().getUniqueId()))
 				{
 					player.transferToWorld(spawn.getExtent().getUniqueId(), spawn.getPosition());
+					player.setTransform(spawn);
 				}
 				else
 				{
-					player.setLocation(spawn);
+					player.setTransform(spawn);
 				}
 			}
 

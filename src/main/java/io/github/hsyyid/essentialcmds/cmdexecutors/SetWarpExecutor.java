@@ -29,8 +29,6 @@ import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.source.CommandBlockSource;
-import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
@@ -44,17 +42,14 @@ public class SetWarpExecutor extends AsyncCommandExecutorBase
 	public void executeAsync(CommandSource src, CommandContext ctx)
 	{
 		String warpName = ctx.<String> getOne("warp name").get();
+
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			Utils.setWarp(player.getLocation(), warpName);
+			Utils.setWarp(player.getTransform(), warpName);
 			src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Warp set."));
 		}
-		else if (src instanceof ConsoleSource)
-		{
-			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /setwarp!"));
-		}
-		else if (src instanceof CommandBlockSource)
+		else
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /setwarp!"));
 		}
@@ -62,14 +57,20 @@ public class SetWarpExecutor extends AsyncCommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "setwarp" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
-		return CommandSpec.builder().description(Text.of("Set Warp Command")).permission("essentialcmds.warp.set")
-			.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("warp name")))).executor(this).build();
+	public CommandSpec getSpec()
+	{
+		return CommandSpec.builder()
+			.description(Text.of("Set Warp Command"))
+			.permission("essentialcmds.warp.set")
+			.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("warp name"))))
+			.executor(this)
+			.build();
 	}
 }

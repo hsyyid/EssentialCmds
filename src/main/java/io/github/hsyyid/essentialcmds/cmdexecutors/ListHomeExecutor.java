@@ -39,8 +39,8 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -53,7 +53,7 @@ public class ListHomeExecutor extends AsyncCommandExecutorBase
 		{
 			Player player = (Player) src;
 
-			ArrayList<String> homes = Utils.getHomes(player.getUniqueId());
+			Set<Object> homes = Utils.getHomes(player.getUniqueId());
 
 			if (homes.size() == 0)
 			{
@@ -64,8 +64,10 @@ public class ListHomeExecutor extends AsyncCommandExecutorBase
 			PaginationService paginationService = Sponge.getServiceManager().provide(PaginationService.class).get();
 			List<Text> homeText = Lists.newArrayList();
 
-			for (String name : homes)
+			for (Object home : homes)
 			{
+				String name = String.valueOf(home);
+
 				Text item = Text.builder(name)
 					.onClick(TextActions.runCommand("/home " + name))
 					.onHover(TextActions.showText(Text.of(TextColors.WHITE, "Teleport to home ", TextColors.GOLD, name)))

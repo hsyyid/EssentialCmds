@@ -46,7 +46,7 @@ public class SetSpawnExecutor extends CommandExecutorBase
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			Utils.setSpawn(player.getLocation(), player.getWorld().getName());
+			Utils.setSpawn(player.getTransform(), player.getWorld().getName());
 			player.getWorld().getProperties().setSpawnPosition(player.getLocation().getBlockPosition());
 			src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Spawn set."));
 		}

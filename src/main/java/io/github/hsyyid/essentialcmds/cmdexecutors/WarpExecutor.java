@@ -34,10 +34,10 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.util.Objects;
@@ -61,7 +61,7 @@ public class WarpExecutor extends CommandExecutorBase
 
 				if (Utils.isWarpInConfig(warpName))
 				{
-					Location<World> warpLocation = Utils.getWarp(warpName);
+					Transform<World> warpLocation = Utils.getWarp(warpName);
 
 					if (player.hasPermission("essentialcmds.warp.use." + warpName))
 					{
@@ -77,13 +77,14 @@ public class WarpExecutor extends CommandExecutorBase
 									if (!Objects.equals(player.getWorld().getUniqueId(), warpLocation.getExtent().getUniqueId()))
 									{
 										player.transferToWorld(warpLocation.getExtent().getUniqueId(), warpLocation.getPosition());
-										src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
+										player.setTransform(warpLocation);
 									}
 									else
 									{
-										player.setLocation(warpLocation);
+										player.setTransform(warpLocation);
 									}
 
+									src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
 									EssentialCmds.teleportingPlayers.remove(player.getUniqueId());
 								}
 							}).delay(Utils.getTeleportCooldown(), TimeUnit.SECONDS).name("EssentialCmds - Back Timer").submit(Sponge.getGame().getPluginManager().getPlugin("EssentialCmds").get().getInstance().get());
@@ -95,12 +96,14 @@ public class WarpExecutor extends CommandExecutorBase
 							if (!Objects.equals(player.getWorld().getUniqueId(), warpLocation.getExtent().getUniqueId()))
 							{
 								player.transferToWorld(warpLocation.getExtent().getUniqueId(), warpLocation.getPosition());
-								src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
+								player.setTransform(warpLocation);
 							}
 							else
 							{
-								player.setLocation(warpLocation);
+								player.setTransform(warpLocation);
 							}
+
+							src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
 						}
 					}
 					else
@@ -121,22 +124,25 @@ public class WarpExecutor extends CommandExecutorBase
 		else
 		{
 			Player player = optionalPlayer.get();
-			Location<World> warpLocation = Utils.getWarp(warpName);
+			Transform<World> warpLocation = Utils.getWarp(warpName);
 
 			if (Utils.isWarpInConfig(warpName) && warpLocation != null)
 			{
 				if (src.hasPermission("essentialcmds.warp.use." + warpName) && src.hasPermission("essentialcmds.warp.others"))
 				{
 					Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
+
 					if (!Objects.equals(player.getWorld().getUniqueId(), warpLocation.getExtent().getUniqueId()))
 					{
 						player.transferToWorld(warpLocation.getExtent().getUniqueId(), warpLocation.getPosition());
-						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
+						player.setTransform(warpLocation);
 					}
 					else
 					{
-						player.setLocation(warpLocation);
+						player.setTransform(warpLocation);
 					}
+
+					src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
 				}
 				else
 				{

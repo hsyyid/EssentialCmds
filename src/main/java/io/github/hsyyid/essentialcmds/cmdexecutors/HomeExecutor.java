@@ -54,7 +54,7 @@ public class HomeExecutor extends CommandExecutorBase
 		{
 			Player player = (Player) src;
 
-			if (Utils.isHomeInConfig(player.getUniqueId(), homeName) && Utils.getHome(player.getUniqueId(), homeName) != null)
+			if (Utils.isHomeInConfig(player.getUniqueId(), homeName))
 			{
 				try
 				{
@@ -69,9 +69,14 @@ public class HomeExecutor extends CommandExecutorBase
 								Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
 
 								if (Objects.equals(player.getWorld().getUniqueId(), Utils.getHome(player.getUniqueId(), homeName).getExtent().getUniqueId()))
-									player.setLocation(Utils.getHome(player.getUniqueId(), homeName));
+								{
+									player.setTransform(Utils.getHome(player.getUniqueId(), homeName));
+								}
 								else
+								{
 									player.transferToWorld(Utils.getHome(player.getUniqueId(), homeName).getExtent().getUniqueId(), Utils.getHome(player.getUniqueId(), homeName).getPosition());
+									player.setTransform(Utils.getHome(player.getUniqueId(), homeName));
+								}
 
 								src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Home " + homeName));
 								EssentialCmds.teleportingPlayers.remove(player.getUniqueId());
@@ -83,9 +88,14 @@ public class HomeExecutor extends CommandExecutorBase
 						Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
 
 						if (Objects.equals(player.getWorld().getUniqueId(), Utils.getHome(player.getUniqueId(), homeName).getExtent().getUniqueId()))
-							player.setLocation(Utils.getHome(player.getUniqueId(), homeName));
+						{
+							player.setTransform(Utils.getHome(player.getUniqueId(), homeName));
+						}
 						else
+						{
 							player.transferToWorld(Utils.getHome(player.getUniqueId(), homeName).getExtent().getUniqueId(), Utils.getHome(player.getUniqueId(), homeName).getPosition());
+							player.setTransform(Utils.getHome(player.getUniqueId(), homeName));
+						}
 
 						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Home " + homeName));
 					}
