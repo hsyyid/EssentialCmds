@@ -38,6 +38,7 @@ import org.spongepowered.api.data.property.block.PassableProperty;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.util.blockray.BlockRay;
 import org.spongepowered.api.util.blockray.BlockRayHit;
 import org.spongepowered.api.world.World;
@@ -60,9 +61,7 @@ public class JumpExecutor extends CommandExecutorBase
 			{
 				BlockRayHit<World> currentHitRay = playerBlockRay.next();
 
-				//If the block it hit was air or a passable block such as tall grass, keep going.
-				if (!player.getWorld().getBlockType(currentHitRay.getBlockPosition()).equals(BlockTypes.AIR) &&
-					!currentHitRay.getLocation().getProperty(PassableProperty.class).get().getValue())
+				if (!player.getWorld().getBlockType(currentHitRay.getBlockPosition()).equals(BlockTypes.AIR))
 				{
 					finalHitRay = currentHitRay;
 					break;
@@ -75,8 +74,26 @@ public class JumpExecutor extends CommandExecutorBase
 			}
 			else
 			{
-				// Add 1 so that players do not spawn in the block
-				if (player.setLocationSafely(finalHitRay.getLocation().add(0, 1, 0)))
+				boolean safely = false;
+				// If not passable, then it is a solid block
+				if (!finalHitRay.getLocation().getProperty(PassableProperty.class).get().getValue())
+				{
+					safely = player.setLocationSafely(finalHitRay.getLocation().add(0, 1, 0));
+				}
+				else
+				{
+					// If the block below this is tall grass or a tall flower, then teleport down to that
+					if (finalHitRay.getLocation().getRelative(Direction.DOWN).getProperty(PassableProperty.class).get().getValue())
+					{
+						safely = player.setLocationSafely(finalHitRay.getLocation().sub(0, 1, 0));
+					}
+					else
+					{
+						// If not then we found our location
+						safely = player.setLocationSafely(finalHitRay.getLocation());
+					}
+				}
+				if (safely)
 				{
 					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Jumped to the block you were looking at."));
 				}
