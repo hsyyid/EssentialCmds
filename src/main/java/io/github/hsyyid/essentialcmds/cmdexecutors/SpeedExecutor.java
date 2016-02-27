@@ -72,7 +72,7 @@ public class SpeedExecutor extends CommandExecutorBase
 				src.sendMessage(Text.of(TextColors.DARK_RED, "Error!", TextColors.RED, "You must be a player to do /speed"));
 			}
 		}
-		else if(src.hasPermission("speed.others"))
+		else if(src.hasPermission("essentialcmds.speed.others"))
 		{
 			Player player = optionalTarget.get();
 			multiplier = Math.min(multiplier, 20);

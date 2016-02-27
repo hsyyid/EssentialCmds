@@ -140,7 +140,8 @@ public final class CommandLoader {
             new SetNameExecutor(),
             new LoreBase(),
             new HelpOpExecutor(),
-            new ListExecutor()
+            new ListExecutor(),
+            new StopExecutor()
         );
     }
 
