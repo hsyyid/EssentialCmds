@@ -24,7 +24,7 @@
  */
 package io.github.hsyyid.essentialcmds.listeners;
 
-import io.github.hsyyid.essentialcmds.EssentialCmds;
+import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.world.ChangeWorldWeatherEvent;
 
@@ -33,7 +33,7 @@ public class WeatherChangeListener
 	@Listener
 	public void onWeatherChanged(ChangeWorldWeatherEvent event)
 	{
-		if(EssentialCmds.lockedWeatherWorlds.contains(event.getTargetWorld().getUniqueId()))
+		if (Utils.getLockedWeatherWorlds().contains(event.getTargetWorld().getUniqueId().toString()))
 		{
 			event.setCancelled(true);
 		}

@@ -645,7 +645,7 @@ public class Utils
 		Configs.getConfig(homesConfig).getNode("home", "users", uuid.toString(), homeName, "transform", "pitch").setValue(transform.getRotation().getX());
 		Configs.getConfig(homesConfig).getNode("home", "users", uuid.toString(), homeName, "transform", "yaw").setValue(transform.getRotation().getY());
 		Configs.getConfig(homesConfig).getNode("home", "users", uuid.toString(), homeName, "transform", "roll").setValue(transform.getRotation().getZ());
-		
+
 		Configs.saveConfig(homesConfig);
 	}
 
@@ -1340,5 +1340,51 @@ public class Utils
 		}
 
 		return false;
+	}
+
+	public static List<String> getLockedWeatherWorlds()
+	{
+		CommentedConfigurationNode valueNode = Configs.getConfig(worldConfig).getNode("world", "weather", "locked");
+
+		if (valueNode.getValue() != null)
+		{
+			List<String> worlds = Arrays.asList(valueNode.getString().split("\\s*,\\s*"));
+			return worlds;
+		}
+		else
+		{
+			return Lists.newArrayList();
+		}
+	}
+
+	public static void addLockedWeatherWorld(UUID worldUuid)
+	{
+		CommentedConfigurationNode valueNode = Configs.getConfig(worldConfig).getNode("world", "weather", "locked");
+
+		if (valueNode.getValue() != null)
+		{
+			Configs.setValue(worldConfig, valueNode.getPath(), valueNode.getString() + ", " + worldUuid.toString());
+		}
+		else
+		{
+			Configs.setValue(worldConfig, valueNode.getPath(), worldUuid.toString());
+		}
+	}
+
+	public static void removeLockedWeatherWorld(UUID worldUuid)
+	{
+		CommentedConfigurationNode valueNode = Configs.getConfig(worldConfig).getNode("world", "weather", "locked");
+
+		if (valueNode.getValue() != null)
+		{
+			if (valueNode.getString().contains(worldUuid.toString() + ", "))
+			{
+				Configs.setValue(worldConfig, valueNode.getPath(), valueNode.getString().replace(worldUuid.toString() + ", ", ""));
+			}
+			else
+			{
+				Configs.setValue(worldConfig, valueNode.getPath(), valueNode.getString().replace(worldUuid.toString(), ""));
+			}
+		}
 	}
 }

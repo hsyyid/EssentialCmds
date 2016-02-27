@@ -24,8 +24,10 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.EssentialCmds;
+import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
+
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
+import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -37,10 +39,9 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.World;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
 
-import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
+import javax.annotation.Nonnull;
 
 public class LockWeatherExecutor extends CommandExecutorBase
 {
@@ -56,15 +57,15 @@ public class LockWeatherExecutor extends CommandExecutorBase
 		{
 			World world = optWorld.get();
 
-			if (EssentialCmds.lockedWeatherWorlds.contains(world.getUniqueId()))
+			if (Utils.getLockedWeatherWorlds().contains(world.getUniqueId().toString()))
 			{
 				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Un-locked weather in world: " + world.getName()));
-				EssentialCmds.lockedWeatherWorlds.remove(world.getUniqueId());
+				Utils.removeLockedWeatherWorld(world.getUniqueId());
 			}
 			else
 			{
 				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Locked weather in world: " + world.getName()));
-				EssentialCmds.lockedWeatherWorlds.add(world.getUniqueId());
+				Utils.addLockedWeatherWorld(world.getUniqueId());
 			}
 		}
 		else
@@ -77,17 +78,19 @@ public class LockWeatherExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "lockweather", "killweather" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec.builder()
-				.description(Text.of("LockWeather Command"))
-				.permission("essentialcmds.lockweather.use")
-				.arguments(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("name"))))
-				.executor(this).build();
+			.description(Text.of("LockWeather Command"))
+			.permission("essentialcmds.lockweather.use")
+			.arguments(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("name"))))
+			.executor(this).build();
 	}
 }

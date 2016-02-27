@@ -96,7 +96,6 @@ public class EssentialCmds
 	public static Set<UUID> muteList = Sets.newHashSet();
 	public static Set<UUID> frozenPlayers = Sets.newHashSet();
 	public static Set<UUID> jailedPlayers = Sets.newHashSet();
-	public static Set<UUID> lockedWeatherWorlds = Sets.newHashSet();
 	public static Set<UUID> teleportingPlayers = Sets.newHashSet();
 
 	@Inject
