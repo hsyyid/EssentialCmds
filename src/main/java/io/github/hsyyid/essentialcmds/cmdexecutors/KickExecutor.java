@@ -36,8 +36,11 @@ import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
+
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -48,21 +51,25 @@ public class KickExecutor extends CommandExecutorBase
 		Game game = EssentialCmds.getEssentialCmds().getGame();
 		Server server = game.getServer();
 		Player player = ctx.<Player> getOne("player").get();
-		String reason = ctx.<String> getOne("reason").get();
+		Optional<String> reason = ctx.<String> getOne("reason");
 
 		if (server.getPlayer(player.getUniqueId()).isPresent())
 		{
-			Text reas = TextSerializers.formattingCode('&').deserialize(reason);
-			Text kickMessage = Text.of(TextColors.GOLD, src.getName() + " kicked " + player.getName() + " for ", TextColors.RED);
-			Text finalKickMessage = Text.builder().append(kickMessage).append(reas).build();
+			Text finalKickMessage = Text.of(TextColors.GOLD, src.getName() + " kicked " + player.getName());
 
-			for (Player p : server.getOnlinePlayers())
+			if (reason.isPresent())
 			{
-				p.sendMessage(finalKickMessage);
+				Text reas = TextSerializers.formattingCode('&').deserialize(reason.get());
+				Text kickMessage = Text.of(TextColors.GOLD, src.getName() + " kicked " + player.getName() + " for ", TextColors.RED);
+				finalKickMessage = Text.builder().append(kickMessage).append(reas).build();
+				player.kick(reas);
+			}
+			else
+			{
+				player.kick();
 			}
 
-			player.kick(reas);
-
+			MessageChannel.TO_ALL.send(finalKickMessage);
 			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Player kicked."));
 		}
 		else
@@ -75,19 +82,23 @@ public class KickExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "kick" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec
-				.builder()
-				.description(Text.of("Kick Command"))
-				.permission("essentialcmds.kick.use")
-				.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))),
-						GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("reason")))).executor(this)
-				.build();
+			.builder()
+			.description(Text.of("Kick Command"))
+			.permission("essentialcmds.kick.use")
+			.arguments(GenericArguments.seq(
+				GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))), 
+				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("reason")))))
+			.executor(this)
+			.build();
 	}
 }

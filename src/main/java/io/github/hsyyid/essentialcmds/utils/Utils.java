@@ -296,9 +296,12 @@ public class Utils
 	public static boolean isTeleportCooldownEnabled()
 	{
 		CommentedConfigurationNode node = Configs.getConfig(mainConfig).getNode("teleport", "cooldown", "enabled");
-		if (configManager.getBoolean(node).isPresent())
+
+		if (node.getValue() != null)
 			return node.getBoolean();
-		setTeleportCooldownEnabled(false);
+		else
+			Utils.setTeleportCooldownEnabled(false);
+
 		return false;
 	}
 
