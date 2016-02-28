@@ -223,51 +223,48 @@ public class Utils
 		taskBuilder.execute(() -> {
 			for (Player player : game.getServer().getOnlinePlayers())
 			{
-				if (!player.hasPermission("essentialcmds.afk.exempt"))
+				if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
 				{
-					if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
+					AFK afk = EssentialCmds.afkList.get(player.getUniqueId());
+
+					if (((System.currentTimeMillis() - afk.lastMovementTime) > Utils.getAFK()) && !afk.getMessaged())
 					{
-						AFK afk = EssentialCmds.afkList.get(player.getUniqueId());
-
-						if (((System.currentTimeMillis() - afk.lastMovementTime) > Utils.getAFK()) && !afk.getMessaged())
+						for (Player p : game.getServer().getOnlinePlayers())
 						{
-							for (Player p : game.getServer().getOnlinePlayers())
-							{
-								p.sendMessage(Text.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is now AFK."));
-								Optional<FoodData> data = p.get(FoodData.class);
-
-								if (data.isPresent())
-								{
-									FoodData food = data.get();
-									afk.setFood(food.foodLevel().get());
-								}
-							}
-
-							afk.setMessaged(true);
-							afk.setAFK(true);
-						}
-
-						if (afk.getAFK())
-						{
-							Optional<FoodData> data = player.get(FoodData.class);
+							p.sendMessage(Text.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is now AFK."));
+							Optional<FoodData> data = p.get(FoodData.class);
 
 							if (data.isPresent())
 							{
 								FoodData food = data.get();
-
-								if (food.foodLevel().get() < afk.getFood())
-								{
-									Value<Integer> foodLevel = food.foodLevel().set(afk.getFood());
-									food.set(foodLevel);
-									player.offer(food);
-								}
+								afk.setFood(food.foodLevel().get());
 							}
+						}
 
-							if (!(player.hasPermission("essentialcmds.afk.kick.false")) && Utils.getAFKKick() && afk.getLastMovementTime() >= Utils.getAFKKickTimer())
+						afk.setMessaged(true);
+						afk.setAFK(true);
+					}
+
+					if (afk.getAFK())
+					{
+						Optional<FoodData> data = player.get(FoodData.class);
+
+						if (data.isPresent())
+						{
+							FoodData food = data.get();
+
+							if (food.foodLevel().get() < afk.getFood())
 							{
-								player.kick(Text.of(TextColors.GOLD, "Kicked for being AFK too long."));
-								EssentialCmds.afkList.remove(player.getUniqueId());
+								Value<Integer> foodLevel = food.foodLevel().set(afk.getFood());
+								food.set(foodLevel);
+								player.offer(food);
 							}
+						}
+
+						if (!(player.hasPermission("essentialcmds.afk.kick.false")) && Utils.getAFKKick() && afk.getLastMovementTime() >= Utils.getAFKKickTimer())
+						{
+							player.kick(Text.of(TextColors.GOLD, "Kicked for being AFK too long."));
+							EssentialCmds.afkList.remove(player.getUniqueId());
 						}
 					}
 				}

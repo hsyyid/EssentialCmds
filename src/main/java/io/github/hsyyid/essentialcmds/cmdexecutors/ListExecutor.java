@@ -25,8 +25,11 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import com.google.common.collect.Lists;
+import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
+import io.github.hsyyid.essentialcmds.utils.AFK;
 import io.github.hsyyid.essentialcmds.utils.SubjectComparator;
+import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -38,12 +41,15 @@ import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -68,7 +74,7 @@ public class ListExecutor extends CommandExecutorBase
 			for (Subject group : groups)
 			{
 				Stream<Subject> users = StreamSupport.stream(permissionService.getUserSubjects().getAllSubjects().spliterator(), false).filter(u -> u.isChildOf(group));
-				List<String> onlineUsers = Lists.newArrayList();
+				List<Text> onlineUsers = Lists.newArrayList();
 				Iterator<Subject> itr = users.iterator();
 
 				while (itr.hasNext())
@@ -88,13 +94,53 @@ public class ListExecutor extends CommandExecutorBase
 					if (optPlayer.isPresent() && !listedPlayers.contains(optPlayer.get().getUniqueId()))
 					{
 						listedPlayers.add(optPlayer.get().getUniqueId());
-						onlineUsers.add(optPlayer.get().getName());
+						Text name = Text.builder().append(TextSerializers.FORMATTING_CODE.deserialize(Utils.getNick(optPlayer.get()))).append(Text.of(" ")).build();
+						boolean isAFK = false;
+
+						if (EssentialCmds.afkList.containsKey(optPlayer.get().getUniqueId()))
+						{
+							AFK afk = EssentialCmds.afkList.get(optPlayer.get().getUniqueId());
+							isAFK = afk.getAFK();
+						}
+
+						if (isAFK)
+							onlineUsers.add(Text.builder().append(Text.of(TextColors.GRAY, TextStyles.ITALIC, "[AFK]: ")).append(name).build());
+						else
+							onlineUsers.add(name);
 					}
 				}
 
 				if (onlineUsers.size() > 0)
 				{
-					src.sendMessage(Text.of(TextColors.GOLD, group.getIdentifier(), ": ", TextColors.GRAY, onlineUsers.toString()));
+					src.sendMessage(Text.builder().append(Text.of(TextColors.GOLD, group.getIdentifier(), ": ")).append(onlineUsers).build());
+				}
+			}
+
+			if (listedPlayers.size() < Sponge.getServer().getOnlinePlayers().size())
+			{
+				List<Player> remainingPlayers = Sponge.getServer().getOnlinePlayers().stream().filter(p -> !listedPlayers.contains(p.getUniqueId())).collect(Collectors.toList());
+				List<Text> onlineUsers = Lists.newArrayList();
+				
+				for (Player player : remainingPlayers)
+				{
+					Text name = Text.builder().append(TextSerializers.FORMATTING_CODE.deserialize(Utils.getNick(player))).append(Text.of(" ")).build();
+					boolean isAFK = false;
+
+					if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
+					{
+						AFK afk = EssentialCmds.afkList.get(player.getUniqueId());
+						isAFK = afk.getAFK();
+					}
+
+					if (isAFK)
+						onlineUsers.add(Text.builder().append(Text.of(TextColors.GRAY, TextStyles.ITALIC, "[AFK]: ")).append(name).build());
+					else
+						onlineUsers.add(name);
+				}
+				
+				if (onlineUsers.size() > 0)
+				{
+					src.sendMessage(Text.builder().append(Text.of(TextColors.GOLD, "Default", ": ")).append(onlineUsers).build());
 				}
 			}
 		}
