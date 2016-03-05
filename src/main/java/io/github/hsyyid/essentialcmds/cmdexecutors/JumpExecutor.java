@@ -25,16 +25,20 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
+
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.source.CommandBlockSource;
+import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.property.block.PassableProperty;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.util.blockray.BlockRay;
 import org.spongepowered.api.util.blockray.BlockRayHit;
 import org.spongepowered.api.world.World;
@@ -50,14 +54,14 @@ public class JumpExecutor extends CommandExecutorBase
 			Player player = (Player) src;
 
 			BlockRay<World> playerBlockRay = BlockRay.from(player).blockLimit(350).build();
+			
 			BlockRayHit<World> finalHitRay = null;
 
 			while (playerBlockRay.hasNext())
 			{
 				BlockRayHit<World> currentHitRay = playerBlockRay.next();
 
-				// If the block it hit was air or a passable block such as tall grass, keep going.
-				if (!player.getWorld().getBlockType(currentHitRay.getBlockPosition()).equals(BlockTypes.AIR) && !currentHitRay.getLocation().getProperty(PassableProperty.class).get().getValue())
+				if (!player.getWorld().getBlockType(currentHitRay.getBlockPosition()).equals(BlockTypes.AIR))
 				{
 					finalHitRay = currentHitRay;
 					break;
@@ -70,7 +74,26 @@ public class JumpExecutor extends CommandExecutorBase
 			}
 			else
 			{
-				if (player.setLocationSafely(finalHitRay.getLocation()))
+				boolean safely = false;
+				// If not passable, then it is a solid block
+				if (!finalHitRay.getLocation().getProperty(PassableProperty.class).get().getValue())
+				{
+					safely = player.setLocationSafely(finalHitRay.getLocation().add(0, 1, 0));
+				}
+				else
+				{
+					// If the block below this is tall grass or a tall flower, then teleport down to that
+					if (finalHitRay.getLocation().getRelative(Direction.DOWN).getProperty(PassableProperty.class).get().getValue())
+					{
+						safely = player.setLocationSafely(finalHitRay.getLocation().sub(0, 1, 0));
+					}
+					else
+					{
+						// If not then we found our location
+						safely = player.setLocationSafely(finalHitRay.getLocation());
+					}
+				}
+				if (safely)
 				{
 					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Jumped to the block you were looking at."));
 				}
@@ -80,7 +103,7 @@ public class JumpExecutor extends CommandExecutorBase
 				}
 			}
 		}
-		else
+		else if (src instanceof ConsoleSource || src instanceof CommandBlockSource)
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /jump!"));
 		}
@@ -90,19 +113,13 @@ public class JumpExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases()
-	{
+	public String[] getAliases() {
 		return new String[] { "jump" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec()
-	{
-		return CommandSpec.builder()
-			.description(Text.of("Jump Command"))
-			.permission("essentialcmds.jump.use")
-			.executor(this)
-			.build();
+	public CommandSpec getSpec() {
+		return CommandSpec.builder().description(Text.of("Jump Command")).permission("essentialcmds.jump.use").executor(this).build();
 	}
 }
