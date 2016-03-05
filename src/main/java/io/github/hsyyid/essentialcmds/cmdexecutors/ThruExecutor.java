@@ -30,8 +30,6 @@ import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.source.CommandBlockSource;
-import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
@@ -54,12 +52,12 @@ public class ThruExecutor extends CommandExecutorBase
 			BlockRay<World> playerBlockRay = BlockRay.from(player).blockLimit(25).build();
 			BlockRayHit<World> finalHitRay = null;
 			Location<World> location = null;
-			
+
 			while (playerBlockRay.hasNext())
 			{
 				BlockRayHit<World> currentHitRay = playerBlockRay.next();
 
-				if(finalHitRay != null && player.getWorld().getBlockType(currentHitRay.getBlockPosition()).equals(BlockTypes.AIR))
+				if (finalHitRay != null && player.getWorld().getBlockType(currentHitRay.getBlockPosition()).equals(BlockTypes.AIR))
 				{
 					location = currentHitRay.getLocation();
 					break;
@@ -94,11 +92,7 @@ public class ThruExecutor extends CommandExecutorBase
 				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "No free spot ahead of you found."));
 			}
 		}
-		else if (src instanceof ConsoleSource)
-		{
-			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /thru!"));
-		}
-		else if (src instanceof CommandBlockSource)
+		else
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /thru!"));
 		}
@@ -108,14 +102,19 @@ public class ThruExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "through", "thru" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
-		return CommandSpec.builder().description(Text.of("Thru Command")).permission("essentialcmds.thru.use")
-				.executor(this).build();
+	public CommandSpec getSpec()
+	{
+		return CommandSpec.builder()
+			.description(Text.of("Thru Command"))
+			.permission("essentialcmds.thru.use")
+			.executor(this)
+			.build();
 	}
 }

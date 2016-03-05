@@ -52,16 +52,23 @@ public class UnJailExecutor extends CommandExecutorBase
 
 		if (EssentialCmds.jailedPlayers.contains(target.getUniqueId()))
 		{
-			if (!Objects.equals(target.getWorld().getUniqueId(), spawn.getExtent().getUniqueId()))
+			if (spawn != null)
 			{
-				target.transferToWorld(spawn.getExtent().getUniqueId(), spawn.getPosition());
-				target.setTransform(spawn);
+				if (!Objects.equals(target.getWorld().getUniqueId(), spawn.getExtent().getUniqueId()))
+				{
+					target.transferToWorld(spawn.getExtent().getUniqueId(), spawn.getPosition());
+					target.setTransform(spawn);
+				}
+				else
+				{
+					target.setTransform(spawn);
+				}
 			}
 			else
 			{
-				target.setTransform(spawn);
+				target.setLocation(target.getWorld().getSpawnLocation());
 			}
-
+			
 			src.sendMessage(Text.of(TextColors.GREEN, "You have been unjailed."));
 			EssentialCmds.jailedPlayers.remove(target.getUniqueId());
 			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Un-jailed player."));

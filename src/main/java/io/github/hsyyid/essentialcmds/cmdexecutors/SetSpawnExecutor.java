@@ -30,8 +30,6 @@ import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.source.CommandBlockSource;
-import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
@@ -50,11 +48,7 @@ public class SetSpawnExecutor extends CommandExecutorBase
 			player.getWorld().getProperties().setSpawnPosition(player.getLocation().getBlockPosition());
 			src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Spawn set."));
 		}
-		else if (src instanceof ConsoleSource)
-		{
-			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /setspawn!"));
-		}
-		else if (src instanceof CommandBlockSource)
+		else
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /setspawn!"));
 		}
@@ -64,13 +58,15 @@ public class SetSpawnExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "setspawn" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec.builder().description(Text.of("Set Spawn Command")).permission("essentialcmds.spawn.set").executor(this).build();
 	}
 }
