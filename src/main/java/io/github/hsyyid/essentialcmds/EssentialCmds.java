@@ -165,7 +165,7 @@ public class EssentialCmds
 	@Listener
 	public void onServerInit(GameInitializationEvent event)
 	{
-		getLogger().info(PluginInfo.ID + " loading...");
+		getLogger().info(PluginInfo.NAME + " loading...");
 
 		Utils.readMutes();
 		Utils.startAFKService();
