@@ -30,6 +30,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.hsyyid.essentialcmds.EssentialCmds;
+import io.github.hsyyid.essentialcmds.PluginInfo;
 import io.github.hsyyid.essentialcmds.api.util.config.ConfigManager;
 import io.github.hsyyid.essentialcmds.api.util.config.Configs;
 import io.github.hsyyid.essentialcmds.api.util.config.Configurable;
@@ -269,7 +270,7 @@ public class Utils
 					}
 				}
 			}
-		}).interval(1, TimeUnit.SECONDS).name("EssentialCmds - AFK").submit(game.getPluginManager().getPlugin("EssentialCmds").get().getInstance().get());
+		}).interval(1, TimeUnit.SECONDS).name("EssentialCmds - AFK").submit(game.getPluginManager().getPlugin(PluginInfo.ID).get().getInstance().get());
 	}
 
 	public static String getMySQLPort()

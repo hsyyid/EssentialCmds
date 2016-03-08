@@ -27,6 +27,7 @@ package io.github.hsyyid.essentialcmds.listeners;
 import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
+import io.github.hsyyid.essentialcmds.PluginInfo;
 import io.github.hsyyid.essentialcmds.events.TPAAcceptEvent;
 import io.github.hsyyid.essentialcmds.events.TPAEvent;
 import io.github.hsyyid.essentialcmds.events.TPAHereAcceptEvent;
@@ -67,7 +68,7 @@ public class TPAListener
 			{
 				EssentialCmds.pendingInvites.remove(invite);
 			}
-		}).delay(10, TimeUnit.SECONDS).name("EssentialCmds - Remove Pending Invite").submit(game.getPluginManager().getPlugin("EssentialCmds").get().getInstance().get());
+		}).delay(10, TimeUnit.SECONDS).name("EssentialCmds - Remove Pending Invite").submit(game.getPluginManager().getPlugin(PluginInfo.ID).get().getInstance().get());
 	}
 
 	@Listener
@@ -87,7 +88,7 @@ public class TPAListener
 					event.getRecipient().setLocation(event.getSender().getLocation());
 					EssentialCmds.teleportingPlayers.remove(event.getRecipient().getUniqueId());
 				}
-			}).delay(Utils.getTeleportCooldown(), TimeUnit.SECONDS).name("EssentialCmds - TPA Timer").submit(game.getPluginManager().getPlugin("EssentialCmds").get().getInstance().get());
+			}).delay(Utils.getTeleportCooldown(), TimeUnit.SECONDS).name("EssentialCmds - TPA Timer").submit(game.getPluginManager().getPlugin(PluginInfo.ID).get().getInstance().get());
 		}
 		else
 		{
@@ -114,7 +115,7 @@ public class TPAListener
 					event.getSender().setLocation(event.getRecipient().getLocation());
 					EssentialCmds.teleportingPlayers.remove(event.getSender().getUniqueId());
 				}
-			}).delay(Utils.getTeleportCooldown(), TimeUnit.SECONDS).name("EssentialCmds - TPA Timer").submit(game.getPluginManager().getPlugin("EssentialCmds").get().getInstance().get());
+			}).delay(Utils.getTeleportCooldown(), TimeUnit.SECONDS).name("EssentialCmds - TPA Timer").submit(game.getPluginManager().getPlugin(PluginInfo.ID).get().getInstance().get());
 		}
 		else
 		{
@@ -144,6 +145,6 @@ public class TPAListener
 			{
 				EssentialCmds.pendingInvites.remove(invite);
 			}
-		}).delay(10, TimeUnit.SECONDS).name("EssentialCmds - Remove Pending Invite").submit(game.getPluginManager().getPlugin("EssentialCmds").get().getInstance().get());
+		}).delay(10, TimeUnit.SECONDS).name("EssentialCmds - Remove Pending Invite").submit(game.getPluginManager().getPlugin(PluginInfo.ID).get().getInstance().get());
 	}
 }
