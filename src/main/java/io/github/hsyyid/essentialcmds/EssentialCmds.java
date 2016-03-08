@@ -78,7 +78,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Updatifier(repoName = "EssentialCmds", repoOwner = "hsyyid", version = "v" + PluginInfo.VERSION)
-@Plugin(id = PluginInfo.ID, name = PluginInfo.NAME, version = PluginInfo.INFORMATIVE_VERSION, dependencies = @Dependency(id = "Updatifier", version = "1.0", optional = true) )
+@Plugin(id = PluginInfo.ID, name = PluginInfo.NAME, version = PluginInfo.INFORMATIVE_VERSION, description = PluginInfo.DESCRIPTION, dependencies = @Dependency(id = "Updatifier", version = "1.0", optional = true) )
 public class EssentialCmds
 {
 	protected EssentialCmds()
