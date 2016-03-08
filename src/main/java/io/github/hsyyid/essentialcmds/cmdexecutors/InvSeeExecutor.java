@@ -32,6 +32,8 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
@@ -41,31 +43,33 @@ public class InvSeeExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Player target = ctx.<Player>getOne("target").get();
-		
-		if(src instanceof Player)
+		Player target = ctx.<Player> getOne("target").get();
+
+		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			player.openInventory(target.getInventory());
+			player.openInventory(target.getInventory(), Cause.of(NamedCause.source(src)));
 		}
 		else
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be a player to see other inventories."));
 		}
-		
+
 		return CommandResult.success();
 	}
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "invsee", "inventorysee", "invview" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec.builder().description(Text.of("InvSee Command")).permission("essentialcmds.invsee.use")
-				.arguments(GenericArguments.onlyOne(GenericArguments.player(Text.of("target")))).executor(this).build();
+			.arguments(GenericArguments.onlyOne(GenericArguments.player(Text.of("target")))).executor(this).build();
 	}
 }

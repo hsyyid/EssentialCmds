@@ -47,8 +47,6 @@ public class ItemStackSerializer
 
 		if (view.get(DataQuery.of(String.valueOf(number))).isPresent())
 			view = (DataView) view.get(DataQuery.of(String.valueOf(number))).get();
-		else
-			System.out.println(view.toString());
 
 		return Sponge.getDataManager().deserialize(ItemStack.class, view);
 	}

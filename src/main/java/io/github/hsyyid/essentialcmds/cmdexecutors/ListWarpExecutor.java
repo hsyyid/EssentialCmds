@@ -34,7 +34,7 @@ import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.service.pagination.PaginationBuilder;
+import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -82,7 +82,7 @@ public class ListWarpExecutor extends AsyncCommandExecutorBase
 					}
 				}
 
-				PaginationBuilder paginationBuilder = paginationService.builder().contents(warpText).title(Text.of(TextColors.GREEN, "Showing Warps")).paddingString("-");
+				PaginationList.Builder paginationBuilder = paginationService.builder().contents(warpText).title(Text.of(TextColors.GREEN, "Showing Warps")).padding(Text.of("-"));
 				paginationBuilder.sendTo(src);
 			}
 			else

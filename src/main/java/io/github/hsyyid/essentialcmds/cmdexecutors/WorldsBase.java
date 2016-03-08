@@ -44,7 +44,7 @@ import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameMode;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
-import org.spongepowered.api.service.pagination.PaginationBuilder;
+import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -357,7 +357,7 @@ public class WorldsBase extends CommandExecutorBase
 				worldText.add(item);
 			}
 
-			PaginationBuilder paginationBuilder = paginationService.builder().contents(worldText).title(Text.of(TextColors.GREEN, "Showing Worlds")).paddingString("-");
+			PaginationList.Builder paginationBuilder = paginationService.builder().contents(worldText).title(Text.of(TextColors.GREEN, "Showing Worlds")).padding(Text.of("-"));
 			paginationBuilder.sendTo(src);
 		}
 
@@ -553,12 +553,7 @@ public class WorldsBase extends CommandExecutorBase
 				.builder()
 				.description(Text.of("Load World Command"))
 				.permission("essentialcmds.world.load")
-				.arguments(GenericArguments.seq(
-					GenericArguments.onlyOne(GenericArguments.string(Text.of("name"))),
-					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("dimension")))),
-					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("generator")))), 
-					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.catalogedElement(Text.of("gamemode"), CatalogTypes.GAME_MODE))), 
-					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("difficulty"))))))
+				.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.string(Text.of("name"))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("dimension")))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("generator")))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.catalogedElement(Text.of("gamemode"), CatalogTypes.GAME_MODE))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("difficulty"))))))
 				.executor(this)
 				.build();
 		}
@@ -638,7 +633,7 @@ public class WorldsBase extends CommandExecutorBase
 			return CommandResult.success();
 		}
 	}
-	
+
 	static class SetGamemode extends CommandExecutorBase
 	{
 
@@ -657,9 +652,7 @@ public class WorldsBase extends CommandExecutorBase
 				.builder()
 				.description(Text.of("SetGamemode World Command"))
 				.permission("essentialcmds.world.setgamemode")
-				.arguments(GenericArguments.seq(
-					GenericArguments.onlyOne(GenericArguments.catalogedElement(Text.of("gamemode"), CatalogTypes.GAME_MODE))), 
-					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("world")))))
+				.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.catalogedElement(Text.of("gamemode"), CatalogTypes.GAME_MODE))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("world")))))
 				.executor(this)
 				.build();
 		}
@@ -670,14 +663,14 @@ public class WorldsBase extends CommandExecutorBase
 			GameMode gamemode = ctx.<GameMode> getOne("gamemode").get();
 			Optional<String> worldName = ctx.<String> getOne("world");
 			World world = null;
-			
-			if(worldName.isPresent())
+
+			if (worldName.isPresent())
 			{
 				world = Sponge.getServer().getWorld(worldName.get()).orElse(null);
 			}
 			else
 			{
-				if(src instanceof Player)
+				if (src instanceof Player)
 				{
 					Player player = (Player) src;
 					world = player.getWorld();
@@ -687,8 +680,8 @@ public class WorldsBase extends CommandExecutorBase
 					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be an in-game player or specify the world name to set its gamemode!"));
 				}
 			}
-			
-			if(world != null)
+
+			if (world != null)
 			{
 				world.getProperties().setGameMode(gamemode);
 				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set gamemode of world."));

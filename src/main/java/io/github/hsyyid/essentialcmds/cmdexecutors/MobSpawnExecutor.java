@@ -39,6 +39,7 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.blockray.BlockRay;
@@ -69,7 +70,7 @@ public class MobSpawnExecutor extends CommandExecutorBase
 				return CommandResult.success();
 			}
 
-			spawnEntity(getSpawnLocFromPlayerLoc(player).add(0, 1, 0), type, amount);
+			spawnEntity(getSpawnLocFromPlayerLoc(player).add(0, 1, 0), player, type, amount);
 			player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Spawned mob(s)!"));
 		}
 		else if (src instanceof ConsoleSource)
@@ -84,14 +85,14 @@ public class MobSpawnExecutor extends CommandExecutorBase
 		return CommandResult.success();
 	}
 
-	public void spawnEntity(Location<World> location, EntityType type, int amount)
+	public void spawnEntity(Location<World> location, Player player, EntityType type, int amount)
 	{
 		for (int i = 1; i <= amount; i++)
 		{
 			Extent extent = location.getExtent();
 			Optional<Entity> optional = extent.createEntity(type, location.getPosition());
 			Entity entity = optional.get();
-			extent.spawnEntity(entity, Cause.of(this));
+			extent.spawnEntity(entity, Cause.of(NamedCause.source(player)));
 		}
 	}
 
@@ -128,20 +129,20 @@ public class MobSpawnExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "mobspawn", "entityspawn" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec
-				.builder()
-				.description(Text.of("Mob Spawn Command"))
-				.permission("essentialcmds.mobspawn.use")
-				.arguments(GenericArguments.seq(
-						GenericArguments.onlyOne(GenericArguments.integer(Text.of("amount")))),
-						GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("mob name"))))
-				.executor(this).build();
+			.builder()
+			.description(Text.of("Mob Spawn Command"))
+			.permission("essentialcmds.mobspawn.use")
+			.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.integer(Text.of("amount")))), GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("mob name"))))
+			.executor(this).build();
 	}
 }

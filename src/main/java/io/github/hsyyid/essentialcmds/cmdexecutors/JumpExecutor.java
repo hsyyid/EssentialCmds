@@ -25,14 +25,11 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
-
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.source.CommandBlockSource;
-import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.property.block.PassableProperty;
 import org.spongepowered.api.entity.living.player.Player;
@@ -54,7 +51,7 @@ public class JumpExecutor extends CommandExecutorBase
 			Player player = (Player) src;
 
 			BlockRay<World> playerBlockRay = BlockRay.from(player).blockLimit(350).build();
-			
+
 			BlockRayHit<World> finalHitRay = null;
 
 			while (playerBlockRay.hasNext())
@@ -103,7 +100,7 @@ public class JumpExecutor extends CommandExecutorBase
 				}
 			}
 		}
-		else if (src instanceof ConsoleSource || src instanceof CommandBlockSource)
+		else
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /jump!"));
 		}
@@ -113,13 +110,15 @@ public class JumpExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "jump" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec.builder().description(Text.of("Jump Command")).permission("essentialcmds.jump.use").executor(this).build();
 	}
 }

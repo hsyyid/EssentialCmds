@@ -31,13 +31,12 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.source.CommandBlockSource;
-import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.blockray.BlockRay;
@@ -46,8 +45,9 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.extent.Extent;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
+
+import javax.annotation.Nonnull;
 
 public class LightningExecutor extends CommandExecutorBase
 {
@@ -86,14 +86,10 @@ public class LightningExecutor extends CommandExecutorBase
 					lightningLocation = finalHitRay.getLocation();
 				}
 
-				spawnEntity(lightningLocation);
+				spawnEntity(lightningLocation, src);
 				player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Created Lightning Strike!"));
 			}
-			else if (src instanceof ConsoleSource)
-			{
-				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /lightning!"));
-			}
-			else if (src instanceof CommandBlockSource)
+			else
 			{
 				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /lightning!"));
 			}
@@ -102,7 +98,7 @@ public class LightningExecutor extends CommandExecutorBase
 		{
 			Player player = optionalTarget.get();
 			Location<World> playerLocation = player.getLocation();
-			spawnEntity(playerLocation);
+			spawnEntity(playerLocation, src);
 			player.sendMessage(Text.of(TextColors.GRAY, src.getName(), TextColors.GOLD, " has struck you with lightning."));
 			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Struck " + player.getName() + " with lightning."));
 		}
@@ -110,25 +106,27 @@ public class LightningExecutor extends CommandExecutorBase
 		return CommandResult.success();
 	}
 
-	public void spawnEntity(Location<World> location)
+	public void spawnEntity(Location<World> location, CommandSource src)
 	{
 		Extent extent = location.getExtent();
 		Optional<Entity> optional = extent.createEntity(EntityTypes.LIGHTNING, location.getPosition());
 		Entity lightning = optional.get();
-		extent.spawnEntity(lightning, Cause.of(this));
+		extent.spawnEntity(lightning, Cause.of(NamedCause.source(src)));
 	}
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "thor", "smite", "lightning" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec.builder().description(Text.of("Lightning Command")).permission("essentialcmds.lightning.use")
-				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))))
-				.executor(this).build();
+			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))))
+			.executor(this).build();
 	}
 }

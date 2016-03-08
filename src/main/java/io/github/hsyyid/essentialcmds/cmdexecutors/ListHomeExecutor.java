@@ -32,7 +32,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.service.pagination.PaginationBuilder;
+import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -78,7 +78,7 @@ public class ListHomeExecutor extends AsyncCommandExecutorBase
 				homeText.add(item);
 			}
 
-			PaginationBuilder paginationBuilder = paginationService.builder().contents(homeText).title(Text.of(TextColors.GREEN, "Showing Homes")).paddingString("-");
+			PaginationList.Builder paginationBuilder = paginationService.builder().contents(homeText).title(Text.of(TextColors.GREEN, "Showing Homes")).padding(Text.of("-"));
 			paginationBuilder.sendTo(src);
 		}
 		else

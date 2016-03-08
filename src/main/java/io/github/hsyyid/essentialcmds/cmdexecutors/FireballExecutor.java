@@ -31,14 +31,13 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.source.CommandBlockSource;
-import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.blockray.BlockRay;
@@ -47,8 +46,9 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.extent.Extent;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
+
+import javax.annotation.Nonnull;
 
 public class FireballExecutor extends CommandExecutorBase
 {
@@ -85,11 +85,7 @@ public class FireballExecutor extends CommandExecutorBase
 				spawnEntity(spawnLocation, velocity, player);
 				player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Created Fireball!"));
 			}
-			else if (src instanceof ConsoleSource)
-			{
-				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /fireball!"));
-			}
-			else if (src instanceof CommandBlockSource)
+			else
 			{
 				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /fireball!"));
 			}
@@ -98,7 +94,6 @@ public class FireballExecutor extends CommandExecutorBase
 		{
 			Player player = optionalTarget.get();
 			Location<World> playerLocation = player.getLocation();
-
 			Vector3d velocity = player.getTransform().getRotationAsQuaternion().getDirection();
 			spawnEntity(playerLocation, velocity, src);
 			player.sendMessage(Text.of(TextColors.GRAY, src.getName(), TextColors.GOLD, " has struck you with a fireball."));
@@ -115,20 +110,22 @@ public class FireballExecutor extends CommandExecutorBase
 
 		Entity fireball = optional.get();
 		fireball.offer(Keys.VELOCITY, velocity);
-		extent.spawnEntity(fireball, Cause.of(src));
+		extent.spawnEntity(fireball, Cause.of(NamedCause.source(src)));
 	}
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "fireball", "ghast" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec.builder().description(Text.of("Fireball Command")).permission("essentialcmds.fireball.use")
-				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))))
-				.executor(new FireballExecutor()).build();
+			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))))
+			.executor(new FireballExecutor()).build();
 	}
 }

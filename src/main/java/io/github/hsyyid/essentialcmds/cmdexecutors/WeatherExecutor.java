@@ -76,11 +76,11 @@ public class WeatherExecutor extends CommandExecutorBase
 
 			if (duration.isPresent())
 			{
-				player.getWorld().forecast(weather, duration.get());
+				player.getWorld().setWeather(weather, duration.get());
 			}
 			else
 			{
-				player.getWorld().forecast(weather);
+				player.getWorld().setWeather(weather);
 			}
 			return CommandResult.success();
 		}

@@ -51,7 +51,7 @@ public class MessageSinkListener
 		if (event.getCause().first(Player.class).isPresent())
 		{
 			Player player = event.getCause().first(Player.class).get();
-			String message = event.getMessage().orElse(Text.of()).toPlain();
+			String message = event.getMessage().toPlain();
 
 			if (message.contains("http://") || message.contains("https://"))
 			{
@@ -70,7 +70,7 @@ public class MessageSinkListener
 
 					try
 					{
-						Text newMessage = Text.builder().append(event.getMessage().orElse(Text.of())).onClick(TextActions.openUrl(new URL(foundLink))).build();
+						Text newMessage = Text.builder().append(event.getMessage()).onClick(TextActions.openUrl(new URL(foundLink))).build();
 						event.setMessage(newMessage);
 					}
 					catch (MalformedURLException e)
@@ -88,7 +88,7 @@ public class MessageSinkListener
 		}
 		else
 		{
-			String message = event.getMessage().orElse(Text.of()).toPlain();
+			String message = event.getMessage().toPlain();
 
 			if (message.contains("http://") || message.contains("https://"))
 			{
@@ -105,7 +105,7 @@ public class MessageSinkListener
 
 				try
 				{
-					Text newMessage = Text.builder().append(event.getMessage().orElse(Text.of())).onClick(TextActions.openUrl(new URL(foundLink))).build();
+					Text newMessage = Text.builder().append(event.getMessage()).onClick(TextActions.openUrl(new URL(foundLink))).build();
 					event.setMessage(newMessage);
 				}
 				catch (MalformedURLException e)
@@ -135,7 +135,7 @@ public class MessageSinkListener
 				if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
 				{
 					AFK removeAFK = EssentialCmds.afkList.get(player.getUniqueId());
-					
+
 					if (removeAFK.getAFK())
 					{
 						for (Player p : EssentialCmds.getEssentialCmds().getGame().getServer().getOnlinePlayers())
@@ -157,7 +157,7 @@ public class MessageSinkListener
 				return;
 			}
 
-			StringBuilder original = new StringBuilder(event.getMessage().orElse(Text.of()).toPlain());
+			StringBuilder original = new StringBuilder(event.getMessage().toPlain());
 
 			Subject subject = player.getContainingCollection().get(player.getIdentifier());
 			String prefix = "";
@@ -178,17 +178,11 @@ public class MessageSinkListener
 			original = original.replace(0, 1, ("<" + prefix));
 			String prefixInOriginal = original.substring(0, prefix.length() + 1);
 
-			original = original.replace(
-				original.indexOf(player.getName()) + player.getName().length(),
-				original.indexOf(player.getName()) + player.getName().length() + 1,
-				suffix + ">");
+			original = original.replace(original.indexOf(player.getName()) + player.getName().length(), original.indexOf(player.getName()) + player.getName().length() + 1, suffix + ">");
 			String suffixInOriginal = original.substring(original.indexOf(player.getName()) + player.getName().length(), original.indexOf(restOfOriginal));
 
 			String nick = Utils.getNick(player);
-			original = original.replace(
-				original.indexOf(player.getName()) - 1,
-				original.indexOf(player.getName()) + player.getName().length(),
-				nick);
+			original = original.replace(original.indexOf(player.getName()) - 1, original.indexOf(player.getName()) + player.getName().length(), nick);
 			String playerName = original.substring(prefixInOriginal.length() - 1, original.indexOf(nick) + nick.length());
 
 			prefixInOriginal = prefixInOriginal.replaceFirst("<", Utils.getFirstChatCharReplacement());
@@ -204,9 +198,9 @@ public class MessageSinkListener
 					.append(TextSerializers.formattingCode('&').deserialize(suffixInOriginal))
 					.append(Text.of(TextColors.RESET))
 					.append(Text.of(restOfOriginal))
-					.onClick(event.getMessage().orElse(Text.of()).getClickAction().orElse(null))
-					.style(event.getMessage().orElse(Text.of()).getStyle())
-					.onHover(event.getMessage().orElse(Text.of()).getHoverAction().orElse(null))
+					.onClick(event.getMessage().getClickAction().orElse(null))
+					.style(event.getMessage().getStyle())
+					.onHover(event.getMessage().getHoverAction().orElse(null))
 					.build());
 			}
 			else
@@ -217,9 +211,9 @@ public class MessageSinkListener
 					.append(TextSerializers.formattingCode('&').deserialize(suffixInOriginal))
 					.append(Text.of(TextColors.RESET))
 					.append(TextSerializers.formattingCode('&').deserialize(restOfOriginal))
-					.onClick(event.getMessage().orElse(Text.of()).getClickAction().orElse(null))
-					.style(event.getMessage().orElse(Text.of()).getStyle())
-					.onHover(event.getMessage().orElse(Text.of()).getHoverAction().orElse(null))
+					.onClick(event.getMessage().getClickAction().orElse(null))
+					.style(event.getMessage().getStyle())
+					.onHover(event.getMessage().getHoverAction().orElse(null))
 					.build());
 			}
 		}

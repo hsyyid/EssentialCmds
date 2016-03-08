@@ -34,7 +34,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
-import org.spongepowered.api.service.pagination.PaginationBuilder;
+import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -197,7 +197,7 @@ public class BlacklistBase extends CommandExecutorBase
 				blacklistText.add(item);
 			}
 
-			PaginationBuilder paginationBuilder = paginationService.builder().contents(blacklistText).title(Text.of(TextColors.GREEN, "Showing Blacklist")).paddingString("-");
+			PaginationList.Builder paginationBuilder = paginationService.builder().contents(blacklistText).title(Text.of(TextColors.GREEN, "Showing Blacklist")).padding(Text.of("-"));
 			paginationBuilder.sendTo(src);
 
 			return CommandResult.success();
