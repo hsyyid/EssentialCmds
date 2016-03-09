@@ -121,7 +121,14 @@ public class EssentialCmds
 		{
 			if (Files.exists(configDir.resolveSibling("essentialcmds")))
 			{
-				configDir.resolveSibling("essentialcmds").toFile().renameTo(configDir.toFile());
+				try
+				{
+					Files.move(configDir.resolveSibling("essentialcmds"), configDir);
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
 			}
 			else
 			{
