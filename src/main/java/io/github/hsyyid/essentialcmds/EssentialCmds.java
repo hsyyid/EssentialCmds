@@ -119,13 +119,20 @@ public class EssentialCmds
 		// Create Config Directory for EssentialCmds
 		if (!Files.exists(configDir))
 		{
-			try
+			if (Files.exists(configDir.resolveSibling("essentialcmds")))
 			{
-				Files.createDirectories(configDir);
+				configDir.resolveSibling("essentialcmds").toFile().renameTo(configDir.toFile());
 			}
-			catch (IOException e)
+			else
 			{
-				e.printStackTrace();
+				try
+				{
+					Files.createDirectories(configDir);
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 
