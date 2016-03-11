@@ -34,14 +34,12 @@ public class PlayerInventory
 	private UUID playerUuid;
 	private UUID worldUuid;
 	private List<ItemStack> slots;
-	private List<ItemStack> armorSlots;
 
-	public PlayerInventory(UUID playerUuid, UUID worldUuid, List<ItemStack> slots, List<ItemStack> armorSlots)
+	public PlayerInventory(UUID playerUuid, UUID worldUuid, List<ItemStack> slots)
 	{
 		this.playerUuid = playerUuid;
 		this.worldUuid = worldUuid;
 		this.slots = slots;
-		this.armorSlots = armorSlots;
 	}
 
 	public UUID getPlayerUuid()
@@ -57,10 +55,5 @@ public class PlayerInventory
 	public List<ItemStack> getSlots()
 	{
 		return slots;
-	}
-	
-	public List<ItemStack> getArmorSlots()
-	{
-		return armorSlots;
 	}
 }
