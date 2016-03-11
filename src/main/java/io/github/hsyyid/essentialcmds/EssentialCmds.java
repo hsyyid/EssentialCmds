@@ -30,6 +30,7 @@ import com.google.inject.Inject;
 import io.github.hsyyid.essentialcmds.internal.CommandLoader;
 import io.github.hsyyid.essentialcmds.listeners.ChangeBlockListener;
 import io.github.hsyyid.essentialcmds.listeners.CommandListener;
+import io.github.hsyyid.essentialcmds.listeners.CommandSentListener;
 import io.github.hsyyid.essentialcmds.listeners.InventoryListener;
 import io.github.hsyyid.essentialcmds.listeners.MailListener;
 import io.github.hsyyid.essentialcmds.listeners.MessageSinkListener;
@@ -202,6 +203,7 @@ public class EssentialCmds
 		getGame().getEventManager().registerListeners(this, new CommandListener());
 		getGame().getEventManager().registerListeners(this, new ChangeBlockListener());
 		getGame().getEventManager().registerListeners(this, new PlayerDamageListener());
+		getGame().getEventManager().registerListeners(this, new CommandSentListener());
 
 		getLogger().info("-----------------------------");
 		getLogger().info("EssentialCmds was made by HassanS6000!");
