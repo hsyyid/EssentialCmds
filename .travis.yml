@@ -3,7 +3,6 @@ dist: trusty
 
 language: java
 jdk:
-  - openjdk8
   - oraclejdk8
 
 env: GRADLE_OPTS="-Xms1g -Xmx3g"
@@ -11,3 +10,4 @@ script: ./gradlew build
 
 notifications:
   email: false
+  irc: "irc.esper.net#essentialcmds"
