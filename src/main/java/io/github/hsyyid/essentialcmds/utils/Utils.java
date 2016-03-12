@@ -1174,12 +1174,12 @@ public class Utils
 		Configs.removeChild(warpsConfig, new Object[] { "warps" }, warpName);
 	}
 
-	public static void savePlayerInventory(Player player, UUID worldUUID)
+	public static void savePlayerInventory(Player player, UUID worldUuid)
 	{
 		if (!Utils.areSeparateWorldInventoriesEnabled())
 			return;
 
-		String worldName = Sponge.getServer().getWorld(worldUUID).get().getName();
+		String worldName = Sponge.getServer().getWorld(worldUuid).get().getName();
 		Set<UUID> worlds = Sets.newHashSet();
 
 		for (World world : Sponge.getServer().getWorlds())
@@ -1191,22 +1191,38 @@ public class Utils
 			}
 		}
 
-		for (UUID worldUuid : worlds)
+		if (!worlds.contains(worldUuid))
+			worlds.add(worldUuid);
+
+		for (UUID uuid : worlds)
 		{
 			List<Inventory> slots = Lists.newArrayList(player.getInventory().slots());
 
 			for (int i = 0; i < slots.size(); i++)
 			{
-				Optional<ItemStack> stack = slots.get(i).peek();
+				Optional<ItemStack> stack;
+
+				if (i < 36)
+					stack = slots.get(i).peek();
+				else if (i == 36)
+					stack = player.getHelmet();
+				else if (i == 37)
+					stack = player.getChestplate();
+				else if (i == 38)
+					stack = player.getLeggings();
+				else if (i == 39)
+					stack = player.getBoots();
+				else
+					stack = Optional.empty();
 
 				if (stack.isPresent())
 				{
 					Object object = ItemStackSerializer.serializeItemStack(stack.get());
-					Configs.setValue(inventoryConfig, new Object[] { "inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots", String.valueOf(i) }, object);
+					Configs.setValue(inventoryConfig, new Object[] { "inventory", player.getUniqueId().toString(), uuid.toString(), "slots", String.valueOf(i) }, object);
 				}
-				else if (Configs.getConfig(inventoryConfig).getNode("inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots").getChildrenMap().containsKey(String.valueOf(i)))
+				else if (Configs.getConfig(inventoryConfig).getNode("inventory", player.getUniqueId().toString(), uuid.toString(), "slots").getChildrenMap().containsKey(String.valueOf(i)))
 				{
-					Configs.removeChild(inventoryConfig, new Object[] { "inventory", player.getUniqueId().toString(), worldUuid.toString(), "slots" }, String.valueOf(i));
+					Configs.removeChild(inventoryConfig, new Object[] { "inventory", player.getUniqueId().toString(), uuid.toString(), "slots" }, String.valueOf(i));
 				}
 			}
 		}
@@ -1244,12 +1260,8 @@ public class Utils
 
 		if (playerInventory != null)
 		{
-			Iterator<Inventory> slots = player.getInventory().slots().iterator();
-
-			for (int i = 0; i < playerInventory.getSlots().size(); i++)
-			{
-				slots.next().set(playerInventory.getSlots().get(i));
-			}
+			final Iterator<ItemStack> slots = playerInventory.getSlots().iterator();
+			player.getInventory().slots().forEach(c -> c.set(slots.next()));
 		}
 	}
 

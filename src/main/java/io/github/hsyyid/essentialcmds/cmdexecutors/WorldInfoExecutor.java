@@ -55,7 +55,7 @@ public class WorldInfoExecutor extends CommandExecutorBase
 				World world = player.getWorld();
 
 				player.sendMessage(Text.of(TextColors.GOLD, "Difficulty: ", TextColors.GRAY, world.getProperties().getDifficulty()));
-				player.sendMessage(Text.of(TextColors.GOLD, "Dimension Type: ", TextColors.GRAY, world.getProperties().getDimensionType()));
+				player.sendMessage(Text.of(TextColors.GOLD, "Dimension Type: ", TextColors.GRAY, world.getProperties().getDimensionType().getName()));
 				player.sendMessage(Text.of(TextColors.GOLD, "Gamemode: ", TextColors.GRAY, world.getProperties().getGameMode()));
 				player.sendMessage(Text.of(TextColors.GOLD, "Seed: ", TextColors.GRAY, world.getProperties().getSeed()));
 				player.sendMessage(Text.of(TextColors.GOLD, "World Time: ", TextColors.GRAY, world.getProperties().getWorldTime()));
