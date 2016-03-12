@@ -39,15 +39,10 @@ import org.spongepowered.api.text.format.TextColors;
 public class InventoryListener
 {
 	@Listener
-	public void onChangeInventory(ChangeInventoryEvent.Pickup event, @First Player player)
+	public void onChangeInventory(ChangeInventoryEvent event, @First Player player)
 	{
-		Utils.savePlayerInventory(player, player.getWorld().getUniqueId());
-	}
-
-	@Listener
-	public void onChangeInventory(ChangeInventoryEvent.Transfer event, @First Player player)
-	{
-		Utils.savePlayerInventory(player, player.getWorld().getUniqueId());
+		if (!(event instanceof ChangeInventoryEvent.Held))
+			Utils.savePlayerInventory(player, player.getWorld().getUniqueId());
 	}
 
 	@Listener
@@ -80,7 +75,5 @@ public class InventoryListener
 				}
 			}
 		}
-
-		Utils.savePlayerInventory(player, player.getWorld().getUniqueId());
 	}
 }
