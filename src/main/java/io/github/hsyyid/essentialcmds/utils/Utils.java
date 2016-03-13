@@ -1261,7 +1261,10 @@ public class Utils
 		if (playerInventory != null)
 		{
 			final Iterator<ItemStack> slots = playerInventory.getSlots().iterator();
-			player.getInventory().slots().forEach(c -> c.set(slots.next()));
+			player.getInventory().slots().forEach(c -> {
+				if (slots.hasNext())
+					c.set(slots.next());
+			});
 		}
 	}
 

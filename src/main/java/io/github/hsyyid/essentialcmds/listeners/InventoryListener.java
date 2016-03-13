@@ -69,4 +69,20 @@ public class InventoryListener
 			}
 		}
 	}
+
+	@Listener
+	public void onPickupItem(ChangeInventoryEvent.Pickup event, @First Player player)
+	{
+		if (!player.hasPermission("essentialcmds.blacklist.bypass"))
+		{
+			for (SlotTransaction transaction : event.getTransactions())
+			{
+				if (Utils.getBlacklistItems().contains(transaction.getFinal().createStack().getItem().getId()))
+				{
+					player.sendMessage(Text.of(TextColors.RED, "The item ", TextColors.GRAY, transaction.getFinal().createStack().getItem().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
+					transaction.setCustom(Sponge.getRegistry().createBuilder(ItemStack.Builder.class).itemType(ItemTypes.DIRT).quantity(1).build());
+				}
+			}
+		}
+	}
 }

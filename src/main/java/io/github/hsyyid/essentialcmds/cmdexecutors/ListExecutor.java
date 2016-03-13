@@ -45,12 +45,10 @@ import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import javax.annotation.Nonnull;
@@ -73,13 +71,11 @@ public class ListExecutor extends CommandExecutorBase
 
 			for (Subject group : groups)
 			{
-				Stream<Subject> users = StreamSupport.stream(permissionService.getUserSubjects().getAllSubjects().spliterator(), false).filter(u -> u.isChildOf(group));
+				List<Subject> users = StreamSupport.stream(permissionService.getUserSubjects().getAllSubjects().spliterator(), false).filter(u -> u.isChildOf(group)).collect(Collectors.toList());
 				List<Text> onlineUsers = Lists.newArrayList();
-				Iterator<Subject> itr = users.iterator();
 
-				while (itr.hasNext())
+				for (Subject user : users)
 				{
-					Subject user = itr.next();
 					Optional<Player> optPlayer;
 
 					try
@@ -120,7 +116,7 @@ public class ListExecutor extends CommandExecutorBase
 			{
 				List<Player> remainingPlayers = Sponge.getServer().getOnlinePlayers().stream().filter(p -> !listedPlayers.contains(p.getUniqueId())).collect(Collectors.toList());
 				List<Text> onlineUsers = Lists.newArrayList();
-				
+
 				for (Player player : remainingPlayers)
 				{
 					Text name = Text.builder().append(TextSerializers.FORMATTING_CODE.deserialize(Utils.getNick(player))).append(Text.of(" ")).build();
@@ -137,7 +133,7 @@ public class ListExecutor extends CommandExecutorBase
 					else
 						onlineUsers.add(name);
 				}
-				
+
 				if (onlineUsers.size() > 0)
 				{
 					src.sendMessage(Text.builder().append(Text.of(TextColors.GOLD, "Default", ": ")).append(onlineUsers).build());
