@@ -39,6 +39,8 @@ import org.spongepowered.api.util.blockray.BlockRay;
 import org.spongepowered.api.util.blockray.BlockRayHit;
 import org.spongepowered.api.world.World;
 
+import java.util.Optional;
+
 import javax.annotation.Nonnull;
 
 public class BlockInfoExecutor extends CommandExecutorBase
@@ -66,7 +68,8 @@ public class BlockInfoExecutor extends CommandExecutorBase
 			if (finalHitRay != null)
 			{
 				player.sendMessage(Text.of(TextColors.GOLD, "The ID of the block you're looking at is: ", TextColors.GRAY, finalHitRay.getLocation().getBlock().getType().getName()));
-				player.sendMessage(Text.of(TextColors.GOLD, "The meta of the block you're looking at is: ", TextColors.GRAY, finalHitRay.getLocation().getBlock().toContainer().get(DataQuery.of("UnsafeMeta")).get().toString()));
+				Optional<Object> metaDataQuery = finalHitRay.getLocation().getBlock().toContainer().get(DataQuery.of("UnsafeMeta"));
+				player.sendMessage(Text.of(TextColors.GOLD, "The meta of the block you're looking at is: ", TextColors.GRAY, metaDataQuery.isPresent() ? metaDataQuery.get().toString() : 0));
 			}
 			else
 			{
@@ -83,14 +86,16 @@ public class BlockInfoExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "blockinfo" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec.builder().description(Text.of("BlockInfo Command")).permission("essentialcmds.blockinfo.use")
-				.executor(this).build();
+			.executor(this).build();
 	}
 }

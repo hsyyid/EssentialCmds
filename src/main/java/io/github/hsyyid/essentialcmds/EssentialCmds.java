@@ -31,7 +31,7 @@ import io.github.hsyyid.essentialcmds.internal.CommandLoader;
 import io.github.hsyyid.essentialcmds.listeners.ChangeBlockListener;
 import io.github.hsyyid.essentialcmds.listeners.CommandListener;
 import io.github.hsyyid.essentialcmds.listeners.CommandSentListener;
-import io.github.hsyyid.essentialcmds.listeners.InventoryListener;
+import io.github.hsyyid.essentialcmds.listeners.BlacklistListener;
 import io.github.hsyyid.essentialcmds.listeners.MailListener;
 import io.github.hsyyid.essentialcmds.listeners.MessageSinkListener;
 import io.github.hsyyid.essentialcmds.listeners.PlayerClickListener;
@@ -199,7 +199,7 @@ public class EssentialCmds
 		getGame().getEventManager().registerListeners(this, new MailListener());
 		getGame().getEventManager().registerListeners(this, new PlayerDisconnectListener());
 		getGame().getEventManager().registerListeners(this, new WeatherChangeListener());
-		getGame().getEventManager().registerListeners(this, new InventoryListener());
+		getGame().getEventManager().registerListeners(this, new BlacklistListener());
 		getGame().getEventManager().registerListeners(this, new CommandListener());
 		getGame().getEventManager().registerListeners(this, new ChangeBlockListener());
 		getGame().getEventManager().registerListeners(this, new PlayerDamageListener());
