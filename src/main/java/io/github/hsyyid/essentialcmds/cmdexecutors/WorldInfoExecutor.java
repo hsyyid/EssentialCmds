@@ -54,6 +54,7 @@ public class WorldInfoExecutor extends CommandExecutorBase
 				Player player = (Player) src;
 				World world = player.getWorld();
 
+				player.sendMessage(Text.of(TextColors.GOLD, "World UUID: ", TextColors.GRAY, world.getProperties().getUniqueId()));
 				player.sendMessage(Text.of(TextColors.GOLD, "Difficulty: ", TextColors.GRAY, world.getProperties().getDifficulty()));
 				player.sendMessage(Text.of(TextColors.GOLD, "Dimension Type: ", TextColors.GRAY, world.getProperties().getDimensionType().getName()));
 				player.sendMessage(Text.of(TextColors.GOLD, "Gamemode: ", TextColors.GRAY, world.getProperties().getGameMode()));
@@ -72,6 +73,7 @@ public class WorldInfoExecutor extends CommandExecutorBase
 
 			if (world != null)
 			{
+				src.sendMessage(Text.of(TextColors.GOLD, "World UUID: ", TextColors.GRAY, world.getProperties().getUniqueId()));
 				src.sendMessage(Text.of(TextColors.GOLD, "Difficulty: ", TextColors.GRAY, world.getProperties().getDifficulty()));
 				src.sendMessage(Text.of(TextColors.GOLD, "Dimension Type: ", TextColors.GRAY, world.getProperties().getDimensionType()));
 				src.sendMessage(Text.of(TextColors.GOLD, "Gamemode: ", TextColors.GRAY, world.getProperties().getGameMode()));
@@ -102,8 +104,7 @@ public class WorldInfoExecutor extends CommandExecutorBase
 		return CommandSpec.builder()
 			.description(Text.of("WorldInfo Command"))
 			.permission("essentialcmds.worldinfo.use")
-			.arguments(GenericArguments.optional(
-				GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("world name")))))
+			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("world name")))))
 			.executor(this)
 			.build();
 	}

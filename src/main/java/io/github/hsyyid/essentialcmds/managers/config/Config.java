@@ -126,6 +126,10 @@ public class Config implements Configurable
 		get().getNode("chat", "lastcharacter").setValue(">").setComment("When set, changes the character after the player name from '>'.");
 		get().getNode("teleport", "cooldown", "enabled").setValue(false).setComment("Toggles the cooldown option for teleports.");
 		get().getNode("teleport", "cooldown", "timer").setValue(10).setComment("The length of time in seconds until a player teleports.");
+		get().getNode("log", "command", "player").setValue(true).setComment("Toggles the logging of player commands.");
+		get().getNode("log", "command", "console").setValue(true).setComment("Toggles the logging of console commands.");
+		get().getNode("log", "command", "command-block").setValue(false).setComment("Toggles the logging of command block commands.");
+		get().getNode("log", "command", "other").setValue(false).setComment("Toggles the logging of any other command blocks.");
 	}
 
 	@Override

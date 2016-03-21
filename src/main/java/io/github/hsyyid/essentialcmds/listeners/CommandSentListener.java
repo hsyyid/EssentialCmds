@@ -25,7 +25,11 @@
 package io.github.hsyyid.essentialcmds.listeners;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
+import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.command.source.CommandBlockSource;
+import org.spongepowered.api.command.source.ConsoleSource;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.command.SendCommandEvent;
 import org.spongepowered.api.event.filter.cause.First;
@@ -35,6 +39,21 @@ public class CommandSentListener
 	@Listener
 	public void onCommandSent(SendCommandEvent event, @First CommandSource src)
 	{
-		EssentialCmds.getEssentialCmds().getLogger().info("[" + src.getName() + "]" + " executed command " + event.getCommand() + " " + event.getArguments());
+		if (src instanceof Player && Utils.isPlayerCommandLoggingEnabled())
+		{
+			EssentialCmds.getEssentialCmds().getLogger().info("[" + src.getName() + "]" + " executed command " + event.getCommand() + " " + event.getArguments());
+		}
+		else if (src instanceof ConsoleSource && Utils.isConsoleCommandLoggingEnabled())
+		{
+			EssentialCmds.getEssentialCmds().getLogger().info("[" + src.getName() + "]" + " executed command " + event.getCommand() + " " + event.getArguments());
+		}
+		else if (src instanceof CommandBlockSource && Utils.isCommandBlockCommandLoggingEnabled())
+		{
+			EssentialCmds.getEssentialCmds().getLogger().info("[" + src.getName() + "]" + " executed command " + event.getCommand() + " " + event.getArguments());
+		}
+		else if (Utils.isOtherCommandLoggingEnabled())
+		{
+			EssentialCmds.getEssentialCmds().getLogger().info("[" + src.getName() + "]" + " executed command " + event.getCommand() + " " + event.getArguments());
+		}
 	}
 }

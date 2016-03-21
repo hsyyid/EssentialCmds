@@ -102,8 +102,6 @@ public class Utils
 	private static Configurable worldConfig = WorldConfig.getConfig();
 	private static ConfigManager configManager = new ConfigManager();
 
-	public static final String[] ARMOR = new String[] { "helmet", "chestplate", "leggings", "boots" };
-
 	public static void setSQLPort(String value)
 	{
 		Configs.setValue(mainConfig, new Object[] { "mysql", "port" }, value);
@@ -1332,6 +1330,66 @@ public class Utils
 			{
 				Configs.setValue(worldConfig, valueNode.getPath(), valueNode.getString().replace(worldUuid.toString(), ""));
 			}
+		}
+	}
+
+	public static boolean isPlayerCommandLoggingEnabled()
+	{
+		CommentedConfigurationNode valueNode = Configs.getConfig(mainConfig).getNode("log", "command", "player");
+
+		if (valueNode.getValue() != null)
+		{
+			return valueNode.getBoolean();
+		}
+		else
+		{
+			Configs.setValue(mainConfig, valueNode.getPath(), true);
+			return true;
+		}
+	}
+
+	public static boolean isConsoleCommandLoggingEnabled()
+	{
+		CommentedConfigurationNode valueNode = Configs.getConfig(mainConfig).getNode("log", "command", "console");
+
+		if (valueNode.getValue() != null)
+		{
+			return valueNode.getBoolean();
+		}
+		else
+		{
+			Configs.setValue(mainConfig, valueNode.getPath(), true);
+			return true;
+		}
+	}
+
+	public static boolean isCommandBlockCommandLoggingEnabled()
+	{
+		CommentedConfigurationNode valueNode = Configs.getConfig(mainConfig).getNode("log", "command", "command-block");
+
+		if (valueNode.getValue() != null)
+		{
+			return valueNode.getBoolean();
+		}
+		else
+		{
+			Configs.setValue(mainConfig, valueNode.getPath(), true);
+			return true;
+		}
+	}
+
+	public static boolean isOtherCommandLoggingEnabled()
+	{
+		CommentedConfigurationNode valueNode = Configs.getConfig(mainConfig).getNode("log", "command", "other");
+
+		if (valueNode.getValue() != null)
+		{
+			return valueNode.getBoolean();
+		}
+		else
+		{
+			Configs.setValue(mainConfig, valueNode.getPath(), true);
+			return true;
 		}
 	}
 }
