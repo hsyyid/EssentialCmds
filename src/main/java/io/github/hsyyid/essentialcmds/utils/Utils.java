@@ -1137,7 +1137,7 @@ public class Utils
 		double y = Configs.getConfig(spawnConfig).getNode("spawn", "Y").getDouble();
 		double z = Configs.getConfig(spawnConfig).getNode("spawn", "Z").getDouble();
 
-		if (Configs.getConfig(warpsConfig).getNode("spawn", "transform", "pitch").getValue() == null)
+		if (Configs.getConfig(spawnConfig).getNode("spawn", "transform", "pitch").getValue() == null)
 		{
 			if (world != null)
 				return new Transform<>(new Location<>(world, x, y, z));
