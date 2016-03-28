@@ -49,7 +49,8 @@ public class ItemInfoExecutor extends CommandExecutorBase
 			if (player.getItemInHand().isPresent())
 			{
 				ItemStack itemInHand = player.getItemInHand().get();
-				player.sendMessage(Text.of(TextColors.GOLD, "The ID of the item in your hand is: ", TextColors.GRAY, itemInHand.getItem().getName()));
+				player.sendMessage(Text.of(TextColors.GOLD, "The name of the item in your hand is: ", TextColors.GRAY, itemInHand.getTranslation().get()));
+				player.sendMessage(Text.of(TextColors.GOLD, "The ID of the item in your hand is: ", TextColors.GRAY, itemInHand.getItem().getId()));
 				player.sendMessage(Text.of(TextColors.GOLD, "The meta of the item in your hand is: ", TextColors.GRAY, itemInHand.toContainer().get(DataQuery.of("UnsafeDamage")).get().toString()));
 			}
 			else

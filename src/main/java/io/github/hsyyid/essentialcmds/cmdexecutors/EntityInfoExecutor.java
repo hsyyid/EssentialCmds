@@ -79,7 +79,8 @@ public class EntityInfoExecutor extends CommandExecutorBase
 
 				if (entityFound != null)
 				{
-					player.sendMessage(Text.of(TextColors.GOLD, "The name of the entity you're looking at is: ", TextColors.GRAY, entityFound.getType().getName()));
+					player.sendMessage(Text.of(TextColors.GOLD, "The name of the entity you're looking at is: ", TextColors.GRAY, entityFound.getTranslation().get()));
+					player.sendMessage(Text.of(TextColors.GOLD, "The ID of the entity you're looking at is: ", TextColors.GRAY, entityFound.getType().getId()));
 				}
 				else
 				{
