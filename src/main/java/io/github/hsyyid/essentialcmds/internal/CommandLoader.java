@@ -27,6 +27,16 @@ package io.github.hsyyid.essentialcmds.internal;
 import com.google.common.collect.Sets;
 import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.cmdexecutors.*;
+import io.github.hsyyid.essentialcmds.cmdexecutors.world.CreateWorldExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.world.DeleteWorldExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.world.ListWorldExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.world.LoadWorldExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.world.SetSpawnExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.world.SetWorldSpawnExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.world.SpawnExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.world.TeleportWorldExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.world.WorldInfoExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.world.WorldsBase;
 import org.spongepowered.api.Sponge;
 
 import java.util.Set;

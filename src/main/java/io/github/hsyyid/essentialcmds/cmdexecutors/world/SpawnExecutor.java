@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.hsyyid.essentialcmds.cmdexecutors;
+package io.github.hsyyid.essentialcmds.cmdexecutors.world;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.PluginInfo;

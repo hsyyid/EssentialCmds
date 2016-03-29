@@ -22,15 +22,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.hsyyid.essentialcmds.cmdexecutors;
+package io.github.hsyyid.essentialcmds.cmdexecutors.world;
 
 import javax.annotation.Nonnull;
 
-public class CreateWorldExecutor extends WorldsBase.Create
-{
+public class SetWorldSpawnExecutor extends WorldsBase.SetSpawn {
 	@Nonnull
 	@Override
 	public String[] getAliases() {
-		return new String[] { "createworld" };
+		return new String[] { "setworldspawn" };
 	}
 }

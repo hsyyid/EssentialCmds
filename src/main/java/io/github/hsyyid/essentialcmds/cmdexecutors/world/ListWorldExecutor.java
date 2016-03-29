@@ -22,15 +22,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.hsyyid.essentialcmds.cmdexecutors;
+package io.github.hsyyid.essentialcmds.cmdexecutors.world;
 
 import javax.annotation.Nonnull;
 
-public class TeleportWorldExecutor extends WorldsBase.Teleport
+public class ListWorldExecutor extends WorldsBase.List
 {
 	@Nonnull
 	@Override
 	public String[] getAliases() {
-		return new String[] { "tpworld" };
+		return new String[] { "worlds" };
 	}
 }
