@@ -37,6 +37,7 @@ import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.manipulator.mutable.MobSpawnerData;
 import org.spongepowered.api.entity.EntityType;
+import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -58,6 +59,11 @@ public class MobSpawnerExecutor extends CommandExecutorBase
 			EntityType type = Sponge.getRegistry().getType(EntityType.class, entityType).orElse(null);
 			if (type != null)
 			{
+				if (!Living.class.isAssignableFrom(type.getEntityClass())) {
+					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The mob type you inputted is not a living entity."));
+					return CommandResult.success();
+				}
+
 				ItemStack.Builder itemBuilder = EssentialCmds.getEssentialCmds().getGame().getRegistry().createBuilder(ItemStack.Builder.class);
 				ItemStack mobSpawnerStack = itemBuilder.itemType(ItemTypes.MOB_SPAWNER).quantity(1).build();
 				Optional<MobSpawnerData> optionalMobSpawnerData = mobSpawnerStack.getOrCreate(MobSpawnerData.class);

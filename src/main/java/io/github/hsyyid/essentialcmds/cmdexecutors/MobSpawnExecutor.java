@@ -37,6 +37,7 @@ import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
+import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
@@ -66,7 +67,12 @@ public class MobSpawnExecutor extends CommandExecutorBase
 
 			if (type == null)
 			{
-				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The mob you inputed was not recognized."));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The mob you inputted was not recognized."));
+				return CommandResult.success();
+			}
+
+			if (!Living.class.isAssignableFrom(type.getEntityClass())) {
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The mob type you inputted is not a living entity."));
 				return CommandResult.success();
 			}
 
