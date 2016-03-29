@@ -27,6 +27,7 @@ package io.github.hsyyid.essentialcmds.listeners;
 import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.utils.Mail;
 import io.github.hsyyid.essentialcmds.utils.Utils;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.manipulator.mutable.entity.JoinData;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
@@ -36,12 +37,15 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.TeleportHelper;
 import org.spongepowered.api.world.World;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
@@ -75,7 +79,10 @@ public class PlayerJoinListener
 
 		if (Utils.isSafeLoginEnabled())
 		{
-			player.setLocationSafely(player.getLocation());
+			Optional<Location<World>> safeLocation = Sponge.getGame().getTeleportHelper().getSafeLocation(player.getLocation(), 256, TeleportHelper.DEFAULT_WIDTH);
+
+			if (safeLocation.isPresent())
+				player.setLocationSafely(safeLocation.get());
 		}
 
 		Calendar cal = Calendar.getInstance();
