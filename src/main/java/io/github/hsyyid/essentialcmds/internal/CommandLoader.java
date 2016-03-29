@@ -141,7 +141,8 @@ public final class CommandLoader {
             new LoreBase(),
             new HelpOpExecutor(),
             new ListExecutor(),
-            new StopExecutor()
+            new StopExecutor(),
+            new GodExecutor()
         );
     }
 

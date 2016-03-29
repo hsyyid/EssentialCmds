@@ -99,6 +99,7 @@ public class EssentialCmds
 	public static Set<UUID> frozenPlayers = Sets.newHashSet();
 	public static Set<UUID> jailedPlayers = Sets.newHashSet();
 	public static Set<UUID> teleportingPlayers = Sets.newHashSet();
+	public static Set<UUID> godPlayers = Sets.newHashSet();
 
 	@Inject
 	private Logger logger;

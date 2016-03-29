@@ -22,32 +22,57 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.hsyyid.essentialcmds.listeners;
+package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
-import io.github.hsyyid.essentialcmds.utils.Utils;
+import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
+import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.entity.DamageEntityEvent;
-import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class PlayerDamageListener
+import javax.annotation.Nonnull;
+
+public class GodExecutor extends AsyncCommandExecutorBase
 {
-	@Listener
-	public void onPlayerDamaged(DamageEntityEvent event, @First Player player)
+	@Override
+	public void executeAsync(CommandSource src, CommandContext ctx)
 	{
-		if (Utils.isTeleportCooldownEnabled() && EssentialCmds.teleportingPlayers.contains(player.getUniqueId()))
+		if (src instanceof Player)
 		{
-			EssentialCmds.teleportingPlayers.remove(player.getUniqueId());
-			player.sendMessage(Text.of(TextColors.RED, "Teleportation canceled due to damage."));
+			Player player = (Player) src;
+
+			if (EssentialCmds.godPlayers.contains(player.getUniqueId()))
+			{
+				EssentialCmds.godPlayers.remove(player.getUniqueId());
+				player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.RED, "Toggled god mode off!"));
+			}
+			else
+			{
+				EssentialCmds.godPlayers.add(player.getUniqueId());
+				player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.GOLD, "Toggled god mode on!"));
+			}
 		}
-		
-		if(EssentialCmds.godPlayers.contains(player.getUniqueId()))
+		else
 		{
-			event.setBaseDamage(0);
-			event.setCancelled(true);
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /god!"));
 		}
+	}
+
+	@Nonnull
+	@Override
+	public String[] getAliases()
+	{
+		return new String[] { "god", "godmode" };
+	}
+
+	@Nonnull
+	@Override
+	public CommandSpec getSpec()
+	{
+		return CommandSpec.builder().description(Text.of("Allows Toggling of God Mode")).permission("essentialcmds.god.use")
+			.executor(this).build();
 	}
 }
