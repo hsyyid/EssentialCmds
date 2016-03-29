@@ -109,8 +109,8 @@ public class TeleportPosExecutor extends CommandExecutorBase
 				GenericArguments.onlyOne(GenericArguments.integer(Text.of("x"))),
 				GenericArguments.onlyOne(GenericArguments.integer(Text.of("y"))),
 				GenericArguments.onlyOne(GenericArguments.integer(Text.of("z"))),
-				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))))),
-				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("world")))))
+				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))),
+				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("world"))))))
 			.executor(this).build();
 	}
 }

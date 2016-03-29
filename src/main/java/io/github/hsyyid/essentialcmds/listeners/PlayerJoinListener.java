@@ -73,6 +73,11 @@ public class PlayerJoinListener
 			MessageChannel.TO_ALL.send(firstJoinMsg);
 		}
 
+		if (Utils.isSafeLoginEnabled())
+		{
+			player.setLocationSafely(player.getLocation());
+		}
+
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy HH:mm:ss");
 		format.setTimeZone(TimeZone.getTimeZone("GMT"));
