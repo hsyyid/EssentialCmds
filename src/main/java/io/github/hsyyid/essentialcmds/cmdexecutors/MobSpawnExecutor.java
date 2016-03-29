@@ -25,18 +25,16 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.source.CommandBlockSource;
-import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
+import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
@@ -46,40 +44,34 @@ import org.spongepowered.api.util.blockray.BlockRay;
 import org.spongepowered.api.util.blockray.BlockRayHit;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
-import org.spongepowered.api.world.extent.Extent;
+
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 public class MobSpawnExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		int amount = ctx.<Integer> getOne("amount").get();
-		String entityType = ctx.<String> getOne("mob name").get();
+		EntityType type = ctx.<EntityType> getOne("mob").get();
 
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
 
-			EntityType type = Sponge.getRegistry().getType(EntityType.class, entityType).orElse(null);
-
-			if (type == null)
+			if (!Living.class.isAssignableFrom(type.getEntityClass()))
 			{
-				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The mob you inputed was not recognized."));
+				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The mob type you inputted is not a living entity."));
 				return CommandResult.success();
 			}
 
-			spawnEntity(getSpawnLocFromPlayerLoc(player).add(0, 1, 0), player, type, amount);
+			this.spawnEntity(getSpawnLocFromPlayerLoc(player).add(0, 1, 0), player, type, amount);
 			player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Spawned mob(s)!"));
 		}
-		else if (src instanceof ConsoleSource)
+		else
 		{
-			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /lightning!"));
-		}
-		else if (src instanceof CommandBlockSource)
-		{
-			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /lightning!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /mobspawn!"));
 		}
 
 		return CommandResult.success();
@@ -89,17 +81,14 @@ public class MobSpawnExecutor extends CommandExecutorBase
 	{
 		for (int i = 1; i <= amount; i++)
 		{
-			Extent extent = location.getExtent();
-			Optional<Entity> optional = extent.createEntity(type, location.getPosition());
-			Entity entity = optional.get();
-			extent.spawnEntity(entity, Cause.of(NamedCause.source(player)));
+			Optional<Entity> entity = location.getExtent().createEntity(type, location.getPosition());
+			location.getExtent().spawnEntity(entity.get(), Cause.of(NamedCause.source(player)));
 		}
 	}
 
 	public Location<World> getSpawnLocFromPlayerLoc(Player player)
 	{
 		BlockRay<World> playerBlockRay = BlockRay.from(player).blockLimit(350).build();
-
 		BlockRayHit<World> finalHitRay = null;
 
 		while (playerBlockRay.hasNext())
@@ -113,18 +102,18 @@ public class MobSpawnExecutor extends CommandExecutorBase
 			}
 		}
 
-		Location<World> lightningLocation = null;
+		Location<World> spawnLocation = null;
 
 		if (finalHitRay == null)
 		{
-			lightningLocation = player.getLocation();
+			spawnLocation = player.getLocation();
 		}
 		else
 		{
-			lightningLocation = finalHitRay.getLocation();
+			spawnLocation = finalHitRay.getLocation();
 		}
 
-		return lightningLocation;
+		return spawnLocation;
 	}
 
 	@Nonnull
@@ -142,7 +131,7 @@ public class MobSpawnExecutor extends CommandExecutorBase
 			.builder()
 			.description(Text.of("Mob Spawn Command"))
 			.permission("essentialcmds.mobspawn.use")
-			.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.integer(Text.of("amount")))), GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("mob name"))))
+			.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.integer(Text.of("amount")))), GenericArguments.onlyOne(GenericArguments.catalogedElement(Text.of("mob"), EntityType.class)))
 			.executor(this).build();
 	}
 }
