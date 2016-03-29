@@ -29,25 +29,29 @@ import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
-import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class PlayerDamageListener
 {
 	@Listener
-	public void onPlayerDamaged(DamageEntityEvent event, @First Player player)
+	public void onPlayerDamaged(DamageEntityEvent event)
 	{
-		if (Utils.isTeleportCooldownEnabled() && EssentialCmds.teleportingPlayers.contains(player.getUniqueId()))
+		if (event.getTargetEntity() instanceof Player)
 		{
-			EssentialCmds.teleportingPlayers.remove(player.getUniqueId());
-			player.sendMessage(Text.of(TextColors.RED, "Teleportation canceled due to damage."));
-		}
-		
-		if(EssentialCmds.godPlayers.contains(player.getUniqueId()))
-		{
-			event.setBaseDamage(0);
-			event.setCancelled(true);
+			Player player = (Player) event.getTargetEntity();
+
+			if (Utils.isTeleportCooldownEnabled() && EssentialCmds.teleportingPlayers.contains(player.getUniqueId()))
+			{
+				EssentialCmds.teleportingPlayers.remove(player.getUniqueId());
+				player.sendMessage(Text.of(TextColors.RED, "Teleportation canceled due to damage."));
+			}
+
+			if (EssentialCmds.godPlayers.contains(player.getUniqueId()))
+			{
+				event.setBaseDamage(0);
+				event.setCancelled(true);
+			}
 		}
 	}
 }
