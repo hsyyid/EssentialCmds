@@ -9,7 +9,7 @@ plugins {
 
 group = "io.github.hsyyid"
 archivesBaseName = "EssentialCmds"
-version = '7.9c'
+version = '7.9d'
 
 apply plugin: 'net.ellune.blossom'
 
