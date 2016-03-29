@@ -52,7 +52,9 @@ public class BlacklistListener
 			{
 				if (Utils.getBlacklistItems().contains(transaction.getFinal().createStack().getItem().getId()))
 				{
-					player.sendMessage(Text.of(TextColors.RED, "The item ", TextColors.GRAY, transaction.getFinal().createStack().getItem().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
+					if (Utils.areBlacklistMsgsEnabled())
+						player.sendMessage(Text.of(TextColors.RED, "The item ", TextColors.GRAY, transaction.getFinal().createStack().getItem().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
+
 					transaction.setCustom(Sponge.getRegistry().createBuilder(ItemStack.Builder.class).itemType(ItemTypes.DIRT).quantity(1).build());
 				}
 			}
@@ -68,7 +70,9 @@ public class BlacklistListener
 			{
 				if (Utils.getBlacklistItems().contains(transaction.getFinal().createStack().getItem().getId()))
 				{
-					player.sendMessage(Text.of(TextColors.RED, "The item ", TextColors.GRAY, transaction.getFinal().createStack().getItem().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
+					if (Utils.areBlacklistMsgsEnabled())
+						player.sendMessage(Text.of(TextColors.RED, "The item ", TextColors.GRAY, transaction.getFinal().createStack().getItem().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
+
 					transaction.setCustom(Sponge.getRegistry().createBuilder(ItemStack.Builder.class).itemType(ItemTypes.DIRT).quantity(1).build());
 				}
 			}
@@ -84,7 +88,9 @@ public class BlacklistListener
 			{
 				if (Utils.getBlacklistItems().contains(transaction.getFinal().getState().getType().getId()))
 				{
-					player.sendMessage(Text.of(TextColors.RED, "The item ", TextColors.GRAY, transaction.getFinal().getState().getType().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
+					if (Utils.areBlacklistMsgsEnabled())
+						player.sendMessage(Text.of(TextColors.RED, "The item ", TextColors.GRAY, transaction.getFinal().getState().getType().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
+
 					event.setCancelled(true);
 				}
 			}
@@ -100,7 +106,9 @@ public class BlacklistListener
 			{
 				if (Utils.getBlacklistItems().contains(transaction.getOriginal().getState().getType().getId()))
 				{
-					player.sendMessage(Text.of(TextColors.RED, "The item ", TextColors.GRAY, transaction.getFinal().getState().getType().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
+					if (Utils.areBlacklistMsgsEnabled())
+						player.sendMessage(Text.of(TextColors.RED, "The item ", TextColors.GRAY, transaction.getFinal().getState().getType().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
+
 					event.setCancelled(true);
 				}
 			}
@@ -120,7 +128,8 @@ public class BlacklistListener
 
 					if (blacklisted)
 					{
-						player.sendMessage(Text.of(TextColors.RED, "The item ", TextColors.GRAY, itemData.item().get().getType().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
+						if (Utils.areBlacklistMsgsEnabled())
+							player.sendMessage(Text.of(TextColors.RED, "The item ", TextColors.GRAY, itemData.item().get().getType().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
 					}
 
 					return !blacklisted;
@@ -139,7 +148,9 @@ public class BlacklistListener
 			{
 				if (Utils.getBlacklistItems().contains(transaction.getFinal().createStack().getItem().getId()))
 				{
-					player.sendMessage(Text.of(TextColors.RED, "The item ", TextColors.GRAY, transaction.getFinal().createStack().getItem().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
+					if (Utils.areBlacklistMsgsEnabled())
+						player.sendMessage(Text.of(TextColors.RED, "The item ", TextColors.GRAY, transaction.getFinal().createStack().getItem().getId(), TextColors.RED, " has been confiscated as it is blacklisted."));
+
 					transaction.setCustom(Sponge.getRegistry().createBuilder(ItemStack.Builder.class).itemType(ItemTypes.DIRT).quantity(1).build());
 				}
 			}

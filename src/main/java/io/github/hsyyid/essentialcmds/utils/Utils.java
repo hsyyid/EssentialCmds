@@ -54,7 +54,6 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.scheduler.Scheduler;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.sql.SqlService;
 import org.spongepowered.api.text.Text;
@@ -193,7 +192,7 @@ public class Utils
 				}
 				catch (ClassNotFoundException exception)
 				{
-					EssentialCmds.getEssentialCmds().getLogger().error("[EssentialCmds]: You do not have ANY database software installed! Mutes will not work or be saved until this is fixed.");
+					EssentialCmds.getEssentialCmds().getLogger().error("You do not have ANY database software installed! Mutes will not work or be saved until this is fixed.");
 				}
 
 				c = DriverManager.getConnection("jdbc:sqlite:Mutes.db");
@@ -217,8 +216,7 @@ public class Utils
 
 	public static void startAFKService()
 	{
-		Scheduler scheduler = game.getScheduler();
-		Task.Builder taskBuilder = scheduler.createTaskBuilder();
+		Task.Builder taskBuilder = Sponge.getScheduler().createTaskBuilder();
 
 		taskBuilder.execute(() -> {
 			for (Player player : game.getServer().getOnlinePlayers())
@@ -302,6 +300,18 @@ public class Utils
 		return true;
 	}
 
+	public static boolean areBlacklistMsgsEnabled()
+	{
+		CommentedConfigurationNode node = Configs.getConfig(mainConfig).getNode("blacklist", "messages");
+
+		if (node.getValue() != null)
+			return node.getBoolean();
+		else
+			Configs.setValue(mainConfig, node.getPath(), true);
+
+		return true;
+	}
+	
 	public static boolean isTeleportCooldownEnabled()
 	{
 		CommentedConfigurationNode node = Configs.getConfig(mainConfig).getNode("teleport", "cooldown", "enabled");
@@ -852,7 +862,8 @@ public class Utils
 	public static double getAFK()
 	{
 		ConfigurationNode valueNode = Configs.getConfig(mainConfig).getNode((Object[]) ("afk.timer").split("\\."));
-		if (valueNode.getDouble() != 0)
+
+		if (valueNode.getValue() != null)
 		{
 			return valueNode.getDouble();
 		}
