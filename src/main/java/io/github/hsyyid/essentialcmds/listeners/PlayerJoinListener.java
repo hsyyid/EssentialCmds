@@ -114,6 +114,10 @@ public class PlayerJoinListener
 			Text newMessage = TextSerializers.formattingCode('&').deserialize(loginMessage);
 			event.setMessage(newMessage);
 		}
+		else if(loginMessage.equals("none"))
+		{
+			event.setMessageCancelled(true);
+		}
 
 		Utils.savePlayerInventory(player, player.getWorld().getUniqueId());
 	}

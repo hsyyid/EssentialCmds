@@ -46,6 +46,10 @@ public class PlayerDisconnectListener
 			Text newMessage = TextSerializers.formattingCode('&').deserialize(disconnectMessage);
 			event.setMessage(newMessage);
 		}
+		else if(disconnectMessage.equals("none"))
+		{
+			event.setMessageCancelled(true);
+		}
 
 		if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
 		{
