@@ -110,13 +110,16 @@ public class PlayerJoinListener
 
 		if (loginMessage != null && !loginMessage.equals(""))
 		{
-			loginMessage = loginMessage.replaceAll("@p", player.getName());
-			Text newMessage = TextSerializers.formattingCode('&').deserialize(loginMessage);
-			event.setMessage(newMessage);
-		}
-		else if(loginMessage.equals("none"))
-		{
-			event.setMessageCancelled(true);
+			if (loginMessage.equals("none"))
+			{
+				event.setMessageCancelled(true);
+			}
+			else
+			{
+				loginMessage = loginMessage.replaceAll("@p", player.getName());
+				Text newMessage = TextSerializers.formattingCode('&').deserialize(loginMessage);
+				event.setMessage(newMessage);
+			}
 		}
 
 		Utils.savePlayerInventory(player, player.getWorld().getUniqueId());

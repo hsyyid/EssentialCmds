@@ -42,13 +42,16 @@ public class PlayerDisconnectListener
 
 		if (disconnectMessage != null && !disconnectMessage.equals(""))
 		{
-			disconnectMessage = disconnectMessage.replaceAll("@p", player.getName());
-			Text newMessage = TextSerializers.formattingCode('&').deserialize(disconnectMessage);
-			event.setMessage(newMessage);
-		}
-		else if(disconnectMessage.equals("none"))
-		{
-			event.setMessageCancelled(true);
+			if (disconnectMessage.equals("none"))
+			{
+				event.setMessageCancelled(true);
+			}
+			else
+			{
+				disconnectMessage = disconnectMessage.replaceAll("@p", player.getName());
+				Text newMessage = TextSerializers.formattingCode('&').deserialize(disconnectMessage);
+				event.setMessage(newMessage);
+			}
 		}
 
 		if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
