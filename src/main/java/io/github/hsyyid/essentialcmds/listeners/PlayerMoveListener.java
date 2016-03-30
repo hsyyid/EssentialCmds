@@ -33,6 +33,7 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.DisplaceEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.World;
 
@@ -71,9 +72,9 @@ public class PlayerMoveListener
 
 				if (removeAFK.getAFK())
 				{
-					for (Player p : EssentialCmds.getEssentialCmds().getGame().getServer().getOnlinePlayers())
+					if (Utils.shouldAnnounceAFK())
 					{
-						p.sendMessage(Text.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is no longer AFK."));
+						MessageChannel.TO_ALL.send(Text.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is no longer AFK."));
 					}
 				}
 

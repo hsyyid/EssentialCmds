@@ -47,6 +47,7 @@ import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
 import org.spongepowered.api.data.value.mutable.Value;
 import org.spongepowered.api.entity.Transform;
@@ -57,6 +58,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.sql.SqlService;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -219,7 +221,7 @@ public class Utils
 		Task.Builder taskBuilder = Sponge.getScheduler().createTaskBuilder();
 
 		taskBuilder.execute(() -> {
-			for (Player player : game.getServer().getOnlinePlayers())
+			for (Player player : Sponge.getServer().getOnlinePlayers())
 			{
 				if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
 				{
@@ -227,16 +229,14 @@ public class Utils
 
 					if (((System.currentTimeMillis() - afk.lastMovementTime) > Utils.getAFK()) && !afk.getMessaged())
 					{
-						for (Player p : game.getServer().getOnlinePlayers())
+						if (Utils.shouldAnnounceAFK())
 						{
-							p.sendMessage(Text.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is now AFK."));
-							Optional<FoodData> data = p.get(FoodData.class);
+							MessageChannel.TO_ALL.send(Text.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is now AFK."));
+						}
 
-							if (data.isPresent())
-							{
-								FoodData food = data.get();
-								afk.setFood(food.foodLevel().get());
-							}
+						if (player.get(Keys.FOOD_LEVEL).isPresent())
+						{
+							afk.setFood(player.get(Keys.FOOD_LEVEL).get());
 						}
 
 						afk.setMessaged(true);
@@ -311,7 +311,7 @@ public class Utils
 
 		return true;
 	}
-	
+
 	public static boolean isTeleportCooldownEnabled()
 	{
 		CommentedConfigurationNode node = Configs.getConfig(mainConfig).getNode("teleport", "cooldown", "enabled");
@@ -869,9 +869,8 @@ public class Utils
 		}
 		else
 		{
-			Utils.setAFK(30000);
-			ConfigurationNode valNode = Configs.getConfig(mainConfig).getNode((Object[]) ("afk.timer").split("\\."));
-			return valNode.getDouble();
+			Utils.setAFK(300000);
+			return 300000;
 		}
 	}
 
@@ -887,6 +886,21 @@ public class Utils
 		{
 			Utils.setAFKKick(false);
 			return false;
+		}
+	}
+
+	public static boolean shouldAnnounceAFK()
+	{
+		ConfigurationNode valueNode = Configs.getConfig(mainConfig).getNode((Object[]) ("afk.announce").split("\\."));
+
+		if (valueNode.getValue() != null)
+		{
+			return valueNode.getBoolean();
+		}
+		else
+		{
+			Configs.setValue(mainConfig, valueNode.getPath(), true);
+			return true;
 		}
 	}
 

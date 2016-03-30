@@ -36,6 +36,7 @@ import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.service.permission.option.OptionSubject;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
+import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
@@ -138,9 +139,12 @@ public class MessageSinkListener
 
 					if (removeAFK.getAFK())
 					{
-						for (Player p : EssentialCmds.getEssentialCmds().getGame().getServer().getOnlinePlayers())
+						if (removeAFK.getAFK())
 						{
-							p.sendMessage(Text.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is no longer AFK."));
+							if (Utils.shouldAnnounceAFK())
+							{
+								MessageChannel.TO_ALL.send(Text.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is no longer AFK."));
+							}
 						}
 					}
 

@@ -35,6 +35,7 @@ import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.world.World;
 
 import java.util.Optional;
 
@@ -44,131 +45,178 @@ public class TimeExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
+		TimeExecutor.setTime(src, ctx);
+		return CommandResult.success();
+	}
+
+	public static void setTime(CommandSource src, CommandContext ctx)
+	{
 		Optional<String> timeString = ctx.<String> getOne("time");
 		Optional<Integer> timeTicks = ctx.<Integer> getOne("ticks");
+		World world = null;
 
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-
-			if (timeTicks.isPresent())
-			{
-				player.getWorld().getProperties().setWorldTime(timeTicks.get());
-				player.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeTicks.get()));
-			}
-			else if (timeString.isPresent())
-			{
-				if (timeString.get().toLowerCase().equals("dawn") || timeString.get().toLowerCase().equals("morning"))
-				{
-					player.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
-					player.getWorld().getProperties().setWorldTime(0);
-				}
-				else if (timeString.get().toLowerCase().equals("day"))
-				{
-					player.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
-					player.getWorld().getProperties().setWorldTime(1000);
-				}
-				else if (timeString.get().toLowerCase().equals("afternoon") || timeString.get().toLowerCase().equals("noon"))
-				{
-					player.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
-					player.getWorld().getProperties().setWorldTime(6000);
-				}
-				else if (timeString.get().toLowerCase().equals("dusk"))
-				{
-					player.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
-					player.getWorld().getProperties().setWorldTime(12000);
-				}
-				else if (timeString.get().toLowerCase().equals("night"))
-				{
-					player.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
-					player.getWorld().getProperties().setWorldTime(14000);
-				}
-				else if (timeString.get().toLowerCase().equals("midnight"))
-				{
-					player.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
-					player.getWorld().getProperties().setWorldTime(18000);
-				}
-				else
-				{
-					player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Could not understand input."));
-				}
-			}
-
-			return CommandResult.success();
+			world = player.getWorld();
 		}
-		else if(src instanceof CommandBlock)
+		else if (src instanceof CommandBlock)
 		{
 			CommandBlock commandBlock = (CommandBlock) src;
-			
-			if (timeTicks.isPresent())
-			{
-				commandBlock.getWorld().getProperties().setWorldTime(timeTicks.get());
-				commandBlock.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeTicks.get()));
-			}
-			else if (timeString.isPresent())
-			{
-				if (timeString.get().toLowerCase().equals("dawn") || timeString.get().toLowerCase().equals("morning"))
-				{
-					commandBlock.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
-					commandBlock.getWorld().getProperties().setWorldTime(0);
-				}
-				else if (timeString.get().toLowerCase().equals("day"))
-				{
-					commandBlock.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
-					commandBlock.getWorld().getProperties().setWorldTime(1000);
-				}
-				else if (timeString.get().toLowerCase().equals("afternoon") || timeString.get().toLowerCase().equals("noon"))
-				{
-					commandBlock.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
-					commandBlock.getWorld().getProperties().setWorldTime(6000);
-				}
-				else if (timeString.get().toLowerCase().equals("dusk"))
-				{
-					commandBlock.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
-					commandBlock.getWorld().getProperties().setWorldTime(12000);
-				}
-				else if (timeString.get().toLowerCase().equals("night"))
-				{
-					commandBlock.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
-					commandBlock.getWorld().getProperties().setWorldTime(14000);
-				}
-				else if (timeString.get().toLowerCase().equals("midnight"))
-				{
-					commandBlock.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
-					commandBlock.getWorld().getProperties().setWorldTime(18000);
-				}
-				else
-				{
-					commandBlock.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Could not understand input."));
-				}
-			}
-
-			return CommandResult.success();
+			world = commandBlock.getWorld();
 		}
 		else
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be a in-game player to do /time!"));
-			return CommandResult.success();
+			return;
+		}
+
+		if (timeTicks.isPresent())
+		{
+			world.getProperties().setWorldTime(timeTicks.get());
+			src.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeTicks.get()));
+		}
+		else if (timeString.isPresent())
+		{
+			if (timeString.get().toLowerCase().equals("dawn") || timeString.get().toLowerCase().equals("morning"))
+			{
+				src.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
+				world.getProperties().setWorldTime(0);
+			}
+			else if (timeString.get().toLowerCase().equals("day"))
+			{
+				src.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
+				world.getProperties().setWorldTime(1000);
+			}
+			else if (timeString.get().toLowerCase().equals("afternoon") || timeString.get().toLowerCase().equals("noon"))
+			{
+				src.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
+				world.getProperties().setWorldTime(6000);
+			}
+			else if (timeString.get().toLowerCase().equals("dusk"))
+			{
+				src.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
+				world.getProperties().setWorldTime(12000);
+			}
+			else if (timeString.get().toLowerCase().equals("night"))
+			{
+				src.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
+				world.getProperties().setWorldTime(14000);
+			}
+			else if (timeString.get().toLowerCase().equals("midnight"))
+			{
+				src.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, timeString.get().toLowerCase()));
+				world.getProperties().setWorldTime(18000);
+			}
+			else
+			{
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Could not understand input."));
+			}
 		}
 	}
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "time" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec
-				.builder()
+			.builder()
+			.description(Text.of("Time Command"))
+			.permission("essentialcmds.time.use")
+			.children(getChildrenList(new SetExecutor(), new AddExecutor()))
+			.arguments(GenericArguments.firstParsing(GenericArguments.integer(Text.of("ticks")), GenericArguments.string(Text.of("time"))))
+			.executor(this).build();
+	}
+
+	private static class SetExecutor extends CommandExecutorBase
+	{
+
+		@Nonnull
+		@Override
+		public String[] getAliases()
+		{
+			return new String[] { "set" };
+		}
+
+		@Nonnull
+		@Override
+		public CommandSpec getSpec()
+		{
+			return CommandSpec.builder()
 				.description(Text.of("Set Time Command"))
 				.permission("essentialcmds.time.set")
-				.arguments(
-						GenericArguments.firstParsing(
-								GenericArguments.integer(Text.of("ticks")),
-								GenericArguments.string(Text.of("time"))))
-				.executor(this).build();
+				.arguments(GenericArguments.firstParsing(GenericArguments.integer(Text.of("ticks")), GenericArguments.string(Text.of("time"))))
+				.executor(this)
+				.build();
+		}
+
+		@Override
+		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+		{
+			TimeExecutor.setTime(src, ctx);
+			return CommandResult.success();
+		}
+	}
+
+	private static class AddExecutor extends CommandExecutorBase
+	{
+
+		@Nonnull
+		@Override
+		public String[] getAliases()
+		{
+			return new String[] { "add" };
+		}
+
+		@Nonnull
+		@Override
+		public CommandSpec getSpec()
+		{
+			return CommandSpec.builder()
+				.description(Text.of("Add Time Command"))
+				.permission("essentialcmds.time.add")
+				.arguments(GenericArguments.onlyOne(GenericArguments.integer(Text.of("ticks"))))
+				.executor(this)
+				.build();
+		}
+
+		@Override
+		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+		{
+			int ticks = ctx.<Integer> getOne("ticks").get();
+			this.addTime(src, ticks);
+			return CommandResult.success();
+		}
+
+		private void addTime(CommandSource src, int ticks)
+		{
+			World world = null;
+
+			if (src instanceof Player)
+			{
+				Player player = (Player) src;
+				world = player.getWorld();
+			}
+			else if (src instanceof CommandBlock)
+			{
+				CommandBlock commandBlock = (CommandBlock) src;
+				world = commandBlock.getWorld();
+			}
+			else
+			{
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be a in-game player to do /time!"));
+				return;
+			}
+
+			world.getProperties().setWorldTime(world.getProperties().getWorldTime() + ticks);
+			src.sendMessage(Text.of(TextColors.GOLD, "Set time to ", TextColors.GRAY, world.getProperties().getWorldTime()));
+		}
 	}
 }

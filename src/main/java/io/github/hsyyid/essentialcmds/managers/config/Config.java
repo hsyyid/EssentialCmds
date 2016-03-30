@@ -108,7 +108,8 @@ public class Config implements Configurable
 	@Override
 	public void populate()
 	{
-		get().getNode("afk", "timer").setValue(30000).setComment("The length of time in millisec until a player is AFK.");
+		get().getNode("afk", "timer").setValue(300000).setComment("The length of time in millisec until a player is AFK.");
+		get().getNode("afk", "announce").setValue(true).setComment("Toggles the announcing of when a player is AFK.");
 		get().getNode("afk", "kick", "use").setValue(false).setComment("When enabled, it enables the kicking of players who are AFK.");
 		get().getNode("afk", "kick", "timer").setValue(30000).setComment("Sets the amount of time until a player is kicked for being AFK.");
 		get().getNode("message", "firstjoin").setValue("&4Welcome &a@p &4to the server!").setComment("Message when a player first joins the server.");
