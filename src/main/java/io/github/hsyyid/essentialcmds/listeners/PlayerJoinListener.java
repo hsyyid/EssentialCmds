@@ -28,6 +28,7 @@ import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.utils.Mail;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.manipulator.mutable.entity.JoinData;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
@@ -79,10 +80,13 @@ public class PlayerJoinListener
 
 		if (Utils.isSafeLoginEnabled())
 		{
-			Optional<Location<World>> safeLocation = Sponge.getGame().getTeleportHelper().getSafeLocation(player.getLocation(), 256, TeleportHelper.DEFAULT_WIDTH);
+			if (player.getLocation().add(0, -1, 0).getBlockType() == BlockTypes.AIR)
+			{
+				Optional<Location<World>> safeLocation = Sponge.getGame().getTeleportHelper().getSafeLocation(player.getLocation(), 256, TeleportHelper.DEFAULT_WIDTH);
 
-			if (safeLocation.isPresent())
-				player.setLocationSafely(safeLocation.get());
+				if (safeLocation.isPresent())
+					player.setLocationSafely(safeLocation.get());
+			}
 		}
 
 		Calendar cal = Calendar.getInstance();

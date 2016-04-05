@@ -71,7 +71,7 @@ public class ListExecutor extends CommandExecutorBase
 
 			for (Subject group : groups)
 			{
-				List<Subject> users = StreamSupport.stream(permissionService.getUserSubjects().getAllSubjects().spliterator(), false).filter(u -> u.isChildOf(group)).collect(Collectors.toList());
+				List<Subject> users = StreamSupport.stream(permissionService.getUserSubjects().getAllSubjects().spliterator(), false).filter(u -> u.isChildOf(group) && u.getCommandSource().isPresent() && u.getCommandSource().get() instanceof Player).collect(Collectors.toList());
 				List<Text> onlineUsers = Lists.newArrayList();
 
 				for (Subject user : users)

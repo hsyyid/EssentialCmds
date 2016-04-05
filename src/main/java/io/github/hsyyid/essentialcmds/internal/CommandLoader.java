@@ -152,7 +152,8 @@ public final class CommandLoader {
             new HelpOpExecutor(),
             new ListExecutor(),
             new StopExecutor(),
-            new GodExecutor()
+            new GodExecutor(),
+            new TPChunkExecutor()
         );
     }
 
