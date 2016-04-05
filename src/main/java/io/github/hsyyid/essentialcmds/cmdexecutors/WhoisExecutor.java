@@ -26,29 +26,29 @@ package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.Utils;
-import org.spongepowered.api.Game;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.service.permission.Subject;
-import org.spongepowered.api.service.permission.option.OptionSubject;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import javax.annotation.Nonnull;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Optional;
+import java.util.TimeZone;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
+import javax.annotation.Nonnull;
 
 public class WhoisExecutor extends AsyncCommandExecutorBase
 {
-	private static Game game = getEssentialCmds().getGame();
-
 	@Override
 	public void executeAsync(CommandSource src, CommandContext ctx)
 	{
@@ -60,7 +60,7 @@ public class WhoisExecutor extends AsyncCommandExecutorBase
 			Player player = optPlayer.get();
 			src.sendMessage(Text.of(TextColors.GOLD, "Real Name: ", TextColors.GRAY, player.getName()));
 			src.sendMessage(Text.of(TextColors.GOLD, "UUID: ", TextColors.GRAY, player.getUniqueId().toString()));
-			if (game.getServer().getPlayer(player.getUniqueId()).isPresent())
+			if (Sponge.getServer().getPlayer(player.getUniqueId()).isPresent())
 				src.sendMessage(Text.of(TextColors.GOLD, "Current Ontime: ", TextColors.GRAY, getCurrentOnTime(player.getUniqueId())));
 			else
 				src.sendMessage(Text.of(TextColors.GOLD, "Last Time Online: ", TextColors.GRAY, Utils.getLastTimePlayerJoined(player.getUniqueId())));
@@ -68,14 +68,14 @@ public class WhoisExecutor extends AsyncCommandExecutorBase
 		}
 		else if (optPlayerName.isPresent())
 		{
-			Optional<Player> optionalPlayer = game.getServer().getPlayer(optPlayerName.get());
+			Optional<Player> optionalPlayer = Sponge.getServer().getPlayer(optPlayerName.get());
 
 			if (optionalPlayer.isPresent())
 			{
 				Player player = optionalPlayer.get();
 				src.sendMessage(Text.of(TextColors.GOLD, "Real Name: ", TextColors.GRAY, player.getName()));
 				src.sendMessage(Text.of(TextColors.GOLD, "UUID: ", TextColors.GRAY, player.getUniqueId().toString()));
-				if (game.getServer().getPlayer(player.getUniqueId()).isPresent())
+				if (Sponge.getServer().getPlayer(player.getUniqueId()).isPresent())
 					src.sendMessage(Text.of(TextColors.GOLD, "Current Ontime: ", TextColors.GRAY, getCurrentOnTime(player.getUniqueId())));
 				else
 					src.sendMessage(Text.of(TextColors.GOLD, "Last Time Online: ", TextColors.GRAY, Utils.getLastTimePlayerJoined(player.getUniqueId())));
@@ -83,42 +83,18 @@ public class WhoisExecutor extends AsyncCommandExecutorBase
 			}
 			else
 			{
-				Player foundPlayer = null;
+				Optional<Player> foundPlayer = Sponge.getServer().getOnlinePlayers().stream().filter(p -> p.get(Keys.DISPLAY_NAME).isPresent() && p.get(Keys.DISPLAY_NAME).get().toPlain().equalsIgnoreCase(optPlayerName.get())).findAny();
 
-				for (Player player : game.getServer().getOnlinePlayers())
-				{
-					Subject subject = player.getContainingCollection().get(player.getIdentifier());
-
-					if (subject instanceof OptionSubject)
-					{
-						OptionSubject optionSubject = (OptionSubject) subject;
-						
-						if (optionSubject.getOption("nick").isPresent())
-						{
-							if (optionSubject.getOption("nick").get().equals(optPlayerName.get()))
-							{
-								foundPlayer = player;
-								break;
-							}
-						}
-					}
-				}
-
-				if (foundPlayer == null)
+				if (!foundPlayer.isPresent())
 				{
 					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Player not found."));
 				}
 				else
 				{
-					src.sendMessage(Text.of(TextColors.GOLD, "Real Name: ", TextColors.GRAY, foundPlayer.getName()));
-					src.sendMessage(Text.of(TextColors.GOLD, "UUID: ", TextColors.GRAY, foundPlayer.getUniqueId().toString()));
-					if (game.getServer().getPlayer(foundPlayer.getUniqueId()).isPresent()) {
-						src.sendMessage(Text.of(TextColors.GOLD, "Current Ontime: ", TextColors.GRAY, getCurrentOnTime(foundPlayer.getUniqueId())));
-					} else {
-						src.sendMessage(Text.of(TextColors.GOLD, "Last Time Online: ", TextColors.GRAY, Utils.getLastTimePlayerJoined(foundPlayer.getUniqueId())));
-					}
-
-					src.sendMessage(Text.of(TextColors.GOLD, "Current World: ", TextColors.GRAY, foundPlayer.getWorld().getName()));
+					src.sendMessage(Text.of(TextColors.GOLD, "Real Name: ", TextColors.GRAY, foundPlayer.get().getName()));
+					src.sendMessage(Text.of(TextColors.GOLD, "UUID: ", TextColors.GRAY, foundPlayer.get().getUniqueId().toString()));
+					src.sendMessage(Text.of(TextColors.GOLD, "Current Ontime: ", TextColors.GRAY, getCurrentOnTime(foundPlayer.get().getUniqueId())));
+					src.sendMessage(Text.of(TextColors.GOLD, "Current World: ", TextColors.GRAY, foundPlayer.get().getWorld().getName()));
 				}
 			}
 		}
@@ -161,17 +137,17 @@ public class WhoisExecutor extends AsyncCommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "whois", "realname", "seen" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec.builder().description(Text.of("WhoIs Command")).permission("essentialcmds.whois.use")
-				.arguments(
-						GenericArguments.firstParsing(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))),
-								GenericArguments.onlyOne(GenericArguments.string(Text.of("player name")))))
-				.executor(this).build();
+			.arguments(GenericArguments.firstParsing(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))), GenericArguments.onlyOne(GenericArguments.string(Text.of("player name")))))
+			.executor(this).build();
 	}
 }

@@ -441,20 +441,6 @@ public class Utils
 		Configs.setValue(mainConfig, new Object[] { "message", "firstjoin" }, value);
 	}
 
-	public static String getNick(Player player)
-	{
-		CommentedConfigurationNode node = Configs.getConfig(mainConfig).getNode("nick", player.getUniqueId().toString());
-		if (configManager.getString(node).isPresent())
-			return node.getString();
-		else
-			return player.getName();
-	}
-
-	public static void setNick(String value, UUID playerUuid)
-	{
-		Configs.setValue(mainConfig, new Object[] { "nick", playerUuid.toString() }, value);
-	}
-
 	public static boolean unsafeEnchanmentsEnabled()
 	{
 		CommentedConfigurationNode node = Configs.getConfig(mainConfig).getNode("unsafeenchantments", "enabled");

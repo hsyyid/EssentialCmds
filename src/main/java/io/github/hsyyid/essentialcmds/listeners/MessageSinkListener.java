@@ -28,6 +28,7 @@ import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.utils.AFK;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
@@ -185,7 +186,13 @@ public class MessageSinkListener
 			original = original.replace(original.indexOf(player.getName()) + player.getName().length(), original.indexOf(player.getName()) + player.getName().length() + 1, suffix + ">");
 			String suffixInOriginal = original.substring(original.indexOf(player.getName()) + player.getName().length(), original.indexOf(restOfOriginal));
 
-			String nick = Utils.getNick(player);
+			String nick;
+
+			if (player.get(Keys.DISPLAY_NAME).isPresent())
+				nick = TextSerializers.FORMATTING_CODE.serialize(player.get(Keys.DISPLAY_NAME).get());
+			else
+				nick = player.getName();
+
 			original = original.replace(original.indexOf(player.getName()) - 1, original.indexOf(player.getName()) + player.getName().length(), nick);
 			String playerName = original.substring(prefixInOriginal.length() - 1, original.indexOf(nick) + nick.length());
 

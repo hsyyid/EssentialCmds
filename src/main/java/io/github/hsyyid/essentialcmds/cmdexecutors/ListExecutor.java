@@ -29,7 +29,6 @@ import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.AFK;
 import io.github.hsyyid.essentialcmds.utils.SubjectComparator;
-import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -42,7 +41,6 @@ import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
-import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.Collections;
 import java.util.List;
@@ -90,7 +88,7 @@ public class ListExecutor extends CommandExecutorBase
 					if (optPlayer.isPresent() && !listedPlayers.contains(optPlayer.get().getUniqueId()))
 					{
 						listedPlayers.add(optPlayer.get().getUniqueId());
-						Text name = Text.builder().append(TextSerializers.FORMATTING_CODE.deserialize(Utils.getNick(optPlayer.get()))).append(Text.of(" ")).build();
+						Text name = Text.builder().append(optPlayer.get().getDisplayNameData().displayName().get()).append(Text.of(" ")).build();
 						boolean isAFK = false;
 
 						if (EssentialCmds.afkList.containsKey(optPlayer.get().getUniqueId()))
@@ -119,7 +117,7 @@ public class ListExecutor extends CommandExecutorBase
 
 				for (Player player : remainingPlayers)
 				{
-					Text name = Text.builder().append(TextSerializers.FORMATTING_CODE.deserialize(Utils.getNick(player))).append(Text.of(" ")).build();
+					Text name = Text.builder().append(player.getDisplayNameData().displayName().get()).append(Text.of(" ")).build();
 					boolean isAFK = false;
 
 					if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
