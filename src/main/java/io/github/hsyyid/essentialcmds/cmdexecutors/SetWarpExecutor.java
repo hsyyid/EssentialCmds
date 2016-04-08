@@ -45,6 +45,10 @@ public class SetWarpExecutor extends AsyncCommandExecutorBase
 
 		if (src instanceof Player)
 		{
+			if (Utils.isWarpInConfig(warpName))
+			{
+				Utils.deleteWarp(warpName);
+			}
 			Player player = (Player) src;
 			Utils.setWarp(player.getTransform(), warpName);
 			src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Warp set."));

@@ -43,8 +43,9 @@ public class DeleteWarpExecutor extends AsyncCommandExecutorBase
 
 		if (Utils.isWarpInConfig(warpName))
 		{
+			String configWarpName = Utils.getConfigWarpName(warpName);
 			Utils.deleteWarp(warpName);
-			src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Deleted warp " + warpName));
+			src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Deleted warp " + configWarpName));
 		}
 		else
 		{

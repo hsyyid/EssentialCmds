@@ -1082,13 +1082,14 @@ public class Utils
 
 	public static Transform<World> getHome(UUID uuid, String homeName)
 	{
-		String worldName = Configs.getConfig(homesConfig).getNode("home", "users", uuid.toString(), homeName, "world").getString();
+		CommentedConfigurationNode homeNode = Configs.getConfig(homesConfig).getNode("home", "users", uuid.toString(), getConfigHomeName(uuid, homeName));
+		String worldName = homeNode.getNode("world").getString();
 		World world = Sponge.getServer().getWorld(worldName).orElse(null);
-		double x = Configs.getConfig(homesConfig).getNode("home", "users", uuid.toString(), homeName, "X").getDouble();
-		double y = Configs.getConfig(homesConfig).getNode("home", "users", uuid.toString(), homeName, "Y").getDouble();
-		double z = Configs.getConfig(homesConfig).getNode("home", "users", uuid.toString(), homeName, "Z").getDouble();
+		double x = homeNode.getNode("X").getDouble();
+		double y = homeNode.getNode("Y").getDouble();
+		double z = homeNode.getNode("Z").getDouble();
 
-		if (Configs.getConfig(homesConfig).getNode("home", "users", uuid.toString(), homeName, "transform", "pitch").getValue() == null)
+		if (homeNode.getNode("transform", "pitch").getValue() == null)
 		{
 			if (world != null)
 				return new Transform<>(new Location<>(world, x, y, z));
@@ -1097,9 +1098,9 @@ public class Utils
 		}
 		else
 		{
-			double pitch = Configs.getConfig(homesConfig).getNode("home", "users", uuid.toString(), homeName, "transform", "pitch").getDouble();
-			double yaw = Configs.getConfig(homesConfig).getNode("home", "users", uuid.toString(), homeName, "transform", "yaw").getDouble();
-			double roll = Configs.getConfig(homesConfig).getNode("home", "users", uuid.toString(), homeName, "transform", "roll").getDouble();
+			double pitch = homeNode.getNode("transform", "pitch").getDouble();
+			double yaw = homeNode.getNode("transform", "yaw").getDouble();
+			double roll = homeNode.getNode("transform", "roll").getDouble();
 
 			if (world != null)
 				return new Transform<>(world, new Vector3d(x, y, z), new Vector3d(pitch, yaw, roll));
@@ -1110,14 +1111,15 @@ public class Utils
 
 	public static Transform<World> getWarp(String warpName)
 	{
-		UUID worldUuid = UUID.fromString(Configs.getConfig(warpsConfig).getNode("warps", warpName, "world").getString());
+		CommentedConfigurationNode warpNode = Configs.getConfig(warpsConfig).getNode("warps", getConfigWarpName(warpName));
+		UUID worldUuid = UUID.fromString(warpNode.getNode("world").getString());
 		World world = Sponge.getServer().getWorld(worldUuid).orElse(null);
 
-		double x = Configs.getConfig(warpsConfig).getNode("warps", warpName, "X").getDouble();
-		double y = Configs.getConfig(warpsConfig).getNode("warps", warpName, "Y").getDouble();
-		double z = Configs.getConfig(warpsConfig).getNode("warps", warpName, "Z").getDouble();
+		double x = warpNode.getNode("X").getDouble();
+		double y = warpNode.getNode("Y").getDouble();
+		double z = warpNode.getNode("Z").getDouble();
 
-		if (Configs.getConfig(warpsConfig).getNode("warps", warpName, "transform", "pitch").getValue() == null)
+		if (warpNode.getNode("transform", "pitch").getValue() == null)
 		{
 			if (world != null)
 				return new Transform<>(new Location<>(world, x, y, z));
@@ -1126,9 +1128,9 @@ public class Utils
 		}
 		else
 		{
-			double pitch = Configs.getConfig(warpsConfig).getNode("warps", warpName, "transform", "pitch").getDouble();
-			double yaw = Configs.getConfig(warpsConfig).getNode("warps", warpName, "transform", "yaw").getDouble();
-			double roll = Configs.getConfig(warpsConfig).getNode("warps", warpName, "transform", "roll").getDouble();
+			double pitch = warpNode.getNode("transform", "pitch").getDouble();
+			double yaw = warpNode.getNode("transform", "yaw").getDouble();
+			double roll = warpNode.getNode("transform", "roll").getDouble();
 
 			if (world != null)
 				return new Transform<>(world, new Vector3d(x, y, z), new Vector3d(pitch, yaw, roll));
@@ -1137,14 +1139,36 @@ public class Utils
 		}
 	}
 
+	public static String getConfigHomeName(UUID uuid, String homeName)
+	{
+		Set<Object> homes = getHomes(uuid);
+		for (Object home : homes)
+		{
+			if (home.toString().equalsIgnoreCase(homeName))
+				return home.toString();
+		}
+		return null;
+	}
+
+	public static String getConfigWarpName(String warpName)
+	{
+		Set<Object> warps = getWarps();
+		for (Object warp : warps)
+		{
+			if (warp.toString().equalsIgnoreCase(warpName))
+				return warp.toString();
+		}
+		return null;
+	}
+
 	public static boolean isHomeInConfig(UUID playerUuid, String homeName)
 	{
-		return Configs.getConfig(homesConfig).getNode("home", "users", playerUuid.toString()).getChildrenMap().keySet().contains(homeName);
+		return getConfigHomeName(playerUuid, homeName) != null;
 	}
 
 	public static boolean isWarpInConfig(String warpName)
 	{
-		return Configs.getConfig(warpsConfig).getNode("warps").getChildrenMap().keySet().contains(warpName);
+		return getConfigWarpName(warpName) != null;
 	}
 
 	public static boolean isSpawnInConfig()
@@ -1187,12 +1211,12 @@ public class Utils
 
 	public static void deleteHome(Player player, String homeName)
 	{
-		Configs.removeChild(homesConfig, new Object[] { "home", "users", player.getUniqueId().toString() }, homeName);
+		Configs.removeChild(homesConfig, new Object[] { "home", "users", player.getUniqueId().toString() }, getConfigHomeName(player.getUniqueId(), homeName));
 	}
 
 	public static void deleteWarp(String warpName)
 	{
-		Configs.removeChild(warpsConfig, new Object[] { "warps" }, warpName);
+		Configs.removeChild(warpsConfig, new Object[] { "warps" }, getConfigWarpName(warpName));
 	}
 
 	public static void savePlayerInventory(Player player, UUID worldUuid)

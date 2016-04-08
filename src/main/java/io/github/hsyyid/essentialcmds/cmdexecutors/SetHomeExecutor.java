@@ -60,6 +60,10 @@ public class SetHomeExecutor extends AsyncCommandExecutorBase
 			{
 				if (homesAllowed.equals("unlimited"))
 				{
+					if (Utils.isHomeInConfig(player.getUniqueId(), homeName))
+					{
+						Utils.deleteHome(player, homeName);
+					}
 					Utils.setHome(player.getUniqueId(), player.getTransform(), player.getWorld().getName(), homeName);
 					src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Home set."));
 				}
@@ -67,8 +71,17 @@ public class SetHomeExecutor extends AsyncCommandExecutorBase
 				{
 					Integer allowedHomes = Integer.parseInt(homesAllowed);
 
+					if (Utils.isHomeInConfig(player.getUniqueId(), homeName))
+					{
+						allowedHomes++;
+					}
+
 					if (allowedHomes > Utils.getHomes(player.getUniqueId()).size())
 					{
+						if (Utils.isHomeInConfig(player.getUniqueId(), homeName))
+						{
+							Utils.deleteHome(player, homeName);
+						}
 						Utils.setHome(player.getUniqueId(), player.getTransform(), player.getWorld().getName(), homeName);
 						src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Home set."));
 					}
@@ -80,6 +93,10 @@ public class SetHomeExecutor extends AsyncCommandExecutorBase
 			}
 			else
 			{
+				if (Utils.isHomeInConfig(player.getUniqueId(), homeName))
+				{
+					Utils.deleteHome(player, homeName);
+				}
 				Utils.setHome(player.getUniqueId(), player.getTransform(), player.getWorld().getName(), homeName);
 				src.sendMessage(Text.of(TextColors.GREEN, "Success: ", TextColors.YELLOW, "Home set."));
 			}

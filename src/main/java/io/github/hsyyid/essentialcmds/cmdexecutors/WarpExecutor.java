@@ -84,7 +84,7 @@ public class WarpExecutor extends CommandExecutorBase
 										player.setTransform(warpLocation);
 									}
 
-									src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
+									src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to warp " + Utils.getConfigWarpName(warpName)));
 									EssentialCmds.teleportingPlayers.remove(player.getUniqueId());
 								}
 							}).delay(Utils.getTeleportCooldown(), TimeUnit.SECONDS).name("EssentialCmds - Back Timer").submit(Sponge.getGame().getPluginManager().getPlugin("EssentialCmds").get().getInstance().get());
