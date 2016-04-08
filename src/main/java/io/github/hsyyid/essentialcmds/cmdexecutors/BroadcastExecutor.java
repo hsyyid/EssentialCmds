@@ -25,7 +25,6 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
-
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
@@ -125,7 +124,7 @@ public class BroadcastExecutor extends AsyncCommandExecutorBase
 	@Nonnull
 	@Override
 	public CommandSpec getSpec() {
-		return CommandSpec.builder().description(Text.of("Broadcast Command")).permission("essentialcmds.broadcast.use")
-		.arguments(GenericArguments.remainingJoinedStrings(Text.of("message"))).executor(this).build();
+			return CommandSpec.builder().description(Text.of("Broadcast Command")).permission("essentialcmds.broadcast.use")
+						.arguments(GenericArguments.remainingJoinedStrings(Text.of("message"))).executor(this).build();
 	}	
 }
