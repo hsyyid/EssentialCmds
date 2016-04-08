@@ -1,7 +1,7 @@
 /*
  * This file is part of EssentialCmds, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2015 - 2016 HassanS6000
+ * Copyright (c) 2015 - 2015 HassanS6000
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
