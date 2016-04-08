@@ -61,10 +61,11 @@ public class PlayerInteractListener
 			return;
 		}
 
-		Location<World> location = event.getTargetBlock().getLocation().get();
+		Optional<Location<World>> optLocation = event.getTargetBlock().getLocation();
 
-		if (location.getTileEntity().isPresent() && location.getTileEntity().get() != null && location.getTileEntity().get().getType() != null)
+		if (optLocation.isPresent() && optLocation.get().getTileEntity().isPresent())
 		{
+			Location<World> location = optLocation.get();
 			TileEntity clickedEntity = location.getTileEntity().get();
 
 			if (event.getTargetBlock().getState().getType().equals(BlockTypes.STANDING_SIGN) || event.getTargetBlock().getState().getType().equals(BlockTypes.WALL_SIGN))
