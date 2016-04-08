@@ -103,7 +103,7 @@ public class WarpExecutor extends CommandExecutorBase
 								player.setTransform(warpLocation);
 							}
 
-							src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
+							src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to warp " + Utils.getConfigWarpName(warpName)));
 						}
 					}
 					else
@@ -142,7 +142,7 @@ public class WarpExecutor extends CommandExecutorBase
 						player.setTransform(warpLocation);
 					}
 
-					src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
+					src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to warp " + Utils.getConfigWarpName(warpName)));
 				}
 				else
 				{
