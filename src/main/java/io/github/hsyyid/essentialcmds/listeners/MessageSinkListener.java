@@ -36,6 +36,7 @@ import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.service.permission.option.OptionSubject;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.ClickAction;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.format.TextColor;
@@ -44,12 +45,15 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Optional;
 
 public class MessageSinkListener
 {
 	@Listener(order = Order.PRE)
 	public void onMessage(MessageChannelEvent.Chat event)
 	{
+		Optional<ClickAction.OpenUrl> clickAction = Optional.empty();
+
 		if (event.getCause().first(Player.class).isPresent())
 		{
 			Player player = event.getCause().first(Player.class).get();
@@ -72,8 +76,7 @@ public class MessageSinkListener
 
 					try
 					{
-						Text newMessage = Text.builder().append(event.getMessage()).onClick(TextActions.openUrl(new URL(foundLink))).build();
-						event.setMessage(newMessage);
+						clickAction = Optional.of(TextActions.openUrl(new URL(foundLink)));
 					}
 					catch (MalformedURLException e)
 					{
@@ -209,7 +212,7 @@ public class MessageSinkListener
 					.append(TextSerializers.formattingCode('&').deserialize(suffixInOriginal))
 					.append(Text.of(TextColors.RESET))
 					.append(Text.of(restOfOriginal))
-					.onClick(event.getMessage().getClickAction().orElse(null))
+					.onClick(clickAction.isPresent() ? clickAction.get() : event.getMessage().getClickAction().orElse(null))
 					.style(event.getMessage().getStyle())
 					.onHover(event.getMessage().getHoverAction().orElse(null))
 					.build());
@@ -222,7 +225,7 @@ public class MessageSinkListener
 					.append(TextSerializers.formattingCode('&').deserialize(suffixInOriginal))
 					.append(Text.of(TextColors.RESET))
 					.append(TextSerializers.formattingCode('&').deserialize(restOfOriginal))
-					.onClick(event.getMessage().getClickAction().orElse(null))
+					.onClick(clickAction.isPresent() ? clickAction.get() : event.getMessage().getClickAction().orElse(null))
 					.style(event.getMessage().getStyle())
 					.onHover(event.getMessage().getHoverAction().orElse(null))
 					.build());
