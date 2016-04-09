@@ -25,19 +25,16 @@
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
+import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
-import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.serializer.TextSerializers;
-
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -45,22 +42,22 @@ public class NickExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
-		Optional<Player> player = ctx.<Player> getOne("player");
-		String nick = ctx.<String> getOne("nick").get();
+		Player player = ctx.<Player>getOne("player").get();
+		String nick = ctx.<String>getOne("nick").get();
 
-		if (player.isPresent())
+		if (src instanceof Player && ((Player) src).getUniqueId() != player.getUniqueId() && src.hasPermission("essentialcmds.nick.others"))
 		{
-			player.get().offer(Keys.DISPLAY_NAME, TextSerializers.FORMATTING_CODE.deserialize(nick));
+			Utils.setNick(nick, player.getUniqueId());
 			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Nick successfully set!"));
 		}
-		else if (src instanceof Player)
+		else if (src instanceof Player && ((Player) src).getUniqueId() != player.getUniqueId())
 		{
-			((Player) src).offer(Keys.DISPLAY_NAME, TextSerializers.FORMATTING_CODE.deserialize(nick));
-			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Nick successfully set!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to make changes to other player's nicknames.!"));
 		}
 		else
 		{
-			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You are not an in-game player, please specify one to nick!"));
+			Utils.setNick(nick, player.getUniqueId());
+			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Nick successfully set!"));
 		}
 
 		return CommandResult.success();
@@ -81,8 +78,10 @@ public class NickExecutor extends CommandExecutorBase
 			.builder()
 			.description(Text.of("Nick Command"))
 			.permission("essentialcmds.nick.use")
-			.arguments(GenericArguments.firstParsing(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))), GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("nick")))), GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("nick")))))
-			.executor(this)
-			.build();
+			.arguments(
+				GenericArguments.seq(
+					GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))),
+					GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("nick")))))
+			.executor(this).build();
 	}
 }
