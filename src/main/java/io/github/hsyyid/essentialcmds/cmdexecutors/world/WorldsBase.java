@@ -366,7 +366,7 @@ public class WorldsBase extends CommandExecutorBase
 			else
 			{
 				String val = world.getProperties().getGameRule(gameRule).orElse("none");
-				src.sendMessage(Text.of(TextColors.GREEN, "Gamerule ", TextColors.GOLD, gameRule, " value ", TextColors.GOLD, val));
+				src.sendMessage(Text.of(TextColors.GREEN, "Gamerule ", TextColors.GOLD, gameRule, TextColors.GREEN, " value ", TextColors.GOLD, val));
 			}
 
 			return CommandResult.success();
