@@ -42,9 +42,6 @@ import org.spongepowered.api.world.TeleportHelper;
 import org.spongepowered.api.world.World;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
@@ -58,10 +55,8 @@ public class PlayerJoinListener
 	public void onPlayerJoin(ClientConnectionEvent.Join event)
 	{
 		Player player = event.getTargetEntity();
-		LocalDate ld1 = LocalDateTime.ofInstant(player.getJoinData().firstPlayed().get(), ZoneId.systemDefault()).toLocalDate();
-		LocalDate ld2 = LocalDateTime.ofInstant(player.getJoinData().lastPlayed().get(), ZoneId.systemDefault()).toLocalDate();
 
-		if (ld1.equals(ld2))
+		if (player.getJoinData().firstPlayed().get().compareTo(player.getJoinData().lastPlayed().get()) == 0)
 		{
 			Transform<World> spawn = Utils.getSpawn();
 
