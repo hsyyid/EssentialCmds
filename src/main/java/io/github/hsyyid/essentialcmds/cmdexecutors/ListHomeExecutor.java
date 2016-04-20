@@ -78,7 +78,7 @@ public class ListHomeExecutor extends AsyncCommandExecutorBase
 				homeText.add(item);
 			}
 
-			PaginationList.Builder paginationBuilder = paginationService.builder().contents(homeText).title(Text.of(TextColors.GREEN, "Showing Homes")).padding(Text.of("-"));
+			PaginationList.Builder paginationBuilder = paginationService.builder().contents(homeText).title(Text.of(TextColors.GREEN, "Gamerules")).padding(Text.of("-"));
 			paginationBuilder.sendTo(src);
 		}
 		else

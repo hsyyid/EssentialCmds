@@ -62,6 +62,7 @@ import org.spongepowered.api.world.difficulty.Difficulty;
 import org.spongepowered.api.world.storage.WorldProperties;
 
 import java.util.ArrayList;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -83,7 +84,7 @@ public class WorldsBase extends CommandExecutorBase
 		return CommandSpec.builder()
 			.description(Text.of("World Command"))
 			.permission("essentialcmds.world.use")
-			.children(getChildrenList(new List(), new SetGamerule(), new Teleport(), new Spawn(), new SetSpawn(), new Load(), new Create(), new Delete(), new SetDifficulty(), new SetGamemode()))
+			.children(getChildrenList(new List(), new ListGamerules(), new Teleport(), new Spawn(), new SetSpawn(), new Load(), new Create(), new Delete(), new SetDifficulty(), new SetGamemode()))
 			.build();
 	}
 
@@ -250,34 +251,23 @@ public class WorldsBase extends CommandExecutorBase
 		}
 	}
 
-	static class SetGamerule extends CommandExecutorBase
+	static class ListGamerules extends CommandExecutorBase
 	{
 		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 		{
-			String gamerule = ctx.<String> getOne("gamerule").get();
-			String value = ctx.<String> getOne("value").get();
 			Optional<String> worldName = ctx.<String> getOne("world");
+			World world;
 
 			if (worldName.isPresent())
 			{
 				if (Sponge.getServer().getWorld(worldName.get()).isPresent())
 				{
-					World world = Sponge.getServer().getWorld(worldName.get()).get();
-
-					if (world.getGameRules().containsKey(gamerule))
-					{
-						world.getGameRules().remove(gamerule);
-						world.getGameRules().put(gamerule, value);
-						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set gamerule!"));
-					}
-					else
-					{
-						src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Gamerule not found!"));
-					}
+					world = Sponge.getServer().getWorld(worldName.get()).get();
 				}
 				else
 				{
 					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "World not found!"));
+					return CommandResult.empty();
 				}
 			}
 			else
@@ -285,25 +275,31 @@ public class WorldsBase extends CommandExecutorBase
 				if (src instanceof Player)
 				{
 					Player player = (Player) src;
-					World world = player.getWorld();
-
-					if (world.getGameRules().containsKey(gamerule))
-					{
-						world.getGameRules().remove(gamerule);
-						world.getGameRules().put(gamerule, value);
-						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set gamerule!"));
-					}
-					else
-					{
-						src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Gamerule not found!"));
-					}
+					world = player.getWorld();
 				}
 				else
 				{
 					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be an in-game player to use /world difficulty!"));
+					return CommandResult.empty();
 				}
 			}
 
+			PaginationService paginationService = Sponge.getServiceManager().provide(PaginationService.class).get();
+			ArrayList<Text> gameruleText = Lists.newArrayList();
+
+			for (Entry<String, String> gamerule : world.getGameRules().entrySet())
+			{
+				Text item = Text.builder(gamerule.getKey())
+					.onHover(TextActions.showText(Text.of(TextColors.WHITE, "Value ", TextColors.GOLD, gamerule.getValue())))
+					.color(TextColors.DARK_AQUA)
+					.style(TextStyles.UNDERLINE)
+					.build();
+
+				gameruleText.add(item);
+			}
+
+			PaginationList.Builder paginationBuilder = paginationService.builder().contents(gameruleText).title(Text.of(TextColors.GREEN, "Showing Homes")).padding(Text.of("-"));
+			paginationBuilder.sendTo(src);
 			return CommandResult.success();
 		}
 
@@ -311,7 +307,7 @@ public class WorldsBase extends CommandExecutorBase
 		@Override
 		public String[] getAliases()
 		{
-			return new String[] { "gamerule" };
+			return new String[] { "listgamerules", "lsgamerules" };
 		}
 
 		@Nonnull
@@ -319,9 +315,9 @@ public class WorldsBase extends CommandExecutorBase
 		public CommandSpec getSpec()
 		{
 			return CommandSpec.builder()
-				.description(Text.of("Gamerule World Command"))
-				.permission("essentialcmds.world.gamerule")
-				.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.string(Text.of("gamerule"))), GenericArguments.onlyOne(GenericArguments.string(Text.of("value"))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("world"))))))
+				.description(Text.of("List Gamerules World Command"))
+				.permission("essentialcmds.world.listgamerule")
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("world")))))
 				.executor(this)
 				.build();
 		}
