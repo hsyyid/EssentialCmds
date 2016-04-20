@@ -126,7 +126,7 @@ public class Utils
 
 				DataSource datasource = sql.getDataSource("jdbc:mysql://" + host + ":" + port + "/" + database + "?user=" + username + "&password=" + password);
 
-				String executeString = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID TEXT PRIMARY KEY     NOT NULL)";
+				String executeString = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID VARCHAR(256) PRIMARY KEY NOT NULL)";
 				execute(executeString, datasource);
 
 				executeString = "INSERT INTO MUTES (UUID) " + "VALUES ('" + playerUUID.toString() + "');";
@@ -146,7 +146,7 @@ public class Utils
 				c = DriverManager.getConnection("jdbc:sqlite:Mutes.db");
 				stmt = c.createStatement();
 
-				String sql = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID TEXT PRIMARY KEY     NOT NULL)";
+				String sql = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID VARCHAR(256) PRIMARY KEY NOT NULL)";
 				stmt.executeUpdate(sql);
 
 				sql = "INSERT INTO MUTES (UUID) " + "VALUES ('" + playerUUID.toString() + "');";
@@ -180,7 +180,7 @@ public class Utils
 
 				DataSource datasource = sql.getDataSource("jdbc:mysql://" + host + ":" + port + "/" + database + "?user=" + username + "&password=" + password);
 
-				String executeString = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID TEXT PRIMARY KEY     NOT NULL)";
+				String executeString = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID VARCHAR(256) PRIMARY KEY NOT NULL)";
 				execute(executeString, datasource);
 
 				executeString = "DELETE FROM MUTES WHERE UUID='" + playerUUID.toString() + "';";
@@ -200,7 +200,7 @@ public class Utils
 				c = DriverManager.getConnection("jdbc:sqlite:Mutes.db");
 				stmt = c.createStatement();
 
-				String sql = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID TEXT PRIMARY KEY     NOT NULL)";
+				String sql = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID VARCHAR(256) PRIMARY KEY NOT NULL)";
 				stmt.executeUpdate(sql);
 
 				sql = "DELETE FROM MUTES WHERE UUID='" + playerUUID.toString() + "';";
@@ -521,7 +521,7 @@ public class Utils
 
 				DataSource datasource = sql.getDataSource("jdbc:mysql://" + host + ":" + port + "/" + database + "?user=" + username + "&password=" + password);
 
-				String executeString = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID TEXT PRIMARY KEY  NOT NULL)";
+				String executeString = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID VARCHAR(256) PRIMARY KEY NOT NULL)";
 				execute(executeString, datasource);
 
 				DatabaseMetaData metadata = datasource.getConnection().getMetaData();
@@ -555,7 +555,7 @@ public class Utils
 				c.setAutoCommit(false);
 				stmt = c.createStatement();
 
-				String sql = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID TEXT PRIMARY KEY     NOT NULL)";
+				String sql = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID VARCHAR(256) PRIMARY KEY NOT NULL)";
 				stmt.executeUpdate(sql);
 
 				ResultSet rs = stmt.executeQuery("SELECT * FROM MUTES;");

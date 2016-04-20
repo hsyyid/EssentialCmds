@@ -83,7 +83,7 @@ public class WorldsBase extends CommandExecutorBase
 		return CommandSpec.builder()
 			.description(Text.of("World Command"))
 			.permission("essentialcmds.world.use")
-			.children(getChildrenList(new List(), new Teleport(), new Spawn(), new SetSpawn(), new Load(), new Create(), new Delete(), new SetDifficulty(), new SetGamemode()))
+			.children(getChildrenList(new List(), new SetGamerule(), new Teleport(), new Spawn(), new SetSpawn(), new Load(), new Create(), new Delete(), new SetDifficulty(), new SetGamemode()))
 			.build();
 	}
 
@@ -196,7 +196,7 @@ public class WorldsBase extends CommandExecutorBase
 	{
 		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 		{
-			String difficultyInput = ctx.<String> getOne("difficulty").get();
+			Difficulty difficulty = ctx.<Difficulty> getOne("difficulty").get();
 			Optional<String> worldName = ctx.<String> getOne("world");
 
 			if (worldName.isPresent())
@@ -204,17 +204,8 @@ public class WorldsBase extends CommandExecutorBase
 				if (Sponge.getServer().getWorld(worldName.get()).isPresent())
 				{
 					World world = Sponge.getServer().getWorld(worldName.get()).get();
-					Optional<Difficulty> difficulty = Sponge.getRegistry().getType(Difficulty.class, difficultyInput);
-
-					if (difficulty.isPresent())
-					{
-						world.getProperties().setDifficulty(difficulty.get());
-						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set difficulty!"));
-					}
-					else
-					{
-						src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Difficulty not found!"));
-					}
+					world.getProperties().setDifficulty(difficulty);
+					src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set difficulty!"));
 				}
 				else
 				{
@@ -227,17 +218,8 @@ public class WorldsBase extends CommandExecutorBase
 				{
 					Player player = (Player) src;
 					World world = player.getWorld();
-					Optional<Difficulty> difficulty = Sponge.getRegistry().getType(Difficulty.class, difficultyInput);
-
-					if (difficulty.isPresent())
-					{
-						world.getProperties().setDifficulty(difficulty.get());
-						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set difficulty!"));
-					}
-					else
-					{
-						src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Difficulty not found!"));
-					}
+					world.getProperties().setDifficulty(difficulty);
+					src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set difficulty!"));
 				}
 				else
 				{
@@ -262,7 +244,84 @@ public class WorldsBase extends CommandExecutorBase
 			return CommandSpec.builder()
 				.description(Text.of("Difficulty World Command"))
 				.permission("essentialcmds.world.difficulty")
-				.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.string(Text.of("difficulty"))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("world"))))))
+				.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.catalogedElement(Text.of("difficulty"), Difficulty.class)), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("world"))))))
+				.executor(this)
+				.build();
+		}
+	}
+
+	static class SetGamerule extends CommandExecutorBase
+	{
+		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
+		{
+			String gamerule = ctx.<String> getOne("gamerule").get();
+			String value = ctx.<String> getOne("value").get();
+			Optional<String> worldName = ctx.<String> getOne("world");
+
+			if (worldName.isPresent())
+			{
+				if (Sponge.getServer().getWorld(worldName.get()).isPresent())
+				{
+					World world = Sponge.getServer().getWorld(worldName.get()).get();
+
+					if (world.getGameRules().containsKey(gamerule))
+					{
+						world.getGameRules().remove(gamerule);
+						world.getGameRules().put(gamerule, value);
+						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set gamerule!"));
+					}
+					else
+					{
+						src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Gamerule not found!"));
+					}
+				}
+				else
+				{
+					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "World not found!"));
+				}
+			}
+			else
+			{
+				if (src instanceof Player)
+				{
+					Player player = (Player) src;
+					World world = player.getWorld();
+
+					if (world.getGameRules().containsKey(gamerule))
+					{
+						world.getGameRules().remove(gamerule);
+						world.getGameRules().put(gamerule, value);
+						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set gamerule!"));
+					}
+					else
+					{
+						src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Gamerule not found!"));
+					}
+				}
+				else
+				{
+					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be an in-game player to use /world difficulty!"));
+				}
+			}
+
+			return CommandResult.success();
+		}
+
+		@Nonnull
+		@Override
+		public String[] getAliases()
+		{
+			return new String[] { "gamerule" };
+		}
+
+		@Nonnull
+		@Override
+		public CommandSpec getSpec()
+		{
+			return CommandSpec.builder()
+				.description(Text.of("Gamerule World Command"))
+				.permission("essentialcmds.world.gamerule")
+				.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.string(Text.of("gamerule"))), GenericArguments.onlyOne(GenericArguments.string(Text.of("value"))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("world"))))))
 				.executor(this)
 				.build();
 		}
