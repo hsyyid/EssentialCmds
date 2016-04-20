@@ -29,7 +29,6 @@ import io.github.hsyyid.essentialcmds.utils.Mail;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.data.manipulator.mutable.entity.JoinData;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -43,6 +42,9 @@ import org.spongepowered.api.world.TeleportHelper;
 import org.spongepowered.api.world.World;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
@@ -56,8 +58,10 @@ public class PlayerJoinListener
 	public void onPlayerJoin(ClientConnectionEvent.Join event)
 	{
 		Player player = event.getTargetEntity();
+		LocalDate ld1 = LocalDateTime.ofInstant(player.getJoinData().firstPlayed().get(), ZoneId.systemDefault()).toLocalDate();
+		LocalDate ld2 = LocalDateTime.ofInstant(player.getJoinData().lastPlayed().get(), ZoneId.systemDefault()).toLocalDate();
 
-		if (player.get(JoinData.class).isPresent() && player.getJoinData().firstPlayed().get().equals(player.getJoinData().lastPlayed().get()))
+		if (ld1.equals(ld2))
 		{
 			Transform<World> spawn = Utils.getSpawn();
 
