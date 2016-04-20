@@ -298,7 +298,7 @@ public class WorldsBase extends CommandExecutorBase
 				gameruleText.add(item);
 			}
 
-			PaginationList.Builder paginationBuilder = paginationService.builder().contents(gameruleText).title(Text.of(TextColors.GREEN, "Showing Homes")).padding(Text.of("-"));
+			PaginationList.Builder paginationBuilder = paginationService.builder().contents(gameruleText).title(Text.of(TextColors.GREEN, "Showing Gamerules")).padding(Text.of("-"));
 			paginationBuilder.sendTo(src);
 			return CommandResult.success();
 		}
