@@ -245,7 +245,7 @@ public class WorldsBase extends CommandExecutorBase
 			return CommandSpec.builder()
 				.description(Text.of("Difficulty World Command"))
 				.permission("essentialcmds.world.difficulty")
-				.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.catalogedElement(Text.of("difficulty"), Difficulty.class)), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("world"))))))
+				.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.catalogedElement(Text.of("difficulty"), CatalogTypes.DIFFICULTY)), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("world"))))))
 				.executor(this)
 				.build();
 		}
