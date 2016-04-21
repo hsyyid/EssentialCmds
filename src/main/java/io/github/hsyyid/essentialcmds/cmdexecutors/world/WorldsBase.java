@@ -197,7 +197,7 @@ public class WorldsBase extends CommandExecutorBase
 	{
 		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 		{
-			Difficulty difficulty = ctx.<Difficulty> getOne("difficulty").get();
+			String difficulty = ctx.<String> getOne("difficulty").get();
 			Optional<String> worldName = ctx.<String> getOne("world");
 
 			if (worldName.isPresent())
@@ -205,8 +205,17 @@ public class WorldsBase extends CommandExecutorBase
 				if (Sponge.getServer().getWorld(worldName.get()).isPresent())
 				{
 					World world = Sponge.getServer().getWorld(worldName.get()).get();
-					world.getProperties().setDifficulty(difficulty);
-					src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set difficulty!"));
+					Optional<Difficulty> optDifficulty = Sponge.getRegistry().getType(Difficulty.class, difficulty);
+
+					if (optDifficulty.isPresent())
+					{
+						world.getProperties().setDifficulty(optDifficulty.get());
+						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set difficulty!"));
+					}
+					else
+					{
+						src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Difficulty not found!"));
+					}
 				}
 				else
 				{
@@ -219,8 +228,17 @@ public class WorldsBase extends CommandExecutorBase
 				{
 					Player player = (Player) src;
 					World world = player.getWorld();
-					world.getProperties().setDifficulty(difficulty);
-					src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set difficulty!"));
+					Optional<Difficulty> optDifficulty = Sponge.getRegistry().getType(Difficulty.class, difficulty);
+
+					if (optDifficulty.isPresent())
+					{
+						world.getProperties().setDifficulty(optDifficulty.get());
+						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set difficulty!"));
+					}
+					else
+					{
+						src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Difficulty not found!"));
+					}
 				}
 				else
 				{
@@ -245,7 +263,7 @@ public class WorldsBase extends CommandExecutorBase
 			return CommandSpec.builder()
 				.description(Text.of("Difficulty World Command"))
 				.permission("essentialcmds.world.difficulty")
-				.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.catalogedElement(Text.of("difficulty"), CatalogTypes.DIFFICULTY)), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("world"))))))
+				.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.string(Text.of("difficulty"))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("world"))))))
 				.executor(this)
 				.build();
 		}
