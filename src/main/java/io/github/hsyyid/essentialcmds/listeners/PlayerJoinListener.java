@@ -42,6 +42,7 @@ import org.spongepowered.api.world.TeleportHelper;
 import org.spongepowered.api.world.World;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
@@ -56,7 +57,7 @@ public class PlayerJoinListener
 	{
 		Player player = event.getTargetEntity();
 
-		if (player.getJoinData().firstPlayed().get().compareTo(player.getJoinData().lastPlayed().get()) == 0)
+		if (this.compareInstants(player.getJoinData().firstPlayed().get(), player.getJoinData().lastPlayed().get()))
 		{
 			Transform<World> spawn = Utils.getSpawn();
 
@@ -126,5 +127,17 @@ public class PlayerJoinListener
 		}
 
 		Utils.savePlayerInventory(player, player.getWorld().getUniqueId());
+	}
+
+	public boolean compareInstants(Instant o1, Instant o2)
+	{
+		int cmp = Long.compare(o1.getEpochSecond(), o2.getEpochSecond());
+
+		if (cmp == 0)
+		{
+			return true;
+		}
+
+		return false;
 	}
 }
