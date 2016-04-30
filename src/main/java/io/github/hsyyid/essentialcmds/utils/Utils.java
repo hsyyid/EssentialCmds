@@ -407,24 +407,24 @@ public class Utils
 	{
 		CommentedConfigurationNode node = Configs.getConfig(mainConfig).getNode("message", "login");
 		String message;
-		
+
 		if (configManager.getString(node).isPresent())
 		{
-			message=  node.getString();
+			message = node.getString();
 		}
 		else
 		{
 			setLoginMessage("");
 			message = "";
 		}
-		
-		if(message.isEmpty())
+
+		if (message.isEmpty())
 		{
 			return Text.EMPTY;
 		}
-	
+
 		message = message.replaceAll("@p", playerName);
-		
+
 		if ((message.contains("https://")) || (message.contains("http://")))
 		{
 			return Utils.getURL(message);
@@ -505,10 +505,10 @@ public class Utils
 				}
 			}
 		}
-		
+
 		return TextSerializers.FORMATTING_CODE.deserialize(message);
 	}
-	
+
 	public static List<String> extractUrls(String text)
 	{
 		List<String> containedUrls = new ArrayList<String>();
