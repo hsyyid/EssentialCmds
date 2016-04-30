@@ -74,7 +74,7 @@ public class PlayerJoinListener
 				}
 			}
 
-			Text firstJoinMsg = TextSerializers.formattingCode('&').deserialize(Utils.getFirstJoinMsg().replaceAll("@p", player.getName()));
+			Text firstJoinMsg = Utils.getFirstJoinMsg(player.getName());
 			MessageChannel.TO_ALL.send(firstJoinMsg);
 		}
 
@@ -110,19 +110,17 @@ public class PlayerJoinListener
 			EssentialCmds.afkList.remove(player.getUniqueId());
 		}
 
-		String loginMessage = Utils.getLoginMessage();
+		Text loginMessage = Utils.getLoginMessage(player.getName());
 
 		if (loginMessage != null && !loginMessage.equals(""))
 		{
-			if (loginMessage.equals("none"))
+			if (loginMessage.isEmpty())
 			{
 				event.setMessageCancelled(true);
 			}
 			else
 			{
-				loginMessage = loginMessage.replaceAll("@p", player.getName());
-				Text newMessage = TextSerializers.formattingCode('&').deserialize(loginMessage);
-				event.setMessage(newMessage);
+				event.setMessage(loginMessage);
 			}
 		}
 

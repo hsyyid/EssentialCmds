@@ -58,14 +58,18 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.sql.SqlService;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -84,6 +88,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.sql.DataSource;
 
@@ -397,13 +403,34 @@ public class Utils
 		Configs.setValue(playerDataConfig, new Object[] { "player", uuid.toString(), "time" }, time);
 	}
 
-	public static String getLoginMessage()
+	public static Text getLoginMessage(String playerName)
 	{
 		CommentedConfigurationNode node = Configs.getConfig(mainConfig).getNode("message", "login");
+		String message;
+		
 		if (configManager.getString(node).isPresent())
-			return node.getString();
-		setLoginMessage("");
-		return "";
+		{
+			message=  node.getString();
+		}
+		else
+		{
+			setLoginMessage("");
+			message = "";
+		}
+		
+		if(message.isEmpty())
+		{
+			return Text.EMPTY;
+		}
+	
+		message = message.replaceAll("@p", playerName);
+		
+		if ((message.contains("https://")) || (message.contains("http://")))
+		{
+			return Utils.getURL(message);
+		}
+
+		return TextSerializers.FORMATTING_CODE.deserialize(message);
 	}
 
 	public static void setLoginMessage(String value)
@@ -425,15 +452,100 @@ public class Utils
 		Configs.setValue(mainConfig, new Object[] { "message", "disconnect" }, value);
 	}
 
-	public static String getFirstJoinMsg()
+	public static Text getFirstJoinMsg(String playerName)
 	{
 		CommentedConfigurationNode node = Configs.getConfig(mainConfig).getNode("message", "firstjoin");
+		String message;
 
 		if (configManager.getString(node).isPresent())
-			return node.getString();
+		{
+			message = node.getString();
+		}
+		else
+		{
+			setFirstJoinMsg("&4Welcome &a@p &4to the server!");
+			message = "&4Welcome &a@p &4to the server!";
+		}
 
-		setFirstJoinMsg("&4Welcome &a@p &4to the server!");
-		return "&4Welcome &a@p &4to the server!";
+		message = message.replaceAll("@p", playerName);
+
+		if ((message.contains("https://")) || (message.contains("http://")))
+		{
+			return Utils.getURL(message);
+		}
+
+		return TextSerializers.FORMATTING_CODE.deserialize(message);
+	}
+
+	public static Text getURL(String message)
+	{
+		List<String> extractedUrls = extractUrls(message);
+		for (String url : extractedUrls)
+		{
+			List<String> extractmb = extractmbefore(message);
+			for (String preurl : extractmb)
+			{
+				List<String> extractma = extractmafter(message);
+				for (String posturl : extractma)
+				{
+					try
+					{
+						String preurlline = preurl.replaceAll("(((https?|ftp|gopher|telnet|file):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*).*?)(?=\\w).*", "");
+						String posturlline = posturl.replaceAll("((https?|ftp|gopher|telnet|file|Unsure|http):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)", "");
+						Text preMessage = TextSerializers.FORMATTING_CODE.deserialize(preurlline);
+						Text postMessage = TextSerializers.FORMATTING_CODE.deserialize(posturlline);
+						Text linkmessage = Text.builder(url).onClick(TextActions.openUrl(new URL(url))).build();
+						Text newmessage = Text.builder().append(preMessage).append(linkmessage).append(postMessage).build();
+						return newmessage;
+					}
+					catch (MalformedURLException e)
+					{
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		
+		return TextSerializers.FORMATTING_CODE.deserialize(message);
+	}
+	
+	public static List<String> extractUrls(String text)
+	{
+		List<String> containedUrls = new ArrayList<String>();
+		String urlRegex = "((https?|ftp|gopher|telnet|file):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)";
+		Pattern pattern = Pattern.compile(urlRegex, Pattern.CASE_INSENSITIVE);
+		Matcher urlMatcher = pattern.matcher(text);
+		while (urlMatcher.find())
+		{
+			containedUrls.add(text.substring(urlMatcher.start(0), urlMatcher.end(0)));
+		}
+		return containedUrls;
+	}
+
+	public static List<String> extractmbefore(String pretext)
+	{
+		List<String> preurlmess = new ArrayList<String>();
+		String preurlRegex = ".*((https?|ftp|gopher|telnet|file):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)(.*)";
+		Pattern prepattern = Pattern.compile(preurlRegex, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+		Matcher preMessage = prepattern.matcher(pretext);
+		while (preMessage.find())
+		{
+			preurlmess.add(pretext.substring(preMessage.start(0), preMessage.end(0)));
+		}
+		return preurlmess;
+	}
+
+	public static List<String> extractmafter(String posttext)
+	{
+		List<String> posturlmess = new ArrayList<String>();
+		String posturlRegex = "(((https?|ftp|gopher|telnet|file):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]).*)";
+		Pattern postpattern = Pattern.compile(posturlRegex, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+		Matcher postMessage = postpattern.matcher(posttext);
+		while (postMessage.find())
+		{
+			posturlmess.add(posttext.substring(postMessage.start(0), postMessage.end(0)));
+		}
+		return posturlmess;
 	}
 
 	public static void setFirstJoinMsg(String value)
