@@ -68,7 +68,7 @@ public class WarpExecutor extends CommandExecutorBase
 						if (Utils.isTeleportCooldownEnabled() && !player.hasPermission("essentialcmds.teleport.cooldown.override"))
 						{
 							EssentialCmds.teleportingPlayers.add(player.getUniqueId());
-							src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleporting to Last Location. Please wait " + Utils.getTeleportCooldown() + " seconds."));
+							src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleporting to last location. Please wait " + Utils.getTeleportCooldown() + " seconds."));
 							Sponge.getScheduler().createTaskBuilder().execute(() -> {
 								if (EssentialCmds.teleportingPlayers.contains(player.getUniqueId()))
 								{
@@ -103,7 +103,7 @@ public class WarpExecutor extends CommandExecutorBase
 								player.setTransform(warpLocation);
 							}
 
-							src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
+							src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to warp " + warpName));
 						}
 					}
 					else
@@ -142,7 +142,7 @@ public class WarpExecutor extends CommandExecutorBase
 						player.setTransform(warpLocation);
 					}
 
-					src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to Warp " + warpName));
+					src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to warp " + warpName));
 				}
 				else
 				{

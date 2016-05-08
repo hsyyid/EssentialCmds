@@ -59,7 +59,7 @@ public class PlayerJoinListener
 
 		if (this.compareInstants(player.getJoinData().firstPlayed().get(), player.getJoinData().lastPlayed().get()))
 		{
-			Transform<World> spawn = Utils.getSpawn();
+			Transform<World> spawn = Utils.getFirstSpawn();
 
 			if (spawn != null)
 			{
@@ -71,6 +71,23 @@ public class PlayerJoinListener
 				else
 				{
 					player.setTransform(spawn);
+				}
+			}
+			else
+			{
+				spawn = Utils.getSpawn();
+
+				if (spawn != null)
+				{
+					if (!Objects.equals(player.getWorld().getUniqueId(), spawn.getExtent().getUniqueId()))
+					{
+						player.transferToWorld(spawn.getExtent().getUniqueId(), spawn.getPosition());
+						player.setTransform(spawn);
+					}
+					else
+					{
+						player.setTransform(spawn);
+					}
 				}
 			}
 

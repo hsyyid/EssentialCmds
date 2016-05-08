@@ -120,6 +120,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.world.CreateWorldExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.world.DeleteWorldExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.world.ListWorldExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.world.LoadWorldExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.world.SetFirstSpawnExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.world.SetSpawnExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.world.SetWorldSpawnExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.world.SpawnExecutor;
@@ -244,7 +245,8 @@ public final class CommandLoader {
             new GodExecutor(),
             new TPChunkExecutor(),
             new TPAllExecutor(),
-            new TPAAllExecutor()
+            new TPAAllExecutor(),
+            new SetFirstSpawnExecutor()
         );
     }
 

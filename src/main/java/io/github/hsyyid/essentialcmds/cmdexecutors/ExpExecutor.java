@@ -132,7 +132,7 @@ public class ExpExecutor extends CommandExecutorBase
 			int expLevel = ctx.<Integer> getOne("exp").get();
 			Player player = ctx.<Player> getOne("target").get();
 			player.offer(Keys.TOTAL_EXPERIENCE, expLevel);
-			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set " + player.getName() + "'s experience level to" + expLevel + "."));
+			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set " + player.getName() + "'s experience level to " + expLevel + "."));
 			return CommandResult.success();
 		}
 	}

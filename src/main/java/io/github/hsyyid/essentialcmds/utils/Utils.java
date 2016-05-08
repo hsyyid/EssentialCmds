@@ -1044,6 +1044,19 @@ public class Utils
 
 		Configs.saveConfig(spawnConfig);
 	}
+	
+	public static void setFirstSpawn(Transform<World> transform, String worldName)
+	{
+		Configs.getConfig(spawnConfig).getNode("first-spawn", "X").setValue(transform.getLocation().getX());
+		Configs.getConfig(spawnConfig).getNode("first-spawn", "Y").setValue(transform.getLocation().getY());
+		Configs.getConfig(spawnConfig).getNode("first-spawn", "Z").setValue(transform.getLocation().getZ());
+		Configs.getConfig(spawnConfig).getNode("first-spawn", "world").setValue(worldName);
+		Configs.getConfig(spawnConfig).getNode("first-spawn", "transform", "pitch").setValue(transform.getRotation().getX());
+		Configs.getConfig(spawnConfig).getNode("first-spawn", "transform", "yaw").setValue(transform.getRotation().getY());
+		Configs.getConfig(spawnConfig).getNode("first-spawn", "transform", "roll").setValue(transform.getRotation().getZ());
+
+		Configs.saveConfig(spawnConfig);
+	}
 
 	public static void setJoinMsg(String msg)
 	{
@@ -1309,6 +1322,34 @@ public class Utils
 		double x = Configs.getConfig(spawnConfig).getNode("spawn", "X").getDouble();
 		double y = Configs.getConfig(spawnConfig).getNode("spawn", "Y").getDouble();
 		double z = Configs.getConfig(spawnConfig).getNode("spawn", "Z").getDouble();
+
+		if (Configs.getConfig(spawnConfig).getNode("spawn", "transform", "pitch").getValue() == null)
+		{
+			if (world != null)
+				return new Transform<>(new Location<>(world, x, y, z));
+			else
+				return null;
+		}
+		else
+		{
+			double pitch = Configs.getConfig(spawnConfig).getNode("spawn", "transform", "pitch").getDouble();
+			double yaw = Configs.getConfig(spawnConfig).getNode("spawn", "transform", "yaw").getDouble();
+			double roll = Configs.getConfig(spawnConfig).getNode("spawn", "transform", "roll").getDouble();
+
+			if (world != null)
+				return new Transform<>(world, new Vector3d(x, y, z), new Vector3d(pitch, yaw, roll));
+			else
+				return null;
+		}
+	}
+	
+	public static Transform<World> getFirstSpawn()
+	{
+		String worldName = Configs.getConfig(spawnConfig).getNode("first-spawn", "world").getString();
+		World world = Sponge.getServer().getWorld(worldName).orElse(null);
+		double x = Configs.getConfig(spawnConfig).getNode("first-spawn", "X").getDouble();
+		double y = Configs.getConfig(spawnConfig).getNode("first-spawn", "Y").getDouble();
+		double z = Configs.getConfig(spawnConfig).getNode("first-spawn", "Z").getDouble();
 
 		if (Configs.getConfig(spawnConfig).getNode("spawn", "transform", "pitch").getValue() == null)
 		{
