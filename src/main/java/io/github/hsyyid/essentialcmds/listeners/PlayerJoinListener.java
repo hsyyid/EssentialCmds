@@ -36,7 +36,6 @@ import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.TeleportHelper;
 import org.spongepowered.api.world.World;
@@ -110,7 +109,7 @@ public class PlayerJoinListener
 		SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy HH:mm:ss");
 		format.setTimeZone(TimeZone.getTimeZone("GMT"));
 		Utils.setLastTimePlayerJoined(player.getUniqueId(), format.format(cal.getTime()));
-		player.sendMessage(TextSerializers.formattingCode('&').deserialize(Utils.getJoinMsg()));
+		player.sendMessage(Utils.getJoinMsg());
 
 		ArrayList<Mail> newMail = (ArrayList<Mail>) Utils.getMail().stream().filter(mail -> mail.getRecipientName().equals(player.getName())).collect(Collectors.toList());
 

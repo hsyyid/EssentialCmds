@@ -929,18 +929,27 @@ public class Utils
 		Configs.saveConfig(warpsConfig);
 	}
 
-	public static String getJoinMsg()
+	public static Text getJoinMsg()
 	{
 		ConfigurationNode valueNode = Configs.getConfig(mainConfig).getNode((Object[]) ("message.join").split("\\."));
+		String message;
+
 		if (valueNode.getValue() != null)
 		{
-			return valueNode.getString();
+			message = valueNode.getString();
 		}
 		else
 		{
 			Utils.setJoinMsg("&4Welcome");
-			return "&4Welcome";
+			message = "&4Welcome";
 		}
+
+		if ((message.contains("https://")) || (message.contains("http://")))
+		{
+			return Utils.getURL(message);
+		}
+
+		return TextSerializers.FORMATTING_CODE.deserialize(message);
 	}
 
 	public static String getFirstChatCharReplacement()
@@ -1044,7 +1053,7 @@ public class Utils
 
 		Configs.saveConfig(spawnConfig);
 	}
-	
+
 	public static void setFirstSpawn(Transform<World> transform, String worldName)
 	{
 		Configs.getConfig(spawnConfig).getNode("first-spawn", "X").setValue(transform.getLocation().getX());
@@ -1342,7 +1351,7 @@ public class Utils
 				return null;
 		}
 	}
-	
+
 	public static Transform<World> getFirstSpawn()
 	{
 		String worldName = Configs.getConfig(spawnConfig).getNode("first-spawn", "world").getString();
