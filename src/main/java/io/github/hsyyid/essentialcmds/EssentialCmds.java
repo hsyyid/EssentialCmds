@@ -24,14 +24,11 @@
  */
 package io.github.hsyyid.essentialcmds;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import io.github.hsyyid.essentialcmds.internal.CommandLoader;
+import io.github.hsyyid.essentialcmds.listeners.BlacklistListener;
 import io.github.hsyyid.essentialcmds.listeners.ChangeBlockListener;
 import io.github.hsyyid.essentialcmds.listeners.CommandListener;
 import io.github.hsyyid.essentialcmds.listeners.CommandSentListener;
-import io.github.hsyyid.essentialcmds.listeners.BlacklistListener;
 import io.github.hsyyid.essentialcmds.listeners.MailListener;
 import io.github.hsyyid.essentialcmds.listeners.MessageSinkListener;
 import io.github.hsyyid.essentialcmds.listeners.PlayerClickListener;
@@ -54,12 +51,22 @@ import io.github.hsyyid.essentialcmds.managers.config.SpawnConfig;
 import io.github.hsyyid.essentialcmds.managers.config.WarpConfig;
 import io.github.hsyyid.essentialcmds.managers.config.WorldConfig;
 import io.github.hsyyid.essentialcmds.utils.AFK;
+import io.github.hsyyid.essentialcmds.utils.EssLogger;
 import io.github.hsyyid.essentialcmds.utils.Message;
 import io.github.hsyyid.essentialcmds.utils.PendingInvitation;
 import io.github.hsyyid.essentialcmds.utils.Powertool;
 import io.github.hsyyid.essentialcmds.utils.Utils;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
 import me.flibio.updatifier.Updatifier;
-import org.slf4j.Logger;
+
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
@@ -70,13 +77,9 @@ import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 
 @Updatifier(repoName = "EssentialCmds", repoOwner = "hsyyid", version = "v" + PluginInfo.VERSION)
 @Plugin(id = PluginInfo.ID, name = PluginInfo.NAME, version = PluginInfo.INFORMATIVE_VERSION, description = PluginInfo.DESCRIPTION, dependencies = @Dependency(id = "Updatifier", version = "1.0", optional = true) )
@@ -102,7 +105,7 @@ public class EssentialCmds
 	public static Set<UUID> godPlayers = Sets.newHashSet();
 
 	@Inject
-	private Logger logger;
+	private EssLogger logger;
 
 	@Inject
 	@ConfigDir(sharedRoot = false)
@@ -117,6 +120,7 @@ public class EssentialCmds
 	public void onPreInitialization(GamePreInitializationEvent event)
 	{
 		essentialCmds = this;
+		logger = new EssLogger();
 
 		// Create Config Directory for EssentialCmds
 		if (!Files.exists(configDir))
@@ -219,7 +223,7 @@ public class EssentialCmds
 		return configDir;
 	}
 
-	public Logger getLogger()
+	public EssLogger getLogger()
 	{
 		return logger;
 	}
