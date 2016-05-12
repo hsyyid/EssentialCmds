@@ -919,9 +919,9 @@ public class Utils
 	public static void setWarp(Transform<World> transform, String warpName)
 	{
 		Configs.getConfig(warpsConfig).getNode("warps", warpName, "world").setValue(transform.getExtent().getUniqueId().toString());
-		Configs.getConfig(warpsConfig).getNode("warps", warpName, "X").setValue(transform.getLocation().getBlockX());
-		Configs.getConfig(warpsConfig).getNode("warps", warpName, "Y").setValue(transform.getLocation().getBlockY());
-		Configs.getConfig(warpsConfig).getNode("warps", warpName, "Z").setValue(transform.getLocation().getBlockZ());
+		Configs.getConfig(warpsConfig).getNode("warps", warpName, "X").setValue(transform.getLocation().getX());
+		Configs.getConfig(warpsConfig).getNode("warps", warpName, "Y").setValue(transform.getLocation().getY());
+		Configs.getConfig(warpsConfig).getNode("warps", warpName, "Z").setValue(transform.getLocation().getZ());
 		Configs.getConfig(warpsConfig).getNode("warps", warpName, "transform", "pitch").setValue(transform.getRotation().getX());
 		Configs.getConfig(warpsConfig).getNode("warps", warpName, "transform", "yaw").setValue(transform.getRotation().getY());
 		Configs.getConfig(warpsConfig).getNode("warps", warpName, "transform", "roll").setValue(transform.getRotation().getZ());
