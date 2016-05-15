@@ -46,14 +46,14 @@ public class KillExecutor extends CommandExecutorBase
 	{
 		Optional<Player> p = ctx.<Player> getOne("player");
 
-		if (p.isPresent())
+		if (p.isPresent() && src.hasPermission("essentialcmds.kill.others"))
 		{
 			p.get().offer(Keys.HEALTH, 0d);
 			Utils.setLastTeleportOrDeathLocation(p.get().getUniqueId(), p.get().getLocation());
 			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Killed player " + p.get().getName()));
 			p.get().sendMessage(Text.of(TextColors.RED, "You have been killed by " + src.getName()));
 		}
-		else
+		else if (!p.isPresent())
 		{
 			if (src instanceof Player)
 			{
@@ -67,21 +67,29 @@ public class KillExecutor extends CommandExecutorBase
 				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot kill yourself, you are not a player!"));
 			}
 		}
+		else
+		{
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have permission to kill other players!"));
+		}
 
 		return CommandResult.success();
 	}
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "kill" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
-		return CommandSpec.builder().description(Text.of("Kill Command")).permission("essentialcmds.kill.use")
-				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))))
-				.executor(this).build();
+	public CommandSpec getSpec()
+	{
+		return CommandSpec.builder()
+			.description(Text.of("Kill Command"))
+			.permission("essentialcmds.kill.use")
+			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))))
+			.executor(this).build();
 	}
 }
