@@ -38,6 +38,8 @@ import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
+import org.spongepowered.api.event.cause.entity.spawn.SpawnCause;
+import org.spongepowered.api.event.cause.entity.spawn.SpawnTypes;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.blockray.BlockRay;
@@ -82,7 +84,7 @@ public class MobSpawnExecutor extends CommandExecutorBase
 		for (int i = 1; i <= amount; i++)
 		{
 			Optional<Entity> entity = location.getExtent().createEntity(type, location.getPosition());
-			location.getExtent().spawnEntity(entity.get(), Cause.of(NamedCause.source(player)));
+			location.getExtent().spawnEntity(entity.get(), Cause.of(NamedCause.source(SpawnCause.builder().type(SpawnTypes.CUSTOM).build())));
 		}
 	}
 
