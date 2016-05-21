@@ -71,6 +71,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.LoreBase;
 import io.github.hsyyid.essentialcmds.cmdexecutors.MailExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.MailListExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.MailReadExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.MeExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.MessageExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.MobSpawnExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.MobSpawnerExecutor;
@@ -87,6 +88,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.RepairExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.RespondExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.RocketExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.RuleExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.SayExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.SetHomeExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.SetNameExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.SetWarpExecutor;
@@ -246,7 +248,9 @@ public final class CommandLoader {
             new TPChunkExecutor(),
             new TPAllExecutor(),
             new TPAAllExecutor(),
-            new SetFirstSpawnExecutor()
+            new SetFirstSpawnExecutor(),
+            new SayExecutor(),
+            new MeExecutor()
         );
     }
 
