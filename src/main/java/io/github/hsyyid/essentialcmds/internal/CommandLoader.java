@@ -62,6 +62,7 @@ import io.github.hsyyid.essentialcmds.cmdexecutors.JumpExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.KickAllExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.KickExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.KillExecutor;
+import io.github.hsyyid.essentialcmds.cmdexecutors.KittyCannonExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.LightningExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.ListExecutor;
 import io.github.hsyyid.essentialcmds.cmdexecutors.ListHomeExecutor;
@@ -250,7 +251,8 @@ public final class CommandLoader {
             new TPAAllExecutor(),
             new SetFirstSpawnExecutor(),
             new SayExecutor(),
-            new MeExecutor()
+            new MeExecutor(),
+            new KittyCannonExecutor()
         );
     }
 
