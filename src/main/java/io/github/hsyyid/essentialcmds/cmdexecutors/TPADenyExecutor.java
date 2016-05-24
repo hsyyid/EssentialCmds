@@ -86,7 +86,7 @@ public class TPADenyExecutor extends CommandExecutorBase
 	@Nonnull
 	@Override
 	public String[] getAliases() {
-		return new String[] { "tpadeny", "tpdeny" };
+		return new String[] { "tpadeny", "tpdeny", "tpno" };
 	}
 
 	@Nonnull

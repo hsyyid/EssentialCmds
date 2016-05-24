@@ -107,7 +107,7 @@ public class TPAAcceptExecutor extends CommandExecutorBase
 	@Nonnull
 	@Override
 	public String[] getAliases() {
-		return new String[] { "tpaaccept", "tpaccept" };
+		return new String[] { "tpaaccept", "tpaccept", "tpyes" };
 	}
 
 	@Nonnull
