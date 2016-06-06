@@ -32,6 +32,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
@@ -47,11 +48,11 @@ public class MoreExecutor extends CommandExecutorBase
 		{
 			Player player = (Player) src;
 
-			if (player.getItemInHand().isPresent())
+			if (player.getItemInHand(HandTypes.MAIN_HAND).isPresent())
 			{
-				ItemStack stack = player.getItemInHand().get();
+				ItemStack stack = player.getItemInHand(HandTypes.MAIN_HAND).get();
 				stack.setQuantity(64);
-				player.setItemInHand(stack);
+				player.setItemInHand(HandTypes.MAIN_HAND, stack);
 				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Stacked the item in your hand!"));
 			}
 			else
@@ -72,14 +73,16 @@ public class MoreExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "more", "stack" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec.builder().description(Text.of("More Command")).permission("essentialcmds.more.use")
-				.executor(this).build();
+			.executor(this).build();
 	}
 }

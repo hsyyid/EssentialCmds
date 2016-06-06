@@ -31,6 +31,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -47,10 +48,10 @@ public class TakeExecutor extends CommandExecutorBase
 		{
 			Player player = (Player) src;
 
-			if (target.getItemInHand().isPresent())
+			if (target.getItemInHand(HandTypes.MAIN_HAND).isPresent())
 			{
-				player.getInventory().offer(target.getItemInHand().get());
-				target.setItemInHand(null);
+				player.getInventory().offer(target.getItemInHand(HandTypes.MAIN_HAND).get());
+				target.setItemInHand(HandTypes.MAIN_HAND, null);
 				player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Took " + target.getName() + "'s held item."));
 			}
 			else

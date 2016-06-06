@@ -32,6 +32,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.manipulator.mutable.MobSpawnerData;
+import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
@@ -63,7 +64,7 @@ public class MobSpawnerExecutor extends CommandExecutorBase
 
 				if (mobSpawnerStack.offer(data).isSuccessful())
 				{
-					player.setItemInHand(mobSpawnerStack);
+					player.setItemInHand(HandTypes.MAIN_HAND, mobSpawnerStack);
 					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Created mob spawner."));
 				}
 				else

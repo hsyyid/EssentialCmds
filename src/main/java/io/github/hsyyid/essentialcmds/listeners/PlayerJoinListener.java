@@ -98,10 +98,22 @@ public class PlayerJoinListener
 		{
 			if (player.getLocation().add(0, -1, 0).getBlockType() == BlockTypes.AIR)
 			{
-				Optional<Location<World>> safeLocation = Sponge.getGame().getTeleportHelper().getSafeLocation(player.getLocation(), 256, TeleportHelper.DEFAULT_WIDTH);
+				Optional<Location<World>> safeLocation = Sponge.getGame().getTeleportHelper().getSafeLocation(player.getLocation());
 
 				if (safeLocation.isPresent())
-					player.setLocationSafely(safeLocation.get());
+				{
+					player.setLocation(safeLocation.get());
+				}
+				else
+				{
+					// We need to search in a larger radius.
+					safeLocation = Sponge.getGame().getTeleportHelper().getSafeLocation(player.getLocation(), 255, TeleportHelper.DEFAULT_WIDTH);
+
+					if (safeLocation.isPresent())
+					{
+						player.setLocation(safeLocation.get());
+					}
+				}
 			}
 		}
 

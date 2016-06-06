@@ -31,6 +31,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.DataQuery;
+import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
@@ -46,9 +47,9 @@ public class ItemInfoExecutor extends CommandExecutorBase
 		{
 			Player player = (Player) src;
 
-			if (player.getItemInHand().isPresent())
+			if (player.getItemInHand(HandTypes.MAIN_HAND).isPresent())
 			{
-				ItemStack itemInHand = player.getItemInHand().get();
+				ItemStack itemInHand = player.getItemInHand(HandTypes.MAIN_HAND).get();
 				player.sendMessage(Text.of(TextColors.GOLD, "The name of the item in your hand is: ", TextColors.GRAY, itemInHand.getTranslation().get()));
 				player.sendMessage(Text.of(TextColors.GOLD, "The ID of the item in your hand is: ", TextColors.GRAY, itemInHand.getItem().getId()));
 				player.sendMessage(Text.of(TextColors.GOLD, "The meta of the item in your hand is: ", TextColors.GRAY, itemInHand.toContainer().get(DataQuery.of("UnsafeDamage")).get().toString()));
@@ -68,14 +69,16 @@ public class ItemInfoExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "iteminfo", "itemdb" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec.builder().description(Text.of("ItemInfo Command")).permission("essentialcmds.iteminfo.use")
-				.executor(this).build();
+			.executor(this).build();
 	}
 }

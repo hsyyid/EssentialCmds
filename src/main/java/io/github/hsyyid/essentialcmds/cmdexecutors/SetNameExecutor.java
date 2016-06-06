@@ -33,6 +33,7 @@ import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.DataTransactionResult;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
@@ -51,15 +52,15 @@ public class SetNameExecutor extends CommandExecutorBase
 		{
 			Player player = (Player) src;
 
-			if (player.getItemInHand().isPresent())
+			if (player.getItemInHand(HandTypes.MAIN_HAND).isPresent())
 			{
-				ItemStack stack = player.getItemInHand().get();
+				ItemStack stack = player.getItemInHand(HandTypes.MAIN_HAND).get();
 				Text textName = TextSerializers.FORMATTING_CODE.deserialize(name);
 				DataTransactionResult dataTransactionResult = stack.offer(Keys.DISPLAY_NAME, textName);
 				
 				if(dataTransactionResult.isSuccessful())
 				{
-					player.setItemInHand(stack);
+					player.setItemInHand(HandTypes.MAIN_HAND, stack);
 					src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set name on item."));
 				}
 				else

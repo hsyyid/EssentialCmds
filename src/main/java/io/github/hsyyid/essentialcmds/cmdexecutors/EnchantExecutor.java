@@ -37,6 +37,7 @@ import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.manipulator.mutable.item.EnchantmentData;
 import org.spongepowered.api.data.meta.ItemEnchantment;
+import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.Enchantment;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -56,7 +57,7 @@ public class EnchantExecutor extends CommandExecutorBase
 		int level = ctx.<Integer> getOne("level").get();
 
 		Enchantment enchantment = Sponge.getRegistry().getType(Enchantment.class, enchantmentName).orElse(null);
-		
+
 		if (enchantment == null)
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Enchantment specified not found!"));
@@ -79,9 +80,9 @@ public class EnchantExecutor extends CommandExecutorBase
 			{
 				Player player = (Player) src;
 
-				if (player.getItemInHand().isPresent())
+				if (player.getItemInHand(HandTypes.MAIN_HAND).isPresent())
 				{
-					ItemStack itemInHand = player.getItemInHand().get();
+					ItemStack itemInHand = player.getItemInHand(HandTypes.MAIN_HAND).get();
 
 					if (!enchantment.canBeAppliedToStack(itemInHand))
 					{
@@ -113,7 +114,7 @@ public class EnchantExecutor extends CommandExecutorBase
 					}
 
 					itemInHand.offer(enchantmentData);
-					player.setItemInHand(itemInHand);
+					player.setItemInHand(HandTypes.MAIN_HAND, itemInHand);
 					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Enchanted item(s) in your hand."));
 				}
 				else
@@ -134,9 +135,9 @@ public class EnchantExecutor extends CommandExecutorBase
 		{
 			Player player = target.get();
 
-			if (player.getItemInHand().isPresent())
+			if (player.getItemInHand(HandTypes.MAIN_HAND).isPresent())
 			{
-				ItemStack itemInHand = player.getItemInHand().get();
+				ItemStack itemInHand = player.getItemInHand(HandTypes.MAIN_HAND).get();
 
 				if (!enchantment.canBeAppliedToStack(itemInHand))
 				{
@@ -168,7 +169,7 @@ public class EnchantExecutor extends CommandExecutorBase
 				}
 
 				itemInHand.offer(enchantmentData);
-				player.setItemInHand(itemInHand);
+				player.setItemInHand(HandTypes.MAIN_HAND, itemInHand);
 				player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Enchanted item(s) in your hand."));
 			}
 			else

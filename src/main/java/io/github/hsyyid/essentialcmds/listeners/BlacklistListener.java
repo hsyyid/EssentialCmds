@@ -32,7 +32,7 @@ import org.spongepowered.api.data.manipulator.mutable.RepresentedItemData;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
-import org.spongepowered.api.event.filter.cause.First;
+import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.item.ItemTypes;
@@ -44,7 +44,7 @@ import org.spongepowered.api.text.format.TextColors;
 public class BlacklistListener
 {
 	@Listener
-	public void onChangeHeldItem(ChangeInventoryEvent.Held event, @First Player player)
+	public void onChangeHeldItem(ChangeInventoryEvent.Held event, @Root Player player)
 	{
 		if (!player.hasPermission("essentialcmds.blacklist.bypass"))
 		{
@@ -62,7 +62,7 @@ public class BlacklistListener
 	}
 
 	@Listener
-	public void onChangeEquipment(ChangeInventoryEvent.Equipment event, @First Player player)
+	public void onChangeEquipment(ChangeInventoryEvent.Equipment event, @Root Player player)
 	{
 		if (!player.hasPermission("essentialcmds.blacklist.bypass"))
 		{
@@ -80,7 +80,7 @@ public class BlacklistListener
 	}
 
 	@Listener
-	public void onPlaceBlock(ChangeBlockEvent.Place event, @First Player player)
+	public void onPlaceBlock(ChangeBlockEvent.Place event, @Root Player player)
 	{
 		if (!player.hasPermission("essentialcmds.blacklist.bypass"))
 		{
@@ -98,7 +98,7 @@ public class BlacklistListener
 	}
 
 	@Listener
-	public void onBreakBlock(ChangeBlockEvent.Break event, @First Player player)
+	public void onBreakBlock(ChangeBlockEvent.Break event, @Root Player player)
 	{
 		if (!player.hasPermission("essentialcmds.blacklist.bypass"))
 		{
@@ -116,7 +116,7 @@ public class BlacklistListener
 	}
 
 	@Listener
-	public void onDropItem(DropItemEvent.Dispense event, @First Player player)
+	public void onDropItem(DropItemEvent.Dispense event, @Root Player player)
 	{
 		if (!player.hasPermission("essentialcmds.blacklist.bypass"))
 		{
@@ -140,7 +140,7 @@ public class BlacklistListener
 	}
 
 	@Listener
-	public void onPickupItem(ChangeInventoryEvent.Pickup event, @First Player player)
+	public void onPickupItem(ChangeInventoryEvent.Pickup event, @Root Player player)
 	{
 		if (!player.hasPermission("essentialcmds.blacklist.bypass"))
 		{

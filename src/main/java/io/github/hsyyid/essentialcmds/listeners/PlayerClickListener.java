@@ -27,18 +27,20 @@ package io.github.hsyyid.essentialcmds.listeners;
 import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.utils.Powertool;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.action.InteractEvent;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
+import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class PlayerClickListener
 {
 	@Listener
-	public void onPlayerClick(InteractEvent event, @First Player player)
+	public void onPlayerClick(InteractEvent event, @Root Player player)
 	{
 		if (EssentialCmds.frozenPlayers.contains(player.getUniqueId()))
 		{
@@ -60,7 +62,7 @@ public class PlayerClickListener
 		{
 			if (powertool.getPlayer().equals(player))
 			{
-				if (player.getItemInHand().isPresent() && powertool.getItemID().equals(player.getItemInHand().get().getItem().getName()))
+				if (player.getItemInHand(HandTypes.MAIN_HAND).isPresent() && powertool.getItemID().equals(player.getItemInHand(HandTypes.MAIN_HAND).get().getItem().getName()))
 				{
 					foundTool = powertool;
 					break;

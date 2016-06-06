@@ -56,11 +56,12 @@ import org.spongepowered.api.world.GeneratorType;
 import org.spongepowered.api.world.GeneratorTypes;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
-import org.spongepowered.api.world.WorldCreationSettings;
+import org.spongepowered.api.world.WorldArchetype;
 import org.spongepowered.api.world.difficulty.Difficulties;
 import org.spongepowered.api.world.difficulty.Difficulty;
 import org.spongepowered.api.world.storage.WorldProperties;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -139,21 +140,19 @@ public class WorldsBase extends CommandExecutorBase
 
 			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Beginning creation of world."));
 
-			WorldCreationSettings worldSettings = EssentialCmds.getEssentialCmds().getGame().getRegistry().createBuilder(WorldCreationSettings.Builder.class)
-				.name(name)
+			WorldArchetype worldSettings = WorldArchetype.builder()
 				.enabled(true)
 				.loadsOnStartup(true)
 				.keepsSpawnLoaded(true)
 				.dimension(dimension)
 				.generator(generator)
 				.gameMode(gamemode)
-				.build();
+				.build(name.toLowerCase(), name);
 
-			Optional<WorldProperties> worldProperties = Sponge.getGame().getServer().createWorldProperties(worldSettings);
-
-			if (worldProperties.isPresent())
+			try
 			{
-				Optional<World> world = Sponge.getGame().getServer().loadWorld(worldProperties.get());
+				WorldProperties worldProperties = Sponge.getGame().getServer().createWorldProperties(name, worldSettings);
+				Optional<World> world = Sponge.getGame().getServer().loadWorld(worldProperties);
 
 				if (world.isPresent())
 				{
@@ -165,7 +164,7 @@ public class WorldsBase extends CommandExecutorBase
 					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The world could not be created."));
 				}
 			}
-			else
+			catch (IOException e)
 			{
 				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The world properties could not be created."));
 			}
@@ -741,21 +740,19 @@ public class WorldsBase extends CommandExecutorBase
 
 			src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Beginning loading of world."));
 
-			WorldCreationSettings worldSettings = EssentialCmds.getEssentialCmds().getGame().getRegistry().createBuilder(WorldCreationSettings.Builder.class)
-				.name(name)
+			WorldArchetype worldSettings = WorldArchetype.builder()
 				.enabled(true)
 				.loadsOnStartup(true)
 				.keepsSpawnLoaded(true)
 				.dimension(dimension)
 				.generator(generator)
 				.gameMode(gamemode.orElse(GameModes.SURVIVAL))
-				.build();
+				.build(name.toLowerCase(), name);
 
-			Optional<WorldProperties> worldProperties = Sponge.getGame().getServer().createWorldProperties(worldSettings);
-
-			if (worldProperties.isPresent())
+			try
 			{
-				Optional<World> world = Sponge.getGame().getServer().loadWorld(worldProperties.get());
+				WorldProperties worldProperties = Sponge.getGame().getServer().createWorldProperties(name, worldSettings);
+				Optional<World> world = Sponge.getGame().getServer().loadWorld(worldProperties);
 
 				if (world.isPresent())
 				{
@@ -767,7 +764,7 @@ public class WorldsBase extends CommandExecutorBase
 					src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The world could not be created."));
 				}
 			}
-			else
+			catch (IOException e)
 			{
 				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "The world properties could not be created."));
 			}

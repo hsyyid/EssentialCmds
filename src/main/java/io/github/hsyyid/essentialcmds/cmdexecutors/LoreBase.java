@@ -35,6 +35,7 @@ import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.DataTransactionResult;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.item.LoreData;
+import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
@@ -82,9 +83,9 @@ public class LoreBase extends CommandExecutorBase
 			{
 				Player player = (Player) src;
 
-				if (player.getItemInHand().isPresent())
+				if (player.getItemInHand(HandTypes.MAIN_HAND).isPresent())
 				{
-					ItemStack stack = player.getItemInHand().get();
+					ItemStack stack = player.getItemInHand(HandTypes.MAIN_HAND).get();
 					List<String> loreList = Lists.newArrayList();
 					loreList.addAll(Arrays.asList(lore.split("\\s*,\\s*")));
 					List<Text> loreTextList = Lists.newArrayList();
@@ -98,7 +99,7 @@ public class LoreBase extends CommandExecutorBase
 
 					if (dataTransactionResult.isSuccessful())
 					{
-						player.setItemInHand(stack);
+						player.setItemInHand(HandTypes.MAIN_HAND, stack);
 						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Set lore on item."));
 					}
 					else
@@ -149,9 +150,9 @@ public class LoreBase extends CommandExecutorBase
 			{
 				Player player = (Player) src;
 
-				if (player.getItemInHand().isPresent())
+				if (player.getItemInHand(HandTypes.MAIN_HAND).isPresent())
 				{
-					ItemStack stack = player.getItemInHand().get();
+					ItemStack stack = player.getItemInHand(HandTypes.MAIN_HAND).get();
 					LoreData loreData = stack.getOrCreate(LoreData.class).get();
 					Text textLore = TextSerializers.FORMATTING_CODE.deserialize(lore);
 					List<Text> newLore = loreData.lore().get();
@@ -160,7 +161,7 @@ public class LoreBase extends CommandExecutorBase
 
 					if (dataTransactionResult.isSuccessful())
 					{
-						player.setItemInHand(stack);
+						player.setItemInHand(HandTypes.MAIN_HAND, stack);
 						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Added lore to item."));
 					}
 					else
@@ -200,20 +201,20 @@ public class LoreBase extends CommandExecutorBase
 				.build();
 		}
 	}
-	
+
 	static class Remove extends CommandExecutorBase
 	{
 		public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 		{
 			int number = ctx.<Integer> getOne("number").get();
-			
+
 			if (src instanceof Player)
 			{
 				Player player = (Player) src;
 
-				if (player.getItemInHand().isPresent())
+				if (player.getItemInHand(HandTypes.MAIN_HAND).isPresent())
 				{
-					ItemStack stack = player.getItemInHand().get();
+					ItemStack stack = player.getItemInHand(HandTypes.MAIN_HAND).get();
 					LoreData loreData = stack.getOrCreate(LoreData.class).get();
 					List<Text> newLore = loreData.lore().get();
 					newLore.remove(number - 1);
@@ -221,7 +222,7 @@ public class LoreBase extends CommandExecutorBase
 
 					if (dataTransactionResult.isSuccessful())
 					{
-						player.setItemInHand(stack);
+						player.setItemInHand(HandTypes.MAIN_HAND, stack);
 						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Removed lore from item."));
 					}
 					else

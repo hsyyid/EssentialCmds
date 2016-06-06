@@ -30,8 +30,7 @@ import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.entity.DisplaceEntityEvent;
-import org.spongepowered.api.event.filter.cause.First;
+import org.spongepowered.api.event.entity.MoveEntityEvent;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.format.TextColors;
@@ -40,64 +39,69 @@ import org.spongepowered.api.world.World;
 public class PlayerMoveListener
 {
 	@Listener
-	public void onPlayerMove(DisplaceEntityEvent event, @First Player player)
+	public void onPlayerMove(MoveEntityEvent event)
 	{
-		if (Utils.isTeleportCooldownEnabled() && EssentialCmds.teleportingPlayers.contains(player.getUniqueId()))
+		if (event.getTargetEntity() instanceof Player)
 		{
-			EssentialCmds.teleportingPlayers.remove(player.getUniqueId());
-			player.sendMessage(Text.of(TextColors.RED, "Teleportation canceled due to movement."));
-		}
+			Player player = (Player) event.getTargetEntity();
 
-		if (EssentialCmds.frozenPlayers.contains(player.getUniqueId()))
-		{
-			player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot move while frozen."));
-			event.setCancelled(true);
-			return;
-		}
-
-		if (EssentialCmds.recentlyJoined.contains(player))
-		{
-			EssentialCmds.recentlyJoined.remove(player);
-
-			if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
+			if (Utils.isTeleportCooldownEnabled() && EssentialCmds.teleportingPlayers.contains(player.getUniqueId()))
 			{
-				EssentialCmds.afkList.remove(player.getUniqueId());
+				EssentialCmds.teleportingPlayers.remove(player.getUniqueId());
+				player.sendMessage(Text.of(TextColors.RED, "Teleportation canceled due to movement."));
 			}
-		}
-		else
-		{
-			if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
-			{
-				AFK removeAFK = EssentialCmds.afkList.get(player.getUniqueId());
 
-				if (removeAFK.getAFK())
+			if (EssentialCmds.frozenPlayers.contains(player.getUniqueId()))
+			{
+				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You cannot move while frozen."));
+				event.setCancelled(true);
+				return;
+			}
+
+			if (EssentialCmds.recentlyJoined.contains(player))
+			{
+				EssentialCmds.recentlyJoined.remove(player);
+
+				if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
 				{
-					if (Utils.shouldAnnounceAFK())
+					EssentialCmds.afkList.remove(player.getUniqueId());
+				}
+			}
+			else
+			{
+				if (EssentialCmds.afkList.containsKey(player.getUniqueId()))
+				{
+					AFK removeAFK = EssentialCmds.afkList.get(player.getUniqueId());
+
+					if (removeAFK.getAFK())
 					{
-						MessageChannel.TO_ALL.send(Text.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is no longer AFK."));
+						if (Utils.shouldAnnounceAFK())
+						{
+							MessageChannel.TO_ALL.send(Text.of(TextColors.BLUE, player.getName(), TextColors.GOLD, " is no longer AFK."));
+						}
 					}
+
+					EssentialCmds.afkList.remove(removeAFK);
 				}
 
-				EssentialCmds.afkList.remove(removeAFK);
+				AFK afk = new AFK(System.currentTimeMillis());
+				EssentialCmds.afkList.put(player.getUniqueId(), afk);
 			}
 
-			AFK afk = new AFK(System.currentTimeMillis());
-			EssentialCmds.afkList.put(player.getUniqueId(), afk);
-		}
-
-		if (!event.getFromTransform().getExtent().getUniqueId().equals(event.getToTransform().getExtent().getUniqueId()))
-		{
-			World oldWorld = event.getFromTransform().getExtent();
-			World newWorld = event.getToTransform().getExtent();
-
-			Utils.savePlayerInventory(player, oldWorld.getUniqueId());
-
-			if (!Utils.doShareInventories(oldWorld.getName(), newWorld.getName()))
+			if (!event.getFromTransform().getExtent().getUniqueId().equals(event.getToTransform().getExtent().getUniqueId()))
 			{
-				Utils.updatePlayerInventory(player, newWorld.getUniqueId());
-			}
+				World oldWorld = event.getFromTransform().getExtent();
+				World newWorld = event.getToTransform().getExtent();
 
-			player.offer(Keys.GAME_MODE, newWorld.getProperties().getGameMode());
+				Utils.savePlayerInventory(player, oldWorld.getUniqueId());
+
+				if (!Utils.doShareInventories(oldWorld.getName(), newWorld.getName()))
+				{
+					Utils.updatePlayerInventory(player, newWorld.getUniqueId());
+				}
+
+				player.offer(Keys.GAME_MODE, newWorld.getProperties().getGameMode());
+			}
 		}
 	}
 }

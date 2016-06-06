@@ -30,6 +30,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
@@ -45,7 +46,7 @@ public class HatExecutor extends CommandExecutorBase
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			Optional<ItemStack> itemInHand = player.getItemInHand();
+			Optional<ItemStack> itemInHand = player.getItemInHand(HandTypes.MAIN_HAND);
 
 			if (itemInHand.isPresent())
 			{
@@ -53,14 +54,14 @@ public class HatExecutor extends CommandExecutorBase
 				{
 					ItemStack stack = itemInHand.get();
 					stack.setQuantity(itemInHand.get().getQuantity() - 1);
-					player.setItemInHand(stack);
+					player.setItemInHand(HandTypes.MAIN_HAND, stack);
 					stack.setQuantity(1);
 					player.setHelmet(stack);
 				}
 				else
 				{
 					player.setHelmet(itemInHand.get());
-					player.setItemInHand(null);
+					player.setItemInHand(HandTypes.MAIN_HAND, null);
 				}
 			}
 			else
@@ -68,19 +69,21 @@ public class HatExecutor extends CommandExecutorBase
 				player.sendMessage(Text.of("No item selected in hotbar."));
 			}
 		}
-		
+
 		return CommandResult.success();
 	}
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "hat" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec.builder().description(Text.of("Hat Command")).permission("essentialcmds.hat.use").executor(this).build();
 	}
 }
