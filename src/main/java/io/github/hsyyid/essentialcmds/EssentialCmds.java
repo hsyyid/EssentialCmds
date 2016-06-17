@@ -103,6 +103,7 @@ public class EssentialCmds
 	public static Set<UUID> jailedPlayers = Sets.newHashSet();
 	public static Set<UUID> teleportingPlayers = Sets.newHashSet();
 	public static Set<UUID> godPlayers = Sets.newHashSet();
+	public static Set<UUID> flyingPlayers = Sets.newHashSet();
 
 	@Inject
 	private EssLogger logger;

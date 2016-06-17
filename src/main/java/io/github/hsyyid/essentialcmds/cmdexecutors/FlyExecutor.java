@@ -24,22 +24,22 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.source.CommandBlockSource;
-import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
+
+import javax.annotation.Nonnull;
 
 public class FlyExecutor extends CommandExecutorBase
 {
@@ -62,27 +62,38 @@ public class FlyExecutor extends CommandExecutorBase
 					{
 						player.offer(Keys.IS_FLYING, !canFly);
 						player.sendMessage(Text.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "off."));
+
+						if (EssentialCmds.flyingPlayers.contains(player.getUniqueId()))
+						{
+							EssentialCmds.flyingPlayers.remove(player.getUniqueId());
+						}
 					}
 					else
 					{
 						player.sendMessage(Text.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "on."));
+
+						if (!EssentialCmds.flyingPlayers.contains(player.getUniqueId()))
+						{
+							EssentialCmds.flyingPlayers.add(player.getUniqueId());
+						}
 					}
 				}
 				else
 				{
 					player.offer(Keys.CAN_FLY, true);
+
+					if (!EssentialCmds.flyingPlayers.contains(player.getUniqueId()))
+					{
+						EssentialCmds.flyingPlayers.add(player.getUniqueId());
+					}
 				}
 			}
-			else if (src instanceof ConsoleSource)
-			{
-				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /fly!"));
-			}
-			else if (src instanceof CommandBlockSource)
+			else
 			{
 				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /fly!"));
 			}
 		}
-		else if (src.hasPermission("fly.others"))
+		else if (src.hasPermission("essentialcmds.fly.others"))
 		{
 			Player player = targetPlayer.get();
 
@@ -95,11 +106,21 @@ public class FlyExecutor extends CommandExecutorBase
 				{
 					src.sendMessage(Text.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "off."));
 					player.sendMessage(Text.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "off."));
+
+					if (EssentialCmds.flyingPlayers.contains(player.getUniqueId()))
+					{
+						EssentialCmds.flyingPlayers.remove(player.getUniqueId());
+					}
 				}
 				else
 				{
 					src.sendMessage(Text.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "on."));
 					player.sendMessage(Text.of(TextColors.GOLD, "Toggled flying: ", TextColors.GRAY, "on."));
+
+					if (!EssentialCmds.flyingPlayers.contains(player.getUniqueId()))
+					{
+						EssentialCmds.flyingPlayers.add(player.getUniqueId());
+					}
 				}
 			}
 		}

@@ -294,18 +294,6 @@ public class Utils
 		return "Mutes";
 	}
 
-	public static boolean isSafeLoginEnabled()
-	{
-		CommentedConfigurationNode node = Configs.getConfig(mainConfig).getNode("login", "safe");
-
-		if (node.getValue() != null)
-			return node.getBoolean();
-		else
-			Configs.setValue(mainConfig, node.getPath(), true);
-
-		return true;
-	}
-
 	public static boolean areBlacklistMsgsEnabled()
 	{
 		CommentedConfigurationNode node = Configs.getConfig(mainConfig).getNode("blacklist", "messages");
