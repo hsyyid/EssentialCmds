@@ -131,8 +131,6 @@ public class Config implements Configurable
 		get().getNode("log", "command", "console").setValue(true).setComment("Toggles the logging of console commands.");
 		get().getNode("log", "command", "command-block").setValue(false).setComment("Toggles the logging of command block commands.");
 		get().getNode("log", "command", "other").setValue(false).setComment("Toggles the logging of any other command blocks.");
-		get().getNode("login").setComment("Contains login options.");
-		get().getNode("login", "safe").setValue(true).setComment("Toggles safe-login, where players will not fall to their deaths when returning.");
 		get().getNode("blacklist", "messages").setValue(true).setComment("Toggles blacklist messages.");
 	}
 

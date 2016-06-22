@@ -1,3 +1,17 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            name = 'forge'
+            url = 'http://files.minecraftforge.net/maven'
+        }
+    }
+
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+    }
+}
+
 plugins {
     id 'java'
     id 'eclipse'
@@ -7,25 +21,31 @@ plugins {
     id 'net.ellune.blossom' version '1.0.1'
 }
 
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.ellune.blossom'
+defaultTasks 'licenseFormat'
+
 group = "io.github.hsyyid"
 archivesBaseName = "EssentialCmds"
-version = '8.1.7'
+version = '8.1.11'
 
-apply plugin: 'net.ellune.blossom'
+minecraft {
+    version = "1.9.4-12.17.0.1968"
+    runDir = "run"
+    mappings = "snapshot_20160621"
+}
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-defaultTasks 'licenseFormat'
-
 repositories {
     jcenter()
     maven {
-        name 'Sponge maven repo'
-        url 'http://repo.spongepowered.org/maven'
+    	url 'https://jitpack.io'
     }
     maven {
-    	url 'https://jitpack.io'
+        name 'Sponge maven repo'
+        url 'http://repo.spongepowered.org/maven'
     }
 }
 

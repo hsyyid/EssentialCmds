@@ -27,8 +27,8 @@ package io.github.hsyyid.essentialcmds.listeners;
 import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.utils.Mail;
 import io.github.hsyyid.essentialcmds.utils.Utils;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockTypes;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -36,8 +36,6 @@ import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.TeleportHelper;
 import org.spongepowered.api.world.World;
 
 import java.text.SimpleDateFormat;
@@ -45,7 +43,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
@@ -94,26 +91,13 @@ public class PlayerJoinListener
 			MessageChannel.TO_ALL.send(firstJoinMsg);
 		}
 
-		if (Utils.isSafeLoginEnabled())
+		if (EssentialCmds.flyingPlayers.contains(player.getUniqueId()))
 		{
-			if (player.getLocation().add(0, -1, 0).getBlockType() == BlockTypes.AIR)
+			player.offer(Keys.CAN_FLY, true);
+
+			if (player.getLocation().sub(0, 1, 0).getBlockType() == BlockTypes.AIR)
 			{
-				Optional<Location<World>> safeLocation = Sponge.getGame().getTeleportHelper().getSafeLocation(player.getLocation());
-
-				if (safeLocation.isPresent())
-				{
-					player.setLocation(safeLocation.get());
-				}
-				else
-				{
-					// We need to search in a larger radius.
-					safeLocation = Sponge.getGame().getTeleportHelper().getSafeLocation(player.getLocation(), 255, TeleportHelper.DEFAULT_WIDTH);
-
-					if (safeLocation.isPresent())
-					{
-						player.setLocation(safeLocation.get());
-					}
-				}
+				player.offer(Keys.IS_FLYING, true);
 			}
 		}
 

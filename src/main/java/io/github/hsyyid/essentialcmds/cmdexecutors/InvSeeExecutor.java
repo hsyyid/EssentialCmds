@@ -24,7 +24,8 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
+import javax.annotation.Nonnull;
+
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -32,12 +33,14 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import javax.annotation.Nonnull;
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ContainerChest;
+import net.minecraft.network.play.server.SPacketOpenWindow;
 
 public class InvSeeExecutor extends CommandExecutorBase
 {
@@ -48,7 +51,24 @@ public class InvSeeExecutor extends CommandExecutorBase
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			player.openInventory(target.getInventory(), Cause.of(NamedCause.source(src)));
+			EntityPlayerMP playerMP = ((EntityPlayerMP) (Object) player);
+			EntityPlayerMP targetMP = ((EntityPlayerMP) (Object) target);
+
+			InventoryPlayer inventory = targetMP.inventory;
+			ContainerChest container = new ContainerChest(playerMP.inventory, inventory, playerMP);
+
+			if (playerMP.openContainer != playerMP.inventoryContainer)
+			{
+				playerMP.closeScreen();
+			}
+
+			playerMP.getNextWindowId();
+
+			playerMP.connection.sendPacket(new SPacketOpenWindow(playerMP.currentWindowId, "minecraft:container", inventory.getDisplayName(), inventory.getSizeInventory()));
+			playerMP.openContainer = container;
+
+			playerMP.openContainer.windowId = playerMP.currentWindowId;
+			playerMP.openContainer.addListener(playerMP);
 		}
 		else
 		{
@@ -69,7 +89,6 @@ public class InvSeeExecutor extends CommandExecutorBase
 	@Override
 	public CommandSpec getSpec()
 	{
-		return CommandSpec.builder().description(Text.of("InvSee Command")).permission("essentialcmds.invsee.use")
-			.arguments(GenericArguments.onlyOne(GenericArguments.player(Text.of("target")))).executor(this).build();
+		return CommandSpec.builder().description(Text.of("InvSee Command")).permission("essentialcmds.invsee.use").arguments(GenericArguments.onlyOne(GenericArguments.player(Text.of("target")))).executor(this).build();
 	}
 }

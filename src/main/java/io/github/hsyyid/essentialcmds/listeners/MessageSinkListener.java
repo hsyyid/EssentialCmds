@@ -168,6 +168,10 @@ public class MessageSinkListener
 
 			Subject subject = player.getContainingCollection().get(player.getIdentifier());
 			String prefix = "";
+			String prefix2 = "";
+			String prefix3 = "";
+			String prefix4 = "";
+			String prefix5 = "";
 			String suffix = "";
 			TextColor nameColor = TextColors.WHITE;
 
@@ -176,6 +180,10 @@ public class MessageSinkListener
 				OptionSubject optionSubject = (OptionSubject) subject;
 
 				prefix = optionSubject.getOption("prefix").orElse("");
+				prefix2 = optionSubject.getOption("prefix2").orElse("");
+				prefix3 = optionSubject.getOption("prefix3").orElse("");
+				prefix4 = optionSubject.getOption("prefix4").orElse("");
+				prefix5 = optionSubject.getOption("prefix5").orElse("");
 				suffix = optionSubject.getOption("suffix").orElse("");
 				nameColor = Sponge.getRegistry().getType(TextColor.class, optionSubject.getOption("namecolor").orElse("")).orElse(TextColors.WHITE);
 			}
@@ -201,6 +209,10 @@ public class MessageSinkListener
 			{
 				event.setMessage(Text.builder()
 					.append(TextSerializers.formattingCode('&').deserialize(prefixInOriginal))
+						.append(TextSerializers.formattingCode('&').deserialize(prefix2))
+						.append(TextSerializers.formattingCode('&').deserialize(prefix3))
+						.append(TextSerializers.formattingCode('&').deserialize(prefix4))
+						.append(TextSerializers.formattingCode('&').deserialize(prefix5))
 					.append(Text.builder().append(TextSerializers.formattingCode('&').deserialize(playerName)).color(nameColor).build())
 					.append(TextSerializers.formattingCode('&').deserialize(suffixInOriginal))
 					.append(Text.of(TextColors.RESET))
@@ -214,6 +226,10 @@ public class MessageSinkListener
 			{
 				event.setMessage(Text.builder()
 					.append(TextSerializers.formattingCode('&').deserialize(prefixInOriginal))
+						.append(TextSerializers.formattingCode('&').deserialize(prefix2))
+						.append(TextSerializers.formattingCode('&').deserialize(prefix3))
+						.append(TextSerializers.formattingCode('&').deserialize(prefix4))
+						.append(TextSerializers.formattingCode('&').deserialize(prefix5))
 					.append(Text.builder().append(TextSerializers.formattingCode('&').deserialize(playerName)).color(nameColor).build())
 					.append(TextSerializers.formattingCode('&').deserialize(suffixInOriginal))
 					.append(Text.of(TextColors.RESET))
