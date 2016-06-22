@@ -57,17 +57,16 @@ dependencies {
 }
 
 jar {
-    configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
-        from (zipTree(artifact))
+    includeEmptyDirs = false
+    classifier = 'universal'
+    version = "${project.minecraft.version}-${project.version}"
+    configurations.shade.each { dep ->
+        from(project.zipTree(dep)){
+            exclude 'META-INF', 'META-INF/**'
+            exclude 'mcmod.info'
+            exclude 'LICENSE.txt'
+        }
     }
-    manifest {
-        attributes 'Implementation-Title': 'EssentialCmds',
-                   'Implementation-Version': version
-    }
-}
-
-test {
-    systemProperties 'property': 'value'
 }
 
 uploadArchives {
