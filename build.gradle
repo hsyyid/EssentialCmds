@@ -1,3 +1,17 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            name = 'forge'
+            url = 'http://files.minecraftforge.net/maven'
+        }
+    }
+
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-20160116.192356-17'
+    }
+}
+
 plugins {
     id 'java'
     id 'eclipse'
@@ -5,25 +19,28 @@ plugins {
     id 'maven'
     id "com.github.hierynomus.license" version "0.12.1"
     id 'net.ellune.blossom' version '1.0.1'
+    id 'org.spongepowered.plugin' version '0.6'
 }
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.ellune.blossom'
+defaultTasks 'licenseFormat'
 
 group = "io.github.hsyyid"
 archivesBaseName = "EssentialCmds"
-version = '8.1.9'
+version = '8.1.11'
 
-apply plugin: 'net.ellune.blossom'
+minecraft {
+    version = "1.8.9-11.15.1.1902-1.8.9"
+    runDir = "run"
+    mappings = "snapshot_20160301"
+}
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-defaultTasks 'licenseFormat'
-
 repositories {
     jcenter()
-    maven {
-        name 'Sponge maven repo'
-        url 'http://repo.spongepowered.org/maven'
-    }
     maven {
     	url 'https://jitpack.io'
     }
@@ -35,7 +52,7 @@ configurations {
 }
 
 dependencies {
-    compile "org.spongepowered:spongeapi:4.2.0-SNAPSHOT"
+    compile("org.spongepowered:spongeforge:1.8.9-1890-4.2.0-BETA-1445:dev")
     shade "com.github.Flibio:Updatifier:v1.4.0:api"
 }
 
