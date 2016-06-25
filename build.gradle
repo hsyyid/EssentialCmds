@@ -30,9 +30,9 @@ archivesBaseName = "EssentialCmds"
 version = '8.1.11'
 
 minecraft {
-    version = "1.9.4-12.17.0.1968"
+    version = "1.10-12.18.0.1995-1.10.0"
     runDir = "run"
-    mappings = "snapshot_20160621"
+    mappings = "snapshot_20160518"
 }
 
 sourceCompatibility = 1.8
@@ -55,7 +55,7 @@ configurations {
 }
 
 dependencies {
-    compile "org.spongepowered:spongeapi:5.0.0-SNAPSHOT"
+    compile "org.spongepowered:spongeapi:bleeding-1.10-SNAPSHOT"
     shade "com.github.Flibio:Updatifier:v1.4.0:api"
 }
 
