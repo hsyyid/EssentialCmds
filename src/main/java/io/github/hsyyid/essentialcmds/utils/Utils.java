@@ -24,47 +24,6 @@
  */
 package io.github.hsyyid.essentialcmds.utils;
 
-import com.flowpowered.math.vector.Vector3d;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import io.github.hsyyid.essentialcmds.EssentialCmds;
-import io.github.hsyyid.essentialcmds.PluginInfo;
-import io.github.hsyyid.essentialcmds.api.util.config.ConfigManager;
-import io.github.hsyyid.essentialcmds.api.util.config.Configs;
-import io.github.hsyyid.essentialcmds.api.util.config.Configurable;
-import io.github.hsyyid.essentialcmds.managers.config.Config;
-import io.github.hsyyid.essentialcmds.managers.config.HomeConfig;
-import io.github.hsyyid.essentialcmds.managers.config.InventoryConfig;
-import io.github.hsyyid.essentialcmds.managers.config.JailConfig;
-import io.github.hsyyid.essentialcmds.managers.config.PlayerDataConfig;
-import io.github.hsyyid.essentialcmds.managers.config.RulesConfig;
-import io.github.hsyyid.essentialcmds.managers.config.SpawnConfig;
-import io.github.hsyyid.essentialcmds.managers.config.WarpConfig;
-import io.github.hsyyid.essentialcmds.managers.config.WorldConfig;
-import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.commented.CommentedConfigurationNode;
-import org.spongepowered.api.Game;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
-import org.spongepowered.api.data.value.mutable.Value;
-import org.spongepowered.api.entity.Transform;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.Inventory;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.scheduler.Task;
-import org.spongepowered.api.service.sql.SqlService;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.action.TextActions;
-import org.spongepowered.api.text.channel.MessageChannel;
-import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.serializer.TextSerializers;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -90,8 +49,52 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
+
+import org.spongepowered.api.Game;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
+import org.spongepowered.api.data.value.mutable.Value;
+import org.spongepowered.api.entity.Transform;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.Inventory;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.scheduler.Task;
+import org.spongepowered.api.service.sql.SqlService;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
+import org.spongepowered.api.text.channel.MessageChannel;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.serializer.TextSerializers;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
+
+import com.flowpowered.math.vector.Vector3d;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import io.github.hsyyid.essentialcmds.EssentialCmds;
+import io.github.hsyyid.essentialcmds.PluginInfo;
+import io.github.hsyyid.essentialcmds.api.util.config.ConfigManager;
+import io.github.hsyyid.essentialcmds.api.util.config.Configs;
+import io.github.hsyyid.essentialcmds.api.util.config.Configurable;
+import io.github.hsyyid.essentialcmds.managers.config.Config;
+import io.github.hsyyid.essentialcmds.managers.config.HomeConfig;
+import io.github.hsyyid.essentialcmds.managers.config.InventoryConfig;
+import io.github.hsyyid.essentialcmds.managers.config.JailConfig;
+import io.github.hsyyid.essentialcmds.managers.config.PlayerDataConfig;
+import io.github.hsyyid.essentialcmds.managers.config.RulesConfig;
+import io.github.hsyyid.essentialcmds.managers.config.SpawnConfig;
+import io.github.hsyyid.essentialcmds.managers.config.WarpConfig;
+import io.github.hsyyid.essentialcmds.managers.config.WorldConfig;
+import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 
 public class Utils
 {
@@ -108,6 +111,8 @@ public class Utils
 	private static Configurable inventoryConfig = InventoryConfig.getConfig();
 	private static Configurable worldConfig = WorldConfig.getConfig();
 	private static ConfigManager configManager = new ConfigManager();
+
+	private static List<Mail> mail = Lists.newArrayList();
 
 	public static void setSQLPort(String value)
 	{
@@ -796,9 +801,9 @@ public class Utils
 		Configs.setValue(mainConfig, blacklistNode.getPath(), newValue);
 	}
 
-	public static ArrayList<Mail> getMail()
+	public static void readMail()
 	{
-		String json;
+		String json = null;
 
 		try
 		{
@@ -806,16 +811,13 @@ public class Utils
 		}
 		catch (Exception e)
 		{
-			return new ArrayList<>();
+			EssentialCmds.getEssentialCmds().getLogger().error("Error while reading Mail:");
+			e.printStackTrace();
 		}
 
 		if (json != null && json.length() > 0)
 		{
-			return new ArrayList<>(Arrays.asList(gson.fromJson(json, Mail[].class)));
-		}
-		else
-		{
-			return new ArrayList<>();
+			Utils.mail = new ArrayList<>(Arrays.asList(gson.fromJson(json, Mail[].class)));
 		}
 	}
 
@@ -827,81 +829,19 @@ public class Utils
 
 	public static void addMail(String senderName, String recipientName, String message)
 	{
-		if (Utils.getMail() != null)
-		{
-			ArrayList<Mail> currentMail = Utils.getMail();
-
-			currentMail.add(new Mail(recipientName, senderName, message));
-			String json;
-
-			try
-			{
-				json = gson.toJson(currentMail);
-
-				// Assume default encoding.
-				FileWriter fileWriter = new FileWriter("Mail.json");
-
-				// Always wrap FileWriter in BufferedWriter.
-				BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-
-				bufferedWriter.write(json);
-				bufferedWriter.flush();
-
-				// Always close files.
-				bufferedWriter.close();
-			}
-			catch (Exception ex)
-			{
-				EssentialCmds.getEssentialCmds().getLogger().error("Could not save JSON file!");
-			}
-		}
+		Utils.mail.add(new Mail(recipientName, senderName, message));
 	}
 
 	public static void removeMail(Mail mail)
 	{
-		if (Utils.getMail() != null)
-		{
-			ArrayList<Mail> currentMail = Utils.getMail();
-
-			Mail mailToRemove = null;
-
-			for (Mail m : currentMail)
+		Utils.mail.removeIf(m -> {
+			if (m.getRecipientName().equals(mail.getRecipientName()) && m.getSenderName().equals(mail.getSenderName()) && m.getMessage().equals(mail.getMessage()))
 			{
-				if (m.getRecipientName().equals(mail.getRecipientName()) && m.getSenderName().equals(mail.getSenderName()) && m.getMessage().equals(mail.getMessage()))
-				{
-					mailToRemove = m;
-					break;
-				}
+				return true;
 			}
 
-			if (mailToRemove != null)
-			{
-				currentMail.remove(mailToRemove);
-			}
-
-			String json;
-
-			try
-			{
-				json = gson.toJson(currentMail);
-
-				// Assume default encoding.
-				FileWriter fileWriter = new FileWriter("Mail.json");
-
-				// Always wrap FileWriter in BufferedWriter.
-				BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-
-				bufferedWriter.write(json);
-				bufferedWriter.flush();
-
-				// Always close files.
-				bufferedWriter.close();
-			}
-			catch (Exception ex)
-			{
-				EssentialCmds.getEssentialCmds().getLogger().error("Could not save JSON file!");
-			}
-		}
+			return false;
+		});
 	}
 
 	public static void setWarp(Transform<World> transform, String warpName)
@@ -1601,6 +1541,35 @@ public class Utils
 		{
 			Configs.setValue(mainConfig, valueNode.getPath(), true);
 			return true;
+		}
+	}
+
+	public static List<Mail> getMail(Player player)
+	{
+		return Utils.mail.stream().filter(m -> m.getRecipientName().equals(player.getName())).collect(Collectors.toList());
+	}
+
+	public static void saveMail()
+	{
+		try
+		{
+			String json = gson.toJson(Utils.mail);
+
+			// Assume default encoding.
+			FileWriter fileWriter = new FileWriter("Mail.json");
+
+			// Always wrap FileWriter in BufferedWriter.
+			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+			bufferedWriter.write(json);
+			bufferedWriter.flush();
+
+			// Always close files.
+			bufferedWriter.close();
+		}
+		catch (Exception ex)
+		{
+			EssentialCmds.getEssentialCmds().getLogger().error("Could not save JSON file!");
 		}
 	}
 }

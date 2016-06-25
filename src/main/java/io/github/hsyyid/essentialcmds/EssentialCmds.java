@@ -40,6 +40,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
+import org.spongepowered.api.event.game.state.GameStoppingEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 
@@ -192,6 +193,7 @@ public class EssentialCmds
 		getLogger().info(PluginInfo.NAME + " loading...");
 
 		Utils.readMutes();
+		Utils.readMail();
 		Utils.startAFKService();
 
 		// Register all commands.
@@ -222,6 +224,12 @@ public class EssentialCmds
 		getLogger().info("EssentialCmds loaded!");
 	}
 
+	@Listener
+	public void onServerStopping(GameStoppingEvent event)
+	{
+		Utils.saveMail();
+	}
+
 	public Path getConfigDir()
 	{
 		return configDir;
@@ -231,5 +239,4 @@ public class EssentialCmds
 	{
 		return Sponge.getGame();
 	}
-
 }

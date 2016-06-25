@@ -24,9 +24,10 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
-import io.github.hsyyid.essentialcmds.utils.Mail;
-import io.github.hsyyid.essentialcmds.utils.Utils;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
@@ -37,9 +38,9 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
+import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
+import io.github.hsyyid.essentialcmds.utils.Mail;
+import io.github.hsyyid.essentialcmds.utils.Utils;
 
 public class MailReadExecutor extends AsyncCommandExecutorBase
 {
@@ -50,12 +51,9 @@ public class MailReadExecutor extends AsyncCommandExecutorBase
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
+			List<Mail> mail = Utils.getMail(player);
 
-			ArrayList<Mail> mail = Utils.getMail();
-
-			ArrayList<Mail> myMail = (ArrayList<Mail>) mail.stream().filter(m -> m.getRecipientName().equals(player.getName())).collect(Collectors.toList());
-
-			if (myMail.isEmpty())
+			if (mail.isEmpty())
 			{
 				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You have no new mail!"));
 				return;
@@ -63,7 +61,7 @@ public class MailReadExecutor extends AsyncCommandExecutorBase
 
 			try
 			{
-				Mail m = myMail.get(number);
+				Mail m = mail.get(number);
 				Utils.removeMail(m);
 				player.sendMessage(Text.of(TextColors.GOLD, "[Mail]: Message from ", TextColors.WHITE, m.getSenderName() + ": ", TextColors.GRAY, m.getMessage()));
 			}
@@ -85,14 +83,15 @@ public class MailReadExecutor extends AsyncCommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "readmail" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
-		return CommandSpec.builder().description(Text.of("Read Mail Command")).permission("essentialcmds.mail.read")
-			.arguments(GenericArguments.onlyOne(GenericArguments.integer(Text.of("mail no")))).executor(this).build();
+	public CommandSpec getSpec()
+	{
+		return CommandSpec.builder().description(Text.of("Read Mail Command")).permission("essentialcmds.mail.read").arguments(GenericArguments.onlyOne(GenericArguments.integer(Text.of("mail no")))).executor(this).build();
 	}
 }

@@ -24,10 +24,10 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import com.google.common.collect.Lists;
-import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
-import io.github.hsyyid.essentialcmds.utils.Mail;
-import io.github.hsyyid.essentialcmds.utils.Utils;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
@@ -40,11 +40,11 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.google.common.collect.Lists;
 
-import javax.annotation.Nonnull;
+import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
+import io.github.hsyyid.essentialcmds.utils.Mail;
+import io.github.hsyyid.essentialcmds.utils.Utils;
 
 public class MailListExecutor extends AsyncCommandExecutorBase
 {
@@ -54,10 +54,9 @@ public class MailListExecutor extends AsyncCommandExecutorBase
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			ArrayList<Mail> mail = Utils.getMail();
-			ArrayList<Mail> myMail = (ArrayList<Mail>) mail.stream().filter(m -> m.getRecipientName().equals(player.getName())).collect(Collectors.toList());
-			
-			if (myMail.isEmpty())
+			List<Mail> mail = Utils.getMail(player);
+
+			if (mail.isEmpty())
 			{
 				player.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You have no new mail!"));
 				return;
@@ -66,15 +65,10 @@ public class MailListExecutor extends AsyncCommandExecutorBase
 			PaginationService paginationService = Sponge.getServiceManager().provide(PaginationService.class).get();
 			List<Text> mailText = Lists.newArrayList();
 
-			for (Mail newM : myMail)
+			for (Mail newM : mail)
 			{
 				String name = "New mail from " + newM.getSenderName();
-				Text item = Text.builder(name)
-					.onClick(TextActions.runCommand("/readmail " + (myMail.indexOf(newM))))
-					.onHover(TextActions.showText(Text.of(TextColors.WHITE, "Read mail from ", TextColors.GOLD, newM.getSenderName())))
-					.color(TextColors.DARK_AQUA)
-					.style(TextStyles.UNDERLINE)
-					.build();
+				Text item = Text.builder(name).onClick(TextActions.runCommand("/readmail " + (mail.indexOf(newM)))).onHover(TextActions.showText(Text.of(TextColors.WHITE, "Read mail from ", TextColors.GOLD, newM.getSenderName()))).color(TextColors.DARK_AQUA).style(TextStyles.UNDERLINE).build();
 
 				mailText.add(item);
 			}
@@ -99,10 +93,6 @@ public class MailListExecutor extends AsyncCommandExecutorBase
 	@Override
 	public CommandSpec getSpec()
 	{
-		return CommandSpec.builder()
-			.description(Text.of("List Mail Command"))
-			.permission("essentialcmds.mail.list")
-			.executor(this)
-			.build();
+		return CommandSpec.builder().description(Text.of("List Mail Command")).permission("essentialcmds.mail.list").executor(this).build();
 	}
 }
