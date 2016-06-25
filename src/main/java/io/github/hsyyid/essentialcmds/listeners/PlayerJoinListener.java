@@ -24,9 +24,13 @@
  */
 package io.github.hsyyid.essentialcmds.listeners;
 
-import io.github.hsyyid.essentialcmds.EssentialCmds;
-import io.github.hsyyid.essentialcmds.utils.Mail;
-import io.github.hsyyid.essentialcmds.utils.Utils;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Objects;
+import java.util.TimeZone;
+
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Transform;
@@ -38,13 +42,9 @@ import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.World;
 
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Objects;
-import java.util.TimeZone;
-import java.util.stream.Collectors;
+import io.github.hsyyid.essentialcmds.EssentialCmds;
+import io.github.hsyyid.essentialcmds.utils.Mail;
+import io.github.hsyyid.essentialcmds.utils.Utils;
 
 public class PlayerJoinListener
 {
@@ -107,9 +107,9 @@ public class PlayerJoinListener
 		Utils.setLastTimePlayerJoined(player.getUniqueId(), format.format(cal.getTime()));
 		player.sendMessage(Utils.getJoinMsg());
 
-		ArrayList<Mail> newMail = (ArrayList<Mail>) Utils.getMail().stream().filter(mail -> mail.getRecipientName().equals(player.getName())).collect(Collectors.toList());
+		List<Mail> mail = Utils.getMail(player);
 
-		if (newMail.size() > 0)
+		if (mail.size() > 0)
 		{
 			player.sendMessage(Text.of(TextColors.GOLD, "[Mail]: ", TextColors.GRAY, "While you were away, you received new mail to view it do ", TextColors.RED, "/listmail"));
 		}
