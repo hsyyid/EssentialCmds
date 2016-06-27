@@ -383,19 +383,6 @@ public class Utils
 		Configs.setValue(mainConfig, new Object[] { "mysql", "use" }, value);
 	}
 
-	public static String getLastTimePlayerJoined(UUID uuid)
-	{
-		CommentedConfigurationNode node = Configs.getConfig(playerDataConfig).getNode("player", uuid.toString(), "time");
-		if (configManager.getString(node).isPresent())
-			return node.getString();
-		return "";
-	}
-
-	public static void setLastTimePlayerJoined(UUID uuid, String time)
-	{
-		Configs.setValue(playerDataConfig, new Object[] { "player", uuid.toString(), "time" }, time);
-	}
-
 	public static Text getLoginMessage(String playerName)
 	{
 		CommentedConfigurationNode node = Configs.getConfig(mainConfig).getNode("message", "login");

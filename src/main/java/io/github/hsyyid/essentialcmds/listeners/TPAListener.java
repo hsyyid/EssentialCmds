@@ -24,30 +24,29 @@
  */
 package io.github.hsyyid.essentialcmds.listeners;
 
-import static io.github.hsyyid.essentialcmds.EssentialCmds.getEssentialCmds;
+import java.util.concurrent.TimeUnit;
+
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 import io.github.hsyyid.essentialcmds.EssentialCmds;
-import io.github.hsyyid.essentialcmds.PluginInfo;
 import io.github.hsyyid.essentialcmds.events.TPAAcceptEvent;
 import io.github.hsyyid.essentialcmds.events.TPAEvent;
 import io.github.hsyyid.essentialcmds.events.TPAHereAcceptEvent;
 import io.github.hsyyid.essentialcmds.events.TPAHereEvent;
 import io.github.hsyyid.essentialcmds.utils.PendingInvitation;
 import io.github.hsyyid.essentialcmds.utils.Utils;
-import org.spongepowered.api.Game;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.scheduler.Scheduler;
-import org.spongepowered.api.scheduler.Task;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
-
-import java.util.concurrent.TimeUnit;
 
 public class TPAListener
 {
+	private EssentialCmds plugin;
 
-	private Game game = getEssentialCmds().getGame();
+	public TPAListener(EssentialCmds plugin)
+	{
+		this.plugin = plugin;
+	}
 
 	@Listener
 	public void tpaEventHandler(TPAEvent event)
@@ -60,15 +59,12 @@ public class TPAListener
 		EssentialCmds.pendingInvites.add(invite);
 
 		// Removes Invite after 10 Seconds
-		Scheduler scheduler = game.getScheduler();
-		Task.Builder taskBuilder = scheduler.createTaskBuilder();
-
-		taskBuilder.execute(() -> {
+		Sponge.getScheduler().createTaskBuilder().execute(() -> {
 			if (EssentialCmds.pendingInvites.contains(invite))
 			{
 				EssentialCmds.pendingInvites.remove(invite);
 			}
-		}).delay(10, TimeUnit.SECONDS).name("EssentialCmds - Remove Pending Invite").submit(game.getPluginManager().getPlugin(PluginInfo.ID).get().getInstance().get());
+		}).delay(10, TimeUnit.SECONDS).name("EssentialCmds - Remove Pending Invite").submit(plugin);
 	}
 
 	@Listener
@@ -80,21 +76,39 @@ public class TPAListener
 		{
 			EssentialCmds.teleportingPlayers.add(event.getRecipient().getUniqueId());
 			event.getRecipient().sendMessage(Text.of(TextColors.GREEN, senderName, TextColors.WHITE, " accepted your TPA Request. Please wait " + Utils.getTeleportCooldown() + " seconds."));
-			
+
 			Sponge.getScheduler().createTaskBuilder().execute(() -> {
-				if (EssentialCmds.teleportingPlayers.contains(event.getRecipient().getUniqueId()))
+				try
 				{
-					Utils.setLastTeleportOrDeathLocation(event.getRecipient().getUniqueId(), event.getRecipient().getLocation());
-					event.getRecipient().setLocation(event.getSender().getLocation());
-					EssentialCmds.teleportingPlayers.remove(event.getRecipient().getUniqueId());
+					EssentialCmds.timings.teleportCooldown().startTiming();
+
+					if (EssentialCmds.teleportingPlayers.contains(event.getRecipient().getUniqueId()))
+					{
+						Utils.setLastTeleportOrDeathLocation(event.getRecipient().getUniqueId(), event.getRecipient().getLocation());
+						event.getRecipient().setLocation(event.getSender().getLocation());
+						EssentialCmds.teleportingPlayers.remove(event.getRecipient().getUniqueId());
+					}
 				}
-			}).delay(Utils.getTeleportCooldown(), TimeUnit.SECONDS).name("EssentialCmds - TPA Timer").submit(game.getPluginManager().getPlugin(PluginInfo.ID).get().getInstance().get());
+				finally
+				{
+					EssentialCmds.timings.teleportCooldown().stopTiming();
+				}
+			}).delay(Utils.getTeleportCooldown(), TimeUnit.SECONDS).name("EssentialCmds - TPA Timer").submit(plugin);
 		}
 		else
 		{
-			event.getRecipient().sendMessage(Text.of(TextColors.GREEN, senderName, TextColors.WHITE, " accepted your TPA Request."));
-			Utils.setLastTeleportOrDeathLocation(event.getRecipient().getUniqueId(), event.getRecipient().getLocation());
-			event.getRecipient().setLocation(event.getSender().getLocation());
+			try
+			{
+				EssentialCmds.timings.teleportPlayer().startTiming();
+
+				event.getRecipient().sendMessage(Text.of(TextColors.GREEN, senderName, TextColors.WHITE, " accepted your TPA Request."));
+				Utils.setLastTeleportOrDeathLocation(event.getRecipient().getUniqueId(), event.getRecipient().getLocation());
+				event.getRecipient().setLocation(event.getSender().getLocation());
+			}
+			finally
+			{
+				EssentialCmds.timings.teleportPlayer().stopTiming();
+			}
 		}
 	}
 
@@ -107,21 +121,39 @@ public class TPAListener
 		{
 			EssentialCmds.teleportingPlayers.add(event.getSender().getUniqueId());
 			event.getSender().sendMessage(Text.of(TextColors.GREEN, recipientName, TextColors.WHITE, " accepted your TPA Here Request. Please wait " + Utils.getTeleportCooldown() + " seconds."));
-			
+
 			Sponge.getScheduler().createTaskBuilder().execute(() -> {
-				if (EssentialCmds.teleportingPlayers.contains(event.getSender().getUniqueId()))
+				try
 				{
-					Utils.setLastTeleportOrDeathLocation(event.getSender().getUniqueId(), event.getSender().getLocation());
-					event.getSender().setLocation(event.getRecipient().getLocation());
-					EssentialCmds.teleportingPlayers.remove(event.getSender().getUniqueId());
+					EssentialCmds.timings.teleportCooldown().startTiming();
+
+					if (EssentialCmds.teleportingPlayers.contains(event.getSender().getUniqueId()))
+					{
+						Utils.setLastTeleportOrDeathLocation(event.getSender().getUniqueId(), event.getSender().getLocation());
+						event.getSender().setLocation(event.getRecipient().getLocation());
+						EssentialCmds.teleportingPlayers.remove(event.getSender().getUniqueId());
+					}
 				}
-			}).delay(Utils.getTeleportCooldown(), TimeUnit.SECONDS).name("EssentialCmds - TPA Timer").submit(game.getPluginManager().getPlugin(PluginInfo.ID).get().getInstance().get());
+				finally
+				{
+					EssentialCmds.timings.teleportCooldown().stopTiming();
+				}
+			}).delay(Utils.getTeleportCooldown(), TimeUnit.SECONDS).name("EssentialCmds - TPA Timer").submit(plugin);
 		}
 		else
 		{
-			event.getSender().sendMessage(Text.of(TextColors.GREEN, recipientName, TextColors.WHITE, " accepted your TPA Here Request."));
-			Utils.setLastTeleportOrDeathLocation(event.getSender().getUniqueId(), event.getSender().getLocation());
-			event.getSender().setLocation(event.getRecipient().getLocation());
+			try
+			{
+				EssentialCmds.timings.teleportPlayer().startTiming();
+
+				event.getSender().sendMessage(Text.of(TextColors.GREEN, recipientName, TextColors.WHITE, " accepted your TPA Here Request."));
+				Utils.setLastTeleportOrDeathLocation(event.getSender().getUniqueId(), event.getSender().getLocation());
+				event.getSender().setLocation(event.getRecipient().getLocation());
+			}
+			finally
+			{
+				EssentialCmds.timings.teleportPlayer().stopTiming();
+			}
 		}
 	}
 
@@ -137,14 +169,11 @@ public class TPAListener
 		EssentialCmds.pendingInvites.add(invite);
 
 		// Removes Invite after 10 Seconds
-		Scheduler scheduler = game.getScheduler();
-		Task.Builder taskBuilder = scheduler.createTaskBuilder();
-
-		taskBuilder.execute(() -> {
+		Sponge.getScheduler().createTaskBuilder().execute(() -> {
 			if (EssentialCmds.pendingInvites.contains(invite))
 			{
 				EssentialCmds.pendingInvites.remove(invite);
 			}
-		}).delay(10, TimeUnit.SECONDS).name("EssentialCmds - Remove Pending Invite").submit(game.getPluginManager().getPlugin(PluginInfo.ID).get().getInstance().get());
+		}).delay(10, TimeUnit.SECONDS).name("EssentialCmds - Remove Pending Invite").submit(plugin);
 	}
 }
