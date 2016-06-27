@@ -78,6 +78,7 @@ import io.github.hsyyid.essentialcmds.utils.AFK;
 import io.github.hsyyid.essentialcmds.utils.Message;
 import io.github.hsyyid.essentialcmds.utils.PendingInvitation;
 import io.github.hsyyid.essentialcmds.utils.Powertool;
+import io.github.hsyyid.essentialcmds.utils.Timings;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import me.flibio.updatifier.Updatifier;
 
@@ -91,6 +92,8 @@ public class EssentialCmds
 	}
 
 	private static EssentialCmds essentialCmds;
+
+	public static Timings timings;
 
 	public static HashMap<UUID, AFK> afkList = new HashMap<>();
 	public static List<PendingInvitation> pendingInvites = Lists.newArrayList();
@@ -126,6 +129,7 @@ public class EssentialCmds
 	public void onPreInitialization(GamePreInitializationEvent event)
 	{
 		essentialCmds = this;
+		timings = new Timings(this);
 
 		// Create Config Directory for EssentialCmds
 		if (!Files.exists(configDir))
@@ -206,7 +210,7 @@ public class EssentialCmds
 		getGame().getEventManager().registerListeners(this, new PlayerInteractListener());
 		getGame().getEventManager().registerListeners(this, new PlayerMoveListener());
 		getGame().getEventManager().registerListeners(this, new PlayerDeathListener());
-		getGame().getEventManager().registerListeners(this, new TPAListener());
+		getGame().getEventManager().registerListeners(this, new TPAListener(this));
 		getGame().getEventManager().registerListeners(this, new MailListener());
 		getGame().getEventManager().registerListeners(this, new PlayerDisconnectListener());
 		getGame().getEventManager().registerListeners(this, new WeatherChangeListener());
