@@ -24,9 +24,10 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
-import io.github.hsyyid.essentialcmds.utils.Utils;
-import org.spongepowered.api.Sponge;
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -39,20 +40,19 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
+import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
+import io.github.hsyyid.essentialcmds.utils.Utils;
 
 public class TeleportPosExecutor extends CommandExecutorBase
 {
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		Optional<Player> p = ctx.<Player> getOne("player");
-		Optional<String> optionalWorld = ctx.<String> getOne("world");
+		Optional<World> optionalWorld = ctx.<World> getOne("world");
+		World world = optionalWorld.orElse(null);
 		int x = ctx.<Integer> getOne("x").get();
 		int y = ctx.<Integer> getOne("y").get();
 		int z = ctx.<Integer> getOne("z").get();
-		World world = Sponge.getServer().getWorld(optionalWorld.get()).orElse(null);
 
 		if (p.isPresent())
 		{
@@ -60,7 +60,7 @@ public class TeleportPosExecutor extends CommandExecutorBase
 			{
 				Utils.setLastTeleportOrDeathLocation(p.get().getUniqueId(), p.get().getLocation());
 
-				if(world != null)
+				if (world != null)
 					p.get().setLocation(new Location<>(world, x, y, z));
 				else
 					p.get().setLocation(new Location<>(p.get().getWorld(), x, y, z));
@@ -76,7 +76,7 @@ public class TeleportPosExecutor extends CommandExecutorBase
 				Player player = (Player) src;
 				Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
 
-				if(world != null)
+				if (world != null)
 					player.setLocation(new Location<>(world, x, y, z));
 				else
 					player.setLocation(new Location<>(player.getWorld(), x, y, z));
@@ -94,23 +94,15 @@ public class TeleportPosExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "tppos", "teleportpos", "teleportposition" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
-		return CommandSpec
-			.builder()
-			.description(Text.of("Teleport Position Command"))
-			.permission("essentialcmds.teleport.pos.use")
-			.arguments(GenericArguments.seq(
-				GenericArguments.onlyOne(GenericArguments.integer(Text.of("x"))),
-				GenericArguments.onlyOne(GenericArguments.integer(Text.of("y"))),
-				GenericArguments.onlyOne(GenericArguments.integer(Text.of("z"))),
-				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))),
-				GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("world"))))))
-			.executor(this).build();
+	public CommandSpec getSpec()
+	{
+		return CommandSpec.builder().description(Text.of("Teleport Position Command")).permission("essentialcmds.teleport.pos.use").arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.integer(Text.of("x"))), GenericArguments.onlyOne(GenericArguments.integer(Text.of("y"))), GenericArguments.onlyOne(GenericArguments.integer(Text.of("z"))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("world")))))).executor(this).build();
 	}
 }
