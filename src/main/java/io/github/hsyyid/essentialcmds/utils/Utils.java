@@ -24,6 +24,46 @@
  */
 package io.github.hsyyid.essentialcmds.utils;
 
+import com.flowpowered.math.vector.Vector3d;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import io.github.hsyyid.essentialcmds.EssentialCmds;
+import io.github.hsyyid.essentialcmds.PluginInfo;
+import io.github.hsyyid.essentialcmds.api.util.config.ConfigManager;
+import io.github.hsyyid.essentialcmds.api.util.config.Configs;
+import io.github.hsyyid.essentialcmds.api.util.config.Configurable;
+import io.github.hsyyid.essentialcmds.managers.config.Config;
+import io.github.hsyyid.essentialcmds.managers.config.HomeConfig;
+import io.github.hsyyid.essentialcmds.managers.config.InventoryConfig;
+import io.github.hsyyid.essentialcmds.managers.config.JailConfig;
+import io.github.hsyyid.essentialcmds.managers.config.RulesConfig;
+import io.github.hsyyid.essentialcmds.managers.config.SpawnConfig;
+import io.github.hsyyid.essentialcmds.managers.config.WarpConfig;
+import io.github.hsyyid.essentialcmds.managers.config.WorldConfig;
+import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import org.spongepowered.api.Game;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
+import org.spongepowered.api.data.value.mutable.Value;
+import org.spongepowered.api.entity.Transform;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.Inventory;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.scheduler.Task;
+import org.spongepowered.api.service.sql.SqlService;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
+import org.spongepowered.api.text.channel.MessageChannel;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.serializer.TextSerializers;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -53,49 +93,6 @@ import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
-import org.spongepowered.api.Game;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
-import org.spongepowered.api.data.value.mutable.Value;
-import org.spongepowered.api.entity.Transform;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.Inventory;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.scheduler.Task;
-import org.spongepowered.api.service.sql.SqlService;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.action.TextActions;
-import org.spongepowered.api.text.channel.MessageChannel;
-import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.serializer.TextSerializers;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
-
-import com.flowpowered.math.vector.Vector3d;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import io.github.hsyyid.essentialcmds.EssentialCmds;
-import io.github.hsyyid.essentialcmds.PluginInfo;
-import io.github.hsyyid.essentialcmds.api.util.config.ConfigManager;
-import io.github.hsyyid.essentialcmds.api.util.config.Configs;
-import io.github.hsyyid.essentialcmds.api.util.config.Configurable;
-import io.github.hsyyid.essentialcmds.managers.config.Config;
-import io.github.hsyyid.essentialcmds.managers.config.HomeConfig;
-import io.github.hsyyid.essentialcmds.managers.config.InventoryConfig;
-import io.github.hsyyid.essentialcmds.managers.config.JailConfig;
-import io.github.hsyyid.essentialcmds.managers.config.PlayerDataConfig;
-import io.github.hsyyid.essentialcmds.managers.config.RulesConfig;
-import io.github.hsyyid.essentialcmds.managers.config.SpawnConfig;
-import io.github.hsyyid.essentialcmds.managers.config.WarpConfig;
-import io.github.hsyyid.essentialcmds.managers.config.WorldConfig;
-import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.commented.CommentedConfigurationNode;
-
 public class Utils
 {
 	private static Gson gson = new GsonBuilder().create();
@@ -107,7 +104,6 @@ public class Utils
 	private static Configurable rulesConfig = RulesConfig.getConfig();
 	private static Configurable jailsConfig = JailConfig.getConfig();
 	private static Configurable spawnConfig = SpawnConfig.getConfig();
-	private static Configurable playerDataConfig = PlayerDataConfig.getConfig();
 	private static Configurable inventoryConfig = InventoryConfig.getConfig();
 	private static Configurable worldConfig = WorldConfig.getConfig();
 	private static ConfigManager configManager = new ConfigManager();
@@ -1018,42 +1014,24 @@ public class Utils
 		Configs.saveConfig(mainConfig);
 	}
 
-	public static void setLastTeleportOrDeathLocation(UUID userName, Location<World> playerLocation)
+	public static void setLastTeleportOrDeathLocation(UUID uuid, Location<World> playerLocation)
 	{
-		String playerName = userName.toString();
+		if (EssentialCmds.backLocations.containsKey(uuid))
+		{
+			EssentialCmds.backLocations.remove(uuid);
+		}
 
-		Configs.getConfig(playerDataConfig).getNode("back", "users", playerName, "lastDeath", "X").setValue(playerLocation.getX());
-		Configs.getConfig(playerDataConfig).getNode("back", "users", playerName, "lastDeath", "Y").setValue(playerLocation.getY());
-		Configs.getConfig(playerDataConfig).getNode("back", "users", playerName, "lastDeath", "Z").setValue(playerLocation.getZ());
-		Configs.getConfig(playerDataConfig).getNode("back", "users", playerName, "lastDeath", "worldUUID").setValue(playerLocation.getExtent().getUniqueId().toString());
-
-		Configs.saveConfig(playerDataConfig);
+		EssentialCmds.backLocations.put(uuid, playerLocation);
 	}
 
 	public static Location<World> getLastTeleportOrDeathLocation(Player player)
 	{
-		try
+		if (EssentialCmds.backLocations.containsKey(player.getUniqueId()))
 		{
-			String playerName = player.getUniqueId().toString();
-			ConfigurationNode xNode = Configs.getConfig(playerDataConfig).getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.X").split("\\."));
-			double x = xNode.getDouble();
-			ConfigurationNode yNode = Configs.getConfig(playerDataConfig).getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Y").split("\\."));
-			double y = yNode.getDouble();
-			ConfigurationNode zNode = Configs.getConfig(playerDataConfig).getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.Z").split("\\."));
-			double z = zNode.getDouble();
-			ConfigurationNode worldNode = Configs.getConfig(playerDataConfig).getNode((Object[]) ("back.users." + playerName + "." + "lastDeath.worldUUID").split("\\."));
-			UUID worldUUID = UUID.fromString(worldNode.getString());
-			Optional<World> world = game.getServer().getWorld(worldUUID);
+			return EssentialCmds.backLocations.get(player.getUniqueId());
+		}
 
-			if (world.isPresent())
-				return new Location<>(world.get(), x, y, z);
-			else
-				return null;
-		}
-		catch (Exception e)
-		{
-			return null;
-		}
+		return null;
 	}
 
 	public static ArrayList<String> getRules()
