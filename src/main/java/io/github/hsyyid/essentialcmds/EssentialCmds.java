@@ -24,30 +24,10 @@
  */
 package io.github.hsyyid.essentialcmds;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.spongepowered.api.Game;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.config.ConfigDir;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.game.state.GameInitializationEvent;
-import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
-import org.spongepowered.api.event.game.state.GameStoppingEvent;
-import org.spongepowered.api.plugin.Dependency;
-import org.spongepowered.api.plugin.Plugin;
-
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
-
 import io.github.hsyyid.essentialcmds.internal.CommandLoader;
 import io.github.hsyyid.essentialcmds.listeners.BlacklistListener;
 import io.github.hsyyid.essentialcmds.listeners.ChangeBlockListener;
@@ -69,7 +49,6 @@ import io.github.hsyyid.essentialcmds.managers.config.Config;
 import io.github.hsyyid.essentialcmds.managers.config.HomeConfig;
 import io.github.hsyyid.essentialcmds.managers.config.InventoryConfig;
 import io.github.hsyyid.essentialcmds.managers.config.JailConfig;
-import io.github.hsyyid.essentialcmds.managers.config.PlayerDataConfig;
 import io.github.hsyyid.essentialcmds.managers.config.RulesConfig;
 import io.github.hsyyid.essentialcmds.managers.config.SpawnConfig;
 import io.github.hsyyid.essentialcmds.managers.config.WarpConfig;
@@ -81,6 +60,28 @@ import io.github.hsyyid.essentialcmds.utils.Powertool;
 import io.github.hsyyid.essentialcmds.utils.Timings;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import me.flibio.updatifier.Updatifier;
+import org.slf4j.Logger;
+import org.spongepowered.api.Game;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
+import org.spongepowered.api.event.game.state.GameStoppingEvent;
+import org.spongepowered.api.plugin.Dependency;
+import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 @Updatifier(repoName = "EssentialCmds", repoOwner = "hsyyid", version = "v" + PluginInfo.VERSION)
 @Plugin(id = PluginInfo.ID, name = PluginInfo.NAME, version = PluginInfo.INFORMATIVE_VERSION, description = PluginInfo.DESCRIPTION, dependencies = @Dependency(id = "Updatifier", version = "1.0", optional = true) )
@@ -107,6 +108,7 @@ public class EssentialCmds
 	public static Set<UUID> teleportingPlayers = Sets.newHashSet();
 	public static Set<UUID> godPlayers = Sets.newHashSet();
 	public static Set<UUID> flyingPlayers = Sets.newHashSet();
+	public static Map<UUID, Location<World>> backLocations = Maps.newHashMap();
 
 	@Inject
 	private Logger logger;
@@ -185,8 +187,6 @@ public class EssentialCmds
 		SpawnConfig.getConfig().setup();
 		// Create worlds.conf
 		WorldConfig.getConfig().setup();
-		// Create playerdata.conf
-		PlayerDataConfig.getConfig().setup();
 		// Create inventory.conf
 		InventoryConfig.getConfig().setup();
 	}
