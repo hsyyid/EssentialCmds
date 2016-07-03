@@ -27,7 +27,7 @@ defaultTasks 'licenseFormat'
 
 group = "io.github.hsyyid"
 archivesBaseName = "EssentialCmds"
-version = '8.1.11'
+version = '8.1.12'
 
 minecraft {
     version = "1.9.4-12.17.0.1968"
