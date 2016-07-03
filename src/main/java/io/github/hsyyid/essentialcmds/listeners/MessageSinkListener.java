@@ -33,7 +33,6 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.service.permission.Subject;
-import org.spongepowered.api.service.permission.option.OptionSubject;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.ClickAction;
 import org.spongepowered.api.text.action.TextActions;
@@ -165,28 +164,15 @@ public class MessageSinkListener
 			}
 
 			StringBuilder original = new StringBuilder(event.getMessage().toPlain());
-
 			Subject subject = player.getContainingCollection().get(player.getIdentifier());
-			String prefix = "";
-			String prefix2 = "";
-			String prefix3 = "";
-			String prefix4 = "";
-			String prefix5 = "";
-			String suffix = "";
-			TextColor nameColor = TextColors.WHITE;
 
-			if (subject instanceof OptionSubject)
-			{
-				OptionSubject optionSubject = (OptionSubject) subject;
-
-				prefix = optionSubject.getOption("prefix").orElse("");
-				prefix2 = optionSubject.getOption("prefix2").orElse("");
-				prefix3 = optionSubject.getOption("prefix3").orElse("");
-				prefix4 = optionSubject.getOption("prefix4").orElse("");
-				prefix5 = optionSubject.getOption("prefix5").orElse("");
-				suffix = optionSubject.getOption("suffix").orElse("");
-				nameColor = Sponge.getRegistry().getType(TextColor.class, optionSubject.getOption("namecolor").orElse("")).orElse(TextColors.WHITE);
-			}
+			String prefix = subject.getOption("prefix").orElse("");
+			String prefix2 = subject.getOption("prefix2").orElse("");
+			String prefix3 = subject.getOption("prefix3").orElse("");
+			String prefix4 = subject.getOption("prefix4").orElse("");
+			String prefix5 = subject.getOption("prefix5").orElse("");
+			String suffix = subject.getOption("suffix").orElse("");
+			TextColor nameColor = Sponge.getRegistry().getType(TextColor.class, subject.getOption("namecolor").orElse("")).orElse(TextColors.WHITE);
 
 			String restOfOriginal = original.substring(original.indexOf(">") + 1, original.length());
 
@@ -207,37 +193,11 @@ public class MessageSinkListener
 
 			if (!player.hasPermission("essentialcmds.color.chat.use"))
 			{
-				event.setMessage(Text.builder()
-					.append(TextSerializers.formattingCode('&').deserialize(prefixInOriginal))
-						.append(TextSerializers.formattingCode('&').deserialize(prefix2))
-						.append(TextSerializers.formattingCode('&').deserialize(prefix3))
-						.append(TextSerializers.formattingCode('&').deserialize(prefix4))
-						.append(TextSerializers.formattingCode('&').deserialize(prefix5))
-					.append(Text.builder().append(TextSerializers.formattingCode('&').deserialize(playerName)).color(nameColor).build())
-					.append(TextSerializers.formattingCode('&').deserialize(suffixInOriginal))
-					.append(Text.of(TextColors.RESET))
-					.append(Text.of(restOfOriginal))
-					.onClick(clickAction.isPresent() ? clickAction.get() : event.getMessage().getClickAction().orElse(null))
-					.style(event.getMessage().getStyle())
-					.onHover(event.getMessage().getHoverAction().orElse(null))
-					.build());
+				event.setMessage(Text.builder().append(TextSerializers.formattingCode('&').deserialize(prefixInOriginal)).append(TextSerializers.formattingCode('&').deserialize(prefix2)).append(TextSerializers.formattingCode('&').deserialize(prefix3)).append(TextSerializers.formattingCode('&').deserialize(prefix4)).append(TextSerializers.formattingCode('&').deserialize(prefix5)).append(Text.builder().append(TextSerializers.formattingCode('&').deserialize(playerName)).color(nameColor).build()).append(TextSerializers.formattingCode('&').deserialize(suffixInOriginal)).append(Text.of(TextColors.RESET)).append(Text.of(restOfOriginal)).onClick(clickAction.isPresent() ? clickAction.get() : event.getMessage().getClickAction().orElse(null)).style(event.getMessage().getStyle()).onHover(event.getMessage().getHoverAction().orElse(null)).build());
 			}
 			else
 			{
-				event.setMessage(Text.builder()
-					.append(TextSerializers.formattingCode('&').deserialize(prefixInOriginal))
-						.append(TextSerializers.formattingCode('&').deserialize(prefix2))
-						.append(TextSerializers.formattingCode('&').deserialize(prefix3))
-						.append(TextSerializers.formattingCode('&').deserialize(prefix4))
-						.append(TextSerializers.formattingCode('&').deserialize(prefix5))
-					.append(Text.builder().append(TextSerializers.formattingCode('&').deserialize(playerName)).color(nameColor).build())
-					.append(TextSerializers.formattingCode('&').deserialize(suffixInOriginal))
-					.append(Text.of(TextColors.RESET))
-					.append(TextSerializers.formattingCode('&').deserialize(restOfOriginal))
-					.onClick(clickAction.isPresent() ? clickAction.get() : event.getMessage().getClickAction().orElse(null))
-					.style(event.getMessage().getStyle())
-					.onHover(event.getMessage().getHoverAction().orElse(null))
-					.build());
+				event.setMessage(Text.builder().append(TextSerializers.formattingCode('&').deserialize(prefixInOriginal)).append(TextSerializers.formattingCode('&').deserialize(prefix2)).append(TextSerializers.formattingCode('&').deserialize(prefix3)).append(TextSerializers.formattingCode('&').deserialize(prefix4)).append(TextSerializers.formattingCode('&').deserialize(prefix5)).append(Text.builder().append(TextSerializers.formattingCode('&').deserialize(playerName)).color(nameColor).build()).append(TextSerializers.formattingCode('&').deserialize(suffixInOriginal)).append(Text.of(TextColors.RESET)).append(TextSerializers.formattingCode('&').deserialize(restOfOriginal)).onClick(clickAction.isPresent() ? clickAction.get() : event.getMessage().getClickAction().orElse(null)).style(event.getMessage().getStyle()).onHover(event.getMessage().getHoverAction().orElse(null)).build());
 			}
 		}
 	}
