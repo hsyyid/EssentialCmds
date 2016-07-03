@@ -30,7 +30,7 @@ archivesBaseName = "EssentialCmds"
 version = '8.1.12'
 
 minecraft {
-    version = "1.10-12.18.0.1995-1.10.0"
+    version = "1.10.2-12.18.0.2006-1.10.0"
     runDir = "run"
     mappings = "snapshot_20160518"
 }
