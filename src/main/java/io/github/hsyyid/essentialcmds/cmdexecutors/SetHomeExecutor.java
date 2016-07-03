@@ -24,19 +24,19 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
-import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
-import io.github.hsyyid.essentialcmds.utils.Utils;
+import javax.annotation.Nonnull;
+
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.permission.Subject;
-import org.spongepowered.api.service.permission.option.OptionSubject;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import javax.annotation.Nonnull;
+import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
+import io.github.hsyyid.essentialcmds.utils.Utils;
 
 public class SetHomeExecutor extends AsyncCommandExecutorBase
 {
@@ -49,12 +49,7 @@ public class SetHomeExecutor extends AsyncCommandExecutorBase
 		{
 			Player player = (Player) src;
 			Subject subject = player.getContainingCollection().get(player.getIdentifier());
-			String homesAllowed = null;
-
-			if (subject instanceof OptionSubject)
-			{
-				homesAllowed = ((OptionSubject) subject).getOption("homes").orElse("");
-			}
+			String homesAllowed = subject.getOption("homes").orElse("");
 
 			if (homesAllowed != null && !homesAllowed.isEmpty())
 			{

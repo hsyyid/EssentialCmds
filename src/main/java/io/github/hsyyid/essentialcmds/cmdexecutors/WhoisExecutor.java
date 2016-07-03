@@ -36,12 +36,11 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.service.permission.Subject;
-import org.spongepowered.api.service.permission.option.OptionSubject;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import io.github.hsyyid.essentialcmds.internal.AsyncCommandExecutorBase;
+import io.github.hsyyid.essentialcmds.utils.Utils;
 
 public class WhoisExecutor extends AsyncCommandExecutorBase
 {
@@ -87,20 +86,10 @@ public class WhoisExecutor extends AsyncCommandExecutorBase
 
 				for (Player player : Sponge.getServer().getOnlinePlayers())
 				{
-					Subject subject = player.getContainingCollection().get(player.getIdentifier());
-
-					if (subject instanceof OptionSubject)
+					if (Utils.getNick(player).equalsIgnoreCase(optPlayerName.get()))
 					{
-						OptionSubject optionSubject = (OptionSubject) subject;
-
-						if (optionSubject.getOption("nick").isPresent())
-						{
-							if (optionSubject.getOption("nick").get().equals(optPlayerName.get()))
-							{
-								foundPlayer = player;
-								break;
-							}
-						}
+						foundPlayer = player;
+						break;
 					}
 				}
 
