@@ -840,7 +840,7 @@ public class Utils
 		Configs.saveConfig(warpsConfig);
 	}
 
-	public static Text getJoinMsg()
+	public static Text getJoinMsg(String name)
 	{
 		ConfigurationNode valueNode = Configs.getConfig(mainConfig).getNode((Object[]) ("message.join").split("\\."));
 		String message;
@@ -860,7 +860,7 @@ public class Utils
 			return Utils.getURL(message);
 		}
 
-		return TextSerializers.FORMATTING_CODE.deserialize(message);
+		return TextSerializers.FORMATTING_CODE.deserialize(message.replaceAll("@p", name));
 	}
 
 	public static String getFirstChatCharReplacement()
