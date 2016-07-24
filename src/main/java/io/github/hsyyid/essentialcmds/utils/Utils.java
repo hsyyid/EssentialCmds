@@ -187,7 +187,7 @@ public class Utils
 
 				DataSource datasource = sql.getDataSource("jdbc:mysql://" + host + ":" + port + "/" + database + "?user=" + username + "&password=" + password);
 
-				String executeString = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID VARCHAR(256) PRIMARY KEY NOT NULL)";
+				String executeString = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID CHAR(36) PRIMARY KEY NOT NULL)";
 				execute(executeString, datasource);
 
 				executeString = "DELETE FROM MUTES WHERE UUID='" + playerUUID.toString() + "';";
