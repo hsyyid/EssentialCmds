@@ -28,6 +28,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -39,7 +40,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
-
+import org.spongepowered.api.world.storage.WorldProperties;
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 
@@ -48,8 +49,34 @@ public class TeleportPosExecutor extends CommandExecutorBase
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		Optional<Player> p = ctx.<Player> getOne("player");
-		Optional<World> optionalWorld = ctx.<World> getOne("world");
-		World world = optionalWorld.orElse(null);
+		World world = null;
+		if (ctx.hasAny("world")) {
+			Optional<WorldProperties> optionalWorldProperties = ctx.<WorldProperties> getOne("world");
+			WorldProperties worldProperties = optionalWorldProperties.orElse(null);
+			if (worldProperties != null) {
+				// check if world is loaded
+				Optional<World> optionalWorld = Sponge.getServer().getWorld(worldProperties.getUniqueId());
+				world = optionalWorld.orElse(null);
+				if (world == null) {
+					// attempt to load world
+					world = Sponge.getServer().loadWorld(worldProperties).orElse(null);
+					if (world == null) {
+						src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Could not load world " + worldProperties.getWorldName() + "."));
+						return CommandResult.success();
+					}
+				}
+			}
+		} else {
+			if (p.isPresent()) {
+				world = p.get().getWorld();
+			} else if (src instanceof Player) {
+				world = ((Player) src).getWorld();
+			} else {
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "No valid world could be found!"));
+				return CommandResult.success();
+			}
+		}
+
 		int x = ctx.<Integer> getOne("x").get();
 		int y = ctx.<Integer> getOne("y").get();
 		int z = ctx.<Integer> getOne("z").get();
@@ -59,12 +86,7 @@ public class TeleportPosExecutor extends CommandExecutorBase
 			if (src.hasPermission("teleport.pos.others"))
 			{
 				Utils.setLastTeleportOrDeathLocation(p.get().getUniqueId(), p.get().getLocation());
-
-				if (world != null)
-					p.get().setLocation(new Location<>(world, x, y, z));
-				else
-					p.get().setLocation(new Location<>(p.get().getWorld(), x, y, z));
-
+				p.get().setLocation(new Location<>(world, x, y, z));
 				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported player " + p.get().getName() + " to " + x + "," + y + "," + z + "."));
 				p.get().sendMessage(Text.of(TextColors.GOLD, "You have been teleported by " + src.getName()));
 			}
@@ -75,12 +97,7 @@ public class TeleportPosExecutor extends CommandExecutorBase
 			{
 				Player player = (Player) src;
 				Utils.setLastTeleportOrDeathLocation(player.getUniqueId(), player.getLocation());
-
-				if (world != null)
-					player.setLocation(new Location<>(world, x, y, z));
-				else
-					player.setLocation(new Location<>(player.getWorld(), x, y, z));
-
+				player.setLocation(new Location<>(world, x, y, z));
 				src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleported to coords."));
 			}
 			else
@@ -103,6 +120,6 @@ public class TeleportPosExecutor extends CommandExecutorBase
 	@Override
 	public CommandSpec getSpec()
 	{
-		return CommandSpec.builder().description(Text.of("Teleport Position Command")).permission("essentialcmds.teleport.pos.use").arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.integer(Text.of("x"))), GenericArguments.onlyOne(GenericArguments.integer(Text.of("y"))), GenericArguments.onlyOne(GenericArguments.integer(Text.of("z"))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("world")))))).executor(this).build();
+		return CommandSpec.builder().description(Text.of("Teleport Position Command")).permission("essentialcmds.teleport.pos.use").arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.integer(Text.of("x"))), GenericArguments.onlyOne(GenericArguments.integer(Text.of("y"))), GenericArguments.onlyOne(GenericArguments.integer(Text.of("z"))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.player(Text.of("player")))), GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.world(Text.of("world")))))).executor(this).build();
 	}
 }
