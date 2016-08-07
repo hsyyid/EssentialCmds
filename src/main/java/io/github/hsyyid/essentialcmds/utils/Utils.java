@@ -65,6 +65,7 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -788,19 +789,22 @@ public class Utils
 	{
 		String json = null;
 
-		try
+		if (new File("Mail.json").exists())
 		{
-			json = readFile("Mail.json", StandardCharsets.UTF_8);
-		}
-		catch (Exception e)
-		{
-			EssentialCmds.getEssentialCmds().getLogger().error("Error while reading Mail:");
-			e.printStackTrace();
-		}
+			try
+			{
+				json = readFile("Mail.json", StandardCharsets.UTF_8);
+			}
+			catch (Exception e)
+			{
+				EssentialCmds.getEssentialCmds().getLogger().error("Error while reading Mail:");
+				e.printStackTrace();
+			}
 
-		if (json != null && json.length() > 0)
-		{
-			Utils.mail = new ArrayList<>(Arrays.asList(gson.fromJson(json, Mail[].class)));
+			if (json != null && json.length() > 0)
+			{
+				Utils.mail = new ArrayList<>(Arrays.asList(gson.fromJson(json, Mail[].class)));
+			}
 		}
 	}
 
