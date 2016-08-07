@@ -65,6 +65,7 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -187,7 +188,7 @@ public class Utils
 
 				DataSource datasource = sql.getDataSource("jdbc:mysql://" + host + ":" + port + "/" + database + "?user=" + username + "&password=" + password);
 
-				String executeString = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID VARCHAR(256) PRIMARY KEY NOT NULL)";
+				String executeString = "CREATE TABLE IF NOT EXISTS MUTES " + "(UUID CHAR(36) PRIMARY KEY NOT NULL)";
 				execute(executeString, datasource);
 
 				executeString = "DELETE FROM MUTES WHERE UUID='" + playerUUID.toString() + "';";
@@ -788,19 +789,22 @@ public class Utils
 	{
 		String json = null;
 
-		try
+		if (new File("Mail.json").exists())
 		{
-			json = readFile("Mail.json", StandardCharsets.UTF_8);
-		}
-		catch (Exception e)
-		{
-			EssentialCmds.getEssentialCmds().getLogger().error("Error while reading Mail:");
-			e.printStackTrace();
-		}
+			try
+			{
+				json = readFile("Mail.json", StandardCharsets.UTF_8);
+			}
+			catch (Exception e)
+			{
+				EssentialCmds.getEssentialCmds().getLogger().error("Error while reading Mail:");
+				e.printStackTrace();
+			}
 
-		if (json != null && json.length() > 0)
-		{
-			Utils.mail = new ArrayList<>(Arrays.asList(gson.fromJson(json, Mail[].class)));
+			if (json != null && json.length() > 0)
+			{
+				Utils.mail = new ArrayList<>(Arrays.asList(gson.fromJson(json, Mail[].class)));
+			}
 		}
 	}
 
