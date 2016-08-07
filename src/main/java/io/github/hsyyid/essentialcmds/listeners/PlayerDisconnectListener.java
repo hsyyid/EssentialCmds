@@ -28,29 +28,27 @@ import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.utils.Utils;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.serializer.TextSerializers;
 
 public class PlayerDisconnectListener
 {
-	@Listener
+	@Listener(order = Order.LAST)
 	public void onPlayerDisconnect(ClientConnectionEvent.Disconnect event)
 	{
 		Player player = event.getTargetEntity();
-		String disconnectMessage = Utils.getDisconnectMessage();
+		Text disconnectMessage = Utils.getDisconnectMessage(player.getName());
 
 		if (disconnectMessage != null && !disconnectMessage.equals(""))
 		{
-			if (disconnectMessage.equals("none"))
+			if (disconnectMessage.isEmpty())
 			{
 				event.setMessageCancelled(true);
 			}
 			else
 			{
-				disconnectMessage = disconnectMessage.replaceAll("@p", player.getName());
-				Text newMessage = TextSerializers.formattingCode('&').deserialize(disconnectMessage);
-				event.setMessage(newMessage);
+				event.setMessage(disconnectMessage);
 			}
 		}
 

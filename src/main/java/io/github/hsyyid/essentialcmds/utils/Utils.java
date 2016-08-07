@@ -414,13 +414,15 @@ public class Utils
 		Configs.setValue(mainConfig, new Object[] { "message", "login" }, value);
 	}
 
-	public static String getDisconnectMessage()
+	public static Text getDisconnectMessage(String name)
 	{
 		CommentedConfigurationNode node = Configs.getConfig(mainConfig).getNode("message", "disconnect");
+
 		if (configManager.getString(node).isPresent())
-			return node.getString();
-		setDisconnectMessage("");
-		return "";
+			return TextSerializers.formattingCode('&').deserialize(node.getString().replaceAll("@p", name));
+
+		setDisconnectMessage("@p has disconnected.");
+		return Text.of("@p has disconnnected.".replaceAll("@p", name));
 	}
 
 	public static void setDisconnectMessage(String value)

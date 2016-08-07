@@ -56,9 +56,9 @@ public class RTPExecutor extends CommandExecutorBase
 			Location<World> playerLocation = player.getLocation();
 
 			Random rand = new Random();
-			int x = rand.nextInt(3999);
+			int x = rand.nextInt((int) player.getWorld().getWorldBorder().getDiameter() - 1);
 			int y = rand.nextInt(256);
-			int z = rand.nextInt(3999);
+			int z = rand.nextInt((int) player.getWorld().getWorldBorder().getDiameter() - 1);
 
 			Location<World> randLocation = new Location<World>(playerLocation.getExtent(), x, y, z);
 			TeleportHelper teleportHelper = Sponge.getGame().getTeleportHelper();
@@ -69,11 +69,12 @@ public class RTPExecutor extends CommandExecutorBase
 				if (optionalLocation.get().getBlock().getType().equals(BlockTypes.WATER) || optionalLocation.get().getBlock().getType().equals(BlockTypes.FLOWING_WATER) || optionalLocation.get().getBlock().getType().equals(BlockTypes.LAVA) || optionalLocation.get().getBlock().getType().equals(BlockTypes.FLOWING_LAVA) || optionalLocation.get().getBlock().getType().equals(BlockTypes.FIRE))
 				{
 					boolean found = false;
+
 					while (!found)
 					{
-						x = rand.nextInt(10000);
+						x = rand.nextInt((int) player.getWorld().getWorldBorder().getDiameter() - 1);
 						y = rand.nextInt(256);
-						z = rand.nextInt(10000);
+						z = rand.nextInt((int) player.getWorld().getWorldBorder().getDiameter() - 1);
 
 						randLocation = new Location<World>(playerLocation.getExtent(), x, y, z);
 						optionalLocation = teleportHelper.getSafeLocation(randLocation);
@@ -84,18 +85,19 @@ public class RTPExecutor extends CommandExecutorBase
 						}
 					}
 				}
+
 				player.setLocation(optionalLocation.get());
-				player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW,
-					"Teleporting you to nearest safe location!"));
+				player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleporting you to nearest safe location!"));
 			}
 			else
 			{
 				boolean found = false;
+
 				while (!found)
 				{
-					x = rand.nextInt(10000);
+					x = rand.nextInt((int) player.getWorld().getWorldBorder().getDiameter() - 1);
 					y = rand.nextInt(256);
-					z = rand.nextInt(10000);
+					z = rand.nextInt((int) player.getWorld().getWorldBorder().getDiameter() - 1);
 
 					randLocation = new Location<World>(playerLocation.getExtent(), x, y, z);
 					optionalLocation = teleportHelper.getSafeLocation(randLocation);
@@ -105,8 +107,7 @@ public class RTPExecutor extends CommandExecutorBase
 					}
 				}
 				player.setLocation(optionalLocation.get());
-				player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW,
-					"Teleporting you to nearest safe location!"));
+				player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleporting you to nearest safe location!"));
 			}
 		}
 		else if (src instanceof ConsoleSource)
@@ -123,14 +124,15 @@ public class RTPExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "randomtp", "rtp" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
-		return CommandSpec.builder().description(Text.of("RTP Command")).permission("essentialcmds.rtp.use")
-				.executor(this).build();
+	public CommandSpec getSpec()
+	{
+		return CommandSpec.builder().description(Text.of("RTP Command")).permission("essentialcmds.rtp.use").executor(this).build();
 	}
 }

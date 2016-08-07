@@ -174,6 +174,7 @@ public class MessageSinkListener
 			String prefix5 = "";
 			String suffix = "";
 			TextColor nameColor = TextColors.WHITE;
+			TextColor chatColor = TextColors.WHITE;
 
 			if (subject instanceof OptionSubject)
 			{
@@ -186,6 +187,7 @@ public class MessageSinkListener
 				prefix5 = optionSubject.getOption("prefix5").orElse("");
 				suffix = optionSubject.getOption("suffix").orElse("");
 				nameColor = Sponge.getRegistry().getType(TextColor.class, optionSubject.getOption("namecolor").orElse("")).orElse(TextColors.WHITE);
+				chatColor = Sponge.getRegistry().getType(TextColor.class, optionSubject.getOption("chatcolor").orElse("")).orElse(TextColors.WHITE);
 			}
 
 			String restOfOriginal = original.substring(original.indexOf(">") + 1, original.length());
@@ -207,37 +209,11 @@ public class MessageSinkListener
 
 			if (!player.hasPermission("essentialcmds.color.chat.use"))
 			{
-				event.setMessage(Text.builder()
-					.append(TextSerializers.formattingCode('&').deserialize(prefixInOriginal))
-						.append(TextSerializers.formattingCode('&').deserialize(prefix2))
-						.append(TextSerializers.formattingCode('&').deserialize(prefix3))
-						.append(TextSerializers.formattingCode('&').deserialize(prefix4))
-						.append(TextSerializers.formattingCode('&').deserialize(prefix5))
-					.append(Text.builder().append(TextSerializers.formattingCode('&').deserialize(playerName)).color(nameColor).build())
-					.append(TextSerializers.formattingCode('&').deserialize(suffixInOriginal))
-					.append(Text.of(TextColors.RESET))
-					.append(Text.of(restOfOriginal))
-					.onClick(clickAction.isPresent() ? clickAction.get() : event.getMessage().getClickAction().orElse(null))
-					.style(event.getMessage().getStyle())
-					.onHover(event.getMessage().getHoverAction().orElse(null))
-					.build());
+				event.setMessage(Text.builder().append(TextSerializers.formattingCode('&').deserialize(prefixInOriginal)).append(TextSerializers.formattingCode('&').deserialize(prefix2)).append(TextSerializers.formattingCode('&').deserialize(prefix3)).append(TextSerializers.formattingCode('&').deserialize(prefix4)).append(TextSerializers.formattingCode('&').deserialize(prefix5)).append(Text.builder().append(TextSerializers.formattingCode('&').deserialize(playerName)).color(nameColor).build()).append(TextSerializers.formattingCode('&').deserialize(suffixInOriginal)).append(Text.of(TextColors.RESET)).append(Text.of(chatColor, restOfOriginal)).onClick(clickAction.isPresent() ? clickAction.get() : event.getMessage().getClickAction().orElse(null)).style(event.getMessage().getStyle()).onHover(event.getMessage().getHoverAction().orElse(null)).build());
 			}
 			else
 			{
-				event.setMessage(Text.builder()
-					.append(TextSerializers.formattingCode('&').deserialize(prefixInOriginal))
-						.append(TextSerializers.formattingCode('&').deserialize(prefix2))
-						.append(TextSerializers.formattingCode('&').deserialize(prefix3))
-						.append(TextSerializers.formattingCode('&').deserialize(prefix4))
-						.append(TextSerializers.formattingCode('&').deserialize(prefix5))
-					.append(Text.builder().append(TextSerializers.formattingCode('&').deserialize(playerName)).color(nameColor).build())
-					.append(TextSerializers.formattingCode('&').deserialize(suffixInOriginal))
-					.append(Text.of(TextColors.RESET))
-					.append(TextSerializers.formattingCode('&').deserialize(restOfOriginal))
-					.onClick(clickAction.isPresent() ? clickAction.get() : event.getMessage().getClickAction().orElse(null))
-					.style(event.getMessage().getStyle())
-					.onHover(event.getMessage().getHoverAction().orElse(null))
-					.build());
+				event.setMessage(Text.builder().append(TextSerializers.formattingCode('&').deserialize(prefixInOriginal)).append(TextSerializers.formattingCode('&').deserialize(prefix2)).append(TextSerializers.formattingCode('&').deserialize(prefix3)).append(TextSerializers.formattingCode('&').deserialize(prefix4)).append(TextSerializers.formattingCode('&').deserialize(prefix5)).append(Text.builder().append(TextSerializers.formattingCode('&').deserialize(playerName)).color(nameColor).build()).append(TextSerializers.formattingCode('&').deserialize(suffixInOriginal)).append(Text.of(TextColors.RESET)).append(TextSerializers.formattingCode('&').deserialize(TextSerializers.FORMATTING_CODE.serialize(Text.of(chatColor)) + restOfOriginal)).onClick(clickAction.isPresent() ? clickAction.get() : event.getMessage().getClickAction().orElse(null)).style(event.getMessage().getStyle()).onHover(event.getMessage().getHoverAction().orElse(null)).build());
 			}
 		}
 	}
