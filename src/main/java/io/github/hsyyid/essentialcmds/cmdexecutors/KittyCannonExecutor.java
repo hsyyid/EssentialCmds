@@ -109,8 +109,7 @@ public class KittyCannonExecutor extends CommandExecutorBase
 	{
 		velocity = velocity.mul(5);
 		Extent extent = location.getExtent();
-		Optional<Entity> optional = extent.createEntity(EntityTypes.OCELOT, location.getPosition());
-		Entity kitten = optional.get();
+		Entity kitten = extent.createEntity(EntityTypes.OCELOT, location.getPosition());
 		kitten.offer(Keys.VELOCITY, velocity);
 		extent.spawnEntity(kitten, Cause.of(NamedCause.source(SpawnCause.builder().type(SpawnTypes.CUSTOM).build())));
 	}

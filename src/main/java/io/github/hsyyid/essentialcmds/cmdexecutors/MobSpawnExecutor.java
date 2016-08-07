@@ -83,8 +83,8 @@ public class MobSpawnExecutor extends CommandExecutorBase
 	{
 		for (int i = 1; i <= amount; i++)
 		{
-			Optional<Entity> entity = location.getExtent().createEntity(type, location.getPosition());
-			location.getExtent().spawnEntity(entity.get(), Cause.of(NamedCause.source(SpawnCause.builder().type(SpawnTypes.CUSTOM).build())));
+			Entity entity = location.getExtent().createEntity(type, location.getPosition());
+			location.getExtent().spawnEntity(entity, Cause.of(NamedCause.source(SpawnCause.builder().type(SpawnTypes.CUSTOM).build())));
 		}
 	}
 
@@ -129,11 +129,6 @@ public class MobSpawnExecutor extends CommandExecutorBase
 	@Override
 	public CommandSpec getSpec()
 	{
-		return CommandSpec
-			.builder()
-			.description(Text.of("Mob Spawn Command"))
-			.permission("essentialcmds.mobspawn.use")
-			.arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.integer(Text.of("amount")))), GenericArguments.onlyOne(GenericArguments.catalogedElement(Text.of("mob"), EntityType.class)))
-			.executor(this).build();
+		return CommandSpec.builder().description(Text.of("Mob Spawn Command")).permission("essentialcmds.mobspawn.use").arguments(GenericArguments.seq(GenericArguments.onlyOne(GenericArguments.integer(Text.of("amount")))), GenericArguments.onlyOne(GenericArguments.catalogedElement(Text.of("mob"), EntityType.class))).executor(this).build();
 	}
 }

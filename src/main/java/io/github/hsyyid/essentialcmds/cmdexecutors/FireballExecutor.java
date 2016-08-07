@@ -108,9 +108,7 @@ public class FireballExecutor extends CommandExecutorBase
 	public void spawnEntity(Location<World> location, Vector3d velocity, CommandSource src)
 	{
 		Extent extent = location.getExtent();
-		Optional<Entity> optional = extent.createEntity(EntityTypes.FIREBALL, location.getPosition());
-
-		Entity fireball = optional.get();
+		Entity fireball = extent.createEntity(EntityTypes.FIREBALL, location.getPosition());
 		fireball.offer(Keys.VELOCITY, velocity);
 		extent.spawnEntity(fireball, Cause.of(NamedCause.source(SpawnCause.builder().type(SpawnTypes.CUSTOM).build())));
 	}
