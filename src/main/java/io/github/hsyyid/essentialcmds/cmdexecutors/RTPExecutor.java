@@ -53,7 +53,7 @@ public class RTPExecutor extends CommandExecutorBase
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
 		int tryTimes = 10;
-		
+
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
@@ -67,7 +67,7 @@ public class RTPExecutor extends CommandExecutorBase
 					//restrict the number of times we check, as every time we do this we are loading chunks...
 					for(int i = 0; i < tryTimes; i++)
 					{
-						//Why 10000? are we supposed to be "less fussy" or something? 
+						//Why 10000? are we supposed to be "less fussy" or something?
 						// we only checked a width of 9 by default with safe teleport
 						optionalLocation = randomLocation(player, 10000);
 						//repeated isDanger check, when we have already checked it in safeTeleport
@@ -77,6 +77,11 @@ public class RTPExecutor extends CommandExecutorBase
 							return CommandResult.success();
 						}
 					}
+					player.sendMessage(Text.of(TextColors.DARK_RED, "A safe random location was not found, please try again"));
+					return CommandResult.empty();
+				} else {
+					teleportPlayer(player, optionalLocation);
+					return CommandResult.success();
 				}
 			}
 			else
@@ -91,16 +96,19 @@ public class RTPExecutor extends CommandExecutorBase
 						return CommandResult.success();
 					}
 				}
-				
+				player.sendMessage(Text.of(TextColors.DARK_RED, "A safe random location was not found, please try again"));
+				return CommandResult.empty();
 			}
 		}
 		else if (src instanceof ConsoleSource)
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /rtp!"));
+			return CommandResult.empty();
 		}
 		else if (src instanceof CommandBlockSource)
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /rtp!"));
+			return CommandResult.empty();
 		}
 
 		return CommandResult.success();
