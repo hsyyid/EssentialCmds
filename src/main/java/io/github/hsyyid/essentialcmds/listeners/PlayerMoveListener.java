@@ -27,6 +27,7 @@ package io.github.hsyyid.essentialcmds.listeners;
 import io.github.hsyyid.essentialcmds.EssentialCmds;
 import io.github.hsyyid.essentialcmds.utils.AFK;
 import io.github.hsyyid.essentialcmds.utils.Utils;
+
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -42,7 +43,9 @@ public class PlayerMoveListener
 	@Listener
 	public void onPlayerMove(DisplaceEntityEvent event, @First Player player)
 	{
-		if (Utils.isTeleportCooldownEnabled() && EssentialCmds.teleportingPlayers.contains(player.getUniqueId()))
+		double dist = event.getFromTransform().getLocation().getPosition().distance(event.getToTransform().getLocation().getPosition());
+		
+		if (Utils.isTeleportCooldownEnabled() && EssentialCmds.teleportingPlayers.contains(player.getUniqueId()) && dist > 0)
 		{
 			EssentialCmds.teleportingPlayers.remove(player.getUniqueId());
 			player.sendMessage(Text.of(TextColors.RED, "Teleportation canceled due to movement."));
