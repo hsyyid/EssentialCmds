@@ -28,14 +28,14 @@ import io.github.hsyyid.essentialcmds.EssentialCmds;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.command.SendCommandEvent;
-import org.spongepowered.api.event.filter.cause.First;
+import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class CommandListener
 {
 	@Listener
-	public void onPlayerSendCommand(SendCommandEvent event, @First Player player)
+	public void onPlayerSendCommand(SendCommandEvent event, @Root Player player)
 	{
 		if(EssentialCmds.jailedPlayers.contains(player.getUniqueId()))
 		{

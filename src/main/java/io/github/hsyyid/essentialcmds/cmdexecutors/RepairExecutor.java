@@ -33,6 +33,7 @@ import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.DataTransactionResult;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.item.DurabilityData;
+import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
@@ -48,9 +49,9 @@ public class RepairExecutor extends CommandExecutorBase
 		{
 			Player player = (Player) src;
 
-			if (player.getItemInHand().isPresent())
+			if (player.getItemInHand(HandTypes.MAIN_HAND).isPresent())
 			{
-				ItemStack stack = player.getItemInHand().get();
+				ItemStack stack = player.getItemInHand(HandTypes.MAIN_HAND).get();
 
 				if (stack.get(DurabilityData.class).isPresent())
 				{
@@ -59,7 +60,7 @@ public class RepairExecutor extends CommandExecutorBase
 
 					if (transactionResult.isSuccessful())
 					{
-						player.setItemInHand(stack);
+						player.setItemInHand(HandTypes.MAIN_HAND, stack);
 						src.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Repaired item in hand."));
 					}
 					else

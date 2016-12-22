@@ -32,12 +32,12 @@ import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.command.SendCommandEvent;
-import org.spongepowered.api.event.filter.cause.First;
+import org.spongepowered.api.event.filter.cause.Root;
 
 public class CommandSentListener
 {
 	@Listener
-	public void onCommandSent(SendCommandEvent event, @First CommandSource src)
+	public void onCommandSent(SendCommandEvent event, @Root CommandSource src)
 	{
 		if (src instanceof Player && Utils.isPlayerCommandLoggingEnabled())
 		{

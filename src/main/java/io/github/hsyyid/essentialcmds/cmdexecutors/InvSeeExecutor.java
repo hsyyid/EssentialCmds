@@ -40,8 +40,7 @@ import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ContainerChest;
-import net.minecraft.network.play.server.S2DPacketOpenWindow;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.network.play.server.SPacketOpenWindow;
 
 public class InvSeeExecutor extends CommandExecutorBase
 {
@@ -52,8 +51,9 @@ public class InvSeeExecutor extends CommandExecutorBase
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			EntityPlayerMP playerMP = MinecraftServer.getServer().getConfigurationManager().playerEntityList.stream().filter(p -> p.getUniqueID().equals(player.getUniqueId())).findAny().get();
-			EntityPlayerMP targetMP = MinecraftServer.getServer().getConfigurationManager().playerEntityList.stream().filter(p -> p.getUniqueID().equals(target.getUniqueId())).findAny().get();
+			EntityPlayerMP playerMP = ((EntityPlayerMP) (Object) player);
+			EntityPlayerMP targetMP = ((EntityPlayerMP) (Object) target);
+
 			InventoryPlayer inventory = targetMP.inventory;
 			ContainerChest container = new ContainerChest(playerMP.inventory, inventory, playerMP);
 
@@ -64,11 +64,11 @@ public class InvSeeExecutor extends CommandExecutorBase
 
 			playerMP.getNextWindowId();
 
-			playerMP.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(playerMP.currentWindowId, "minecraft:container", inventory.getDisplayName(), inventory.getSizeInventory()));
+			playerMP.connection.sendPacket(new SPacketOpenWindow(playerMP.currentWindowId, "minecraft:container", inventory.getDisplayName(), inventory.getSizeInventory()));
 			playerMP.openContainer = container;
 
 			playerMP.openContainer.windowId = playerMP.currentWindowId;
-			playerMP.openContainer.onCraftGuiOpened(playerMP);
+			playerMP.openContainer.addListener(playerMP);
 		}
 		else
 		{

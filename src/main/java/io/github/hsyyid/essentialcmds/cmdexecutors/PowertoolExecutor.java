@@ -35,6 +35,7 @@ import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -52,7 +53,7 @@ public class PowertoolExecutor extends CommandExecutorBase
 			Player player = (Player) src;
 
 			// TODO: Allow players not holding an item to remove their powertool
-			if (player.getItemInHand().isPresent())
+			if (player.getItemInHand(HandTypes.MAIN_HAND).isPresent())
 			{
 				if (optionalCommand.isPresent())
 				{
@@ -60,18 +61,18 @@ public class PowertoolExecutor extends CommandExecutorBase
 
 					// If there is a powertool for the player, remove it.
 					EssentialCmds.powertools.stream()
-							.filter(p -> p.getPlayer().equals(player) && p.getItemID().equals(player.getItemInHand().get().getItem().getName()))
-							.findFirst().ifPresent(x -> EssentialCmds.powertools.remove(x));
-					Powertool powertool = new Powertool(player, player.getItemInHand().get().getItem().getName(), command);
+						.filter(p -> p.getPlayer().equals(player) && p.getItemID().equals(player.getItemInHand(HandTypes.MAIN_HAND).get().getItem().getName()))
+						.findFirst().ifPresent(x -> EssentialCmds.powertools.remove(x));
+					Powertool powertool = new Powertool(player, player.getItemInHand(HandTypes.MAIN_HAND).get().getItem().getName(), command);
 					EssentialCmds.powertools.add(powertool);
 
-					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully bound command ", TextColors.BLUE, command, TextColors.YELLOW, " to ", TextColors.RED, player.getItemInHand().get().getItem().getName(), TextColors.YELLOW, "!"));
+					player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Successfully bound command ", TextColors.BLUE, command, TextColors.YELLOW, " to ", TextColors.RED, player.getItemInHand(HandTypes.MAIN_HAND).get().getItem().getName(), TextColors.YELLOW, "!"));
 				}
 				else
 				{
 					Optional<Powertool> powertoolToRemove = EssentialCmds.powertools.stream()
-							.filter(p -> p.getPlayer().equals(player) && p.getItemID().equals(player.getItemInHand().get().getItem().getName()))
-							.findFirst();
+						.filter(p -> p.getPlayer().equals(player) && p.getItemID().equals(player.getItemInHand(HandTypes.MAIN_HAND).get().getItem().getName()))
+						.findFirst();
 
 					if (powertoolToRemove.isPresent())
 					{
@@ -103,15 +104,17 @@ public class PowertoolExecutor extends CommandExecutorBase
 
 	@Nonnull
 	@Override
-	public String[] getAliases() {
+	public String[] getAliases()
+	{
 		return new String[] { "powertool", "pt" };
 	}
 
 	@Nonnull
 	@Override
-	public CommandSpec getSpec() {
+	public CommandSpec getSpec()
+	{
 		return CommandSpec.builder().description(Text.of("Powertool Command")).permission("essentialcmds.powertool.use")
-				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("command")))))
-				.executor(this).build();
+			.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.remainingJoinedStrings(Text.of("command")))))
+			.executor(this).build();
 	}
 }
