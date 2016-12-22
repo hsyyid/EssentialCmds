@@ -24,6 +24,7 @@
  */
 package io.github.hsyyid.essentialcmds.cmdexecutors;
 
+import com.flowpowered.math.vector.Vector3d;
 import io.github.hsyyid.essentialcmds.internal.CommandExecutorBase;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockTypes;
@@ -40,6 +41,7 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.TeleportHelper;
 import org.spongepowered.api.world.World;
+import org.spongepowered.api.world.WorldBorder;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
@@ -50,75 +52,100 @@ public class RTPExecutor extends CommandExecutorBase
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext ctx) throws CommandException
 	{
+		int tryTimes = 10;
+
 		if (src instanceof Player)
 		{
 			Player player = (Player) src;
-			Location<World> playerLocation = player.getLocation();
-
-			Random rand = new Random();
-			int x = rand.nextInt(3999);
-			int y = rand.nextInt(256);
-			int z = rand.nextInt(3999);
-
-			Location<World> randLocation = new Location<World>(playerLocation.getExtent(), x, y, z);
-			TeleportHelper teleportHelper = Sponge.getGame().getTeleportHelper();
-			Optional<Location<World>> optionalLocation = teleportHelper.getSafeLocation(randLocation);
-
+			//Why 3999? why hard code it?
+			Optional<Location<World>> optionalLocation = randomLocation(player, 3999);
 			if (optionalLocation.isPresent())
 			{
-				if (optionalLocation.get().getBlock().getType().equals(BlockTypes.WATER) || optionalLocation.get().getBlock().getType().equals(BlockTypes.FLOWING_WATER) || optionalLocation.get().getBlock().getType().equals(BlockTypes.LAVA) || optionalLocation.get().getBlock().getType().equals(BlockTypes.FLOWING_LAVA) || optionalLocation.get().getBlock().getType().equals(BlockTypes.FIRE))
+				//Why check danger? shouldn't safe teleport have already checked this?
+				if (isDangerous(optionalLocation))
 				{
-					boolean found = false;
-					while (!found)
+					//restrict the number of times we check, as every time we do this we are loading chunks...
+					for(int i = 0; i < tryTimes; i++)
 					{
-						x = rand.nextInt(10000);
-						y = rand.nextInt(256);
-						z = rand.nextInt(10000);
-
-						randLocation = new Location<World>(playerLocation.getExtent(), x, y, z);
-						optionalLocation = teleportHelper.getSafeLocation(randLocation);
-
-						if (optionalLocation.isPresent() && optionalLocation.get().getBlock().getType() != BlockTypes.WATER && optionalLocation.get().getBlock().getType() != BlockTypes.LAVA && optionalLocation.get().getBlock().getType() != BlockTypes.FLOWING_LAVA && optionalLocation.get().getBlock().getType() != BlockTypes.FLOWING_WATER && optionalLocation.get().getBlock().getType() != BlockTypes.FIRE)
+						//Why 10000? are we supposed to be "less fussy" or something?
+						// we only checked a width of 9 by default with safe teleport
+						optionalLocation = randomLocation(player, 10000);
+						//repeated isDanger check, when we have already checked it in safeTeleport
+						if (optionalLocation.isPresent() && !isDangerous(optionalLocation))
 						{
-							found = true;
+							teleportPlayer(player, optionalLocation);
+							return CommandResult.success();
 						}
 					}
+					player.sendMessage(Text.of(TextColors.DARK_RED, "A safe random location was not found, please try again"));
+					return CommandResult.empty();
+				} else {
+					teleportPlayer(player, optionalLocation);
+					return CommandResult.success();
 				}
-				player.setLocation(optionalLocation.get());
-				player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW,
-					"Teleporting you to nearest safe location!"));
 			}
 			else
 			{
-				boolean found = false;
-				while (!found)
+				for(int i = 0; i < tryTimes; i++)
 				{
-					x = rand.nextInt(10000);
-					y = rand.nextInt(256);
-					z = rand.nextInt(10000);
-
-					randLocation = new Location<World>(playerLocation.getExtent(), x, y, z);
-					optionalLocation = teleportHelper.getSafeLocation(randLocation);
-					if (optionalLocation.isPresent() && optionalLocation.get().getBlock().getType() != BlockTypes.WATER)
+					optionalLocation = randomLocation(player, 10000);
+					//swapping to isWet? but the danger check is already done in safe teleport
+					if (optionalLocation.isPresent() && !isWet(optionalLocation))
 					{
-						found = true;
+						teleportPlayer(player, optionalLocation);
+						return CommandResult.success();
 					}
 				}
-				player.setLocation(optionalLocation.get());
-				player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW,
-					"Teleporting you to nearest safe location!"));
+				player.sendMessage(Text.of(TextColors.DARK_RED, "A safe random location was not found, please try again"));
+				return CommandResult.empty();
 			}
 		}
 		else if (src instanceof ConsoleSource)
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /rtp!"));
+			return CommandResult.empty();
 		}
 		else if (src instanceof CommandBlockSource)
 		{
 			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "Must be an in-game player to use /rtp!"));
+			return CommandResult.empty();
 		}
 
 		return CommandResult.success();
+	}
+
+	private void teleportPlayer(Player player, Optional<Location<World>> optionalLocation) {
+		player.setLocation(optionalLocation.get());
+		player.sendMessage(Text.of(TextColors.GREEN, "Success! ", TextColors.YELLOW, "Teleporting you to nearest safe location!"));
+	}
+
+	private boolean isWet(Optional<Location<World>> optionalLocation) {
+		return optionalLocation.get().getBlock().getType().equals(BlockTypes.WATER);
+	}
+
+	private boolean isDangerous(Optional<Location<World>> optionalLocation) {
+		return optionalLocation.get().getBlock().getType().equals(BlockTypes.WATER)
+		    || optionalLocation.get().getBlock().getType().equals(BlockTypes.FLOWING_WATER)
+		    || optionalLocation.get().getBlock().getType().equals(BlockTypes.LAVA)
+		    || optionalLocation.get().getBlock().getType().equals(BlockTypes.FLOWING_LAVA)
+		    || optionalLocation.get().getBlock().getType().equals(BlockTypes.FIRE);
+	}
+
+	private Optional<Location<World>> randomLocation(Player player, int searchDiameter){
+		Location<World> playerLocation = player.getLocation();
+		//Adding world border support, otherwise you could murder players by using a location within the border.
+		WorldBorder border = player.getWorld().getWorldBorder();
+		Vector3d center = border.getCenter();
+		double diameter = Math.min(border.getDiameter(), searchDiameter);
+		double radius = border.getDiameter() / 2;
+		Random rand = new Random();
+		int x = (int) (rand.nextInt((int) (center.getX()+diameter)) - radius);
+		int y = rand.nextInt(256);
+		int z = rand.nextInt((int) (rand.nextInt((int) (center.getZ()+diameter)) - radius));
+
+		Location<World> randLocation = new Location<World>(playerLocation.getExtent(), x, y, z);
+		TeleportHelper teleportHelper = Sponge.getGame().getTeleportHelper();
+		return teleportHelper.getSafeLocation(randLocation);
 	}
 
 	@Nonnull

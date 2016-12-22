@@ -116,7 +116,7 @@ public class PlayerJoinListener
 			EssentialCmds.timings.safeLogin().stopTimingIfSync();
 		}
 
-		player.sendMessage(Utils.getJoinMsg());
+		player.sendMessage(Utils.getJoinMsg(player.getName()));
 
 		try
 		{

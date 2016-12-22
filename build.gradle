@@ -27,12 +27,12 @@ defaultTasks 'licenseFormat'
 
 group = "io.github.hsyyid"
 archivesBaseName = "EssentialCmds"
-version = '8.1.12'
+version = '8.1.14'
 
 minecraft {
-    version = "1.9.4-12.17.0.1968"
+    version = "1.10.2-12.18.0.2006-1.10.0"
     runDir = "run"
-    mappings = "snapshot_20160621"
+    mappings = "snapshot_20160518"
 }
 
 sourceCompatibility = 1.8
