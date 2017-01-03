@@ -50,7 +50,7 @@ public class EntityInfoExecutor extends CommandExecutorBase
 		{
 			Player player = (Player) src;
 
-			BlockRay<World> playerBlockRay = BlockRay.from(player).blockLimit(5).build();
+			BlockRay<World> playerBlockRay = BlockRay.from(player).distanceLimit(5).build();
 			BlockRayHit<World> finalHitRay = null;
 
 			while (playerBlockRay.hasNext())
