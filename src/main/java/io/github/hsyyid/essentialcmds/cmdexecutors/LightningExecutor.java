@@ -63,7 +63,7 @@ public class LightningExecutor extends CommandExecutorBase
 			{
 				Player player = (Player) src;
 
-				BlockRay<World> playerBlockRay = BlockRay.from(player).blockLimit(350).build();
+				BlockRay<World> playerBlockRay = BlockRay.from(player).distanceLimit(350).build();
 				BlockRayHit<World> finalHitRay = null;
 
 				while (playerBlockRay.hasNext())

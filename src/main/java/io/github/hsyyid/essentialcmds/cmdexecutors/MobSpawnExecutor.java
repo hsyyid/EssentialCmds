@@ -90,7 +90,7 @@ public class MobSpawnExecutor extends CommandExecutorBase
 
 	public Location<World> getSpawnLocFromPlayerLoc(Player player)
 	{
-		BlockRay<World> playerBlockRay = BlockRay.from(player).blockLimit(350).build();
+		BlockRay<World> playerBlockRay = BlockRay.from(player).distanceLimit(350).build();
 		BlockRayHit<World> finalHitRay = null;
 
 		while (playerBlockRay.hasNext())

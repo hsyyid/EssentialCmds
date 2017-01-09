@@ -49,7 +49,7 @@ public class ThruExecutor extends CommandExecutorBase
 		{
 			Player player = (Player) src;
 
-			BlockRay<World> playerBlockRay = BlockRay.from(player).blockLimit(25).build();
+			BlockRay<World> playerBlockRay = BlockRay.from(player).distanceLimit(25).build();
 			BlockRayHit<World> finalHitRay = null;
 			Location<World> location = null;
 

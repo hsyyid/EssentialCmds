@@ -55,7 +55,7 @@ configurations {
 }
 
 dependencies {
-    compile "org.spongepowered:spongeapi:5.0.0-SNAPSHOT"
+    compile "org.spongepowered:spongeapi:5.1.0-SNAPSHOT"
     shade "com.github.Flibio:Updatifier:v1.4.0:api"
 }
 

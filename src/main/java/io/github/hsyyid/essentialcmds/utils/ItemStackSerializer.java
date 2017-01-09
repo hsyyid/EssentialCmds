@@ -28,7 +28,7 @@ import ninja.leaping.configurate.ConfigurationNode;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.DataView;
-import org.spongepowered.api.data.translator.ConfigurateTranslator;
+import org.spongepowered.api.data.persistence.DataTranslators;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.Optional;
@@ -37,13 +37,13 @@ public class ItemStackSerializer
 {
 	public static Object serializeItemStack(ItemStack itemStack)
 	{
-		ConfigurationNode node = ConfigurateTranslator.instance().translateData(itemStack.toContainer());
+		ConfigurationNode node = DataTranslators.CONFIGURATION_NODE.translate(itemStack.toContainer());
 		return node.getValue();
 	}
 
 	public static Optional<ItemStack> readItemStack(ConfigurationNode node, Object number)
 	{
-		DataView view = ConfigurateTranslator.instance().translateFrom(node);
+		DataView view = DataTranslators.CONFIGURATION_NODE.translate(node);
 
 		if (view.get(DataQuery.of(String.valueOf(number))).isPresent())
 			view = (DataView) view.get(DataQuery.of(String.valueOf(number))).get();

@@ -63,7 +63,7 @@ public class FireballExecutor extends CommandExecutorBase
 			if (src instanceof Player)
 			{
 				Player player = (Player) src;
-				BlockRay<World> playerBlockRay = BlockRay.from(player).blockLimit(350).build();
+				BlockRay<World> playerBlockRay = BlockRay.from(player).distanceLimit(350).build();
 
 				Location<World> spawnLocation = null;
 				int i = 0;
